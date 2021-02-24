@@ -1,0 +1,114 @@
+<div class="title-container">
+    <h1>Ուղղություններ</h1>
+    <button class="add-essence" nz-button nzType="primary" (click)="showModal()">
+        Ավելացնել ուղղություն
+    </button>
+</div>
+<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" [nzTotal]="total" [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="routeTable">
+    <thead>
+        <tr>
+            <th>N</th>
+            <th>Անուն</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of routeTable; let ind = index">
+            <td style="width:10px">{{ ind + 1 }}</td>
+            <td>
+                {{data.route_name}}
+            </td>
+            <td (click)="onEditRoute(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
+            </td>
+            <td class="action-button delete" style="width:10px">
+                <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
+                    nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել" nzPopconfirmPlacement="bottom"
+                    (nzOnConfirm)="onDeleteRoute(ind)">
+                    <i nz-icon nzType="edit"></i>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+
+<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" nzTitle="Ուղղություն"
+    (nzOnCancel)="handleCancel()" nzWidth="870px" (nzOnOk)="onRouteSave()">
+    <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
+        <nz-form-label class="inline-labels" nzRequired>Անվանումը</nz-form-label>
+        <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                <input nz-input formControlName="name" placeholder="Մուտքագրեք ուղղության անունը" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-label *ngIf="editIndex !== null" class="inline-labels" nzRequired>Ուղղություն</nz-form-label>
+   
+        <nz-form-item *ngIf="editIndex !== null">
+            <ng-container formArrayName="routes"
+                *ngFor="let item of validateForm.get('routes')['controls'];let i=index">
+                    <div [formGroupName]="i" class="d-flex justify-content-between align-items-baseline">
+                        <div>
+                            <nz-select nzPlaceHolder="Start point" formControlName="start_point">
+                                <nz-option *ngFor="let city of cityTable" [nzValue]="city.id" [nzLabel]="city.name_en">
+                                </nz-option>
+                            </nz-select>
+                            <label nz-checkbox formControlName="start_point_is_static">Static</label>
+                            <div >
+                                <nz-form-item>
+                                    <nz-form-control>
+                                        <input nz-input formControlName="start_point_address_en"
+                                            placeholder="Հասցե En" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                                <nz-form-item>
+                                    <nz-form-control>
+                                        <input nz-input formControlName="start_point_address_ru"
+                                            placeholder="Հասցե Ru" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                                <nz-form-item>
+                                    <nz-form-control>
+                                        <input nz-input formControlName="start_point_address_hy"
+                                            placeholder="Հասցե Hy" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                        </div>
+                        <div>
+                            <nz-select nzPlaceHolder="End point" formControlName="end_point">
+                                <nz-option *ngFor="let city of cityTable" [nzValue]="city.id" [nzLabel]="city.name_en">
+                                </nz-option>
+                            </nz-select>
+                            <label nz-checkbox formControlName="end_point_is_static">Static</label>
+                            <div >
+                                <nz-form-item>
+                                    <nz-form-control>
+                                        <input nz-input formControlName="end_point_address_en" placeholder="Հասցե En" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                                <nz-form-item>
+                                    <nz-form-control>
+                                        <input nz-input formControlName="end_point_address_ru" placeholder="Հասցե Ru" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                                <nz-form-item>
+                                    <nz-form-control>
+                                        <input nz-input formControlName="end_point_address_hy" placeholder="Հասցե Hy" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                        </div>
+                    </div>
+            </ng-container>
+        </nz-form-item>
+
+    </form>
+</nz-modal>
+
+<ng-template #userErrorTpl let-control>
+    <ng-container *ngIf="control.hasError('required')">
+        Սա պարտադիր դաշտ է
+    </ng-container>
+</ng-template>

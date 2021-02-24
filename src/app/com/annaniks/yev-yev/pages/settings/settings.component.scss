@@ -1,0 +1,21 @@
+.table-item{
+    border: 1px solid grey;
+    margin: 20px;
+    padding: 7px;
+}
+.table-content{
+    align-items: center;
+    justify-content: space-between;
+}
+.w-45{
+    width: 45%;
+}
+@media screen and(max-width:1191px){
+    .w-45{
+        width: 80%;
+        margin: 20px auto;
+    }
+    .table-content{
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,71 @@
+<div class="title-container">
+    <h1>Քաղաքներ</h1>
+    <button class="add-essence" nz-button nzType="primary" (click)="showModal()">
+        Ավելացնել քաղաք
+    </button>
+</div>
+<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" [nzTotal]="total" [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="cityTable">
+    <thead>
+        <tr>
+            <th>N</th>
+            <th>En</th>
+            <th>Ru</th>
+            <th>Hy</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of cityTable; let ind = index">
+            <td style="width:10px">{{ ind + 1 }}</td>
+            <td>
+                {{data.name_en}}
+            </td>
+            <td>
+                {{data.name_ru}}
+            </td>
+            <td>
+                {{data.name_hy}}
+            </td>
+            <td (click)="onEditcity(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
+            </td>
+            <td class="action-button delete" style="width:10px">
+                <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'"  nz-popconfirm nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել" nzPopconfirmPlacement="bottom"
+                    (nzOnConfirm)="onDeletecity(ind)">
+                    <i nz-icon nzType="edit"></i>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+
+<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'"  [(nzVisible)]="isVisible" nzTitle="Քաղաք" (nzOnCancel)="handleCancel()" nzWidth="870px" (nzOnOk)="oncitySave()">
+    <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
+        <nz-form-label class="inline-labels" nzRequired>En</nz-form-label>
+        <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                <input nz-input formControlName="name_en" placeholder="" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-label class="inline-labels" nzRequired>Ru</nz-form-label>
+        <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                <input nz-input formControlName="name_ru" placeholder="" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-label class="inline-labels" nzRequired>Hy</nz-form-label>
+        <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                <input nz-input formControlName="name_hy" placeholder="" />
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</nz-modal>
+
+<ng-template #userErrorTpl let-control>
+    <ng-container *ngIf="control.hasError('required')">
+        Սա պարտադիր դաշտ է
+    </ng-container>
+</ng-template>

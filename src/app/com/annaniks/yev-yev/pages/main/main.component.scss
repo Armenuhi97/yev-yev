@@ -1,0 +1,17 @@
+.item {
+    cursor: pointer;
+    margin: 0 13px;
+}
+.logo {
+    border: 1px solid white;
+    padding: 5px;
+}
+.active {
+    color: #e6f7ff !important
+}
+mat-toolbar{
+    height: auto !important;
+    background-color: #2CAF2D;
+    color: white;
+    padding: 10px;
+}

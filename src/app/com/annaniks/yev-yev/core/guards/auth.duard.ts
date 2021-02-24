@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -7,9 +8,13 @@ import { Observable } from 'rxjs';
 })
 export class AuthGuard implements CanActivate {
 
-    constructor() { }
+    constructor(private _cookieService: CookieService) { }
 
     canActivate(): Observable<boolean> | Promise<boolean> | boolean {
-        return true;
+        if (this._cookieService.get('access')) {
+            return true;
+        } else {
+            return false
+        }
     }
 }

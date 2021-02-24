@@ -19,12 +19,13 @@ export class ApiInterceptor implements HttpInterceptor {
         let params: HttpParams = (req.params) ? req.params : new HttpParams();
         let headers: HttpHeaders = (req.headers) ? req.headers : new HttpHeaders();
         const url = `${this.baseUrl}${req.url}`;
-        headers = headers.append('Authorization', 'Token ' + this.cookieService.get('access'));
-      // if (!params.has('authorization') || (params.has('authorization') && params.get('authorization') === 'true')) {
-      //       const accessToken: string = this.cookieService.get('accessToken') || '';
-      //       // if (accessToken) {
-      //       // }
-      //   }
+        if (req.url !== 'login/login/')
+            headers = headers.append('Authorization', 'Token ' + this.cookieService.get('access'));
+        // if (!params.has('authorization') || (params.has('authorization') && params.get('authorization') === 'true')) {
+        //       const accessToken: string = this.cookieService.get('accessToken') || '';
+        //       // if (accessToken) {
+        //       // }
+        //   }
         if (params.has('authorization')) {
             params = params.delete('authorization');
         }

@@ -1,0 +1,93 @@
+<div class="title-container">
+    <h1>Աշխատակիցներ</h1>
+    <button class="add-essence" nz-button nzType="primary" (click)="showModal()">
+        Ավելացնել Աշխատակից
+    </button>
+</div>
+<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" [nzTotal]="total" [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="salaryTable">
+    <thead>
+        <tr>
+            <th>N</th>
+            <th>Անուն</th>
+            <th>Ազգանուն</th>
+            <th>Հեռախոսահամար</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of salaryTable; let ind = index">
+            <td style="width:10px">{{ ind + 1 }}</td>
+            <td>
+                {{data.user.first_name}}
+            </td>
+            <td>
+                {{data.user.last_name}}
+            </td>
+            <td>{{data.user.phone_number}}</td>
+            <td (click)="onEditsalary(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
+            </td>
+            <td class="action-button delete" style="width:10px">
+                <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
+                    nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել" nzPopconfirmPlacement="bottom"
+                    (nzOnConfirm)="onDeletesalary(ind)">
+                    <i nz-icon nzType="edit"></i>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+
+<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" nzTitle="Քաղաք"
+    (nzOnCancel)="handleCancel()" nzWidth="870px" (nzOnOk)="onsalarySave()">
+
+    <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Անուն</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="first_name" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Ազգանուն</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="last_name" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            
+        </div>
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>username</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="username" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="phone_number" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+
+
+    </form>
+</nz-modal>
+
+<ng-template #userErrorTpl let-control>
+    <ng-container *ngIf="control.hasError('required')">
+        Սա պարտադիր դաշտ է
+    </ng-container>
+</ng-template>

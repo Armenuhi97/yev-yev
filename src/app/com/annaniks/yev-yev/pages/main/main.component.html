@@ -1,0 +1,19 @@
+<div style="height: 100vh;">
+
+    <mat-toolbar>
+        <span class="example-spacer"></span>
+
+        <div class="d-flex align-items-center flex-wrap" fxShow="true" fxHide.lt-md="true">
+            <div class="logo">logo</div>
+            <!-- The following menu items will be hidden on both SM and XS screen sizes -->
+            <div routerLinkActive="active" class="item" *ngFor="let tab of tabs" [routerLink]="tab.path" mat-button>
+                {{tab.title}}</div>
+        </div>
+    </mat-toolbar>
+
+    <mat-sidenav-container fxFlexFill class="example-container">
+        <mat-sidenav-content fxFlexFill>
+            <router-outlet></router-outlet>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>

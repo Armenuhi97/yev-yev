@@ -32,10 +32,11 @@ import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { IconsProviderModule } from "src/app/icons.provider.module";
 
 @NgModule({
     declarations: [],
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule,NzModalModule,IconsProviderModule, FormsModule, ReactiveFormsModule],
     exports: [CommonModule, FormsModule, ReactiveFormsModule,
         NzLayoutModule,
         NzMenuModule,
@@ -67,7 +68,8 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
         NzStepsModule,
         NzDescriptionsModule,
         NzSpaceModule,
-        NzBadgeModule
+        NzBadgeModule,
+        IconsProviderModule
     ]
 })
 export class SharedModule { }
