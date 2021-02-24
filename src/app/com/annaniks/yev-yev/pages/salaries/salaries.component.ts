@@ -40,7 +40,7 @@ export class SalariesComponent {
             first_name: [null, Validators.required],
             last_name: [null, Validators.required],
             phone_number: [null, Validators.required],
-            username: [null, Validators.required]
+            username: [null, [Validators.required, Validators.minLength(6)]]
 
         })
     }
@@ -60,17 +60,17 @@ export class SalariesComponent {
     public getsalaryById(id: number) {
         this._salaryService.getUserById(id).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<User>) => {
             console.log(data);
-            let item = data.results
-            this.validateForm.patchValue({
-                first_name: item.user.first_name,
-                last_name: item.user.last_name,
-                phone_number: item.phone_number,
-                username: item.user,
-                // name_en: data.name_en,
-                // name_hy: data.name_hy,
-                // name_ru: data.name_ru
-            })
+            if(data.results && data.results[0]) {
+                let item = data.results[0]
+                this.validateForm.patchValue({
+                    first_name: item.user.first_name,
+                    last_name: item.user.last_name,
+                    phone_number: item.phone_number,
+                    username: item.user.username
+                })
+            }
         })
+
     }
     public showModal(): void {
         this.isVisible = true;
@@ -119,18 +119,17 @@ export class SalariesComponent {
                 this.getUsers()
             },
                 () => {
-                    this.nzMessages.success(Messages.fail)
+                    this.nzMessages.error(Messages.fail)
                 })
         } else {
             this._salaryService.editUser(this.salaryTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: SalaryRespone) => {
-                // this.salaryTable[this.editIndex].name_en = data.name_en;
-                // this.salaryTable[this.editIndex].name_ru = data.name_ru;
-                // this.salaryTable[this.editIndex].name_hy = data.name_hy;
+                this.getUsers()
+
                 this.nzMessages.success(Messages.success)
                 this.closeModal()
             },
                 () => {
-                    this.nzMessages.success(Messages.fail)
+                    this.nzMessages.error(Messages.fail)
                 })
         }
     }
@@ -152,7 +151,7 @@ export class SalariesComponent {
                 this.nzMessages.success(Messages.success)
             },
                 () => {
-                    this.nzMessages.success(Messages.fail)
+                    this.nzMessages.error(Messages.fail)
                 });
     }
     closeModal(): void {

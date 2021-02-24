@@ -101,7 +101,7 @@ export class CityComponent {
                 this.closeModal();
             },
                 () => {
-                    this.nzMessages.success(Messages.fail)
+                    this.nzMessages.error(Messages.fail)
                 })
         } else {
             this._settingsService.editCity(this.cityTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: CityItem) => {
@@ -133,7 +133,7 @@ export class CityComponent {
                 this.nzMessages.success(Messages.success)
             },
                 () => {
-                    this.nzMessages.success(Messages.fail)
+                    this.nzMessages.error(Messages.fail)
                 });
     }
     closeModal(): void {

@@ -12,6 +12,7 @@
             <th>Անուն</th>
             <th>Ազգանուն</th>
             <th>Հեռախոսահամար</th>
+            <th>Username</th>
             <th></th>
             <th></th>
         </tr>
@@ -25,7 +26,9 @@
             <td>
                 {{data.user.last_name}}
             </td>
-            <td>{{data.user.phone_number}}</td>
+            <td>{{data.phone_number}}</td>
+            <td>{{data.user.username}}</td>
+
             <td (click)="onEditsalary(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
             </td>
             <td class="action-button delete" style="width:10px">

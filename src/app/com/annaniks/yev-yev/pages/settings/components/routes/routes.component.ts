@@ -140,7 +140,7 @@ export class RoutesComponent {
                 this.closeModal();
             },
                 () => {
-                    this.nzMessages.success(Messages.fail)
+                    this.nzMessages.error(Messages.fail)
                 })
         } else {
             this._settingsService.editRoute(this.routeTable[this.editIndex].id, this.validateForm.get('name').value).pipe(takeUntil(this.unsubscribe$)).subscribe((data: RouteItem) => {
@@ -149,7 +149,7 @@ export class RoutesComponent {
                 this.closeModal()
             },
                 () => {
-                    this.nzMessages.success(Messages.fail)
+                    this.nzMessages.error(Messages.fail)
                 })
         }
     }
@@ -168,7 +168,7 @@ export class RoutesComponent {
                 this.nzMessages.success(Messages.success)
             },
                 () => {
-                    this.nzMessages.success(Messages.fail)
+                    this.nzMessages.error(Messages.fail)
                 });
     }
     closeModal(): void {

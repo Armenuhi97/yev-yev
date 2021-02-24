@@ -12,10 +12,10 @@ export class SalaryService{
         return this._httpClient.get(`userdetails/user/?search=&user_role__code=MDR&id=${userId}`)
     }
     public deleteUserById(userId:number){
-        return this._httpClient.delete(`/userdetails/delete-user-details/${userId}/`)
+        return this._httpClient.delete(`userdetails/delete-user-details/${userId}/`)
     }
     public editUser(userId:number,body){
-        return this._httpClient.put(`/userdetails/edit-user-details/${userId}/`,body)
+        return this._httpClient.put(`userdetails/edit-user-details/${userId}/`,body)
     }
     public addUser(body){
         return this._httpClient.post(`userdetails/add-moderator/`,body)
