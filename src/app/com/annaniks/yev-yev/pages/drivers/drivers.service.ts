@@ -40,5 +40,9 @@ export class DriverService {
             "user": userId
         })
     }
+
+    public deleteMainRouteToDriver(id: number) {
+        return this._httpClient.delete(`route/sub-route-driver/${id}/`)
+    }
     
 }

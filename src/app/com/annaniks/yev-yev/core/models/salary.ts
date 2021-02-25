@@ -8,6 +8,7 @@ export interface SalaryRespone {
     "car_color"?:null,
     "car_number"?:null,
     "car_capacity"?:null
+    driving_routes?:any
 }
 export interface User{
     

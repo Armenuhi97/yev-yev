@@ -24,7 +24,8 @@ export class DriversComponent {
     isVisible: boolean = false;
     validateForm: FormGroup;
     editIndex: number = null;
-    routes: RouteItem[] = []
+    routes: RouteItem[] = [];
+    item:User
     constructor(private _driavesService: DriverService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
@@ -80,16 +81,16 @@ export class DriversComponent {
         this._driavesService.getUserById(id).pipe(takeUntil(this.unsubscribe$),
             switchMap((data: ServerResponce<User>) => {
                 if (data.results && data.results[0]) {
-                    let item = data.results[0]
+                    this.item = data.results[0]
                     this.validateForm.patchValue({
-                        first_name: item.user.first_name,
-                        last_name: item.user.last_name,
-                        phone_number: item.phone_number,
-                        username: item.user.username,
-                        car_model: item.car_model,
-                        car_color: item.car_color,
-                        car_number: item.car_number,
-                        car_capacity: item.car_capacity,
+                        first_name: this.item.user.first_name,
+                        last_name: this.item.user.last_name,
+                        phone_number: this.item.phone_number,
+                        username: this.item.user.username,
+                        car_model: this.item.car_model,
+                        car_color: this.item.car_color,
+                        car_number: this.item.car_number,
+                        car_capacity: this.item.car_capacity,
                     })
                 }
                 return this._combineObsevable()
@@ -103,6 +104,7 @@ export class DriversComponent {
         this.isVisible = false;
         this.isEditing = false;
         this.validateForm.reset();
+        this.item=null
         this.editIndex = null
     }
     nzPageIndexChange(page: number) {
@@ -168,6 +170,7 @@ export class DriversComponent {
     closeModal(): void {
         this.isVisible = false;
         this.validateForm.reset();
+        this.item=null
         this.editIndex = null
     }
 

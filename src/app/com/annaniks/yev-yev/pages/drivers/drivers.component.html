@@ -127,18 +127,8 @@
                 </nz-form-item>
             </div>
         </div>
-        <nz-form-item>
-            <div class="d-flex">
-                <nz-select nzPlaceHolder="Ընտեք ուղղությունը" [formControl]="currentroute">
-                    <nz-option *ngFor="let route of routes" [nzValue]="route.id" [nzLabel]="route.route_name">
-                    </nz-option>
-                </nz-select>
-                <button [disabled]="currentroute.invalid" nz-button nzType="dashed" class="add-button" (click)="addItem()">
-                    Ավելացնել
-                </button>
-            </div>
-        </nz-form-item>
-        <app-driver-routes [items]=""></app-driver-routes>
+   
+        <app-driver-routes [routes]="routes" [selectedRoutes]="item"></app-driver-routes>
             <!-- <ng-container *ngFor="let item of validateForm.get('drivingRoutes')['controls'];let i=index">
                 <div [formGroup]="item" class="d-flex justify-content-between align-items-baseline array-content">
 
