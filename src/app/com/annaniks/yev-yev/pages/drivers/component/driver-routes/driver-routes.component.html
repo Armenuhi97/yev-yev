@@ -9,10 +9,7 @@
     <thead>
         <tr>
             <th>N</th>
-            <th>Անուն</th>
-            <th>Ազգանուն</th>
-            <th>Հեռախոսահամար</th>
-            <th>Username</th>
+            <th>ուղղություն</th>
             <th></th>
         </tr>
     </thead>
@@ -22,11 +19,6 @@
             <td>
                 {{data.user.first_name}}
             </td>
-            <td>
-                {{data.user.last_name}}
-            </td>
-            <td>{{data.phone_number}}</td>
-            <td>{{data.user.username}}</td>
             <td class="action-button delete" style="width:10px">
                 <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
                     nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել" nzPopconfirmPlacement="bottom"

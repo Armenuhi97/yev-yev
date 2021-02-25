@@ -44,6 +44,9 @@ export class SalariesComponent {
 
         })
     }
+    public changeUserStatus($event, id: number) {
+        this._salaryService.editUser(id, { is_active: $event }).pipe(takeUntil(this.unsubscribe$)).subscribe()
+    }
     public getUsers() {
         this._salaryService.getUsers(this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<User[]>) => {
             this.total = data.count;
@@ -127,27 +130,6 @@ export class SalariesComponent {
                     this.nzMessages.error(Messages.fail)
                 })
         }
-    }
-
-    onDeletesalary(index: number): void {
-        this._salaryService
-            .deleteUserById(this.salaryTable[index].id)
-            .pipe(
-                takeUntil(this.unsubscribe$),
-            )
-            .subscribe(() => {
-
-                this.salaryTable.splice(index, 1);
-
-                this.salaryTable = [...this.salaryTable];
-                if (!this.salaryTable.length && this.pageIndex !== 1) {
-                    this.nzPageIndexChange(this.pageIndex - 1)
-                }
-                this.nzMessages.success(Messages.success)
-            },
-                () => {
-                    this.nzMessages.error(Messages.fail)
-                });
     }
     closeModal(): void {
         this.isVisible = false;

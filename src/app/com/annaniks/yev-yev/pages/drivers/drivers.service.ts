@@ -19,20 +19,14 @@ export class DriverService {
     public getDriverOfMainRoute(routeId:number){
         return this._httpClient.get(`route/main-route-driver/${routeId}/`)
     }
-    public deleteUserById(userId: number) {
-        return this._httpClient.delete(`userdetails/delete-user-details/${userId}/`)
-    }
     public editUser(userId: number, body) {
         return this._httpClient.put(`userdetails/edit-user-details/${userId}/`, body)
     }
     public addUser(body) {
         return this._httpClient.post(`userdetails/add-driver/`, body)
     }
-    public addMainRouteToDriver(mainRouteId: number, userId: number) {
-        return this._httpClient.post('route/main-route-driver/', {
-            "main_route": mainRouteId,
-            "user": userId
-        })
+    public addMainRouteToDriver(body) {
+        return this._httpClient.post('route/main-route-driver/', body)
     }
     public editMainRouteToDriver(id: number, mainRouteId: number, userId: number) {
         return this._httpClient.post(`route/main-route-driver/${id}/`, {

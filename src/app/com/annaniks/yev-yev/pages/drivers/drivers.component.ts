@@ -24,8 +24,10 @@ export class DriversComponent {
     isVisible: boolean = false;
     validateForm: FormGroup;
     editIndex: number = null;
+    editId: number
     routes: RouteItem[] = [];
-    item:User
+    item: User;
+    addedRoutes = []
     constructor(private _driavesService: DriverService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
@@ -56,6 +58,13 @@ export class DriversComponent {
             return data
         }))
     }
+    public addRoute($event) {
+        if ($event) {
+            this.addedRoutes.push({ "main_route": $event })
+        }
+    }
+
+
     private _combineObsevable() {
         const combine = forkJoin(
             this.getAllRoutes(),
@@ -74,6 +83,7 @@ export class DriversComponent {
     onEditsalary(index: number) {
         this.isEditing = true;
         this.editIndex = index;
+        this.editId = this.salaryTable[this.editIndex].id
         this.getsalaryById(this.salaryTable[this.editIndex].id);
         this.showModal()
     }
@@ -104,8 +114,10 @@ export class DriversComponent {
         this.isVisible = false;
         this.isEditing = false;
         this.validateForm.reset();
-        this.item=null
+        this.item = null
+        this.addedRoutes = []
         this.editIndex = null
+        this.editId = 0
     }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
@@ -122,18 +134,26 @@ export class DriversComponent {
     }
     sendRequest(sendObject) {
         if (this.editIndex == null) {
-            this._driavesService.addUser(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: User) => {
-                this.nzMessages.success(Messages.success)
+            this._driavesService.addUser(sendObject).pipe(takeUntil(this.unsubscribe$),
+                switchMap((data: User) => {
+                    console.log(data);
+                    let routeRequests = this.addedRoutes.map((val) => {
+                        return this._driavesService.addMainRouteToDriver(Object.assign({}, val, { user: data.id }))
+                    })
 
-                this.closeModal();
-                if (this.salaryTable.length == 10) {
-                    this.pageIndex += 1
-                }
-                this.getUsers()
-            },
-                () => {
-                    this.nzMessages.error(Messages.fail)
-                })
+                    let items = forkJoin([routeRequests])
+                    return items
+                })).subscribe(() => {
+                    this.closeModal();
+                    if (this.salaryTable.length == 10) {
+                        this.pageIndex += 1
+                    }
+                    this.getUsers();
+                    this.nzMessages.success(Messages.success)
+                },
+                    () => {
+                        this.nzMessages.error(Messages.fail)
+                    })
         } else {
             this._driavesService.editUser(this.salaryTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: SalaryRespone) => {
                 this.getUsers()
@@ -146,32 +166,20 @@ export class DriversComponent {
                 })
         }
     }
-
-    onDeletesalary(index: number): void {
-        this._driavesService
-            .deleteUserById(this.salaryTable[index].id)
-            .pipe(
-                takeUntil(this.unsubscribe$),
-            )
-            .subscribe(() => {
-
-                this.salaryTable.splice(index, 1);
-
-                this.salaryTable = [...this.salaryTable];
-                if (!this.salaryTable.length && this.pageIndex !== 1) {
-                    this.nzPageIndexChange(this.pageIndex - 1)
-                }
-                this.nzMessages.success(Messages.success)
-            },
-                () => {
-                    this.nzMessages.error(Messages.fail)
-                });
+    public changeUserStatus($event, id: number) {
+        this._driavesService.editUser(id, { is_active: $event }).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
+    public removeRoute($event) {
+        this.addedRoutes.splice($event, 1)
+    }
+   
     closeModal(): void {
         this.isVisible = false;
         this.validateForm.reset();
-        this.item=null
+        this.addedRoutes = []
+        this.item = null
         this.editIndex = null
+        this.editId = 0
     }
 
     ngOnDestroy(): void {

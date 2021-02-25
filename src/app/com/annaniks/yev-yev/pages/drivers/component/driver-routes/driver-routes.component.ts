@@ -24,7 +24,9 @@ export class DriverRoutesComponent {
     isEditing: boolean = false;
     isVisible: boolean = false;
     editIndex: number = null;
-    @Output('sendItem') private _sendItem = new EventEmitter()
+    @Output('addRoute') private _sendItem = new EventEmitter();
+    @Output('removeRoute') private _removeItem = new EventEmitter()
+
     public currentroute = new FormControl('', [Validators.required])
     @Input('routes')
     set setRoutes($event) {
@@ -32,7 +34,17 @@ export class DriverRoutesComponent {
     }
     @Input('selectedRoutes')
     set setSelectedRoute($event: User) {
-        console.log($event.driving_routes);
+        console.log($event);
+        // driving_routes
+    }
+    userId: number;
+    @Input('editIndex')
+    set setIsEdit($event) {
+        if ($event) {
+            this.userId = $event
+        } else {
+            this.userId = 0
+        }
 
     }
     constructor(private _driversService: DriverService,
@@ -41,16 +53,40 @@ export class DriverRoutesComponent {
     }
 
     ngOnInit() {
+     }
+
+    private _sendRoutes(mainRouteId) {
+        this._driversService.addMainRouteToDriver(
+            {
+                "main_route": mainRouteId,
+                "user": this.userId
+            }
+        ).pipe(takeUntil(this.unsubscribe$)).subscribe((data) => {
+            console.log(data);
+            this.driverRouteTable.push(data)
+            this.currentroute.reset()
+            this.closeModal()
+            this.nzMessages.success(Messages.success)
+        },
+            () => {
+                // this.driverRouteTable.push()
+                this.nzMessages.error(Messages.fail)
+
+            })
     }
     public onRouteSave() {
         if (this.currentroute.value) {
-            this._sendItem.emit(this.currentroute.value);
-            this.currentroute.reset()
-            this.closeModal()
+            if (!this.userId) {
+                this._sendItem.emit(this.currentroute.value);
+                this.currentroute.reset()
+                this.closeModal()
+            } else {
+                this._sendRoutes(this.currentroute.value)
+            }
         }
     }
-    public getUsers() {
-        this._driversService.getUsers(this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
+    public getDriverRoute() {
+        this._driversService.getDriverOfMainRoute(this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
             this.total = data.count;
             this.driverRouteTable = data.results;
         })
@@ -67,7 +103,7 @@ export class DriverRoutesComponent {
     }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
-        this.getUsers()
+        this.getDriverRoute()
     }
 
     sendRequest(sendObject) {
@@ -79,14 +115,14 @@ export class DriverRoutesComponent {
                 if (this.driverRouteTable.length == 10) {
                     this.pageIndex += 1
                 }
-                this.getUsers()
+                this.getDriverRoute()
             },
                 () => {
                     this.nzMessages.error(Messages.fail)
                 })
         } else {
             this._driversService.editUser(this.driverRouteTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: any) => {
-                this.getUsers()
+                this.getDriverRoute()
 
                 this.nzMessages.success(Messages.success)
                 this.closeModal()
@@ -98,24 +134,30 @@ export class DriverRoutesComponent {
     }
     public addItem() { }
     onDeleteRoute(index: number): void {
-        this._driversService
-            .deleteMainRouteToDriver(this.driverRouteTable[index].id)
-            .pipe(
-                takeUntil(this.unsubscribe$),
-            )
-            .subscribe(() => {
+        if (this.driverRouteTable[index].id) {
+            this._driversService
+                .deleteMainRouteToDriver(this.driverRouteTable[index].id)
+                .pipe(
+                    takeUntil(this.unsubscribe$),
+                )
+                .subscribe(() => {
 
-                this.driverRouteTable.splice(index, 1);
+                    this.driverRouteTable.splice(index, 1);
 
-                this.driverRouteTable = [...this.driverRouteTable];
-                if (!this.driverRouteTable.length && this.pageIndex !== 1) {
-                    this.nzPageIndexChange(this.pageIndex - 1)
-                }
-                this.nzMessages.success(Messages.success)
-            },
-                () => {
-                    this.nzMessages.error(Messages.fail)
-                });
+                    this.driverRouteTable = [...this.driverRouteTable];
+                    if (!this.driverRouteTable.length && this.pageIndex !== 1) {
+                        this.nzPageIndexChange(this.pageIndex - 1)
+                    }
+                    this.nzMessages.success(Messages.success)
+                },
+                    () => {
+                        this.nzMessages.error(Messages.fail)
+                    });
+        } else {
+            this.driverRouteTable.splice(index, 1);
+            this._removeItem.emit(index)
+        }
+
     }
     closeModal(): void {
         this.isVisible = false;

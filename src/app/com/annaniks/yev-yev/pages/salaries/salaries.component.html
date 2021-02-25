@@ -32,11 +32,7 @@
             <td (click)="onEditsalary(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
             </td>
             <td class="action-button delete" style="width:10px">
-                <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
-                    nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել" nzPopconfirmPlacement="bottom"
-                    (nzOnConfirm)="onDeletesalary(ind)">
-                    <i nz-icon nzType="edit"></i>
-                </a>
+                <nz-switch (ngModelChange)="changeUserStatus($event,data.id)" [(ngModel)]="data.user.is_active"></nz-switch>
             </td>
         </tr>
     </tbody>

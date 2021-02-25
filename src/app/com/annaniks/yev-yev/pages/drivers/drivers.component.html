@@ -32,11 +32,8 @@
             <td (click)="onEditsalary(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
             </td>
             <td class="action-button delete" style="width:10px">
-                <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
-                    nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել" nzPopconfirmPlacement="bottom"
-                    (nzOnConfirm)="onDeletesalary(ind)">
-                    <i nz-icon nzType="edit"></i>
-                </a>
+                <nz-switch (ngModelChange)="changeUserStatus($event,data.id)" [(ngModel)]="data.user.is_active"></nz-switch>
+
             </td>
         </tr>
     </tbody>
@@ -127,77 +124,10 @@
                 </nz-form-item>
             </div>
         </div>
-   
-        <app-driver-routes [routes]="routes" [selectedRoutes]="item"></app-driver-routes>
-            <!-- <ng-container *ngFor="let item of validateForm.get('drivingRoutes')['controls'];let i=index">
-                <div [formGroup]="item" class="d-flex justify-content-between align-items-baseline array-content">
 
-                    <div class="w-45">
-                        <nz-select nzPlaceHolder="Start point" formControlName="start_point">
-                            <nz-option *ngFor="let city of cityTable" [nzValue]="city.id" [nzLabel]="city.name_hy">
-                            </nz-option>
-                        </nz-select>
-                        <div *ngIf="item.get('start_point_is_static').value">
-                            <nz-form-item>
-                                <nz-form-label class="inline-labels">Հասցե հայերեն</nz-form-label>
+        <app-driver-routes (removeRoute)="removeRoute($event)" (addRoute)="addRoute($event)" [editIndex]="editId" [routes]="routes" [selectedRoutes]="item">
+        </app-driver-routes>
 
-                                <nz-form-control>
-                                    <input nz-input formControlName="start_point_address_hy" placeholder="" />
-                                </nz-form-control>
-                            </nz-form-item>
-                            <nz-form-item>
-                                <nz-form-label class="inline-labels">Հասցե անգլերեն</nz-form-label>
-
-                                <nz-form-control>
-                                    <input nz-input formControlName="start_point_address_en" placeholder="" />
-                                </nz-form-control>
-                            </nz-form-item>
-                            <nz-form-item>
-                                <nz-form-label class="inline-labels">Հասցե ռուսերեն</nz-form-label>
-
-                                <nz-form-control>
-                                    <input nz-input formControlName="start_point_address_ru" placeholder="" />
-                                </nz-form-control>
-                            </nz-form-item>
-
-                        </div>
-                    </div>
-                    <div>-></div>
-                    <div class="w-45">
-                        <nz-select nzPlaceHolder="End point" formControlName="end_point">
-                            <nz-option *ngFor="let city of cityTable" [nzValue]="city.id" [nzLabel]="city.name_hy">
-                            </nz-option>
-                        </nz-select>
-                        <label nz-checkbox formControlName="end_point_is_static">Ֆիքսված</label>
-                        <div *ngIf="item.get('end_point_is_static').value">
-                            <nz-form-item>
-                                <nz-form-label class="inline-labels">Հասցե հայերեն</nz-form-label>
-
-                                <nz-form-control>
-                                    <input nz-input formControlName="end_point_address_hy" placeholder="" />
-                                </nz-form-control>
-                            </nz-form-item>
-                            <nz-form-item>
-                                <nz-form-label class="inline-labels">Հասցե անգերեն</nz-form-label>
-
-                                <nz-form-control>
-                                    <input nz-input formControlName="end_point_address_en" placeholder="" />
-                                </nz-form-control>
-                            </nz-form-item>
-                            <nz-form-item>
-                                <nz-form-label class="inline-labels">Հասցե ռուսերեն</nz-form-label>
-
-                                <nz-form-control>
-                                    <input nz-input formControlName="end_point_address_ru" placeholder="" />
-                                </nz-form-control>
-                            </nz-form-item>
-
-                        </div>
-                    </div>
-                </div>
-
-            </ng-container> -->
-          
     </form>
 </nz-modal>
 
