@@ -6,8 +6,8 @@ const mainRoutes: Routes = [{
     children: [
         { path: "", redirectTo: "settings", pathMatch: "full" },
         { path: 'settings', loadChildren: () => import('../settings/settings.module').then((m) => m.SettingsModule) },
-        { path: 'salary', loadChildren: () => import("../salaries/salaries.module").then((m => m.SalariesModule)) }
-
+        { path: 'moderator', loadChildren: () => import("../salaries/salaries.module").then((m => m.SalariesModule)) },
+        { path: 'driver', loadChildren: () => import("../drivers/drivers.module").then((m => m.DriverModule)) }
     ]
 }];
 @NgModule({

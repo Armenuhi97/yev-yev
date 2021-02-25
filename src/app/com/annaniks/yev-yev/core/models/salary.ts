@@ -4,6 +4,10 @@ export interface SalaryRespone {
     "phone_number": string
     "image": string
     "username": string
+    "car_model"?:null,
+    "car_color"?:null,
+    "car_number"?:null,
+    "car_capacity"?:null
 }
 export interface User{
     

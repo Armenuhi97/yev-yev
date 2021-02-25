@@ -7,6 +7,11 @@ import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ApiInterceptor } from './com/annaniks/yev-yev/core/interseptors/api.interseptors';
+import { registerLocaleData } from '@angular/common';
+import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
+import en from '@angular/common/locales/en';
+
+registerLocaleData(en);
 
 @NgModule({
   declarations: [
@@ -28,7 +33,9 @@ import { ApiInterceptor } from './com/annaniks/yev-yev/core/interseptors/api.int
       provide: HTTP_INTERCEPTORS,
       useClass: ApiInterceptor,
       multi: true
-    },],
+    },
+    { provide: NZ_I18N, useValue: en_US },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,11 +1,12 @@
 import { Component, Input } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
-import { forkJoin, Subject } from "rxjs";
-import { map, switchMap, takeUntil } from "rxjs/operators";
+import { forkJoin, of, Subject, throwError } from "rxjs";
+import { catchError, map, switchMap, takeUntil } from "rxjs/operators";
 import { CityItem } from "../../../../core/models/city.model";
 import { Messages } from "../../../../core/models/mesages";
 import { RouteItem } from "../../../../core/models/routes.model";
+import { User } from "../../../../core/models/salary";
 import { ServerResponce } from "../../../../core/models/server-reponce";
 import { SettingsService } from "../../setting.service";
 
@@ -26,6 +27,8 @@ export class RoutesComponent {
     editIndex: number = null;
     routeSubList = [];
     cityTable: CityItem[] = []
+    salaries: User[]
+    moderator;
     @Input('array')
     set setArray($event: RouteItem[]) {
         this.routeTable = $event
@@ -45,31 +48,41 @@ export class RoutesComponent {
     private _initForm() {
         this.validateForm = this._fb.group({
             name: [null, Validators.required],
-            routes: this._fb.array([])
+            routes: this._fb.array([]),
+            moderator: [null]
         })
-        this.validateRoute()
+        // this.validateRoute()
     }
-    validateRoute() {
+
+    public getUsers() {
+        return this._settingsService.getUsers().pipe(map((data: ServerResponce<User[]>) => {
+            this.total = data.count;
+            this.salaries = data.results;
+
+
+        }))
+    }
+
+    addField() {
         let value = this.validateForm.get('routes') as FormArray;
-        let items = this._fb.group({
+        let item = this._fb.group({
             start_point: [null],
             start_point_address_en: [null],
             start_point_address_ru: [null],
             start_point_address_hy: [null],
             start_point_is_static: [false],
             end_point: [null],
+            id: [null],
             end_point_address_en: [null],
             end_point_address_ru: [null],
             end_point_address_hy: [null],
             end_point_is_static: [false]
         })
-        for (let val of [1, 2]) {
-            value.push(items)
-        }
-        console.log(this.validateForm.get('routes')['controls']);
-        
-        console.log(value);
-        
+        value.push(item);
+
+
+
+
     }
     public getAllRoutes() {
         this._settingsService.getAllRoutes(this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<RouteItem[]>) => {
@@ -88,31 +101,62 @@ export class RoutesComponent {
     onEditRoute(index: number) {
         this.isEditing = true;
         this.editIndex = index;
+
         this.getRouteById(this.routeTable[this.editIndex].id);
         this.showModal()
     }
     private _combineObsevable(id) {
         const combine = forkJoin(
             this.getAllcities(),
+            this.getUsers(),
             this.getRouteSubList(id)
         )
         return combine
     }
-    public getRouteById(id: number) {        
+    public getRouteById(id: number) {
         this._settingsService.getRouteById(id).pipe(takeUntil(this.unsubscribe$),
             switchMap((data) => {
-                this.validateForm.patchValue({ name: data.route_name })
+                this.validateForm.patchValue({
+                    name: data.route_name,
+                    moderator: data.moderator_details && data.moderator_details.length ? data.moderator_details[0].user : null
+
+                })
+                if (data.moderator_details && data.moderator_details.length) {
+                    this.moderator = data.moderator_details[0].user
+                }
                 return this._combineObsevable(id)
             })).subscribe()
     }
 
     getRouteSubList(id: number) {
         return this._settingsService.getRouteSubList(id).pipe(
-            map((data) => {
+            map((data: ServerResponce<any>) => {
+                let subList = data.results;
+                if (subList && subList.length) {
+                    ((this.validateForm.get('routes')) as FormArray).controls = subList.map((el) => {
+                        return this._fb.group({
+                            end_point: el.end_point,
+                            end_point_address_en: el.end_point_address_en,
+                            end_point_address_hy: el.end_point_address_hy,
+                            end_point_address_ru: el.end_point_address_ru,
+                            end_point_is_static: el.end_point_is_static,
+                            start_point: el.start_point,
+                            id: el.id,
+                            start_point_address_en: el.start_point_address_en,
+                            start_point_address_hy: el.start_point_address_hy,
+                            start_point_address_ru: el.start_point_address_ru,
+                            start_point_is_static: el.start_point_is_static,
+                        })
+                    })
+
+                }
+
+
                 return data
             })
         )
     }
+
     public showModal(): void {
         this.isVisible = true;
     }
@@ -120,7 +164,9 @@ export class RoutesComponent {
         this.isVisible = false;
         this.isEditing = false;
         this.validateForm.reset();
+        this.validateForm.get('routes')['controls'] = []
         this.editIndex = null
+        this.moderator = null
     }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
@@ -143,14 +189,52 @@ export class RoutesComponent {
                     this.nzMessages.error(Messages.fail)
                 })
         } else {
-            this._settingsService.editRoute(this.routeTable[this.editIndex].id, this.validateForm.get('name').value).pipe(takeUntil(this.unsubscribe$)).subscribe((data: RouteItem) => {
-                this.routeTable[this.editIndex].route_name = data.route_name;
-                this.nzMessages.success(Messages.success)
-                this.closeModal()
-            },
-                () => {
-                    this.nzMessages.error(Messages.fail)
-                })
+            return this._settingsService.editRoute(this.routeTable[this.editIndex].id, this.validateForm.get('name').value).pipe(takeUntil(this.unsubscribe$),
+                switchMap((data: RouteItem) => {
+                    this.routeTable[this.editIndex].route_name = data.route_name;
+                    if (this.validateForm.get('moderator').value && this.validateForm.get('moderator').value !== this.moderator) {
+                        return this._settingsService.addModeratorForRoute(this.routeTable[this.editIndex].id, this.validateForm.get('moderator').value)
+                    } else {
+                        return of()
+                    }
+                })).subscribe(() => {
+                    this.nzMessages.success(Messages.success)
+                    this.closeModal()
+                },
+                    (err) => {
+                        if (err && err.error && err.error.non_field_errors && err.error.non_field_errors[0]) {
+                            this.nzMessages.error('Տվյալ աշխատակիցը կցված է այլ ուղղության')
+                        } else {
+                            this.nzMessages.error(Messages.fail)
+                        }
+                    })
+        }
+    }
+    public saveSubList(index: number) {
+        let formArray = (this.validateForm.get('routes') as FormArray).controls;
+        if (formArray[index].value) {
+            let value = formArray[index].value;
+            
+            let sendObject = Object.assign({}, value, { main_route: this.routeTable[this.editIndex].id })
+            if (formArray[index].value.id) {
+                delete sendObject.id
+                this._settingsService.editSubRoute(formArray[index].value.id,sendObject).pipe(takeUntil((this.unsubscribe$))).subscribe(() => {
+                    this.nzMessages.success(Messages.success)
+                },
+                    () => {
+                        this.nzMessages.error(Messages.fail)
+                    }
+                )
+            } else {
+                delete sendObject.id
+                this._settingsService.addSubRoute(sendObject).pipe(takeUntil((this.unsubscribe$))).subscribe(() => {
+                    this.nzMessages.success(Messages.success)
+                },
+                    () => {
+                        this.nzMessages.error(Messages.fail)
+                    }
+                )
+            }
         }
     }
     onDeleteRoute(index: number): void {
@@ -174,7 +258,9 @@ export class RoutesComponent {
     closeModal(): void {
         this.isVisible = false;
         this.validateForm.reset();
+        this.validateForm.get('routes')['controls'] = [];
         this.editIndex = null
+        this.moderator = null
     }
 
     ngOnDestroy(): void {

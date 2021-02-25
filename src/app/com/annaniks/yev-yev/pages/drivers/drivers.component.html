@@ -1,31 +1,40 @@
 <div class="title-container">
-    <h1>Ուղղություններ</h1>
+    <h1>Վարորդներ</h1>
     <button class="add-essence" nz-button nzType="primary" (click)="showModal()">
-        Ավելացնել ուղղություն
+        Ավելացնել վարորդ
     </button>
 </div>
 <nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" [nzTotal]="total" [nzPageSize]="pageSize"
-    [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="routeTable">
+    [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="salaryTable">
     <thead>
         <tr>
             <th>N</th>
             <th>Անուն</th>
+            <th>Ազգանուն</th>
+            <th>Հեռախոսահամար</th>
+            <th>Username</th>
             <th></th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let data of routeTable; let ind = index">
+        <tr *ngFor="let data of salaryTable; let ind = index">
             <td style="width:10px">{{ ind + 1 }}</td>
             <td>
-                {{data.route_name}}
+                {{data.user.first_name}}
             </td>
-            <td (click)="onEditRoute(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
+            <td>
+                {{data.user.last_name}}
+            </td>
+            <td>{{data.phone_number}}</td>
+            <td>{{data.user.username}}</td>
+
+            <td (click)="onEditsalary(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
             </td>
             <td class="action-button delete" style="width:10px">
                 <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
                     nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել" nzPopconfirmPlacement="bottom"
-                    (nzOnConfirm)="onDeleteRoute(ind)">
+                    (nzOnConfirm)="onDeletesalary(ind)">
                     <i nz-icon nzType="edit"></i>
                 </a>
             </td>
@@ -34,43 +43,110 @@
 </nz-table>
 
 
-<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" nzTitle="Ուղղություն"
-    (nzOnCancel)="handleCancel()" nzWidth="870px" (nzOnOk)="onRouteSave()">
+<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" nzTitle="Վարորդ"
+    (nzOnCancel)="handleCancel()" nzWidth="870px" (nzOnOk)="onsalarySave()">
+
     <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
         <div nz-row [nzGutter]="24">
             <div nz-col [nzSpan]="12">
-                <nz-form-label class="inline-labels" nzRequired>Անվանումը</nz-form-label>
+                <nz-form-label class="inline-labels" nzRequired>Անուն</nz-form-label>
                 <nz-form-item>
                     <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                        <input nz-input formControlName="name" placeholder="Մուտքագրեք ուղղության անունը" />
+                        <input nz-input formControlName="first_name" placeholder="" />
                     </nz-form-control>
                 </nz-form-item>
             </div>
             <div nz-col [nzSpan]="12">
-                <nz-form-label class="inline-labels">Աշխատակից</nz-form-label>
+                <nz-form-label class="inline-labels" nzRequired>Ազգանուն</nz-form-label>
                 <nz-form-item>
-                    <nz-select nzPlaceHolder="Ընտրեք աշխատակցին" formControlName="moderator">
-                        <nz-option *ngFor="let moderator of salaries" [nzValue]="moderator.id"
-                            [nzLabel]="moderator.user.username">
-                        </nz-option>
-                    </nz-select>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="last_name" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+
+        </div>
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>username</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="username" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="phone_number" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+
+        </div>
+
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Մեքենայի մոդելը</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="car_model" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Մեքենայի գույնը</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input class="w-100" [colorPicker]="validateForm.get('car_color').value"
+                            (colorPickerChange)="changeColorPicker('car_color',$event)"
+                            [style.background]="validateForm.get('car_color').value" />
+
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+
+        </div>
+
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Մեքենայի համարանիշը</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="car_number" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Մեքենայի նստատեղերի քանակը</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input type="number" formControlName="car_capacity" placeholder="" />
+                    </nz-form-control>
                 </nz-form-item>
             </div>
         </div>
-
-        <nz-form-item
-            *ngIf="editIndex !== null && validateForm.get('routes') && validateForm.get('routes')['controls']">
-
-            <ng-container *ngFor="let item of validateForm.get('routes')['controls'];let i=index">
+        <nz-form-item>
+            <div class="d-flex">
+                <nz-select nzPlaceHolder="Ընտեք ուղղությունը" [formControl]="currentroute">
+                    <nz-option *ngFor="let route of routes" [nzValue]="route.id" [nzLabel]="route.route_name">
+                    </nz-option>
+                </nz-select>
+                <button [disabled]="currentroute.invalid" nz-button nzType="dashed" class="add-button" (click)="addItem()">
+                    Ավելացնել
+                </button>
+            </div>
+        </nz-form-item>
+        <app-driver-routes [items]=""></app-driver-routes>
+            <!-- <ng-container *ngFor="let item of validateForm.get('drivingRoutes')['controls'];let i=index">
                 <div [formGroup]="item" class="d-flex justify-content-between align-items-baseline array-content">
-                    <!-- <nz-form-label  class="inline-labels" >Ուղղություն</nz-form-label> -->
 
                     <div class="w-45">
                         <nz-select nzPlaceHolder="Start point" formControlName="start_point">
                             <nz-option *ngFor="let city of cityTable" [nzValue]="city.id" [nzLabel]="city.name_hy">
                             </nz-option>
                         </nz-select>
-                        <label nz-checkbox formControlName="start_point_is_static">Ֆիքսված</label>
                         <div *ngIf="item.get('start_point_is_static').value">
                             <nz-form-item>
                                 <nz-form-label class="inline-labels">Հասցե հայերեն</nz-form-label>
@@ -129,22 +205,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-center margin-top-10">
-                    <button nz-button nzType="dashed" class="add-button" (click)="saveSubList(i)">
-                        Պահպանել
-                    </button>
-                </div>
-            </ng-container>
-            <div class="text-center margin-top-10"
-                *ngIf="!validateForm.get('routes')['controls'] || (validateForm.get('routes')['controls'] && validateForm.get('routes')['controls'].length < 2)">
-                <button nz-button nzType="dashed" class="add-button" (click)="addField()">
-                    Ավելացնել ուղղություն
-                </button>
-            </div>
-        </nz-form-item>
 
-
-
+            </ng-container> -->
+          
     </form>
 </nz-modal>
 

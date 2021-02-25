@@ -8,10 +8,10 @@ import { Router } from "@angular/router";
 })
 export class MainComponent {
     public tabs = [
-        { title: 'Վարորդներ', path: '#' },
+        { title: 'Վարորդներ', path:  '/dashboard/driver' },
         { title: 'Ուղևորներ', path: '#' },
         { title: 'Ուղղություններ', path: '#' },
-        { title: 'Աշխատակիցներ', path: '/dashboard/salary' },
+        { title: 'Աշխատակիցներ', path: '/dashboard/moderator' },
         { title: 'Պատվերներ', path: '#' },
         { title: 'Կարգավորումներ', path: '/dashboard/settings' },
 

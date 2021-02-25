@@ -33,12 +33,13 @@ import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { IconsProviderModule } from "src/app/icons.provider.module";
-
+import { NzIconModule } from 'ng-zorro-antd/icon';
 @NgModule({
     declarations: [],
-    imports: [CommonModule,NzModalModule,IconsProviderModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule,NzModalModule,NzIconModule, FormsModule, ReactiveFormsModule],
     exports: [CommonModule, FormsModule, ReactiveFormsModule,
         NzLayoutModule,
+        NzIconModule,
         NzMenuModule,
         NzFormModule,
         NzButtonModule,

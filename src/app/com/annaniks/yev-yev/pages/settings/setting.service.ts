@@ -14,17 +14,31 @@ export class SettingsService {
     public addRoutes(name: string) {
         return this._httpClient.post(`route/main-route/`, { route_name: name })
     }
-    public getRouteById(id:number):Observable<RouteItem>{
+    public getRouteById(id: number): Observable<RouteItem> {
         return this._httpClient.get<RouteItem>(`route/main-route/${id}/`)
     }
-    public getRouteSubList(mainId:number){
+    public getRouteSubList(mainId: number) {
         return this._httpClient.get(`route/sub-route/?main_route=${mainId}`)
-
     }
-    public editRoute(id:number,name:string){
-        return this._httpClient.put(`route/main-route/${id}/`,{ route_name: name })
+    public editSubRoute(subRouteId: number,body) {
+        return this._httpClient.put(`route/sub-route/${subRouteId}/`,body)
     }
-    public deleteRoute(id:number){
+    public addSubRoute(body) {
+        return this._httpClient.post(`route/sub-route/`, body)
+    }
+    getUsers() {
+        return this._httpClient.get(`userdetails/user/?search=&user_role__code=MDR`)
+    }
+    addModeratorForRoute(routeId: number, userId: number) {
+        return this._httpClient.post(`route/main-route-moderator/`, {
+            "main_route": routeId,
+            "user": userId
+        })
+    }
+    public editRoute(id: number, name: string) {
+        return this._httpClient.put(`route/main-route/${id}/`, { route_name: name })
+    }
+    public deleteRoute(id: number) {
         return this._httpClient.delete(`route/main-route/${id}/`)
     }
 
@@ -34,13 +48,13 @@ export class SettingsService {
     public addCity(body: CityItem) {
         return this._httpClient.post(`utils/city/`, body)
     }
-    public getCityById(id:number):Observable<CityItem>{
+    public getCityById(id: number): Observable<CityItem> {
         return this._httpClient.get<CityItem>(`utils/city/${id}/`)
     }
-    public editCity(id:number,body:CityItem){
-        return this._httpClient.put(`utils/city/${id}/`,body)
+    public editCity(id: number, body: CityItem) {
+        return this._httpClient.put(`utils/city/${id}/`, body)
     }
-    public deleteCity(id:number){
+    public deleteCity(id: number) {
         return this._httpClient.delete(`utils/city/${id}/`)
     }
 }
