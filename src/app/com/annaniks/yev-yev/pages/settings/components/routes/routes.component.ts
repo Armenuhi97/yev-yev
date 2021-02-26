@@ -80,9 +80,6 @@ export class RoutesComponent {
         })
         value.push(item);
 
-
-
-
     }
     public getAllRoutes() {
         this._settingsService.getAllRoutes(this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<RouteItem[]>) => {

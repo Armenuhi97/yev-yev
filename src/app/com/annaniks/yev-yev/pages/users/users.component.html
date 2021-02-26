@@ -12,9 +12,8 @@
             <th>Անուն</th>
             <th>Ազգանուն</th>
             <th>Հեռախոսահամար</th>
-            <th>Հատատված</th>
+            <th>Հաստատված</th>
             <th>Չեղարկված</th>
-
             <th></th>
             <th></th>
         </tr>
@@ -42,8 +41,7 @@
     </tbody>
 </nz-table>
 
-
-<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" nzTitle="Ուղևոր"
+<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" [nzTitle]="userName"
     (nzOnCancel)="handleCancel()" nzWidth="870px" (nzOnOk)="onclientSave()">
     <nz-tabset (nzSelectedIndexChange)="onChangeTab($event)" [nzSelectedIndex]="activeTab"	>
         <nz-tab [nzTitle]="'Տվյալներ'"	>
@@ -65,10 +63,8 @@
                             </nz-form-control>
                         </nz-form-item>
                     </div>
-
                 </div>
                 <div nz-row [nzGutter]="24">
-
                     <div nz-col [nzSpan]="12">
                         <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար</nz-form-label>
                         <nz-form-item>
@@ -86,15 +82,12 @@
                         </nz-form-item>
                     </div>
                 </div>
-
             </form>
         </nz-tab>
         <nz-tab *ngIf="userId" [nzTitle]="'Ուղղություններ'">
             <app-user-order [userId]="userId"></app-user-order>
-
         </nz-tab>
     </nz-tabset>
-
 </nz-modal>
 
 <ng-template #userErrorTpl let-control>

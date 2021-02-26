@@ -1,0 +1,95 @@
+<div class="title-container">
+    <h1>Հեռախոսահամարներ</h1>
+    <button class="add-essence" nz-button nzType="primary" (click)="showModal()">
+        Ավելացնել հեռախոսահամար
+    </button>
+</div>
+<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" [nzTotal]="total" [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="phoneTable">
+    <thead>
+        <tr>
+            <th>N</th>
+            <th>En</th>
+            <th>Ru</th>
+            <th>Hy</th>
+            <th>Հեռախոսահամար</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of phoneTable; let ind = index">
+            <td style="width:10px">{{ ind + 1 }}</td>
+            <td>
+                {{data.name_en}}
+            </td>
+            <td>
+                {{data.name_ru}}
+            </td>
+            <td>
+                {{data.name_hy}}
+            </td>
+            <td>{{data.phone_number}}</td>
+            <td (click)="onEditphone(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
+            </td>
+            <td class="action-button delete" style="width:10px">
+                <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'"  nz-popconfirm nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել" nzPopconfirmPlacement="bottom"
+                    (nzOnConfirm)="onDeletephone(ind)" class="d-flex">
+                    <!-- <i nz-icon nzType="edit"></i> -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                      </svg>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+
+<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'"  [(nzVisible)]="isVisible" nzTitle="Հեռախոսահամար" (nzOnCancel)="handleCancel()" nzWidth="870px" (nzOnOk)="onphoneSave()">
+    <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Անվանումը անգլերեն</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="name_en" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Անվանումը ռուսերեն</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="name_ru" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Անվանումը հայերեն</nz-form-label>
+        <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                <input nz-input formControlName="name_hy" placeholder="" />
+            </nz-form-control>
+        </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար</nz-form-label>
+        <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                <input nz-input formControlName="phone_number" placeholder="" />
+            </nz-form-control>
+        </nz-form-item>
+            </div>
+        </div>    
+    </form>
+</nz-modal>
+
+<ng-template #userErrorTpl let-control>
+    <ng-container *ngIf="control.hasError('required')">
+        Սա պարտադիր դաշտ է
+    </ng-container>
+</ng-template>

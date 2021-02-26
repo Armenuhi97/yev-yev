@@ -20,8 +20,8 @@ export class SettingsService {
     public getRouteSubList(mainId: number) {
         return this._httpClient.get(`route/sub-route/?main_route=${mainId}`)
     }
-    public editSubRoute(subRouteId: number,body) {
-        return this._httpClient.put(`route/sub-route/${subRouteId}/`,body)
+    public editSubRoute(subRouteId: number, body) {
+        return this._httpClient.put(`route/sub-route/${subRouteId}/`, body)
     }
     public addSubRoute(body) {
         return this._httpClient.post(`route/sub-route/`, body)
@@ -56,5 +56,22 @@ export class SettingsService {
     }
     public deleteCity(id: number) {
         return this._httpClient.delete(`utils/city/${id}/`)
+    }
+
+    
+    public getAllphone(page: number) {
+        return this._httpClient.get(`utils/contact-information/?page=${page}`)
+    }
+    public addphone(body) {
+        return this._httpClient.post(`utils/contact-information/`, body)
+    }
+    public getphoneById(id: number){
+        return this._httpClient.get(`utils/contact-information/${id}/`)
+    }
+    public editphone(id: number, body) {
+        return this._httpClient.put(`utils/contact-information/${id}/`, body)
+    }
+    public deletephone(id: number) {
+        return this._httpClient.delete(`utils/contact-information/${id}/`)
     }
 }

@@ -34,11 +34,11 @@ export class DriverRoutesComponent {
     }
     @Input('selectedRoutes')
     set setSelectedRoute($event: User) {
-        if ($event ) {
+        if ($event) {
             this.driverRouteTable = [...$event.driving_routes];
-            this.total=$event.driving_routes.length
-        }else{
-            this.driverRouteTable=[]
+            this.total = $event.driving_routes.length
+        } else {
+            this.driverRouteTable = []
         }
     }
     userId: number;
@@ -81,10 +81,13 @@ export class DriverRoutesComponent {
     public onRouteSave() {
         if (this.currentroute.value) {
             if (!this.userId) {
-                let item=this.routes.filter((el)=>{return el.id == this.currentroute.value})
-                if(item && item[0]){
-                this.driverRouteTable.push({main_route_details:{
-                route_name: item[0].route_name}})
+                let item = this.routes.filter((el) => { return el.id == this.currentroute.value })
+                if (item && item[0]) {
+                    this.driverRouteTable.push({
+                        main_route_details: {
+                            route_name: item[0].route_name
+                        }
+                    })
                 }
                 this._sendItem.emit(this.currentroute.value);
                 this.currentroute.reset()
@@ -117,13 +120,10 @@ export class DriverRoutesComponent {
 
     sendRequest(sendObject) {
         if (this.editIndex == null) {
-            this._driversService.addUser(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: any) => {
+            this._driversService.addUser(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
                 this.nzMessages.success(Messages.success)
-
                 this.closeModal();
-                // if (this.driverRouteTable.length == 10) {
-                    this.pageIndex = 1
-                // }
+                this.pageIndex = 1
                 this.getDriverRoute()
             },
                 () => {
@@ -142,8 +142,8 @@ export class DriverRoutesComponent {
         }
     }
     public addItem() { }
-    onDeleteRoute(index: number): void {           
-            
+    onDeleteRoute(index: number): void {
+
         if (this.driverRouteTable[index].id) {
             this._driversService
                 .deleteMainRouteToDriver(this.driverRouteTable[index].id)

@@ -14,7 +14,9 @@ import { SettingsService } from "./setting.service";
 export class SettingsComponent {
     unsubscribe$ = new Subject();
     routeTotal: number
-    routeTable: RouteItem[] = []
+    routeTable: RouteItem[] = [];
+    phoneTotal: number
+    phoneTable: RouteItem[] = []
     cityTable: CityItem[] = []
     cityTotal: number
     constructor(private _settingsService: SettingsService) { }
@@ -25,13 +27,20 @@ export class SettingsComponent {
     combineObservable() {
         forkJoin(
             this.getAllRoutes(),
-            this.getAllcities()
+            this.getAllcities(),
+            this.getAllPhones()
         ).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     getAllRoutes() {
         return this._settingsService.getAllRoutes(1).pipe(map((data: ServerResponce<RouteItem[]>) => {
             this.routeTotal = data.count;
             this.routeTable = data.results;            
+        }))
+    }
+    getAllPhones() {
+        return this._settingsService.getAllphone(1).pipe(map((data: ServerResponce<any[]>) => {
+            this.phoneTotal = data.count;
+            this.phoneTable = data.results;            
         }))
     }
     public getAllcities() {

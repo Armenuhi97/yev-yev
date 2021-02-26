@@ -8,6 +8,8 @@
             <th>N</th>
             <th>Ամսաթիվ</th>
             <th>Ուղղություն</th>
+            <th>Նստատեղերի քանակը</th>
+            <th>Հասցե</th>
             <th>Մեկնաբանություն</th>
             <th>Տեսակ</th>
         </tr>
@@ -21,6 +23,8 @@
             <td>
                 {{data?.sub_route_details?.main_route_name}}
             </td>
+            <td>{{data?.person_count}}</td>
+            <td></td>
             <td>{{data.comment}}</td>
             <td>{{ (data?.status == 'approved')? 'Հաստատված' : 'Չեղարկված' }}</td>
         </tr>
