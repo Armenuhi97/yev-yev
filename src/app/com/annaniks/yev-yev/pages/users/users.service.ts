@@ -16,7 +16,7 @@ export class UsersService {
     public addUser(body){
         return this._httpClient.post(`userdetails/add-moderator/`,body)
     }
-    public getOrders(page:number){
-        return this._httpClient.get(`?page=${page}`)
+    public getOrders(userId:number,page:number){
+        return this._httpClient.get(`order/order/?user_id=${userId}&page=${page}`)
     }
 }

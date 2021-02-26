@@ -8,17 +8,21 @@
             <th>N</th>
             <th>Ամսաթիվ</th>
             <th>Ուղղություն</th>
+            <th>Մեկնաբանություն</th>
+            <th>Տեսակ</th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let data of orders; let ind = index">
             <td style="width:10px">{{ ind + 1 }}</td>
             <td>
-                {{data.date}}
+                {{transformDate(data.date)}}
             </td>
             <td>
-                {{data.route}}
-            </td>          
+                {{data?.sub_route_details?.main_route_name}}
+            </td>
+            <td>{{data.comment}}</td>
+            <td>{{ (data?.status == 'approved')? 'Հաստատված' : 'Չեղարկված' }}</td>
         </tr>
     </tbody>
 </nz-table>

@@ -15,6 +15,7 @@ import { UsersService } from "./users.service";
     styleUrls: ['users.component.scss']
 })
 export class UsersComponent {
+    userId: number;
     clientTable: Client[] = []
     pageSize: number = 10;
     unsubscribe$ = new Subject();
@@ -24,6 +25,7 @@ export class UsersComponent {
     isVisible: boolean = false;
     validateForm: FormGroup;
     editIndex: number = null;
+    public activeTab:number=0;
 
     constructor(private _userService: UsersService,
         private nzMessages: NzMessageService,
@@ -39,7 +41,8 @@ export class UsersComponent {
         this.validateForm = this._fb.group({
             first_name: [null, Validators.required],
             last_name: [null, Validators.required],
-            phone_number: [null, Validators.required]
+            phone_number: [null, Validators.required],
+            comment:[null]
         })
     }
     public changeUserStatus($event, id: number) {
@@ -55,6 +58,7 @@ export class UsersComponent {
     onEditclient(index: number) {
         this.isEditing = true;
         this.editIndex = index;
+        this.userId = this.clientTable[this.editIndex].id
         this.getclientById(this.clientTable[this.editIndex].id);
         this.showModal()
     }
@@ -66,6 +70,7 @@ export class UsersComponent {
                     first_name: item.user.first_name,
                     last_name: item.user.last_name,
                     phone_number: item.phone_number,
+                    comment:item.comment
                 })
             }
         })
@@ -79,6 +84,8 @@ export class UsersComponent {
         this.isEditing = false;
         this.validateForm.reset();
         this.editIndex = null
+        this.activeTab=0;
+        this.userId = null
     }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
@@ -95,6 +102,7 @@ export class UsersComponent {
             "last_name": this.validateForm.get('last_name').value,
             "phone_number": this.validateForm.get('phone_number').value,
             "image": '',
+            "comment":this.validateForm.get('comment').value,
         }
 
         this.sendRequest(sendObject);
@@ -128,8 +136,12 @@ export class UsersComponent {
         this.isVisible = false;
         this.validateForm.reset();
         this.editIndex = null
+        this.userId = null;
+        this.activeTab=0
     }
-
+    public onChangeTab($event){
+        this.activeTab=$event.index
+    }
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
