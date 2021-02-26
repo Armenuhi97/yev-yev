@@ -34,8 +34,12 @@ export class DriverRoutesComponent {
     }
     @Input('selectedRoutes')
     set setSelectedRoute($event: User) {
-        console.log($event);
-        // driving_routes
+        if ($event ) {
+            this.driverRouteTable = [...$event.driving_routes];
+            this.total=$event.driving_routes.length
+        }else{
+            this.driverRouteTable=[]
+        }
     }
     userId: number;
     @Input('editIndex')
@@ -53,7 +57,7 @@ export class DriverRoutesComponent {
     }
 
     ngOnInit() {
-     }
+    }
 
     private _sendRoutes(mainRouteId) {
         this._driversService.addMainRouteToDriver(
@@ -77,6 +81,11 @@ export class DriverRoutesComponent {
     public onRouteSave() {
         if (this.currentroute.value) {
             if (!this.userId) {
+                let item=this.routes.filter((el)=>{return el.id == this.currentroute.value})
+                if(item && item[0]){
+                this.driverRouteTable.push({main_route_details:{
+                route_name: item[0].route_name}})
+                }
                 this._sendItem.emit(this.currentroute.value);
                 this.currentroute.reset()
                 this.closeModal()
@@ -112,9 +121,9 @@ export class DriverRoutesComponent {
                 this.nzMessages.success(Messages.success)
 
                 this.closeModal();
-                if (this.driverRouteTable.length == 10) {
-                    this.pageIndex += 1
-                }
+                // if (this.driverRouteTable.length == 10) {
+                    this.pageIndex = 1
+                // }
                 this.getDriverRoute()
             },
                 () => {
@@ -133,7 +142,8 @@ export class DriverRoutesComponent {
         }
     }
     public addItem() { }
-    onDeleteRoute(index: number): void {
+    onDeleteRoute(index: number): void {           
+            
         if (this.driverRouteTable[index].id) {
             this._driversService
                 .deleteMainRouteToDriver(this.driverRouteTable[index].id)

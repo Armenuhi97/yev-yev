@@ -1,0 +1,24 @@
+<div class="title-container">
+    <h1>Պատվերներ</h1>
+</div>
+<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" [nzTotal]="total" [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="orders">
+    <thead>
+        <tr>
+            <th>N</th>
+            <th>Ամսաթիվ</th>
+            <th>Ուղղություն</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of orders; let ind = index">
+            <td style="width:10px">{{ ind + 1 }}</td>
+            <td>
+                {{data.date}}
+            </td>
+            <td>
+                {{data.route}}
+            </td>          
+        </tr>
+    </tbody>
+</nz-table>

@@ -36,14 +36,14 @@ export class DriversComponent {
 
     ngOnInit() {
         this._initForm();
-        this.getUsers()
+        // this.getUsers()
+        this._combineObsevable().subscribe()
     }
     private _initForm() {
         this.validateForm = this._fb.group({
             first_name: [null, Validators.required],
             last_name: [null, Validators.required],
             phone_number: [null, Validators.required],
-            username: [null, [Validators.required, Validators.minLength(6)]],
             car_model: [null, Validators.required],
             car_color: [null, Validators.required],
             car_number: [null, Validators.required],
@@ -64,18 +64,19 @@ export class DriversComponent {
         }
     }
 
-
     private _combineObsevable() {
         const combine = forkJoin(
             this.getAllRoutes(),
+            this.getUsers()
         )
-        return combine
+        return combine.pipe(takeUntil(this.unsubscribe$))
     }
     public getUsers() {
-        this._driavesService.getUsers(this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<User[]>) => {
-            this.total = data.count;
-            this.salaryTable = data.results;
-        })
+        return this._driavesService.getUsers(this.pageIndex).pipe(
+            map((data: ServerResponce<User[]>) => {
+                this.total = data.count;
+                this.salaryTable = data.results;
+            }))
     }
     public changeColorPicker(controlName: string, event): void {
         this.validateForm.get(controlName).setValue(event)
@@ -89,21 +90,19 @@ export class DriversComponent {
     }
     public getsalaryById(id: number) {
         this._driavesService.getUserById(id).pipe(takeUntil(this.unsubscribe$),
-            switchMap((data: ServerResponce<User>) => {
+            map((data: ServerResponce<User>) => {
                 if (data.results && data.results[0]) {
                     this.item = data.results[0]
                     this.validateForm.patchValue({
                         first_name: this.item.user.first_name,
                         last_name: this.item.user.last_name,
                         phone_number: this.item.phone_number,
-                        username: this.item.user.username,
                         car_model: this.item.car_model,
                         car_color: this.item.car_color,
                         car_number: this.item.car_number,
                         car_capacity: this.item.car_capacity,
                     })
                 }
-                return this._combineObsevable()
             })).subscribe()
 
     }
@@ -121,7 +120,7 @@ export class DriversComponent {
     }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
-        this.getUsers()
+        this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     public onsalarySave() {
         if (this.validateForm.invalid) {
@@ -135,20 +134,20 @@ export class DriversComponent {
     sendRequest(sendObject) {
         if (this.editIndex == null) {
             this._driavesService.addUser(sendObject).pipe(takeUntil(this.unsubscribe$),
-                switchMap((data: User) => {
+                map((data: { driver_id: number }) => {
                     console.log(data);
-                    let routeRequests = this.addedRoutes.map((val) => {
-                        return this._driavesService.addMainRouteToDriver(Object.assign({}, val, { user: data.id }))
-                    })
+                    let routeRequests = []
+                    this.addedRoutes.forEach((item) => {
+                        item['user'] = data.driver_id;
+                        routeRequests.push(this._driavesService.addMainRouteToDriver(item))
 
-                    let items = forkJoin([routeRequests])
-                    return items
+                    })
+                    forkJoin(routeRequests).subscribe();
+
                 })).subscribe(() => {
                     this.closeModal();
-                    if (this.salaryTable.length == 10) {
-                        this.pageIndex += 1
-                    }
-                    this.getUsers();
+                    this.pageIndex = 1
+                    this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
                     this.nzMessages.success(Messages.success)
                 },
                     () => {
@@ -156,7 +155,7 @@ export class DriversComponent {
                     })
         } else {
             this._driavesService.editUser(this.salaryTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: SalaryRespone) => {
-                this.getUsers()
+                this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
 
                 this.nzMessages.success(Messages.success)
                 this.closeModal()
@@ -172,7 +171,7 @@ export class DriversComponent {
     public removeRoute($event) {
         this.addedRoutes.splice($event, 1)
     }
-   
+
     closeModal(): void {
         this.isVisible = false;
         this.validateForm.reset();

@@ -1,21 +1,21 @@
-import { Component, Input } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { Messages } from "../../core/models/mesages";
-import { SalaryRespone, User } from "../../core/models/salary";
+import { Client } from "../../core/models/salary";
 import { ServerResponce } from "../../core/models/server-reponce";
 import { MainService } from "../main/main.service";
-import { SalaryService } from "./salaries.service";
+import { UsersService } from "./users.service";
 
 @Component({
-    selector: 'app-salaries',
-    templateUrl: 'salaries.component.html',
-    styleUrls: ['salaries.component.scss']
+    selector: 'app-users',
+    templateUrl: 'users.component.html',
+    styleUrls: ['users.component.scss']
 })
-export class SalariesComponent {
-    salaryTable: User[] = []
+export class UsersComponent {
+    clientTable: Client[] = []
     pageSize: number = 10;
     unsubscribe$ = new Subject();
     total: number;
@@ -25,7 +25,7 @@ export class SalariesComponent {
     validateForm: FormGroup;
     editIndex: number = null;
 
-    constructor(private _salaryService: SalaryService,
+    constructor(private _userService: UsersService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
         private _fb: FormBuilder) {
@@ -39,36 +39,33 @@ export class SalariesComponent {
         this.validateForm = this._fb.group({
             first_name: [null, Validators.required],
             last_name: [null, Validators.required],
-            phone_number: [null, Validators.required],
-            username: [null, [Validators.required, Validators.minLength(6)]]
-
+            phone_number: [null, Validators.required]
         })
     }
     public changeUserStatus($event, id: number) {
-        this._salaryService.editUser(id, { is_active: $event }).pipe(takeUntil(this.unsubscribe$)).subscribe()
+        this._userService.editUser(id, { is_active: $event }).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     public getUsers() {
-        this._salaryService.getUsers(this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<User[]>) => {
+        this._userService.getUsers(this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<Client[]>) => {
             this.total = data.count;
-            this.salaryTable = data.results;
+            this.clientTable = data.results;
         })
     }
 
-    onEditsalary(index: number) {
+    onEditclient(index: number) {
         this.isEditing = true;
         this.editIndex = index;
-        this.getsalaryById(this.salaryTable[this.editIndex].id);
+        this.getclientById(this.clientTable[this.editIndex].id);
         this.showModal()
     }
-    public getsalaryById(id: number) {
-        this._salaryService.getUserById(id).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<User>) => {
-            if(data.results && data.results[0]) {
+    public getclientById(id: number) {
+        this._userService.getUserById(id).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<Client>) => {
+            if (data.results && data.results[0]) {
                 let item = data.results[0]
                 this.validateForm.patchValue({
                     first_name: item.user.first_name,
                     last_name: item.user.last_name,
                     phone_number: item.phone_number,
-                    username: item.user.username
                 })
             }
         })
@@ -87,18 +84,17 @@ export class SalariesComponent {
         this.pageIndex = page;
         this.getUsers()
     }
-    public onsalarySave() {
+    public onclientSave() {
         if (this.validateForm.invalid) {
             this.nzMessages.error(Messages.fail);
             return;
         }
 
-        let sendObject: SalaryRespone = {
+        let sendObject = {
             "first_name": this.validateForm.get('first_name').value,
             "last_name": this.validateForm.get('last_name').value,
             "phone_number": this.validateForm.get('phone_number').value,
             "image": '',
-            "username": this.validateForm.get('username').value,
         }
 
         this.sendRequest(sendObject);
@@ -107,20 +103,17 @@ export class SalariesComponent {
     }
     sendRequest(sendObject) {
         if (this.editIndex == null) {
-            this._salaryService.addUser(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: User) => {
+            this._userService.addUser(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: Client) => {
                 this.nzMessages.success(Messages.success)
-
                 this.closeModal();
-                // if (this.salaryTable.length == 10) {
-                    this.pageIndex = 1
-                // }
+                this.pageIndex = 1
                 this.getUsers()
             },
                 () => {
                     this.nzMessages.error(Messages.fail)
                 })
         } else {
-            this._salaryService.editUser(this.salaryTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: SalaryRespone) => {
+            this._userService.editUser(this.clientTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: any) => {
                 this.getUsers()
 
                 this.nzMessages.success(Messages.success)

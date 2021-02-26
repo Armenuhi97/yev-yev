@@ -10,7 +10,16 @@
         margin-right: 5px;
     }
 }
+.delete{
+    svg{
+        color: #ff4d4f;
+        font-size: 20px;   
+    }
+}
 .trash{
     color: #ff4d4f;
     font-size: 20px;
+}
+.action-button{
+    cursor: pointer;
 }

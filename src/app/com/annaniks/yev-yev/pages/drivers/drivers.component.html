@@ -12,7 +12,7 @@
             <th>Անուն</th>
             <th>Ազգանուն</th>
             <th>Հեռախոսահամար</th>
-            <th>Username</th>
+            <th>Ուղղություն</th>
             <th></th>
             <th></th>
         </tr>
@@ -27,7 +27,7 @@
                 {{data.user.last_name}}
             </td>
             <td>{{data.phone_number}}</td>
-            <td>{{data.user.username}}</td>
+            <td>{{data?.driving_routes[0]?.main_route_details?.route_name}}</td>
 
             <td (click)="onEditsalary(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
             </td>
@@ -65,14 +65,6 @@
         </div>
         <div nz-row [nzGutter]="24">
             <div nz-col [nzSpan]="12">
-                <nz-form-label class="inline-labels" nzRequired>username</nz-form-label>
-                <nz-form-item>
-                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                        <input nz-input formControlName="username" placeholder="" />
-                    </nz-form-control>
-                </nz-form-item>
-            </div>
-            <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար</nz-form-label>
                 <nz-form-item>
                     <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
@@ -80,10 +72,6 @@
                     </nz-form-control>
                 </nz-form-item>
             </div>
-
-        </div>
-
-        <div nz-row [nzGutter]="24">
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Մեքենայի մոդելը</nz-form-label>
                 <nz-form-item>
@@ -92,6 +80,10 @@
                     </nz-form-control>
                 </nz-form-item>
             </div>
+        </div>
+
+        <div nz-row [nzGutter]="24">
+          
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Մեքենայի գույնը</nz-form-label>
                 <nz-form-item>
@@ -103,10 +95,6 @@
                     </nz-form-control>
                 </nz-form-item>
             </div>
-
-        </div>
-
-        <div nz-row [nzGutter]="24">
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Մեքենայի համարանիշը</nz-form-label>
                 <nz-form-item>
@@ -115,6 +103,10 @@
                     </nz-form-control>
                 </nz-form-item>
             </div>
+        </div>
+
+        <div nz-row [nzGutter]="24">
+           
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Մեքենայի նստատեղերի քանակը</nz-form-label>
                 <nz-form-item>

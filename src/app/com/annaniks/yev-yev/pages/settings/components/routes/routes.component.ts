@@ -179,8 +179,10 @@ export class RoutesComponent {
         }
         if (this.editIndex == null) {
             this._settingsService.addRoutes(this.validateForm.get('name').value).pipe(takeUntil(this.unsubscribe$)).subscribe((data: RouteItem) => {
-                this.total += 1;
-                this.routeTable.push(data);
+                // this.total += 1;
+                // this.routeTable.push(data);
+                this.nzPageIndexChange(1)
+
                 this.nzMessages.success(Messages.success)
 
                 this.closeModal();

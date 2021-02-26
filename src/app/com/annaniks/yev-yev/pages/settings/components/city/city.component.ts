@@ -95,7 +95,8 @@ export class CityComponent {
         if (this.editIndex == null) {
             this._settingsService.addCity(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: CityItem) => {
                 this.total += 1;
-                this.cityTable.push(data);
+                this.nzPageIndexChange(1)
+                // this.cityTable.push(data);
                 this.nzMessages.success(Messages.success)
 
                 this.closeModal();

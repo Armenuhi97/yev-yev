@@ -16,8 +16,8 @@ export class DriverService {
     public getAllRoutes() {
         return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/`)
     }
-    public getDriverOfMainRoute(routeId:number){
-        return this._httpClient.get(`route/main-route-driver/${routeId}/`)
+    public getDriverOfMainRoute(page:number){
+        return this._httpClient.get(`route/main-route-driver/?page=${page}`)
     }
     public editUser(userId: number, body) {
         return this._httpClient.put(`userdetails/edit-user-details/${userId}/`, body)
@@ -36,7 +36,7 @@ export class DriverService {
     }
 
     public deleteMainRouteToDriver(id: number) {
-        return this._httpClient.delete(`route/sub-route-driver/${id}/`)
+        return this._httpClient.delete(`route/main-route-driver/${id}/`)
     }
     
 }
