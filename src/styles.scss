@@ -11,6 +11,9 @@
         margin-right: 5px;
     }
 }
+.cursor-pointer{
+    cursor:pointer
+}
 .delete{
     svg{
         color: #ff4d4f;
@@ -23,4 +26,7 @@
 }
 .action-button{
     cursor: pointer;
+}
+.ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content{
+    height: 16px !important;
 }

@@ -10,7 +10,7 @@ export class MainComponent {
     public tabs = [
         { title: 'Վարորդներ', path:  '/dashboard/driver' },
         { title: 'Ուղևորներ', path: '/dashboard/user' },
-        { title: 'Ուղղություններ', path: '#' },
+        { title: 'Ուղղություններ', path: '/dashboard/main-routes' },
         { title: 'Աշխատակիցներ', path: '/dashboard/moderator' },
         { title: 'Պատվերներ', path: '#' },
         { title: 'Կարգավորումներ', path: '/dashboard/settings' },

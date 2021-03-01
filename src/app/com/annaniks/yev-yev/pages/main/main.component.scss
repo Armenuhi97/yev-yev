@@ -4,8 +4,10 @@
     outline: none !important;
 }
 .logo {
-    border: 1px solid white;
     padding: 5px;
+    img{
+        width: 50px;
+    }
 }
 .active {
     color: #e6f7ff !important

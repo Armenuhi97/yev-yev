@@ -8,7 +8,8 @@ const mainRoutes: Routes = [{
         { path: 'settings', loadChildren: () => import('../settings/settings.module').then((m) => m.SettingsModule) },
         { path: 'moderator', loadChildren: () => import("../salaries/salaries.module").then((m => m.SalariesModule)) },
         { path: 'driver', loadChildren: () => import("../drivers/drivers.module").then((m => m.DriverModule)) },
-        { path: 'user', loadChildren: () => import("../users/users.module").then((m => m.UsersModule)) }
+        { path: 'user', loadChildren: () => import("../users/users.module").then((m => m.UsersModule)) },
+        { path: 'main-routes', loadChildren: () => import("../main-routes/main-routes.module").then((m => m.MainRoutesModule)) }
     ]
 }];
 @NgModule({

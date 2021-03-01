@@ -4,7 +4,9 @@
         <span class="example-spacer"></span>
 
         <div class="d-flex align-items-center flex-wrap" fxShow="true" fxHide.lt-md="true">
-            <div class="logo">logo</div>
+            <div class="logo">
+                <img src="assets/CarAnm_002_00001.png" alt="">
+            </div>
             <!-- The following menu items will be hidden on both SM and XS screen sizes -->
             <div routerLinkActive="active" class="item" *ngFor="let tab of tabs" [routerLink]="tab.path" mat-button>
                 <div class="d-flex align-items-center" *ngIf="tab.title == 'Կարգավորումներ'">

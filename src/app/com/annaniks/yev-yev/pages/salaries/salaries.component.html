@@ -13,6 +13,7 @@
             <th>Ազգանուն</th>
             <th>Հեռախոսահամար</th>
             <th>Username</th>
+            <th>Ուղղություններ</th>
             <th></th>
             <th></th>
         </tr>
@@ -28,6 +29,7 @@
             </td>
             <td>{{data.phone_number}}</td>
             <td>{{data.user.username}}</td>
+            <td>{{data?.moderating_routes[0]?.main_route_details?.route_name}}</td>
 
             <td (click)="onEditsalary(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
             </td>
