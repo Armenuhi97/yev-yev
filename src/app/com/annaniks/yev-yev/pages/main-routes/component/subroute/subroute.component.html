@@ -9,19 +9,25 @@
                 </tr>
             </thead>
             <tbody>
-                <tr [class.active]="data.time == selectedTime" class="cursor-pointer" *ngFor="let data of openTimes; let ind = index">
+                <tr [class.active]="data.time == selectedTime" class="cursor-pointer"
+                    *ngFor="let data of openTimes; let ind = index">
                     <td (click)="getInfo(data.time)">{{data.time}}</td>
                     <td class="action-button delete" style="width:10px">
                         <nz-switch [(ngModel)]="data.isActive" (ngModelChange)="changeUserStatus($event,data)">
                         </nz-switch>
                     </td>
-                    <td (click)="getInfo()">{{data.requiredCount}} / {{data.count}}</td>
+                    <td (click)="getInfo()">{{check(data.seat_count)}} / {{check(data.approved_seat_count)}} /
+                        {{check(data.pending_seat_count)}}</td>
                 </tr>
             </tbody>
         </nz-table>
     </div>
-    <div nz-col [nzSpan]="11">
-        <div *ngIf="isOpenInfo">
+    <div *ngIf="isOpenInfo" nz-col [nzSpan]="11">
+        <nz-radio-group [(ngModel)]="radioValue" (ngModelChange)="changeStatus($event)">
+            <label nz-radio nzValue="approved">Ընդունված</label>
+            <label nz-radio nzValue="pending">Սպասման մեջ</label>
+        </nz-radio-group>
+        <div>
             <div class="title-container">
                 <button class="add-essence" nz-button nzType="primary" (click)="showModal()">
                     Ավելացնել ուղևոր
@@ -30,30 +36,36 @@
             <nz-table nzBordered [nzFrontPagination]="false" [nzData]="userInfo">
                 <thead>
                     <tr>
+                        <th>N</th>
                         <th>Ուղևոր</th>
-                        <th>Հեռախոսահամար</th>
+                        <th>Հեռ.</th>
                         <th>Հասցե</th>
                         <th>Տեղերի քանակը</th>
                         <th></th>
+                        <th *ngIf="radioValue == 'approved'"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let moderator of userInfo">
+                    <tr *ngFor="let moderator of userInfo;let ind=index">
+                        <td>{{ind+1}}</td>
                         <td>{{moderator?.client_details?.user?.first_name}}
                             {{moderator?.client_details?.user?.last_name}}</td>
                         <td>{{moderator?.client_details?.phone_number}}</td>
-                        <td>{{moderator?.address}}</td>
+                        <td>{{moderator?.start_address}} {{moderator?.end_address}}</td>
                         <td>{{moderator?.order_type_details?.name_hy}} {{moderator?.person_count}}</td>
-                        <td> <label nz-checkbox [(ngModel)]="moderator.isSelect"></label>
+                        <td (click)="onEditOrder(ind)" class="action-button edit" style="width:10px"><i nz-icon
+                                nzType="edit"></i>
                         </td>
-
+                        <td *ngIf="radioValue == 'approved'"> <label nz-checkbox
+                                [(ngModel)]="moderator.isSelect"></label>
+                        </td>
                     </tr>
                 </tbody>
             </nz-table>
             <nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" [nzTitle]="userName"
                 (nzOnCancel)="handleCancel()" nzWidth="870px" (nzOnOk)="onclientSave()">
                 <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
-                    <div nz-row [nzGutter]="24">
+                    <div *ngIf="!isEditing" nz-row [nzGutter]="24">
                         <div nz-col [nzSpan]="12">
                             <nz-form-label class="inline-labels">Անուն</nz-form-label>
                             <nz-form-item>
@@ -71,7 +83,7 @@
                             </nz-form-item>
                         </div>
                     </div>
-                    <div nz-row [nzGutter]="24">
+                    <div *ngIf="!isEditing" nz-row [nzGutter]="24">
                         <div nz-col [nzSpan]="12">
                             <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար</nz-form-label>
                             <nz-form-item>
@@ -89,7 +101,7 @@
                                 <span class="error" *ngIf="isShowError">Նշված հեռախոսահամարով ուղևոր չի գտնվել</span>
                             </nz-form-item>
                         </div>
-                        
+
                     </div>
                     <div>Երթի տվյալներ</div>
                     <div nz-row [nzGutter]="24">
@@ -118,7 +130,7 @@
                                 <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
                                     <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
                                         <ng-template #addOnBeforeTemplate>
-                                            <nz-select formControlName="phoneNumberPrefix" class="phone-select">
+                                            <nz-select [formControl]="phoneNumberPrefix" class="phone-select">
                                                 <nz-option nzLabel="+374" nzValue="+374"></nz-option>
                                             </nz-select>
                                         </ng-template>
@@ -158,23 +170,52 @@
                             </nz-form-item>
                         </div>
                     </div>
+                    <div nz-row [nzGutter]="24" class="d-flex align-items-center justify-content-between" *ngIf="isEditing">
+                        <div  nz-col [nzSpan]="12">
+                            <nz-date-picker class="w-100" formControlName="date"></nz-date-picker>
+                        </div>
+                        <div nz-col [nzSpan]="12">
+                            <nz-select class="w-100" formControlName="time">
+                                <nz-option *ngFor="let time of openTimes" [nzValue]="time.time" [nzLabel]="time.time">
+                                </nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
                 </form>
 
             </nz-modal>
         </div>
     </div>
-    <div nz-col [nzSpan]="7">
-        <div nz-row [nzGutter]="24">
-            <div nz-col [nzSpan]="8">
-              
+    <div *ngIf="isOpenInfo" nz-col [nzSpan]="7">
+        <div class="margin-bottom-10" nz-row [nzGutter]="24">
+            <div class="d-flex align-items-center" nz-col [nzSpan]="12">
+                Ուղևորների քանակը {{userCounts}}
             </div>
-            <div nz-col [nzSpan]="8">
-               
-            </div>
-            <div nz-col [nzSpan]="8">
-               
+            <div nz-col [nzSpan]="12">
+                <button nz-button nzType="text" nz-button nzType="primary"
+                    (click)="addOrderByDriver()">Ավելացնել</button>
             </div>
         </div>
+        <div>
+            <nz-select class="w-100" nzShowSearch [(ngModel)]="driver">
+                <nz-option *ngFor="let dr of drivers" [nzValue]="dr.id" [nzLabel]="getLabelOfDrivers(dr) "></nz-option>
+            </nz-select>
+        </div>
+
+        <nz-table nzBordered [nzFrontPagination]="false" [nzData]="approvedOrders">
+            <thead>
+                <tr>
+                    <th>Վարորդ</th>
+                    <th>Տեղերի քանակը</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="cursor-pointer" *ngFor="let data of approvedOrders; let ind = index">
+                    <td>{{data.driver_details.user.first_name}} {{data.driver_details.user.last_name}}</td>
+                    <td>{{data.driver_details.car_capacity}}</td>
+                </tr>
+            </tbody>
+        </nz-table>
     </div>
 
 </div>

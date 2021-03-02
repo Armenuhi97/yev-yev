@@ -1,7 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Component } from "@angular/core";
-import { forkJoin, Subject } from "rxjs";
-import { map, switchMap, takeUntil } from "rxjs/operators";
+import { forkJoin, Subject, throwError } from "rxjs";
+import { catchError, map, switchMap, takeUntil } from "rxjs/operators";
 import { RouteItem } from "../../core/models/routes.model";
 import { User } from "../../core/models/salary";
 import { ServerResponce } from "../../core/models/server-reponce";
@@ -42,7 +42,7 @@ export class MainRoutesComponent {
 
     getAllOrdersTypes() {
         return this._mainRoutesService.getOrdersTypes().pipe(map((data: ServerResponce<RouteItem[]>) => {
-            this.orderTypes = data.results
+            this.orderTypes = data.results;            
         }))
     }
     getHourlyOrdersByDate(id: number) {
@@ -54,7 +54,7 @@ export class MainRoutesComponent {
         )
     }
     getRouteInfo(id) {
-       return this._mainRoutesService.getSubRoute(id).pipe(takeUntil(this.unsubscribe$),
+       return this._mainRoutesService.getSubRoute(id).pipe(
             switchMap((data: ServerResponce<any>) => {
                 this.subRouteInfo = data.results;
                 return this.getHourlyOrdersByDate(id)
@@ -71,12 +71,17 @@ export class MainRoutesComponent {
             this.getRouteInfo(this.currentId),
             this.getDrivers()
         )
+        combine.pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     getDrivers(){
         return this._mainRoutesService.getDrivers(this.currentId).pipe(
             map((data:ServerResponce<User[]>)=>{
                 this.drivers=data.results
-            })
+            },
+            catchError(()=>{                
+                this.drivers=[]
+                return throwError(false)
+            }))
         )
     }
     openCalendar($event) {

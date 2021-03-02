@@ -1,5 +1,14 @@
 export interface OrdersByHours {
     address: string
+    isSelect?: boolean
+    end_address: null
+    end_langitude: string
+    end_latitude: string
+    phone_number: string
+    start_address: string
+    start_langitude: string
+    start_latitude: string
+    order_phone_number:string
     client_details: {
         car_capacity: string
         car_color: string
@@ -38,7 +47,7 @@ export interface OrdersByHours {
     user: number
 }
 export interface SubrouteDetails {
-    countList?:any
+    countList?: any
     end_point: number
     end_point_address_en: string
     end_point_address_hy: string

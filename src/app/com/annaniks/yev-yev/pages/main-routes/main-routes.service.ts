@@ -11,8 +11,8 @@ export class MainRoutesService {
     public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
         return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?page=${page}`)
     }
-    public getDrivers(mainRouteId:number) {
-        return this._httpClient.get(`userdetails/user/?search=&driving_routes__main_route=${mainRouteId}user_role__code=DR`)
+    public getDrivers(mainRouteId: number) {
+        return this._httpClient.get(`userdetails/user/?search=&driving_routes__main_route=${mainRouteId}&user_role__code=DR`)
     }
     public getRoutesById(id: number): Observable<RouteItem> {
         return this._httpClient.get<RouteItem>(`route/main-route/${id}/`)
@@ -24,10 +24,11 @@ export class MainRoutesService {
     public addUser(body) {
         return this._httpClient.post(`userdetails/add-moderator/`, body)
     }
-    public getOrdersByHour(subrouteid: number, date: string) {
+    public getOrdersByHour(subrouteid: number, date: string, status: string) {
         return this._httpClient.post('order/get-orders-by-hour/', {
             "sub_route_id": subrouteid,
-            "date": date
+            "date": date,
+            status: status
         })
     }
     public getCloseHours(subRouteId: number) {
@@ -57,5 +58,14 @@ export class MainRoutesService {
     public addOrder(body: OrderResponse) {
         return this._httpClient.post(`order/add-order/`, body)
 
+    }
+    public addApprovedOrder(body) {
+        return this._httpClient.post(`order/approved-order/`, body)
+    }
+    public getAllAprovedOrders(subrouteId: number, dateTime: string) {
+        return this._httpClient.get(`order/approved-order/?sub_route_id=${subrouteId}&datetime=${dateTime}`)
+    }
+    public changeOrder(id:number,body) {
+        return this._httpClient.put(`order/edit-order/${id}/`, body)
     }
 }

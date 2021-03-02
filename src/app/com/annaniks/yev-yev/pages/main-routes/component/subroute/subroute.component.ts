@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { NzMessageService } from "ng-zorro-antd/message";
 import { of, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
+import { isBuffer } from "util";
 import { ClosedHours } from "../../../../core/models/closed-hours";
 import { Messages } from "../../../../core/models/mesages";
 import { OrderResponse } from "../../../../core/models/order";
@@ -21,14 +22,24 @@ import { MainRoutesService } from "../../main-routes.service";
     providers: [DatePipe]
 })
 export class SubrouteComponent {
+    approvedOrders = []
     public subrouteInfo: SubrouteDetails;
     selectedTime;
+    public driver;
     isVisible: boolean = false;
     unsubscribe$ = new Subject();
     validateForm: FormGroup;
     phoneNumberPrefix = new FormControl('+374')
     userId: number;
     isShowError: boolean = false;
+    orderTypes: OrderType[] = [];
+    radioValue: string = "approved";
+    isEditing: boolean;
+    editIndex;
+    @Input('types')
+    set setOrderTypes($event: OrderType[]) {
+        this.orderTypes = $event;
+    }
     @Input('info')
     set setInfo($event) {
         this.subrouteInfo = $event;
@@ -38,8 +49,12 @@ export class SubrouteComponent {
                 let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
                 for (let time of this.openTimes) {
                     if (time.time.startsWith(date)) {
-                        time.count = item.order.seat_count;
-                        time.requiredCount = item.order.order_count
+                        time = Object.assign(time, {
+                            approved_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'approved_seat_count', 0),
+                            pending_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'pending_seat_count', 0),
+                            seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'seat_count', 0)
+                        })
+
                     }
                 }
             }
@@ -58,36 +73,43 @@ export class SubrouteComponent {
         }
 
     }
-    orderTypes: OrderType[] = []
-    @Input('orderTypes')
-    set setOrderTypes($event: OrderType[]) {
-        this.orderTypes = $event
-    }
-    drivers: User[] = []
-    @Input('orderTypes')
-    set setDrivers($event: User[]) {
-        this.drivers = $event
-        console.log(this.drivers);
 
+    drivers: User[] = []
+    @Input('drivers')
+    set setDrivers($event: User[]) {
+        this.drivers = $event;
     }
     isOpenInfo: boolean = false
     openTimes = [
-        { time: '05:30 - 06:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '06:30 - 07:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '07:30 - 08:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '08:30 - 09:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '09:30 - 10:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '10:30 - 11:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '11:30 - 12:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '12:30 - 13:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '13:30 - 14:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '14:30 - 15:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '15:30 - 16:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '16:30 - 17:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '17:30 - 18:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '18:30 - 19:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '19:30 - 20:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 },
-        { time: '20:30 - 21:00', isActive: true, count: 0, requiredCount: 0, closeId: 0 }
+        { time: '05:30 - 06:00', isActive: true, closeId: 0 },
+        { time: '06:00 - 06:30', isActive: true, closeId: 0 },
+        { time: '06:30 - 07:00', isActive: true, closeId: 0 },
+        { time: '07:00 - 07:30', isActive: true, closeId: 0 },
+        { time: '07:30 - 08:00', isActive: true, closeId: 0 },
+        { time: '08:30 - 09:00', isActive: true, closeId: 0 },
+        { time: '09:00 - 09:30', isActive: true, closeId: 0 },
+        { time: '09:30 - 10:00', isActive: true, closeId: 0 },
+        { time: '10:30 - 11:00', isActive: true, closeId: 0 },
+        { time: '11:00 - 11:30', isActive: true, closeId: 0 },
+        { time: '11:30 - 12:00', isActive: true, closeId: 0 },
+        { time: '12:00 - 12:30', isActive: true, closeId: 0 },
+        { time: '12:30 - 13:00', isActive: true, closeId: 0 },
+        { time: '13:00 - 13:30', isActive: true, closeId: 0 },
+        { time: '13:30 - 14:00', isActive: true, closeId: 0 },
+        { time: '14:00 - 14:30', isActive: true, closeId: 0 },
+        { time: '14:30 - 15:00', isActive: true, closeId: 0 },
+        { time: '15:00 - 15:30', isActive: true, closeId: 0 },
+        { time: '15:30 - 16:00', isActive: true, closeId: 0 },
+        { time: '16:00 - 16:30', isActive: true, closeId: 0 },
+        { time: '16:30 - 17:00', isActive: true, closeId: 0 },
+        { time: '17:00 - 17:30', isActive: true, closeId: 0 },
+        { time: '17:30 - 18:00', isActive: true, closeId: 0 },
+        { time: '18:00 - 18:30', isActive: true, closeId: 0 },
+        { time: '18:30 - 19:00', isActive: true, closeId: 0 },
+        { time: '19:00 - 19:30', isActive: true, closeId: 0 },
+        { time: '19:30 - 20:00', isActive: true, closeId: 0 },
+        { time: '20:00 - 20:30', isActive: true, closeId: 0 },
+        { time: '20:30 - 21:00', isActive: true, closeId: 0 }
     ]
     userInfo: OrdersByHours[] = []
     constructor(private _fb: FormBuilder,
@@ -98,6 +120,23 @@ export class SubrouteComponent {
 
     ngOnInit() {
         this._initForm()
+    }
+    public onEditOrder(index) {
+        this.isEditing = true;
+        this.editIndex = index;
+        let info = this.userInfo[this.editIndex]
+        this.validateForm.patchValue({
+            startPointAddress: info.start_address,
+            endPointAddress: info.end_address,
+            orderPhoneNumber: info.order_phone_number,
+            orderType: info.order_type,
+            personCount: info.person_count,
+            comment: info.comment,
+            date: this._date,
+            time: this.selectedTime,
+        })
+        this.userId = info.user
+        this.showModal()
     }
     public getClosedHours(id: number) {
         this._mainRouteService.getCloseHours(id).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<ClosedHours[]>) => {
@@ -113,6 +152,9 @@ export class SubrouteComponent {
             }
         })
     }
+    getLabelOfDrivers(dr: User) {
+        return `${dr.user.first_name} ${dr.user.last_name} ${dr.car_capacity}`
+    }
     changeUserStatus($event, data) {
         if (data.closeId && $event) {
             this._mainRouteService.openHours(data.closeId).pipe(takeUntil(this.unsubscribe$)).subscribe()
@@ -120,6 +162,9 @@ export class SubrouteComponent {
             let current = this._formatDate(data.time)
             this._mainRouteService.closeHours(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe()
         }
+    }
+    check(item) {
+        return item ? item : 0
     }
     private _initForm() {
         this.validateForm = this._fb.group({
@@ -132,6 +177,8 @@ export class SubrouteComponent {
             orderType: [null, Validators.required],
             personCount: [null, Validators.required],
             comment: [null],
+            date: [null],
+            time: [null]
         })
 
         this.validateForm.get('orderType').valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((value) => {
@@ -151,7 +198,6 @@ export class SubrouteComponent {
                             orderPhoneNumber: value
                         })
                         return this._mainRouteService.getUserByPhonenumber('+374' + value).pipe(map(((data: ServerResponce<User[]>) => {
-                            console.log(data);
                             let result = data.results
                             if (result && result.length) {
                                 this.isShowError = false
@@ -173,17 +219,30 @@ export class SubrouteComponent {
                 }
             })).subscribe()
     }
-    getInfo(time) {
+    getInfo(time, status = 'approved') {
         this.selectedTime = time
         this.isOpenInfo = true;
         let current = this._formatDate(time)
-        this._mainRouteService.getOrdersByHour(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe((data: OrdersByHours[]) => {
-            this.userInfo = data;
-            this.userInfo = this.userInfo.map((val) => { return Object.assign({}, val, { isSelect: false }) })
-        })
+        this._mainRouteService.getOrdersByHour(this.subrouteInfo.id, current, status).pipe(takeUntil(this.unsubscribe$),
+            switchMap((data: OrdersByHours[]) => {
+                this.userInfo = data;
+                this.userInfo = this.userInfo.map((val) => { return Object.assign({}, val, { isSelect: false }) })
+                return this.getApprovedOrders()
+            })).subscribe()
     }
-    private _formatDate(time) {
-        let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
+    changeStatus($event) {
+        console.log($event);
+        this.getInfo(this.selectedTime, $event)
+    }
+    public getApprovedOrders() {
+        return this._mainRouteService.getAllAprovedOrders(this.subrouteInfo.id, this._formatDate(this.selectedTime)).pipe(
+            map((orders: ServerResponce<any>) => {
+                this.approvedOrders = orders.results
+            })
+        )
+    }
+    private _formatDate(time, selectDate = this._date) {
+        let date = this._datePipe.transform(selectDate, 'yyyy-MM-dd');
         let currenTime = time.slice(0, time.indexOf(' '))
         let current = `${date} ${currenTime}`;
         return current
@@ -206,42 +265,91 @@ export class SubrouteComponent {
         this.validateForm.reset();
         this.validateForm.enable();
         this.userId = null
-        this.isShowError = false
+        this.isShowError = false;
+        this.isEditing = false;
+        this.editIndex = null;
 
     }
-    nzPageIndexChange(page: number) {
-        // this.pageIndex = page;
-        // this.getUsers()
+    nzPageIndexChange(page: number) { }
+
+    public addOrderByDriver() {
+        if (this.driver) {
+            let orders = this.userInfo.filter((data) => { return data.isSelect == true })
+            let ordersIds = orders.map((data) => { return { id: data.id } })
+            let sendObject = {
+                "sub_route": this.subrouteInfo.id,
+                "date": this._formatDate(this.selectedTime),
+                "driver": this.driver,
+                "order": ordersIds
+            }
+            this._mainRouteService.addApprovedOrder(sendObject).pipe(takeUntil(this.unsubscribe$),
+                switchMap(() => {
+                    return this.getApprovedOrders()
+                })).subscribe()
+        }
     }
+
     public onclientSave() {
-        if (this.validateForm.invalid) {
-            this.nzMessages.error(Messages.fail);
-            return;
-        }
-        let date = this._formatDate(this.selectedTime)
+        if (this.isEditing) {
+            let date = this._formatDate(this.validateForm.get('time').value, this.validateForm.get('date').value)
+            let editResponse = {
+                "comment": this.validateForm.get('comment').value,
+                "sub_route": this.subrouteInfo.id,
+                "date": date,
+                "person_count": this.validateForm.get('personCount').value,
+                "start_address": this.validateForm.get('startPointAddress').value,
+                "start_langitude": '',
+                "start_latitude": '',
+                "end_address": this.validateForm.get('endPointAddress').value,
+                "end_langitude": '',
+                "end_latitude": '',
+                "user": this.userId ? this.userId : null,
+                "order_phone_number": this.validateForm.get('orderPhoneNumber').value ? '+374' + this.validateForm.get('orderPhoneNumber').value : null,
+                "order_type": this.validateForm.get('orderType').value,
+            }
+            this.sendEditRequest(this.userInfo[this.editIndex].id, editResponse);
 
-        let sendObject: OrderResponse = {
-            "first_name": this._appService.checkPropertyValue(this.validateForm.get('first_name'), 'value', ""),
-            "last_name": this._appService.checkPropertyValue(this.validateForm.get('last_name'), 'value', ""),
-            "phone_number": '+374' + this.validateForm.get('phone_number').value,
-            "comment": this.validateForm.get('comment').value,
-            "sub_route": this.subrouteInfo.id,
-            "date": date,
-            "person_count": this.validateForm.get('personCount').value,
-            "start_address": this.validateForm.get('startPointAddress').value,
-            "start_langitude": '',
-            "start_latitude": '',
-            "end_address": this.validateForm.get('endPointAddress').value,
-            "end_langitude": '',
-            "end_latitude": '',
-            "user": this.userId ? this.userId : null,
-            "order_phone_number": this.validateForm.get('orderPhoneNumber').value ? '+374' + this.validateForm.get('orderPhoneNumber').value : null,
-            "order_type": this.validateForm.get('orderType').value,
+        } else {
+            if (this.validateForm.invalid) {
+                this.nzMessages.error(Messages.fail);
+                return;
+            }
+            let date = this._formatDate(this.selectedTime)
+
+            let sendObject: OrderResponse = {
+                "first_name": this._appService.checkPropertyValue(this.validateForm.get('first_name'), 'value', ""),
+                "last_name": this._appService.checkPropertyValue(this.validateForm.get('last_name'), 'value', ""),
+                "phone_number": '+374' + this.validateForm.get('phone_number').value,
+                "comment": this.validateForm.get('comment').value,
+                "sub_route": this.subrouteInfo.id,
+                "date": date,
+                "person_count": this.validateForm.get('personCount').value,
+                "start_address": this.validateForm.get('startPointAddress').value,
+                "start_langitude": '',
+                "start_latitude": '',
+                "end_address": this.validateForm.get('endPointAddress').value,
+                "end_langitude": '',
+                "end_latitude": '',
+                "user": this.userId ? this.userId : null,
+                "order_phone_number": this.validateForm.get('orderPhoneNumber').value ? '+374' + this.validateForm.get('orderPhoneNumber').value : null,
+                "order_type": this.validateForm.get('orderType').value,
+            }
+            this.sendRequest(sendObject);
         }
-        this.sendRequest(sendObject);
     }
     sendRequest(sendObject) {
         this._mainRouteService.addOrder(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+            this.nzMessages.success(Messages.success)
+            this.closeModal();
+            this.getInfo(this.selectedTime)
+        },
+            () => {
+                this.nzMessages.error(Messages.fail)
+            })
+
+    }
+    sendEditRequest(id, sendObject) {
+        this._mainRouteService.changeOrder(id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
             this.nzMessages.success(Messages.success)
             this.closeModal();
             this.getInfo(this.selectedTime)
@@ -256,7 +364,9 @@ export class SubrouteComponent {
         this.validateForm.reset();
         this.validateForm.enable();
         this.userId = null;
-        this.isShowError = false
+        this.isShowError = false;
+        this.isEditing = false;
+        this.editIndex = null;
 
     }
 
@@ -266,6 +376,10 @@ export class SubrouteComponent {
         } else {
             return
         }
+    }
+    get userCounts() {
+        let item = this.userInfo.filter((data) => { return data.isSelect == true })
+        return item.length
     }
     ngOnDestroy(): void {
         this.unsubscribe$.next();
