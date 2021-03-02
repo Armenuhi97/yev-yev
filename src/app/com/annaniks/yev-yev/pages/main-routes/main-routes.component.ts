@@ -1,8 +1,9 @@
 import { DatePipe } from "@angular/common";
 import { Component } from "@angular/core";
-import { Subject } from "rxjs";
+import { forkJoin, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { RouteItem } from "../../core/models/routes.model";
+import { User } from "../../core/models/salary";
 import { ServerResponce } from "../../core/models/server-reponce";
 import { MainRoutesService } from "./main-routes.service";
 
@@ -20,18 +21,31 @@ export class MainRoutesComponent {
     isOpenCalendar: boolean = false;
     countsList = [];
     currentId: number;
+    orderTypes=[];
+    drivers:User[]
     constructor(private _mainRoutesService: MainRoutesService, private _datePipe: DatePipe) { }
     ngOnInit() {
-        this.getAllRoutes()
+        this.combine()
+    }
+    combine() {
+        const combine = forkJoin(
+            this.getAllRoutes(),
+            this.getAllOrdersTypes()
+        )
+        combine.pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     getAllRoutes() {
-        this._mainRoutesService.getAllRoutes(1).pipe(takeUntil(this.unsubscribe$), map((data: ServerResponce<RouteItem[]>) => {
+        return this._mainRoutesService.getAllRoutes(1).pipe(map((data: ServerResponce<RouteItem[]>) => {
             this.mainRoutes = data.results
-        })).subscribe()
+        }))
+    }
+
+    getAllOrdersTypes() {
+        return this._mainRoutesService.getOrdersTypes().pipe(map((data: ServerResponce<RouteItem[]>) => {
+            this.orderTypes = data.results
+        }))
     }
     getHourlyOrdersByDate(id: number) {
-        console.log(id);
-        
         let date = this._datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
         return this._mainRoutesService.getHourlyOrdersByDate(id, date).pipe(
             map((data: any) => {
@@ -40,30 +54,39 @@ export class MainRoutesComponent {
         )
     }
     getRouteInfo(id) {
-        this._mainRoutesService.getSubRoute(id).pipe(takeUntil(this.unsubscribe$),
+       return this._mainRoutesService.getSubRoute(id).pipe(takeUntil(this.unsubscribe$),
             switchMap((data: ServerResponce<any>) => {
                 this.subRouteInfo = data.results;
-                console.log('3');
-                
                 return this.getHourlyOrdersByDate(id)
-            })).subscribe()
+            }))
     }
 
     onChangeTab($event) {
         this.currentId = this.mainRoutes[$event].id
-        this.getRouteInfo(this.currentId)
+        this.combineObservable()
+        
+    }
+    combineObservable(){
+        const combine=forkJoin(
+            this.getRouteInfo(this.currentId),
+            this.getDrivers()
+        )
+    }
+    getDrivers(){
+        return this._mainRoutesService.getDrivers(this.currentId).pipe(
+            map((data:ServerResponce<User[]>)=>{
+                this.drivers=data.results
+            })
+        )
     }
     openCalendar($event) {
-        console.log('1');
-        
         this.isOpenCalendar = !this.isOpenCalendar;
-        this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
+        if ($event)
+            this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
 
     }
 
     changeDate(type: number) {
-        console.log('2');
-        
         let date = new Date(this.selectedDate)
         date.setDate(date.getDate() + type);
         this.selectedDate = new Date(date);

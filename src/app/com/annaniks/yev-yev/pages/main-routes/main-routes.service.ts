@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/internal/Observable";
+import { OrderResponse } from "../../core/models/order";
 import { RouteItem } from "../../core/models/routes.model";
 import { ServerResponce } from "../../core/models/server-reponce";
 
@@ -9,6 +10,9 @@ export class MainRoutesService {
     constructor(private _httpClient: HttpClient) { }
     public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
         return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?page=${page}`)
+    }
+    public getDrivers(mainRouteId:number) {
+        return this._httpClient.get(`userdetails/user/?search=&driving_routes__main_route=${mainRouteId}user_role__code=DR`)
     }
     public getRoutesById(id: number): Observable<RouteItem> {
         return this._httpClient.get<RouteItem>(`route/main-route/${id}/`)
@@ -43,5 +47,15 @@ export class MainRoutesService {
             "route_id": routeId,
             "date": date
         })
+    }
+    public getOrdersTypes() {
+        return this._httpClient.get(`utils/order-type/`)
+    }
+    public getUserByPhonenumber(phoneNumber) {
+        return this._httpClient.get(`userdetails/user/?search=${phoneNumber}&user_role__code=CL`)
+    }
+    public addOrder(body: OrderResponse) {
+        return this._httpClient.post(`order/add-order/`, body)
+
     }
 }
