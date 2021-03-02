@@ -2,7 +2,7 @@ import { DatePipe } from "@angular/common";
 import { Component, Input } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
-import { of, Subject } from "rxjs";
+import { forkJoin, of, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { isBuffer } from "util";
 import { ClosedHours } from "../../../../core/models/closed-hours";
@@ -43,7 +43,7 @@ export class SubrouteComponent {
     @Input('info')
     set setInfo($event) {
         this.subrouteInfo = $event;
-
+//set onpen times
         if (this.subrouteInfo && this.subrouteInfo.countList)
             for (let item of this.subrouteInfo.countList.orders) {
                 let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
@@ -79,6 +79,12 @@ export class SubrouteComponent {
     set setDrivers($event: User[]) {
         this.drivers = $event;
     }
+    index: number;
+    @Input('index')
+    set setIndex($event) {
+        this.index = $event
+    }
+
     isOpenInfo: boolean = false
     openTimes = [
         { time: '05:30 - 06:00', isActive: true, closeId: 0 },
@@ -137,6 +143,16 @@ export class SubrouteComponent {
         })
         this.userId = info.user
         this.showModal()
+    }
+    getHourlyOrdersByDate() {
+        let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
+        return this._mainRouteService.getHourlyOrdersByDate(this.subrouteInfo.main_route, date).pipe(
+            map((data: any) => {
+                console.log(data);
+
+                this.subrouteInfo = this.subrouteInfo.countList = data[this.index]
+            })
+        )
     }
     public getClosedHours(id: number) {
         this._mainRouteService.getCloseHours(id).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<ClosedHours[]>) => {
@@ -219,7 +235,7 @@ export class SubrouteComponent {
                 }
             })).subscribe()
     }
-    getInfo(time, status = 'approved') {
+    getInfo(time, status = this.radioValue) {
         this.selectedTime = time
         this.isOpenInfo = true;
         let current = this._formatDate(time)
@@ -227,11 +243,11 @@ export class SubrouteComponent {
             switchMap((data: OrdersByHours[]) => {
                 this.userInfo = data;
                 this.userInfo = this.userInfo.map((val) => { return Object.assign({}, val, { isSelect: false }) })
-                return this.getApprovedOrders()
+                return forkJoin([this.getApprovedOrders(),
+                this.getHourlyOrdersByDate()])
             })).subscribe()
     }
     changeStatus($event) {
-        console.log($event);
         this.getInfo(this.selectedTime, $event)
     }
     public getApprovedOrders() {
@@ -339,7 +355,7 @@ export class SubrouteComponent {
     }
     sendRequest(sendObject) {
         this._mainRouteService.addOrder(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
-            this.nzMessages.success(Messages.success)
+            this.nzMessages.success(Messages.success);
             this.closeModal();
             this.getInfo(this.selectedTime)
         },
