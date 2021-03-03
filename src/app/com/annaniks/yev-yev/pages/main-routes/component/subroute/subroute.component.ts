@@ -43,7 +43,7 @@ export class SubrouteComponent {
     @Input('info')
     set setInfo($event) {
         this.subrouteInfo = $event;
-//set onpen times
+        //set onpen times
         if (this.subrouteInfo && this.subrouteInfo.countList)
             for (let item of this.subrouteInfo.countList.orders) {
                 let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
@@ -82,7 +82,7 @@ export class SubrouteComponent {
     index: number;
     @Input('index')
     set setIndex($event) {
-        this.index = $event
+        this.index = +$event
     }
 
     isOpenInfo: boolean = false
@@ -148,12 +148,28 @@ export class SubrouteComponent {
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
         return this._mainRouteService.getHourlyOrdersByDate(this.subrouteInfo.main_route, date).pipe(
             map((data: any) => {
-                console.log(data);
+                if (data[this.index] && data[this.index].orders)
 
-                this.subrouteInfo = this.subrouteInfo.countList = data[this.index]
+                    for (let item of data[this.index].orders) {
+                        let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
+                        for (let time of this.openTimes) {
+                            if (time.time.startsWith(date)) {
+                                time = Object.assign(time, {
+                                    approved_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'approved_seat_count', 0),
+                                    pending_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'pending_seat_count', 0),
+                                    seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'seat_count', 0)
+                                })
+
+
+                            }
+                        }
+                    }
+                // this.subrouteInfo = this.subrouteInfo.countList = data[this.index]
             })
         )
     }
+
+
     public getClosedHours(id: number) {
         this._mainRouteService.getCloseHours(id).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<ClosedHours[]>) => {
             let items = data.results
