@@ -157,14 +157,14 @@ export class SubrouteComponent {
         for (let item of this.userInfo) {
             if (type == 2) {                
                 if ((item.order_type_details.id == 1 || item.order_type_details.id == 2) && (+id !== +item.id)) {                    
-                    item.isSelect = false;
+                    // item.isSelect = false;
                     item.isDisabled = $event ? true : false
 
                 }
             } else {
                 if (type == 1) {
                     if ((item.order_type_details.id == 2) && item.id !== id) {
-                        item.isSelect = false;
+                        // item.isSelect = false;
                         item.isDisabled = $event ? true : false
 
                     }

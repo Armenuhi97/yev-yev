@@ -42,6 +42,7 @@
                             <th>Ուղևոր</th>
                             <th>Հեռ.</th>
                             <th>Հասցե</th>
+                            <th>Տիպ</th>
                             <th>Տեղերի քանակը</th>
                             <th></th>
                             <th *ngIf="radioValue == 'approved'"></th>
@@ -54,12 +55,15 @@
                                 {{moderator?.client_details?.user?.last_name}}</td>
                             <td>{{moderator?.client_details?.phone_number}}</td>
                             <td>{{moderator?.start_address}} {{moderator?.end_address}}</td>
-                            <td>{{moderator?.order_type_details?.name_hy}} ({{moderator?.person_count}})</td>
+                            <td>{{moderator?.order_type_details?.name_hy}}</td>
+                            <td>{{moderator?.person_count}}</td>
                             <td (click)="onEditOrder(ind)" class="action-button edit" style="width:10px"><i nz-icon
                                     nzType="edit"></i>
                             </td>
-                            <td *ngIf="radioValue == 'approved'"> <label [disabled]="moderator.is_in_approved_orders || moderator?.isDisabled"
-                                    nz-checkbox [(ngModel)]="moderator.isSelect" (ngModelChange)="selectCheckbox($event,ind)"></label>
+                            <td *ngIf="radioValue == 'approved'"> <label
+                                    [disabled]="moderator.is_in_approved_orders || moderator?.isDisabled" nz-checkbox
+                                    [(ngModel)]="moderator.isSelect"
+                                    (ngModelChange)="selectCheckbox($event,ind)"></label>
                             </td>
                         </tr>
                     </tbody>
@@ -259,8 +263,8 @@
                     </tr>
                 </tbody>
             </nz-table>
-            <nz-modal nzWidth="870px" [nzTitle]="'Փոփոխել'" [nzCancelText]="'Փակել'" (nzOnCancel)="handleCancel()" [nzOkText]="'Հատատել'"
-                (nzOnOk)="onOrderSave()" [(nzVisible)]="isVisibleOrderInfo">
+            <nz-modal nzWidth="870px" [nzTitle]="'Փոփոխել'" [nzCancelText]="'Փակել'" (nzOnCancel)="handleCancel()"
+                [nzOkText]="'Հատատել'" (nzOnOk)="onOrderSave()" [(nzVisible)]="isVisibleOrderInfo">
                 <div>
                     <nz-table nzBordered [nzFrontPagination]="false" [nzData]="orderMembers">
                         <thead>
@@ -269,6 +273,7 @@
                                 <th>Ուղևոր</th>
                                 <th>Հեռ.</th>
                                 <th>Հասցե</th>
+                                <th>Տիպ</th>
                                 <th>Տեղերի քանակը</th>
                                 <th></th>
                             </tr>
@@ -280,7 +285,8 @@
                                     {{moderator?.order?.client_details?.user?.last_name}}</td>
                                 <td>{{moderator?.order?.client_details?.phone_number}}</td>
                                 <td>{{moderator?.order?.start_address}} {{moderator?.end_address}}</td>
-                                <td>{{moderator?.order?.order_type_details?.name_hy}} ({{moderator?.order?.person_count}})</td>
+                                <td>{{moderator?.order?.order_type_details?.name_hy}}</td>
+                                <td>{{moderator?.order?.person_count}}</td>
                                 <td> <label nz-checkbox [(ngModel)]="moderator.isSelect"></label>
                                 </td>
                             </tr>
