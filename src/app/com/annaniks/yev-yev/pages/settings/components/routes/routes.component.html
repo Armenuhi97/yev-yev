@@ -26,10 +26,13 @@
                 <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
                     nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել" nzPopconfirmPlacement="bottom"
                     (nzOnConfirm)="onDeleteRoute(ind)" class="d-flex">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                      </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-trash" viewBox="0 0 16 16">
+                        <path
+                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                        <path fill-rule="evenodd"
+                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                    </svg>
                 </a>
             </td>
         </tr>
@@ -65,70 +68,78 @@
             *ngIf="editIndex !== null && validateForm.get('routes') && validateForm.get('routes')['controls']">
 
             <ng-container *ngFor="let item of validateForm.get('routes')['controls'];let i=index">
-                <div [formGroup]="item" class="d-flex justify-content-between align-items-baseline array-content">
+                <div [formGroup]="item" class="array-content">
                     <!-- <nz-form-label  class="inline-labels" >Ուղղություն</nz-form-label> -->
+                    <nz-form-item class="w-45">
+                        <nz-form-label class="inline-labels">Գինը</nz-form-label>
 
-                    <div class="w-45">
-                        <nz-select nzPlaceHolder="Start point" formControlName="start_point">
-                            <nz-option *ngFor="let city of cityTable" [nzValue]="city.id" [nzLabel]="city.name_hy">
-                            </nz-option>
-                        </nz-select>
-                        <label nz-checkbox formControlName="start_point_is_static">Ֆիքսված</label>
-                        <div *ngIf="item.get('start_point_is_static').value">
-                            <nz-form-item>
-                                <nz-form-label class="inline-labels">Հասցե հայերեն</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input formControlName="price" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                    <div class="d-flex justify-content-between align-items-baseline ">
+                        <div class="w-45">
+                            <nz-select nzPlaceHolder="Start point" formControlName="start_point">
+                                <nz-option *ngFor="let city of cityTable" [nzValue]="city.id" [nzLabel]="city.name_hy">
+                                </nz-option>
+                            </nz-select>
+                            <label nz-checkbox formControlName="start_point_is_static">Ֆիքսված</label>
+                            <div *ngIf="item.get('start_point_is_static').value">
+                                <nz-form-item>
+                                    <nz-form-label class="inline-labels">Հասցե հայերեն</nz-form-label>
 
-                                <nz-form-control>
-                                    <input nz-input formControlName="start_point_address_hy" placeholder="" />
-                                </nz-form-control>
-                            </nz-form-item>
-                            <nz-form-item>
-                                <nz-form-label class="inline-labels">Հասցե անգլերեն</nz-form-label>
+                                    <nz-form-control>
+                                        <input nz-input formControlName="start_point_address_hy" placeholder="" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                                <nz-form-item>
+                                    <nz-form-label class="inline-labels">Հասցե անգլերեն</nz-form-label>
 
-                                <nz-form-control>
-                                    <input nz-input formControlName="start_point_address_en" placeholder="" />
-                                </nz-form-control>
-                            </nz-form-item>
-                            <nz-form-item>
-                                <nz-form-label class="inline-labels">Հասցե ռուսերեն</nz-form-label>
+                                    <nz-form-control>
+                                        <input nz-input formControlName="start_point_address_en" placeholder="" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                                <nz-form-item>
+                                    <nz-form-label class="inline-labels">Հասցե ռուսերեն</nz-form-label>
 
-                                <nz-form-control>
-                                    <input nz-input formControlName="start_point_address_ru" placeholder="" />
-                                </nz-form-control>
-                            </nz-form-item>
+                                    <nz-form-control>
+                                        <input nz-input formControlName="start_point_address_ru" placeholder="" />
+                                    </nz-form-control>
+                                </nz-form-item>
 
+                            </div>
                         </div>
-                    </div>
-                    <div>-></div>
-                    <div class="w-45">
-                        <nz-select nzPlaceHolder="End point" formControlName="end_point">
-                            <nz-option *ngFor="let city of cityTable" [nzValue]="city.id" [nzLabel]="city.name_hy">
-                            </nz-option>
-                        </nz-select>
-                        <label nz-checkbox formControlName="end_point_is_static">Ֆիքսված</label>
-                        <div *ngIf="item.get('end_point_is_static').value">
-                            <nz-form-item>
-                                <nz-form-label class="inline-labels">Հասցե հայերեն</nz-form-label>
+                        <div>-></div>
+                        <div class="w-45">
+                            <nz-select nzPlaceHolder="End point" formControlName="end_point">
+                                <nz-option *ngFor="let city of cityTable" [nzValue]="city.id" [nzLabel]="city.name_hy">
+                                </nz-option>
+                            </nz-select>
+                            <label nz-checkbox formControlName="end_point_is_static">Ֆիքսված</label>
+                            <div *ngIf="item.get('end_point_is_static').value">
+                                <nz-form-item>
+                                    <nz-form-label class="inline-labels">Հասցե հայերեն</nz-form-label>
 
-                                <nz-form-control>
-                                    <input nz-input formControlName="end_point_address_hy" placeholder="" />
-                                </nz-form-control>
-                            </nz-form-item>
-                            <nz-form-item>
-                                <nz-form-label class="inline-labels">Հասցե անգերեն</nz-form-label>
+                                    <nz-form-control>
+                                        <input nz-input formControlName="end_point_address_hy" placeholder="" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                                <nz-form-item>
+                                    <nz-form-label class="inline-labels">Հասցե անգերեն</nz-form-label>
 
-                                <nz-form-control>
-                                    <input nz-input formControlName="end_point_address_en" placeholder="" />
-                                </nz-form-control>
-                            </nz-form-item>
-                            <nz-form-item>
-                                <nz-form-label class="inline-labels">Հասցե ռուսերեն</nz-form-label>
+                                    <nz-form-control>
+                                        <input nz-input formControlName="end_point_address_en" placeholder="" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                                <nz-form-item>
+                                    <nz-form-label class="inline-labels">Հասցե ռուսերեն</nz-form-label>
 
-                                <nz-form-control>
-                                    <input nz-input formControlName="end_point_address_ru" placeholder="" />
-                                </nz-form-control>
-                            </nz-form-item>
+                                    <nz-form-control>
+                                        <input nz-input formControlName="end_point_address_ru" placeholder="" />
+                                    </nz-form-control>
+                                </nz-form-item>
 
+                            </div>
                         </div>
                     </div>
                 </div>

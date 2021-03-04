@@ -76,7 +76,8 @@ export class RoutesComponent {
             end_point_address_en: [null],
             end_point_address_ru: [null],
             end_point_address_hy: [null],
-            end_point_is_static: [false]
+            end_point_is_static: [false],
+            price:[null]
         })
         value.push(item);
 
@@ -139,6 +140,7 @@ export class RoutesComponent {
                             end_point_is_static: el.end_point_is_static,
                             start_point: el.start_point,
                             id: el.id,
+                            price:el.price,
                             start_point_address_en: el.start_point_address_en,
                             start_point_address_hy: el.start_point_address_hy,
                             start_point_address_ru: el.start_point_address_ru,

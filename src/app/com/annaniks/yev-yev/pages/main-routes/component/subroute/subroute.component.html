@@ -22,6 +22,7 @@
             </tbody>
         </nz-table>
     </div>
+
     <div *ngIf="isOpenInfo" nz-col [nzSpan]="16">
         <nz-radio-group [(ngModel)]="radioValue" (ngModelChange)="changeStatus($event)">
             <label nz-radio nzValue="approved">Ընդունված</label>
@@ -57,8 +58,8 @@
                             <td (click)="onEditOrder(ind)" class="action-button edit" style="width:10px"><i nz-icon
                                     nzType="edit"></i>
                             </td>
-                            <td *ngIf="radioValue == 'approved'"> <label nz-checkbox
-                                    [(ngModel)]="moderator.isSelect"></label>
+                            <td *ngIf="radioValue == 'approved'"> <label [disabled]="moderator.is_in_approved_orders"
+                                    nz-checkbox [(ngModel)]="moderator.isSelect"></label>
                             </td>
                         </tr>
                     </tbody>
@@ -184,6 +185,15 @@
                             </nz-select>
                         </div>
                     </div>
+                    <div nz-row [nzGutter]="24" class="d-flex align-items-center justify-content-between"
+                        *ngIf="isEditing && radioValue == 'pending'">
+                        <div nz-col [nzSpan]="12">
+                            <nz-form-control>
+                                <label nz-checkbox formControlName="isChangeStatus">Փոխել կարգավիճակը</label>
+                            </nz-form-control>
+                        </div>
+
+                    </div>
                 </form>
 
             </nz-modal>
@@ -218,13 +228,21 @@
                     <tr class="cursor-pointer" *ngFor="let data of approvedOrders; let index = index">
                         <td>{{index+1}}</td>
                         <td>{{data.driver_details.user.first_name}} {{data.driver_details.user.last_name}}</td>
-                        <td>{{data.driver_details.car_capacity}}</td>
-                        <td></td>
+                        <td>{{data.driver_details.person_count}}</td>
+                        <td class="action-button edit" style="width:10px" (click)="addSelectedOrder(index)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green"
+                                class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+                            </svg>
+                        </td>
 
-                        <td class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
+                        <td (click)="onEditOrderMembers(index)" class="action-button edit" style="width:10px"><i nz-icon
+                                nzType="edit"></i>
                         </td>
                         <td class="action-button delete" style="width:10px">
                             <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
+                                (nzOnConfirm)="onDeleteApprovedOrder(index)"
                                 nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել" nzPopconfirmPlacement="bottom"
                                 class="d-flex">
                                 <!-- <i nz-icon nzType="edit"></i> -->
@@ -241,6 +259,35 @@
                     </tr>
                 </tbody>
             </nz-table>
+            <nz-modal [nzTitle]="'Փոփոխել'" [nzCancelText]="'Փակել'" (nzOnCancel)="handleCancel()" [nzOkText]="'Հատատել'"
+                (nzOnOk)="onOrderSave()" [(nzVisible)]="isVisibleOrderInfo">
+                <div>
+                    <nz-table nzBordered [nzFrontPagination]="false" [nzData]="orderMembers">
+                        <thead>
+                            <tr>
+                                <th>N</th>
+                                <th>Ուղևոր</th>
+                                <th>Հեռ.</th>
+                                <th>Հասցե</th>
+                                <th>Տեղերի քանակը</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let moderator of orderMembers;let ind=index">
+                                <td>{{ind+1}}</td>
+                                <td>{{moderator?.order?.client_details?.user?.first_name}}
+                                    {{moderator?.order?.client_details?.user?.last_name}}</td>
+                                <td>{{moderator?.order?.client_details?.phone_number}}</td>
+                                <td>{{moderator?.order?.start_address}} {{moderator?.end_address}}</td>
+                                <td>{{moderator?.order?.order_type_details?.name_hy}} {{moderator?.person_count}}</td>
+                                <td> <label nz-checkbox [(ngModel)]="moderator.isSelect"></label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </nz-modal>
         </div>
     </div>
 

@@ -62,10 +62,20 @@ export class MainRoutesService {
     public addApprovedOrder(body) {
         return this._httpClient.post(`order/approved-order/`, body)
     }
+    public deleteApprovedOrder(id:number) {
+        return this._httpClient.delete(`order/approved-order/${id}/`)
+    } 
+    
+    public editApprovedOrder(id:number,body){
+        return this._httpClient.put(`order/approved-order/${id}/`,body)
+    }
     public getAllAprovedOrders(subrouteId: number, dateTime: string) {
         return this._httpClient.get(`order/approved-order/?sub_route_id=${subrouteId}&datetime=${dateTime}`)
     }
     public changeOrder(id:number,body) {
         return this._httpClient.put(`order/edit-order/${id}/`, body)
+    }
+    public changeOrderStatus(id:number){
+        return this._httpClient.post(`order/approve-order/${id}/`,{})
     }
 }

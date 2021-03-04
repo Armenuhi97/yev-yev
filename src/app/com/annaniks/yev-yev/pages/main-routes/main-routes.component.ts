@@ -49,6 +49,7 @@ export class MainRoutesComponent {
         let date = this._datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
         return this._mainRoutesService.getHourlyOrdersByDate(id, date).pipe(
             map((data: any) => {
+                this.closeCalendar()
                 this.subRouteInfo = this.subRouteInfo.map((item, index) => { return Object.assign({}, item, { countList: data[index] }) });
             })
         )
@@ -87,8 +88,10 @@ export class MainRoutesComponent {
     openCalendar($event) {
         
         this.isOpenCalendar = !this.isOpenCalendar;
-        if ($event)
+        if ($event) {
+          
             this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
+        }
 
     }
     closeCalendar(){
