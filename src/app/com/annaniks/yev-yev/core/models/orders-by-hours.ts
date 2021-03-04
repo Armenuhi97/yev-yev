@@ -1,6 +1,7 @@
 export interface OrdersByHours {
     address: string
     isSelect?: boolean
+    isDisabled?:boolean
     is_in_approved_orders:boolean
     end_address: null
     end_langitude: string

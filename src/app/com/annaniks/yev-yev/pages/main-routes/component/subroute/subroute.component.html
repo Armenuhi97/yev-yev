@@ -54,12 +54,12 @@
                                 {{moderator?.client_details?.user?.last_name}}</td>
                             <td>{{moderator?.client_details?.phone_number}}</td>
                             <td>{{moderator?.start_address}} {{moderator?.end_address}}</td>
-                            <td>{{moderator?.order_type_details?.name_hy}} {{moderator?.person_count}}</td>
+                            <td>{{moderator?.order_type_details?.name_hy}} ({{moderator?.person_count}})</td>
                             <td (click)="onEditOrder(ind)" class="action-button edit" style="width:10px"><i nz-icon
                                     nzType="edit"></i>
                             </td>
-                            <td *ngIf="radioValue == 'approved'"> <label [disabled]="moderator.is_in_approved_orders"
-                                    nz-checkbox [(ngModel)]="moderator.isSelect"></label>
+                            <td *ngIf="radioValue == 'approved'"> <label [disabled]="moderator.is_in_approved_orders || moderator?.isDisabled"
+                                    nz-checkbox [(ngModel)]="moderator.isSelect" (ngModelChange)="selectCheckbox($event,ind)"></label>
                             </td>
                         </tr>
                     </tbody>
@@ -228,7 +228,7 @@
                     <tr class="cursor-pointer" *ngFor="let data of approvedOrders; let index = index">
                         <td>{{index+1}}</td>
                         <td>{{data.driver_details.user.first_name}} {{data.driver_details.user.last_name}}</td>
-                        <td>{{data.driver_details.person_count}}</td>
+                        <td>{{data.seat_count}}</td>
                         <td class="action-button edit" style="width:10px" (click)="addSelectedOrder(index)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green"
                                 class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
@@ -259,7 +259,7 @@
                     </tr>
                 </tbody>
             </nz-table>
-            <nz-modal [nzTitle]="'Փոփոխել'" [nzCancelText]="'Փակել'" (nzOnCancel)="handleCancel()" [nzOkText]="'Հատատել'"
+            <nz-modal nzWidth="870px" [nzTitle]="'Փոփոխել'" [nzCancelText]="'Փակել'" (nzOnCancel)="handleCancel()" [nzOkText]="'Հատատել'"
                 (nzOnOk)="onOrderSave()" [(nzVisible)]="isVisibleOrderInfo">
                 <div>
                     <nz-table nzBordered [nzFrontPagination]="false" [nzData]="orderMembers">
@@ -280,7 +280,7 @@
                                     {{moderator?.order?.client_details?.user?.last_name}}</td>
                                 <td>{{moderator?.order?.client_details?.phone_number}}</td>
                                 <td>{{moderator?.order?.start_address}} {{moderator?.end_address}}</td>
-                                <td>{{moderator?.order?.order_type_details?.name_hy}} {{moderator?.person_count}}</td>
+                                <td>{{moderator?.order?.order_type_details?.name_hy}} ({{moderator?.order?.person_count}})</td>
                                 <td> <label nz-checkbox [(ngModel)]="moderator.isSelect"></label>
                                 </td>
                             </tr>

@@ -20,6 +20,11 @@
         font-size: 20px;   
     }
 }
+td{
+    svg{
+        display: flex;
+    }
+}
 .trash{
     color: #ff4d4f;
     font-size: 20px;

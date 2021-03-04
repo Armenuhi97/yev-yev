@@ -148,13 +148,36 @@ export class SubrouteComponent {
         this.userId = info.user
         this.showModal()
     }
+    selectCheckbox($event, index) {
+        // 0
+        // 1 nstatex
+        // 2 avtomeqena      
+        let type = this.userInfo[index].order_type_details.id;
+        let id = this.userInfo[index].id;        
+        for (let item of this.userInfo) {
+            if (type == 2) {                
+                if ((item.order_type_details.id == 1 || item.order_type_details.id == 2) && (+id !== +item.id)) {                    
+                    item.isSelect = false;
+                    item.isDisabled = $event ? true : false
 
+                }
+            } else {
+                if (type == 1) {
+                    if ((item.order_type_details.id == 2) && item.id !== id) {
+                        item.isSelect = false;
+                        item.isDisabled = $event ? true : false
+
+                    }
+                }
+            }
+        }
+    }
     public onEditOrderMembers(index) {
         this.isOrderEditing = true;
         this.editOrderIndex = index;
         this.orderMembers = this.approvedOrders[this.editOrderIndex].approved_order_orders;
-        
-        this.orderMembers = this.orderMembers.map((val) => { return Object.assign({}, val, { isSelect: true }) });        
+
+        this.orderMembers = this.orderMembers.map((val) => { return Object.assign({}, val, { isSelect: true }) });
         this.openOrderModal()
 
     }
@@ -267,19 +290,21 @@ export class SubrouteComponent {
             })).subscribe()
     }
     getInfo(time, status = this.radioValue) {
-        this.selectedTime = time
-        this.isOpenInfo = true;
-        let current = this._formatDate(time)
-        this._mainRouteService.getOrdersByHour(this.subrouteInfo.id, current, status).pipe(takeUntil(this.unsubscribe$),
-            switchMap((data: OrdersByHours[]) => {
-                this.userInfo = data;
-                this.userInfo = this.userInfo.map((val) => {
-                    let isSelect = val.is_in_approved_orders ? true : false
-                    return Object.assign({}, val, { is_in_approved_orders: val.is_in_approved_orders, isSelect: isSelect })
-                })
-                return forkJoin([this.getApprovedOrders(),
-                this.getHourlyOrdersByDate()])
-            })).subscribe()
+        if (time) {
+            this.selectedTime = time
+            this.isOpenInfo = true;
+            let current = this._formatDate(time)
+            this._mainRouteService.getOrdersByHour(this.subrouteInfo.id, current, status).pipe(takeUntil(this.unsubscribe$),
+                switchMap((data: OrdersByHours[]) => {
+                    this.userInfo = data;
+                    this.userInfo = this.userInfo.map((val) => {
+                        let isSelect = val.is_in_approved_orders ? true : false
+                        return Object.assign({}, val, { is_in_approved_orders: val.is_in_approved_orders, isSelect: isSelect, isDisabled: false })
+                    })
+                    return forkJoin([this.getApprovedOrders(),
+                    this.getHourlyOrdersByDate()])
+                })).subscribe()
+        }
     }
     changeStatus($event) {
         this.getInfo(this.selectedTime, $event)
@@ -310,8 +335,8 @@ export class SubrouteComponent {
 
         }
     }
-    public openOrderModal(){
-        this.isVisibleOrderInfo=true
+    public openOrderModal() {
+        this.isVisibleOrderInfo = true
     }
     handleCancel(): void {
         this.isVisible = false;
@@ -328,12 +353,12 @@ export class SubrouteComponent {
 
     }
     onOrderSave() {
-        
+
         let item = this.orderMembers.filter((data) => { return (data.isSelect == true) })
-        
+
         let orderIds = item.map((data) => {
             return { id: data.order.id }
-        });        
+        });
         if (orderIds && orderIds.length) {
             let sendObject = {
                 "sub_route": this.subrouteInfo.id,
