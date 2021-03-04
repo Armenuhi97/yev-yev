@@ -233,7 +233,7 @@ export class SubrouteComponent {
         }
     }
     check(item) {
-        return item ? item : 0
+        return item ? +item : 0
     }
     private _initForm() {
         this.validateForm = this._fb.group({
@@ -277,7 +277,13 @@ export class SubrouteComponent {
                                     first_name: item.user.first_name,
                                     last_name: item.user.last_name,
                                 })
+                                this.validateForm.get('first_name').disable()
+                                this.validateForm.get('last_name').disable()
                             } else {
+                                this.validateForm.get('first_name').reset()
+                                this.validateForm.get('last_name').reset()
+                                this.validateForm.get('first_name').enable()
+                                this.validateForm.get('last_name').enable()
                                 this.isShowError = true
                             }
                         })))
