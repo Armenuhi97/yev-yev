@@ -10,6 +10,7 @@ import { ApiInterceptor } from './com/annaniks/yev-yev/core/interseptors/api.int
 import { registerLocaleData } from '@angular/common';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import en from '@angular/common/locales/en';
+import { LoaderInterceptor } from './com/annaniks/yev-yev/core/interseptors/loader.interceptor';
 
 registerLocaleData(en);
 
@@ -27,6 +28,11 @@ registerLocaleData(en);
     {
       provide: 'BASE_URL',
       useValue: environment.API_URL,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoaderInterceptor,
       multi: true
     },
     {
