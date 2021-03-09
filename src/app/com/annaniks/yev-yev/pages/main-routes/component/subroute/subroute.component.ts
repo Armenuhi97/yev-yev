@@ -22,6 +22,7 @@ import { MainRoutesService } from "../../main-routes.service";
     providers: [DatePipe]
 })
 export class SubrouteComponent {
+    currentDriver=[]
     isVisibleOrderInfo: boolean = false;
     isOrderEditing: boolean = false;
     orderMembers = []
@@ -239,7 +240,7 @@ export class SubrouteComponent {
         this.validateForm = this._fb.group({
             first_name: [null],
             last_name: [null],
-            phone_number: [null, [Validators.required]],
+            phone_number: [null, [Validators.required,Validators.minLength(8),Validators.maxLength(8)]],
             startPointAddress: [null],
             endPointAddress: [null],
             orderPhoneNumber: [null],
@@ -525,6 +526,30 @@ export class SubrouteComponent {
                 })).subscribe()
         }
     }
+    onDeleteOrder(index: number): void {
+
+        if (this.userInfo[index].id) {
+            this._mainRouteService
+                .deleteOrders(this.userInfo[index].id)
+                .pipe(
+                    takeUntil(this.unsubscribe$),
+                )
+                .subscribe(() => {
+                    this.getInfo(this.selectedTime)
+                    // this.driverRouteTable.splice(index, 1);
+
+                    // this.driverRouteTable = [...this.driverRouteTable];
+                    // if (!this.driverRouteTable.length && this.pageIndex !== 1) {
+                    //     this.nzPageIndexChange(this.pageIndex - 1)
+                    // }
+                    this.nzMessages.success(Messages.success)
+                },
+                    () => {
+                        this.nzMessages.error(Messages.fail)
+                    });
+        } 
+
+    }
     get tableTitle() {
         if (this.subrouteInfo && this.subrouteInfo.start_point_city) {
             return `${this.subrouteInfo.start_point_city.name_hy}  ${this.subrouteInfo?.end_point_city.name_hy}`
@@ -538,6 +563,11 @@ export class SubrouteComponent {
         item.forEach((data) => {
             calculateCount += data.person_count
         })
+        if(calculateCount){
+        this.currentDriver=this.drivers.filter((val)=>{return +val.car_capacity >= calculateCount})
+        }else{
+            this.currentDriver=this.drivers
+        }
         return calculateCount
     }
     ngOnDestroy(): void {

@@ -78,4 +78,8 @@ export class MainRoutesService {
     public changeOrderStatus(id:number){
         return this._httpClient.post(`order/approve-order/${id}/`,{})
     }
+    public deleteOrders(id:number){
+        return this._httpClient.post(`order/order/${id}/`,{})
+
+    }
 }
