@@ -48,6 +48,7 @@ export class DriversComponent {
             car_color: [null, Validators.required],
             car_number: [null, Validators.required],
             car_capacity: [null, Validators.required],
+            car_color_name:[null,Validators.required]
         })
     }
 
@@ -72,7 +73,7 @@ export class DriversComponent {
         return combine.pipe(takeUntil(this.unsubscribe$))
     }
     public getUsers() {
-        return this._driavesService.getUsers(this.pageIndex).pipe(
+        return this._driavesService.getUsers(this.pageIndex,(this.pageIndex-1)*10).pipe(
             map((data: ServerResponce<User[]>) => {
                 this.total = data.count;
                 this.salaryTable = data.results;
@@ -101,6 +102,7 @@ export class DriversComponent {
                         car_color: this.item.car_color,
                         car_number: this.item.car_number,
                         car_capacity: this.item.car_capacity,
+                        car_color_name:this.item.car_color_name
                     })
                 }
             })).subscribe()

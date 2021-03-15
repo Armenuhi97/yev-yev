@@ -85,11 +85,9 @@ export class MainRoutesComponent {
             }))
         )
     }
-    openCalendar($event) {
-        
+    openCalendar($event) {        
         this.isOpenCalendar = !this.isOpenCalendar;
-        if ($event) {
-          
+        if ($event) {          
             this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
         }
 

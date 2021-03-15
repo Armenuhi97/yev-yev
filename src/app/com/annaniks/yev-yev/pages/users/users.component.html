@@ -4,7 +4,7 @@
         Ավելացնել ուղևոր
     </button>
 </div>
-<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" [nzTotal]="total" [nzPageSize]="pageSize"
+<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" nzTableLayout="fixed"  [nzTotal]="total" [nzPageSize]="pageSize"
     [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="clientTable">
     <thead>
         <tr>
@@ -12,15 +12,15 @@
             <th>Անուն</th>
             <th>Ազգանուն</th>
             <th>Հեռախոսահամար</th>
-            <th>Հաստատված</th>
-            <th>Չեղարկված</th>
+            <th  nzCustomFilter nzColumnKey="orders_count" [nzSortFn]="sortFn" >Հաստատված</th>
+            <th nzCustomFilter nzColumnKey="canceled_orders" [nzSortFn]="sortFn2" >Չեղարկված</th>
             <th></th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let data of clientTable; let ind = index">
-            <td style="width:10px">{{ ind + 1 }}</td>
+        <tr *ngFor="let data of userTable.data; let ind = index">
+            <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10)  }}</td>
             <td>
                 {{data.user.first_name}}
             </td>

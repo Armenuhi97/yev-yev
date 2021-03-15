@@ -2,7 +2,7 @@ import { DatePipe } from "@angular/common";
 import { Component, Input } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
-import { forkJoin, of, Subject } from "rxjs";
+import { forkJoin, Observable, of, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { isBuffer } from "util";
 import { ClosedHours } from "../../../../core/models/closed-hours";
@@ -22,7 +22,7 @@ import { MainRoutesService } from "../../main-routes.service";
     providers: [DatePipe]
 })
 export class SubrouteComponent {
-    currentDriver=[]
+    currentDriver = []
     isVisibleOrderInfo: boolean = false;
     isOrderEditing: boolean = false;
     orderMembers = []
@@ -48,7 +48,7 @@ export class SubrouteComponent {
     @Input('info')
     set setInfo($event) {
         this.subrouteInfo = $event;
-        //set onpen times
+        //set open times
         if (this.subrouteInfo && this.subrouteInfo.countList)
             for (let item of this.subrouteInfo.countList.orders) {
                 let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
@@ -63,11 +63,6 @@ export class SubrouteComponent {
                     }
                 }
             }
-
-        if (this.subrouteInfo) {
-            this.getClosedHours(this.subrouteInfo.id);
-
-        }
     }
 
 
@@ -85,8 +80,16 @@ export class SubrouteComponent {
     @Input('date')
     set setDate($event) {
         this._date = $event;
-        if (this.isOpenInfo && this.selectedTime) {
-            this.getInfo(this.selectedTime)
+        if (this.subrouteInfo && this._date) {
+            this.getClosedHours(this.subrouteInfo.id).pipe(
+                switchMap(() => {
+                if (this.isOpenInfo && this.selectedTime) {
+                    return this.getInfo(this.selectedTime)
+                } else {
+                    return of()
+                }
+            })
+            ).subscribe()
         }
 
     }
@@ -154,10 +157,10 @@ export class SubrouteComponent {
         // 1 nstatex
         // 2 avtomeqena      
         let type = this.userInfo[index].order_type_details.id;
-        let id = this.userInfo[index].id;        
+        let id = this.userInfo[index].id;
         for (let item of this.userInfo) {
-            if (type == 2) {                
-                if ((item.order_type_details.id == 1 || item.order_type_details.id == 2) && (+id !== +item.id)) {                    
+            if (type == 2) {
+                if ((item.order_type_details.id == 1 || item.order_type_details.id == 2) && (+id !== +item.id)) {
                     // item.isSelect = false;
                     item.isDisabled = $event ? true : false
 
@@ -208,8 +211,10 @@ export class SubrouteComponent {
     }
 
 
-    public getClosedHours(id: number) {
-        this._mainRouteService.getCloseHours(id).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<ClosedHours[]>) => {
+    public getClosedHours(id: number): Observable<any> {
+        let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
+        return this._mainRouteService.getCloseHours(id, date).pipe(takeUntil(this.unsubscribe$), map((data: ServerResponce<ClosedHours[]>) => {
+            this.openTimes.map((val) => { return Object.assign(val, { isActive: true }) })
             let items = data.results
             for (let item of items) {
                 let date = this._datePipe.transform(new Date(item.time), 'HH:mm');
@@ -220,10 +225,10 @@ export class SubrouteComponent {
                     }
                 }
             }
-        })
+        }))
     }
     getLabelOfDrivers(dr: User) {
-        return `${dr.user.first_name} ${dr.user.last_name} (${dr.car_capacity})`
+        return `${dr.user.first_name} ${dr.user.last_name} (${dr.car_model}) (${dr.car_capacity})`
     }
     changeUserStatus($event, data) {
         if (data.closeId && $event) {
@@ -240,7 +245,8 @@ export class SubrouteComponent {
         this.validateForm = this._fb.group({
             first_name: [null],
             last_name: [null],
-            phone_number: [null, [Validators.required,Validators.minLength(8),Validators.maxLength(8)]],
+            phone_number: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
+            userComment: [null],
             startPointAddress: [null],
             endPointAddress: [null],
             orderPhoneNumber: [null],
@@ -266,8 +272,9 @@ export class SubrouteComponent {
                 if (value) {
                     if (value.toString().length == 8) {
                         this.validateForm.patchValue({
-                            orderPhoneNumber: value
+                            order_phone_number: value
                         })
+                        
                         return this._mainRouteService.getUserByPhonenumber('+374' + value).pipe(map(((data: ServerResponce<User[]>) => {
                             let result = data.results
                             if (result && result.length) {
@@ -277,6 +284,7 @@ export class SubrouteComponent {
                                 this.validateForm.patchValue({
                                     first_name: item.user.first_name,
                                     last_name: item.user.last_name,
+                                    userComment: item.comment
                                 })
                                 this.validateForm.get('first_name').disable()
                                 this.validateForm.get('last_name').disable()
@@ -296,12 +304,12 @@ export class SubrouteComponent {
                 }
             })).subscribe()
     }
-    getInfo(time, status = this.radioValue) {
+    getInfo(time, status = this.radioValue): Observable<any> {
         if (time) {
             this.selectedTime = time
             this.isOpenInfo = true;
             let current = this._formatDate(time)
-            this._mainRouteService.getOrdersByHour(this.subrouteInfo.id, current, status).pipe(takeUntil(this.unsubscribe$),
+            return this._mainRouteService.getOrdersByHour(this.subrouteInfo.id, current, status).pipe(takeUntil(this.unsubscribe$),
                 switchMap((data: OrdersByHours[]) => {
                     this.userInfo = data;
                     this.userInfo = this.userInfo.map((val) => {
@@ -310,11 +318,16 @@ export class SubrouteComponent {
                     })
                     return forkJoin([this.getApprovedOrders(),
                     this.getHourlyOrdersByDate()])
-                })).subscribe()
+                }))
+        } else {
+            return of()
         }
     }
+    getInformation(time, status = this.radioValue) {
+        this.getInfo(time, status).subscribe()
+    }
     changeStatus($event) {
-        this.getInfo(this.selectedTime, $event)
+        this.getInfo(this.selectedTime, $event).subscribe()
     }
     public getApprovedOrders() {
         return this._mainRouteService.getAllAprovedOrders(this.subrouteInfo.id, this._formatDate(this.selectedTime)).pipe(
@@ -342,6 +355,18 @@ export class SubrouteComponent {
 
         }
     }
+    public checkAddress(moderator) {
+        if (this.subrouteInfo.start_point_is_static) {
+            return moderator.end_address ? moderator.end_address : 'Հասցե չկա'
+        } else {
+            if (this.subrouteInfo.end_point_is_static) {
+                return moderator.start_address ? moderator.start_address : 'Հասցե չկա'
+            } else {
+                return (moderator.start_address || moderator.end_address) ? `${moderator.start_address} - ${moderator.end_address}` : 'Հասցե չկա'
+            }
+        }
+    }
+
     public openOrderModal() {
         this.isVisibleOrderInfo = true
     }
@@ -376,7 +401,7 @@ export class SubrouteComponent {
             this._mainRouteService.editApprovedOrder(this.approvedOrders[this.editOrderIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$),
                 map(() => {
                     this.closeModal()
-                    this.getInfo(this.selectedTime);
+                    this.getInfo(this.selectedTime).subscribe();
                     this.nzMessages.success(Messages.success)
 
                 })).subscribe()
@@ -387,8 +412,10 @@ export class SubrouteComponent {
 
     public addOrderByDriver() {
         if (this.driver) {
-            let orders = this.userInfo.filter((data) => { return data.isSelect == true })
+            let orders = this.userInfo.filter((data) => { return (data.isSelect == true && data.is_in_approved_orders == false) })
+
             let ordersIds = orders.map((data) => { return { id: data.id } })
+
             let sendObject = {
                 "sub_route": this.subrouteInfo.id,
                 "date": this._formatDate(this.selectedTime),
@@ -398,7 +425,7 @@ export class SubrouteComponent {
             this._mainRouteService.addApprovedOrder(sendObject).pipe(takeUntil(this.unsubscribe$),
                 map(() => {
                     this.driver = null
-                    this.getInfo(this.selectedTime)
+                    this.getInfo(this.selectedTime).subscribe()
                     // return forkJoin([this.getApprovedOrders(),
                     //     this.getHourlyOrdersByDate()])
                 })).subscribe()
@@ -409,7 +436,7 @@ export class SubrouteComponent {
             map(() => {
                 // return forkJoin([this.getApprovedOrders(),
                 //     this.getHourlyOrdersByDate()])
-                this.getInfo(this.selectedTime)
+                this.getInfo(this.selectedTime).subscribe()
             })).subscribe()
     }
     public onclientSave() {
@@ -442,6 +469,7 @@ export class SubrouteComponent {
             let sendObject: OrderResponse = {
                 "first_name": this._appService.checkPropertyValue(this.validateForm.get('first_name'), 'value', ""),
                 "last_name": this._appService.checkPropertyValue(this.validateForm.get('last_name'), 'value', ""),
+                "user_comment": this.validateForm.get('userComment').value,
                 "phone_number": '+374' + this.validateForm.get('phone_number').value,
                 "comment": this.validateForm.get('comment').value,
                 "sub_route": this.subrouteInfo.id,
@@ -456,6 +484,7 @@ export class SubrouteComponent {
                 "user": this.userId ? this.userId : null,
                 "order_phone_number": this.validateForm.get('orderPhoneNumber').value ? '+374' + this.validateForm.get('orderPhoneNumber').value : null,
                 "order_type": this.validateForm.get('orderType').value,
+                "status": this.radioValue
             }
             this.sendRequest(sendObject);
         }
@@ -464,7 +493,7 @@ export class SubrouteComponent {
         this._mainRouteService.addOrder(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
             this.nzMessages.success(Messages.success);
             this.closeModal();
-            this.getInfo(this.selectedTime)
+            this.getInfo(this.selectedTime).subscribe()
         },
             () => {
                 this.nzMessages.error(Messages.fail)
@@ -477,10 +506,10 @@ export class SubrouteComponent {
             this.closeModal();
             if (this.radioValue == 'pending') {
                 this._mainRouteService.changeOrderStatus(id).subscribe(() => {
-                    this.getInfo(this.selectedTime)
+                    this.getInfo(this.selectedTime).subscribe()
                 })
             } else {
-                this.getInfo(this.selectedTime)
+                this.getInfo(this.selectedTime).subscribe()
             }
         },
             () => {
@@ -520,7 +549,7 @@ export class SubrouteComponent {
             }
             this._mainRouteService.editApprovedOrder(this.approvedOrders[index].id, sendObject).pipe(takeUntil(this.unsubscribe$),
                 map(() => {
-                    this.getInfo(this.selectedTime);
+                    this.getInfo(this.selectedTime).subscribe();
                     this.nzMessages.success(Messages.success)
 
                 })).subscribe()
@@ -535,7 +564,7 @@ export class SubrouteComponent {
                     takeUntil(this.unsubscribe$),
                 )
                 .subscribe(() => {
-                    this.getInfo(this.selectedTime)
+                    this.getInfo(this.selectedTime).subscribe()
                     // this.driverRouteTable.splice(index, 1);
 
                     // this.driverRouteTable = [...this.driverRouteTable];
@@ -547,12 +576,12 @@ export class SubrouteComponent {
                     () => {
                         this.nzMessages.error(Messages.fail)
                     });
-        } 
+        }
 
     }
     get tableTitle() {
         if (this.subrouteInfo && this.subrouteInfo.start_point_city) {
-            return `${this.subrouteInfo.start_point_city.name_hy}  ${this.subrouteInfo?.end_point_city.name_hy}`
+            return `${this.subrouteInfo.start_point_city.name_hy} - ${this.subrouteInfo?.end_point_city.name_hy}`
         } else {
             return
         }
@@ -563,10 +592,12 @@ export class SubrouteComponent {
         item.forEach((data) => {
             calculateCount += data.person_count
         })
-        if(calculateCount){
-        this.currentDriver=this.drivers.filter((val)=>{return +val.car_capacity >= calculateCount})
-        }else{
-            this.currentDriver=this.drivers
+        if (calculateCount) {
+            this.currentDriver = this.drivers.filter((val) => {
+                return +val.car_capacity >= calculateCount
+            })
+        } else {
+            this.currentDriver = this.drivers
         }
         return calculateCount
     }

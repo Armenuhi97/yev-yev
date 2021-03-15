@@ -15,6 +15,9 @@ import { UsersService } from "./users.service";
     styleUrls: ['users.component.scss']
 })
 export class UsersComponent {
+    priorityApproved = 1;
+    priorityCanceled = 1;   
+    priority: 3
     userId: number;
     clientTable: Client[] = []
     pageSize: number = 10;
@@ -25,8 +28,8 @@ export class UsersComponent {
     isVisible: boolean = false;
     validateForm: FormGroup;
     editIndex: number = null;
-    public activeTab:number=0;
-    userName:string
+    public activeTab: number = 0;
+    userName: string
     constructor(private _userService: UsersService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
@@ -42,14 +45,14 @@ export class UsersComponent {
             first_name: [null, Validators.required],
             last_name: [null, Validators.required],
             phone_number: [null, Validators.required],
-            comment:[null]
+            comment: [null]
         })
     }
     public changeUserStatus($event, id: number) {
         this._userService.editUser(id, { is_active: $event }).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     public getUsers() {
-        this._userService.getUsers(this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<Client[]>) => {
+        this._userService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<Client[]>) => {
             this.total = data.count;
             this.clientTable = data.results;
         })
@@ -66,12 +69,12 @@ export class UsersComponent {
         this._userService.getUserById(id).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<Client>) => {
             if (data.results && data.results[0]) {
                 let item = data.results[0];
-                this.userName=`${item.user.first_name} ${item.user.last_name}`
+                this.userName = `${item.user.first_name} ${item.user.last_name}`
                 this.validateForm.patchValue({
                     first_name: item.user.first_name,
                     last_name: item.user.last_name,
                     phone_number: item.phone_number,
-                    comment:item.comment
+                    comment: item.comment
                 })
             }
         })
@@ -85,9 +88,9 @@ export class UsersComponent {
         this.isEditing = false;
         this.validateForm.reset();
         this.editIndex = null
-        this.activeTab=0;
+        this.activeTab = 0;
         this.userId = null
-        this.userName=null
+        this.userName = null
     }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
@@ -103,7 +106,7 @@ export class UsersComponent {
             "last_name": this.validateForm.get('last_name').value,
             "phone_number": this.validateForm.get('phone_number').value,
             "image": '',
-            "comment":this.validateForm.get('comment').value,
+            "comment": this.validateForm.get('comment').value,
         }
         this.sendRequest(sendObject);
     }
@@ -134,14 +137,27 @@ export class UsersComponent {
         this.validateForm.reset();
         this.editIndex = null
         this.userId = null;
-        this.activeTab=0;
-        this.userName=null
+        this.activeTab = 0;
+        this.userName = null
     }
-    public onChangeTab($event){
-        this.activeTab=$event.index
+    public onChangeTab($event) {
+        this.activeTab = $event.index
     }
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
+    sort(sort: { key: string, value: string }): void {
+        console.log(sort);
+        
+        // this.sortName = sort.key;
+        // this.sortValue = sort.value;
+        // this.search();
+        this.clientTable.sort((a, b) => { return  a[sort.key] - b[sort.key] });
+
+      }
+    sortFn = (a: any, b: any) =>{console.log(a);
+     a.orders_count - b.orders_count };
+    sortFn2=(a: any, b: any) => a.canceled_orders - b.canceled_orders ;
+
 }

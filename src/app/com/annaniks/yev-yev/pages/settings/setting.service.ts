@@ -9,7 +9,8 @@ import { ServerResponce } from "../../core/models/server-reponce";
 export class SettingsService {
     constructor(private _httpClient: HttpClient) { }
     public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
-        return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?page=${page}`)
+        let offset=(page-1)*10;
+        return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?page=${page}&limit=10&offset=${offset}`)
     }
     public addRoutes(name: string) {
         return this._httpClient.post(`route/main-route/`, { route_name: name })
@@ -43,7 +44,8 @@ export class SettingsService {
     }
 
     public getAllCities(page: number): Observable<ServerResponce<CityItem[]>> {
-        return this._httpClient.get<ServerResponce<CityItem[]>>(`utils/city/?page=${page}`)
+        let offset=(page-1)*10;
+        return this._httpClient.get<ServerResponce<CityItem[]>>(`utils/city/?page=${page}&limit=10&offset=${offset}`)
     }
     public addCity(body: CityItem) {
         return this._httpClient.post(`utils/city/`, body)
@@ -60,7 +62,8 @@ export class SettingsService {
 
     
     public getAllphone(page: number) {
-        return this._httpClient.get(`utils/contact-information/?page=${page}`)
+        let offset=(page-1)*10;
+        return this._httpClient.get(`utils/contact-information/?page=${page}&limit=10&offset=${offset}`)
     }
     public addphone(body) {
         return this._httpClient.post(`utils/contact-information/`, body)

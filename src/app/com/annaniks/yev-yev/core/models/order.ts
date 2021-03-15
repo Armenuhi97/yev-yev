@@ -14,5 +14,7 @@ export interface OrderResponse {
     "phone_number": string
     "order_phone_number": string
     "order_type": number,
-    "comment": string
+    "comment": string,
+    user_comment:string
+    status:string
 }

@@ -6,7 +6,8 @@ import { User } from "../../core/models/salary";
 export class SalaryService{
     constructor(private _httpClient:HttpClient){}
     getUsers(page){
-        return this._httpClient.get(`userdetails/user/?search=&user_role__code=MDR&page=${page}`)
+        let offset=(page-1)*10
+        return this._httpClient.get(`userdetails/user/?search=&user_role__code=MDR&page=${page}&limit=10&offset=${offset}`)
     }
     public getUserById(userId:number){
         return this._httpClient.get(`userdetails/user/?search=&user_role__code=MDR&id=${userId}`)

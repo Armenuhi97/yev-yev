@@ -98,7 +98,7 @@ export class DriverRoutesComponent {
         }
     }
     public getDriverRoute() {
-        this._driversService.getDriverOfMainRoute(this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
+        this._driversService.getDriverOfMainRoute(this.pageIndex,(this.pageIndex-1)*10).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
             this.total = data.count;
             this.driverRouteTable = data.results;
         })

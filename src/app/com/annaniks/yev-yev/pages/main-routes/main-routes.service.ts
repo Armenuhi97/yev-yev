@@ -9,7 +9,8 @@ import { ServerResponce } from "../../core/models/server-reponce";
 export class MainRoutesService {
     constructor(private _httpClient: HttpClient) { }
     public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
-        return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?page=${page}`)
+        let offset=(page-1)*10;
+        return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?page=${page}&limit=10&offset=${offset}`)
     }
     public getDrivers(mainRouteId: number) {
         return this._httpClient.get(`userdetails/user/?search=&driving_routes__main_route=${mainRouteId}&user_role__code=DR`)
@@ -31,8 +32,9 @@ export class MainRoutesService {
             status: status
         })
     }
-    public getCloseHours(subRouteId: number) {
-        return this._httpClient.get(`route/closed-hour/?sub_route=${subRouteId}`)
+    public getCloseHours(subRouteId: number,date:string) {
+        
+        return this._httpClient.get(`route/closed-hour/?sub_route=${subRouteId}&date=${date}`)
     }
     public closeHours(subrouteId: number, date) {
         return this._httpClient.post(`route/closed-hour/`, {
@@ -79,7 +81,7 @@ export class MainRoutesService {
         return this._httpClient.post(`order/approve-order/${id}/`,{})
     }
     public deleteOrders(id:number){
-        return this._httpClient.post(`order/order/${id}/`,{})
+        return this._httpClient.delete(`order/order/${id}/`,{})
 
     }
 }

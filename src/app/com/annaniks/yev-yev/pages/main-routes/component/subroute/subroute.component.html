@@ -14,17 +14,17 @@
             <tbody>
                 <tr [class.active]="data.time == selectedTime" class="cursor-pointer"
                     *ngFor="let data of openTimes; let ind = index">
-                    <td (click)="getInfo(data.time)">{{data.time}}</td>
+                    <td (click)="getInformation(data.time)">{{data.time}}</td>
                     <td class="action-button delete" style="width:10px">
                         <nz-switch [(ngModel)]="data.isActive" (ngModelChange)="changeUserStatus($event,data)">
                         </nz-switch>
                     </td>
-                    <td (click)="getInfo(data.time)">
+                    <td (click)="getInformation(data.time)">
                         {{ check(data.seat_count)}}
                     </td>
-                    <td (click)="getInfo(data.time)">{{check(data.approved_seat_count)}}</td>
-                    <td (click)="getInfo(data.time)"> {{check(data.pending_seat_count)}}</td>
-                    <td (click)="getInfo(data.time)">{{check(data.seat_count) - check(data.approved_seat_count)}}</td>
+                    <td (click)="getInformation(data.time)">{{check(data.approved_seat_count)}}</td>
+                    <td (click)="getInformation(data.time)"> {{check(data.pending_seat_count)}}</td>
+                    <td (click)="getInformation(data.time)">{{check(data.seat_count) - check(data.approved_seat_count)}}</td>
                 </tr>
             </tbody>
         </nz-table>
@@ -62,11 +62,13 @@
                             <td>{{moderator?.client_details?.user?.first_name}}
                                 {{moderator?.client_details?.user?.last_name}}</td>
                             <td>{{moderator?.client_details?.phone_number}}</td>
-                            <td>{{moderator?.start_address}} {{moderator?.end_address}}</td>
+                            <td>
+                              <span [class.light]="checkAddress(moderator) == 'Հասցե չկա'">  {{checkAddress(moderator)}}</span>
+                                <!-- {{moderator?.start_address}} - {{moderator?.end_address}}</td> -->
                             <td>{{moderator?.order_type_details?.name_hy}}</td>
                             <td>{{moderator?.person_count}}</td>
-                            <td (click)="onEditOrder(ind)" class="action-button edit" style="width:10px"><i *ngIf="!moderator.is_in_approved_orders" nz-icon
-                                    nzType="edit"></i>
+                            <td (click)="onEditOrder(ind)" class="action-button edit" style="width:10px"><i
+                                    *ngIf="!moderator.is_in_approved_orders" nz-icon nzType="edit"></i>
                             </td>
                             <td *ngIf="radioValue == 'approved'"> <label
                                     [disabled]="moderator.is_in_approved_orders || moderator?.isDisabled" nz-checkbox
@@ -130,7 +132,14 @@
                                 <span class="error" *ngIf="isShowError">Նշված հեռախոսահամարով ուղևոր չի գտնվել</span>
                             </nz-form-item>
                         </div>
-
+                        <div nz-col [nzSpan]="12">
+                            <nz-form-label class="inline-labels">Մեկնաբանություն</nz-form-label>
+                            <nz-form-item>
+                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                    <input nz-input formControlName="userComment" placeholder="" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
                     </div>
                     <div>Երթի տվյալներ</div>
                     <div nz-row [nzGutter]="24">
@@ -248,7 +257,7 @@
                     <tr>
                         <th>N</th>
                         <th>Վարորդ</th>
-                        <th>Տեղերի քանակը</th>
+                        <th>Մեքենայի մոդելը</th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -259,7 +268,7 @@
                     <tr class="cursor-pointer" *ngFor="let data of approvedOrders; let index = index">
                         <td>{{index+1}}</td>
                         <td>{{data.driver_details.user.first_name}} {{data.driver_details.user.last_name}}</td>
-                        <td>{{data.seat_count}}</td>
+                        <td> {{data.driver_details.car_model}} - {{data.seat_count}}</td>
                         <td class="action-button edit" style="width:10px" (click)="addSelectedOrder(index)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green"
                                 class="bi bi-plus-circle-fill" viewBox="0 0 16 16">

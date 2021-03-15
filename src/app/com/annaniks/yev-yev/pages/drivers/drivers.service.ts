@@ -7,8 +7,8 @@ import { ServerResponce } from "../../core/models/server-reponce";
 @Injectable()
 export class DriverService {
     constructor(private _httpClient: HttpClient) { }
-    getUsers(page: number) {
-        return this._httpClient.get<ServerResponce<User[]>>(`userdetails/user/?search=&user_role__code=DR&page=${page}`)
+    getUsers(page: number,offset:number) {
+        return this._httpClient.get<ServerResponce<User[]>>(`userdetails/user/?search=&user_role__code=DR&page=${page}&limit=10&offset=${offset}`)
     }
     public getUserById(userId: number) {
         return this._httpClient.get(`userdetails/user/?search=&user_role__code=DR&id=${userId}`)
@@ -16,8 +16,8 @@ export class DriverService {
     public getAllRoutes() {
         return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/`)
     }
-    public getDriverOfMainRoute(page:number){
-        return this._httpClient.get(`route/main-route-driver/?page=${page}`)
+    public getDriverOfMainRoute(page:number,offset:number){
+        return this._httpClient.get(`route/main-route-driver/?page=${page}&limit=10&offset=${offset}`)
     }
     public editUser(userId: number, body) {
         return this._httpClient.put(`userdetails/edit-user-details/${userId}/`, body)

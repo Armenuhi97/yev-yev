@@ -19,7 +19,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let data of salaryTable; let ind = index">
-            <td style="width:10px">{{ ind + 1 }}</td>
+            <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10) }}</td>
             <td>
                 {{data.user.first_name}}
             </td>
@@ -90,16 +90,16 @@
                     <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
                         <input class="w-100" [colorPicker]="validateForm.get('car_color').value"
                             (colorPickerChange)="changeColorPicker('car_color',$event)"
-                            [style.background]="validateForm.get('car_color').value" />
+                            [style.background]="validateForm.get('car_color').value" [style.border-color]="validateForm.get('car_color').value" />
 
                     </nz-form-control>
                 </nz-form-item>
             </div>
             <div nz-col [nzSpan]="12">
-                <nz-form-label class="inline-labels" nzRequired>Մեքենայի համարանիշը</nz-form-label>
+                <nz-form-label class="inline-labels" nzRequired>Մեքենայի գույնի անունը</nz-form-label>
                 <nz-form-item>
                     <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                        <input nz-input formControlName="car_number" placeholder="" />
+                        <input nz-input formControlName="car_color_name" placeholder="" />
                     </nz-form-control>
                 </nz-form-item>
             </div>
@@ -112,6 +112,14 @@
                 <nz-form-item>
                     <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
                         <input nz-input type="number" formControlName="car_capacity" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Մեքենայի համարանիշը</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="car_number" placeholder="" />
                     </nz-form-control>
                 </nz-form-item>
             </div>

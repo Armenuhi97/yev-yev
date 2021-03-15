@@ -15,7 +15,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let data of driverRouteTable; let ind = index">
-            <td style="width:10px">{{ ind + 1 }}</td>
+            <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10)  }}</td>
             <td>
                 {{data.main_route_details.route_name}}
             </td>
