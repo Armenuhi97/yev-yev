@@ -6,9 +6,10 @@
                     <path fill-rule="evenodd"
                         d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z" />
                 </svg></div>
-            <div >
-                <!-- (clickOutside)="closeCalendar()" -->
-                <div class="cursor-pointer position-relative" (click)="openCalendar();$event.stopPropagation()">{{selectedDate |
+            <div (clickOutside)="closeCalendar()">
+                
+                <div class="cursor-pointer position-relative" (click)="openCalendar();$event.stopPropagation()">
+                    {{selectedDate |
                     date:'dd-MM-yyyy'}}
                     <div class="calendar" *ngIf="isOpenCalendar"
                         [ngStyle]="{ width: '300px', border: '1px solid #d9d9d9', borderRadius: '4px' }">
@@ -23,7 +24,8 @@
                 </svg></div>
         </div>
         <div *ngFor="let item of subRouteInfo;let i=index">
-            <app-subroute [types]="orderTypes" [index]="i" [info]="item" [drivers]="drivers" [date]="selectedDate"></app-subroute>
+            <app-subroute [types]="orderTypes" [index]="i" [info]="item" [drivers]="drivers" [date]="selectedDate">
+            </app-subroute>
         </div>
 
     </nz-tab>
