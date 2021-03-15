@@ -15,9 +15,6 @@ import { UsersService } from "./users.service";
     styleUrls: ['users.component.scss']
 })
 export class UsersComponent {
-    priorityApproved = 1;
-    priorityCanceled = 1;   
-    priority: 3
     userId: number;
     clientTable: Client[] = []
     pageSize: number = 10;
@@ -29,7 +26,7 @@ export class UsersComponent {
     validateForm: FormGroup;
     editIndex: number = null;
     public activeTab: number = 0;
-    userName: string
+    userName: string;
     constructor(private _userService: UsersService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
@@ -54,7 +51,7 @@ export class UsersComponent {
     public getUsers() {
         this._userService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<Client[]>) => {
             this.total = data.count;
-            this.clientTable = data.results;
+            this.clientTable = data.results;            
         })
     }
 
@@ -147,17 +144,15 @@ export class UsersComponent {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
-    sort(sort: { key: string, value: string }): void {
-        console.log(sort);
-        
-        // this.sortName = sort.key;
-        // this.sortValue = sort.value;
-        // this.search();
-        this.clientTable.sort((a, b) => { return  a[sort.key] - b[sort.key] });
-
-      }
-    sortFn = (a: any, b: any) =>{console.log(a);
-     a.orders_count - b.orders_count };
-    sortFn2=(a: any, b: any) => a.canceled_orders - b.canceled_orders ;
-
+    sort(sort, key: string): void {        
+        if (sort == 'ascend') {
+            this.clientTable.sort((a, b) => {return b[key] - a[key]  });
+        } else {
+            if(sort == 'descend'){
+            this.clientTable.sort((a, b) => { return a[key] - b[key] });
+            }else{
+                this.clientTable.sort((a, b) => { return b.id - a.id });
+            }
+        }
+    }
 }

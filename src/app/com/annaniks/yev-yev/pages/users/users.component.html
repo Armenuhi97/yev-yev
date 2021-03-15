@@ -4,23 +4,23 @@
         Ավելացնել ուղևոր
     </button>
 </div>
-<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" nzTableLayout="fixed"  [nzTotal]="total" [nzPageSize]="pageSize"
-    [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="clientTable">
+<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" nzTableLayout="fixed" [nzTotal]="total"
+    [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="clientTable">
     <thead>
         <tr>
             <th>N</th>
             <th>Անուն</th>
             <th>Ազգանուն</th>
             <th>Հեռախոսահամար</th>
-            <th  nzCustomFilter nzColumnKey="orders_count" [nzSortFn]="sortFn" >Հաստատված</th>
-            <th nzCustomFilter nzColumnKey="canceled_orders" [nzSortFn]="sortFn2" >Չեղարկված</th>
+            <th nzSortFn="true" (nzSortOrderChange)="sort($event,'orders_count')">Հաստատված</th>
+            <th nzSortFn="true" (nzSortOrderChange)="sort($event,'canceled_orders')">Չեղարկված</th>
             <th></th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let data of userTable.data; let ind = index">
-            <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10)  }}</td>
+            <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10) }}</td>
             <td>
                 {{data.user.first_name}}
             </td>
@@ -43,8 +43,8 @@
 
 <nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" [nzTitle]="userName"
     (nzOnCancel)="handleCancel()" nzWidth="870px" (nzOnOk)="onclientSave()">
-    <nz-tabset (nzSelectedIndexChange)="onChangeTab($event)" [nzSelectedIndex]="activeTab"	>
-        <nz-tab [nzTitle]="'Տվյալներ'"	>
+    <nz-tabset (nzSelectedIndexChange)="onChangeTab($event)" [nzSelectedIndex]="activeTab">
+        <nz-tab [nzTitle]="'Տվյալներ'">
             <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
                 <div nz-row [nzGutter]="24">
                     <div nz-col [nzSpan]="12">
@@ -74,7 +74,7 @@
                         </nz-form-item>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <nz-form-label class="inline-labels" >Մեկնաբանություն</nz-form-label>
+                        <nz-form-label class="inline-labels">Մեկնաբանություն</nz-form-label>
                         <nz-form-item>
                             <nz-form-control nzHasFeedback>
                                 <input nz-input formControlName="comment" placeholder="" />

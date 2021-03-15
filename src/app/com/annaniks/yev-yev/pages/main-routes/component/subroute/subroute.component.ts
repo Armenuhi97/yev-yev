@@ -83,12 +83,12 @@ export class SubrouteComponent {
         if (this.subrouteInfo && this._date) {
             this.getClosedHours(this.subrouteInfo.id).pipe(
                 switchMap(() => {
-                if (this.isOpenInfo && this.selectedTime) {
-                    return this.getInfo(this.selectedTime)
-                } else {
-                    return of()
-                }
-            })
+                    if (this.isOpenInfo && this.selectedTime) {
+                        return this.getInfo(this.selectedTime)
+                    } else {
+                        return of()
+                    }
+                })
             ).subscribe()
         }
 
@@ -274,7 +274,7 @@ export class SubrouteComponent {
                         this.validateForm.patchValue({
                             order_phone_number: value
                         })
-                        
+
                         return this._mainRouteService.getUserByPhonenumber('+374' + value).pipe(map(((data: ServerResponce<User[]>) => {
                             let result = data.results
                             if (result && result.length) {
@@ -587,18 +587,23 @@ export class SubrouteComponent {
         }
     }
     get userCounts() {
+
         let item = this.userInfo.filter((data) => { return (data.is_in_approved_orders == false && data.isSelect == true) })
         let calculateCount = 0;
         item.forEach((data) => {
             calculateCount += data.person_count
         })
         if (calculateCount) {
+            console.log(this.drivers);
+
             this.currentDriver = this.drivers.filter((val) => {
-                return +val.car_capacity >= calculateCount
+                return (+val.car_capacity >= calculateCount && val.user.is_active == true)
             })
         } else {
-            this.currentDriver = this.drivers
-        }
+            this.currentDriver = this.drivers.filter((val) => {
+                return (val.user.is_active == true)
+            })
+        }        
         return calculateCount
     }
     ngOnDestroy(): void {
