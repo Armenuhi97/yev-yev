@@ -37,7 +37,20 @@ export class SubrouteComponent {
     phoneNumberPrefix = new FormControl('+374')
     userId: number;
     isShowError: boolean = false;
-    orderTypes: OrderType[] = [];
+    orderTypes: OrderType[] = [
+        {
+            id: 0,
+            name_en: 'Նստատեղ'
+        },
+        {
+            id: 1,
+            name_en: 'Ավտոմեքենա'
+        },
+        {
+            id: 2,
+            name_en: 'Ուղեբեռ'
+        }
+    ];
     radioValue: string = "approved";
     isEditing: boolean;
     editIndex;
@@ -142,7 +155,7 @@ export class SubrouteComponent {
         this.validateForm.patchValue({
             startPointAddress: info.start_address,
             endPointAddress: info.end_address,
-            orderPhoneNumber: info.order_phone_number,
+            order_phone_number: info.order_phone_number,
             orderType: info.order_type,
             personCount: info.person_count,
             comment: info.comment,
@@ -249,7 +262,7 @@ export class SubrouteComponent {
             userComment: [null],
             startPointAddress: [null],
             endPointAddress: [null],
-            orderPhoneNumber: [null],
+            order_phone_number: [null],
             orderType: [null, Validators.required],
             personCount: [null, Validators.required],
             comment: [null],
@@ -259,7 +272,7 @@ export class SubrouteComponent {
         })
 
         this.validateForm.get('orderType').valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((value) => {
-            if (value == 3) {
+            if (value == 2) {
                 this.validateForm.get('personCount').setValue(0);
                 this.validateForm.get('personCount').disable()
             } else {
@@ -454,7 +467,7 @@ export class SubrouteComponent {
                 "end_langitude": '',
                 "end_latitude": '',
                 "user": this.userId ? this.userId : null,
-                "order_phone_number": this.validateForm.get('orderPhoneNumber').value ? '+374' + this.validateForm.get('orderPhoneNumber').value : null,
+                "order_phone_number": this.validateForm.get('order_phone_number').value ? '+374' + this.validateForm.get('order_phone_number').value : null,
                 "order_type": this.validateForm.get('orderType').value,
             }
             this.sendEditRequest(this.userInfo[this.editIndex].id, editResponse);
@@ -482,7 +495,7 @@ export class SubrouteComponent {
                 "end_langitude": '',
                 "end_latitude": '',
                 "user": this.userId ? this.userId : null,
-                "order_phone_number": this.validateForm.get('orderPhoneNumber').value ? '+374' + this.validateForm.get('orderPhoneNumber').value : null,
+                "order_phone_number": this.validateForm.get('order_phone_number').value ? '+374' + this.validateForm.get('order_phone_number').value : null,
                 "order_type": this.validateForm.get('orderType').value,
                 "status": this.radioValue
             }
@@ -603,7 +616,7 @@ export class SubrouteComponent {
             this.currentDriver = this.drivers.filter((val) => {
                 return (val.user.is_active == true)
             })
-        }        
+        }
         return calculateCount
     }
     ngOnDestroy(): void {
