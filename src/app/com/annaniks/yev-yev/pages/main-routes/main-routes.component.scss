@@ -9,3 +9,51 @@
     top: 27px;
     left: -100px;
 }
+
+.ant-table tfoot>tr>td, .ant-table tfoot>tr>th, .ant-table-tbody>tr>td, .ant-table-thead>tr>th{
+    padding: 1px 12px !important;
+}
+
+:host:ng-deep{
+    .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content{
+        display: none !important;
+    }
+}
+.list{    
+
+    padding-top: 10px;
+    margin-top: 15px;
+}
+.current-time{
+    background-color: #2CAF2D;
+}
+.active{
+    background-color: #e2e2e2 !important;
+}
+.disable{
+    color: #c1c1c1;
+}
+.error{
+    color: red;
+}
+.light{
+    color: grey;
+}
+.margin-10{
+    margin:10px 0;
+    border-top: 1px solid #cccc;
+    padding-top: 10px;
+}
+.margin-left-auto{
+    margin-left:auto
+}
+.margin-bottom-10{
+    margin-bottom: 10px;
+}
+.mr-5{
+    margin-left:5px
+}
+.scroll{
+    max-height: 360px;
+    overflow: auto;
+}

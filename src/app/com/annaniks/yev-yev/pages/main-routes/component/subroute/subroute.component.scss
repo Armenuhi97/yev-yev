@@ -7,12 +7,19 @@
         display: none !important;
     }
 }
-.w-33{
-    width: 33.3%;
-    margin-left: 5px;
+.list{    
+
+    padding-top: 10px;
+    margin-top: 15px;
+}
+.current-time{
+    background-color: #2CAF2D;
 }
 .active{
-    background-color: #e2e2e2;
+    background-color: #e2e2e2 !important;
+}
+.disable{
+    color: #c1c1c1;
 }
 .error{
     color: red;

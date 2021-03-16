@@ -51,9 +51,7 @@ export class MainRoutesService {
             "date": date
         })
     }
-    public getOrdersTypes() {
-        return this._httpClient.get(`utils/order-type/`)
-    }
+  
     public getUserByPhonenumber(phoneNumber) {
         return this._httpClient.get(`userdetails/user/?search=${phoneNumber}&user_role__code=CL`)
     }
