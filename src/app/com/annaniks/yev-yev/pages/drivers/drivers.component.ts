@@ -137,7 +137,6 @@ export class DriversComponent {
         if (this.editIndex == null) {
             this._driavesService.addUser(sendObject).pipe(takeUntil(this.unsubscribe$),
                 map((data: { driver_id: number }) => {
-                    console.log(data);
                     let routeRequests = []
                     this.addedRoutes.forEach((item) => {
                         item['user'] = data.driver_id;

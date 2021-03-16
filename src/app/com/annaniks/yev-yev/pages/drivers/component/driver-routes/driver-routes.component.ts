@@ -66,7 +66,6 @@ export class DriverRoutesComponent {
                 "user": this.userId
             }
         ).pipe(takeUntil(this.unsubscribe$)).subscribe((data) => {
-            console.log(data);
             this.driverRouteTable.push(data)
             this.currentroute.reset()
             this.closeModal()

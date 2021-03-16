@@ -196,7 +196,6 @@ export class MainRoutesComponent {
         )
     }
     private _formatDate(time, selectDate = this.selectedDate) {
-        console.log(time);
         
         let date = this.selectedDatePipe.transform(selectDate, 'yyyy-MM-dd');
         let currenTime = time.slice(0, time.indexOf(' '))
@@ -363,8 +362,6 @@ export class MainRoutesComponent {
     }
     getInfo(time, status = this.radioValue) {
         if (time) {
-            console.log(this.selectedTime);
-
 
             this.isOpenInfo = true;
             let current = this._formatDate(time)
@@ -479,8 +476,6 @@ export class MainRoutesComponent {
             calculateCount += data.person_count
         })
         if (calculateCount) {
-            console.log(this.drivers);
-
             this.currentDriver = this.drivers.filter((val) => {
                 return (+val.car_capacity >= calculateCount && val.user.is_active == true)
             })

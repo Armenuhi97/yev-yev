@@ -84,8 +84,6 @@ export class SubrouteComponent {
     isGetOrderCounts: boolean;
     @Input('isGetItem')
     set isGetItem($event) {
-        console.log($event);
-
         this.isGetOrderCounts = $event;
         if ($event) {
             this.getHourlyOrdersByDate().pipe(takeUntil(this.unsubscribe$)).subscribe()
@@ -264,13 +262,15 @@ export class SubrouteComponent {
                 data.isDisabled = true;
                 data.isActive = false
             }
-            if ((moment(time).isSameOrAfter(start) && moment(time).isBefore(end))) {
-                let element = document.getElementById(data.start);
+            if ((moment(time).isSameOrAfter(start) && moment(time).isBefore(end))) {                
+                let element = document.getElementById(this.setId(data.start,this.index));                
                 element.scrollIntoView();
                 this.currentInterval = data
             }
         }
 
     }
-
+    setId(id,index){
+        return `${id}-${index}`
+    }
 }

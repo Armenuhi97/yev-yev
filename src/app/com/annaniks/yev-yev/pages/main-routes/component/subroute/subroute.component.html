@@ -12,7 +12,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr [id]="data.start"
+                <tr [id]="setId(data.start,index)"
                     [ngClass]="{'disable':data.isDisabled,'active':data.time == selectedTime,'current-time':(currentInterval && currentInterval.start == data.start && !data.isDisabled)}"
                     class="cursor-pointer" *ngFor="let data of openTimes; let ind = index">
                     <td (click)="getInformation(data)">{{data.time}}</td>
