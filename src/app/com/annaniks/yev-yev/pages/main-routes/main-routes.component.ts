@@ -110,9 +110,7 @@ export class MainRoutesComponent {
 
 
             } else {
-                if (!this._param || (this._param && param && this._param.mainRoute !== param.mainRoute)){
-                    console.log('false');
-
+                if (!this._param || (this._param && param && this._param.mainRoute !== param.mainRoute) || (this._param && +this._param.subRoute !== +this.currentId)){
                     return this.combineObservable()
                 }else{
                     console.log('false123');
@@ -624,7 +622,7 @@ export class MainRoutesComponent {
         this.isOpenCalendar = false;
     }
 
-    changeDate(type: number) {
+    changeDate(type: number) {        
         let date = new Date(this.selectedDate)
         date.setDate(date.getDate() + type);
         this.selectedDate = new Date(date);

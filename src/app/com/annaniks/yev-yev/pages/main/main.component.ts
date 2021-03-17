@@ -2,7 +2,7 @@ import { DatePipe } from "@angular/common";
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { map, switchMap, takeUntil } from "rxjs/operators";
 import { Notification } from "../../core/models/notification";
 import { MainService } from "./main.service";
 
@@ -26,22 +26,23 @@ export class MainComponent {
     ]
     isOpenNotification: boolean = false;
     notifications: Notification[] = []
-    constructor(private _router: Router,private _datePipe:DatePipe, private _mainService: MainService) { }
+    constructor(private _router: Router, private _datePipe: DatePipe, private _mainService: MainService) { }
     ngOnInit() {
-        this.getUnseenNotifications()
+        this.getUnseenNotifications().pipe(takeUntil(this.unsubscribe$)).subscribe()
 
         setInterval(() => {
-            this.getUnseenNotifications()
+            this.getUnseenNotifications().pipe(takeUntil(this.unsubscribe$)).subscribe()
         }, 10000)
     }
     getUnseenNotifications() {
-        this._mainService.getUnseenNotifications().pipe(takeUntil(this.unsubscribe$)).subscribe((data: Notification[]) => {
-            this.notifications = data
-        })
+        return this._mainService.getUnseenNotifications().pipe(
+            map((data: Notification[]) => {
+                this.notifications = data
+            }))
     }
-    formatDate(date){
-        let selectDate=new Date(date);        
-        this._datePipe.transform(selectDate,'dd.MM.yyyy HH:mm')
+    formatDate(date) {
+        let selectDate = new Date(date);
+        this._datePipe.transform(selectDate, 'dd.MM.yyyy HH:mm')
     }
     closeNotificationItem() {
         this.isOpenNotification = false
@@ -56,6 +57,14 @@ export class MainComponent {
             mainRoute: notification.order_details.sub_route_details.main_route
         }
         return params
+    }
+    setSeenNotification(id:number) {
+        console.log(id);
+        
+        // this._mainService.setSeenNotification(id).pipe(takeUntil(this.unsubscribe$),
+        //     switchMap(() => {
+        //         return this.getUnseenNotifications()
+        //     })).subscribe()
     }
     ngOnDestroy(): void {
         this.unsubscribe$.next();

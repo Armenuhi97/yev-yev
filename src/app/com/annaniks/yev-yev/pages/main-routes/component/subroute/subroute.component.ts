@@ -34,6 +34,7 @@ export class SubrouteComponent {
     phoneNumberPrefix = new FormControl('+374')
     userId: number;
     currentInterval;
+    lastDate;
     isShowError: boolean = false;
     orderTypes: OrderType[] = [
         {
@@ -73,7 +74,7 @@ export class SubrouteComponent {
                     }
                 }
             }
-        if (this.subrouteInfo && this.subrouteInfo.selectTime) {            
+        if (this.subrouteInfo && this.subrouteInfo.selectTime) {
             let time = this.openTimes.filter((data) => {
                 return data.start == this.subrouteInfo.selectTime
             });
@@ -98,11 +99,13 @@ export class SubrouteComponent {
     }
     private _date;
     @Input('date')
-    set setDate($event) {        
-        if(this._date){
-            this.selectedTime=null;
-        }
+    set setDate($event) {
         this._date = $event;
+
+        if (this._date) {
+            this.currentInterval = null
+            this.selectedTime = null;
+        }
         if (this.subrouteInfo && this._date) {
             this.getClosedHours(this.subrouteInfo.id).pipe(
                 switchMap(() => {
@@ -116,6 +119,8 @@ export class SubrouteComponent {
 
             ).subscribe()
         }
+
+
 
     }
     openTimes = [
@@ -212,14 +217,21 @@ export class SubrouteComponent {
 
         }))
     }
-
+    changeUserStatus($event, data) {
+        if (data.closeId && $event) {
+            this._mainRouteService.openHours(data.closeId).pipe(takeUntil(this.unsubscribe$)).subscribe()
+        } else {
+            let current = this._formatDate(data.time)
+            this._mainRouteService.closeHours(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe()
+        }
+    }
 
     check(item) {
         return item ? +item : 0
     }
 
     getInformation(time) {
-        this.selectedTime = time.time;        
+        this.selectedTime = time.time;
         this._info.emit({ timeItem: time, time: time.time })
         // this.getInfo(time, status).subscribe()
     }
@@ -258,7 +270,6 @@ export class SubrouteComponent {
         if (moment(selectedDate).isAfter(currentDate)) {
             data.isDisabled = false;
         }
-
         if (moment(selectedDate).isSame(currentDate)) {
             if ((moment(time).isSameOrAfter(start) && moment(time).isBefore(end)) || (moment(time).isBefore(start))) {
                 data.isDisabled = false
