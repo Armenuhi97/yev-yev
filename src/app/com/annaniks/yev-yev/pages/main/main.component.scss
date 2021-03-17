@@ -18,6 +18,39 @@ mat-toolbar{
     color: white;
     padding: 10px;
 }
+.notification{
+    position: relative;
+    svg{
+        cursor: pointer;
+        color: white;
+    }
+    .notification-item{
+        position: absolute;
+        top: 33px;
+        background: white;
+        height: auto;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 9999;
+        width: fit-content;
+        right: 0;
+        color: black;
+        padding:7px;
+        .items{
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+            &:hover{
+                background: #e4e4e4;
+            }
+            .item{
+                font-size: 15px;
+               
+                margin-left: 5px;
+            }
+        }
+      
+    }
+}
 .main-content{
     margin: 10px;
 }

@@ -12,7 +12,7 @@ export class LoaderInterceptor implements HttpInterceptor {
 
   constructor(private loaderService: LoaderService) {
       this.urlsToNotUse = [
-    //   'services/search-service/.+',
+      'notifications/.+',
     //   'products/search-product/.+'
     ];
   }
@@ -40,16 +40,20 @@ export class LoaderInterceptor implements HttpInterceptor {
   }
 
   private isValidRequestForInterceptor(requestUrl: string): boolean {    
-    const positionIndicator = environment.API_URL;
-    const position = requestUrl.indexOf(positionIndicator);
-    if (position > 0) {
-      const destination = requestUrl.substr(position + positionIndicator.length);
+    // const positionIndicator = environment.API_URL;
+    // const position = requestUrl.indexOf(positionIndicator);
+    // console.log(requestUrl);
+    
+    // if (position > 0) {
+      const destination = requestUrl
+      // .substr(position + positionIndicator.length);
+      
       for (const address of this.urlsToNotUse) {
         if (new RegExp(address).test(destination)) {
           return false;
         }
       }
-    }
+    // }
     return true;
   }
 }

@@ -1,4 +1,4 @@
-<nz-tabset class="main-routes" (nzSelectedIndexChange)="onChangeTab($event)">
+<nz-tabset class="main-routes" [nzSelectedIndex]="selectIndex" (nzSelectedIndexChange)="onChangeTab($event)">
     <nz-tab *ngFor="let item of mainRoutes" [nzTitle]="item.route_name">
         <div class="d-flex align-items-center justify-content-center">
             <div class="cursor-pointer d-flex" (click)="changeDate(-1)"><svg xmlns="http://www.w3.org/2000/svg"
@@ -26,19 +26,20 @@
         <div nz-row [nzGutter]="24">
             <div nz-col [nzSpan]="10">
                 <div *ngFor="let item of subRouteInfos;let i=index">
-                    <app-subroute [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)" [index]="i" [info]="item"
-                        (resetItem)="resetItem($event)" [date]="selectedDate">
+                    <app-subroute [selectInfo]="selectInfo" [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)"
+                        [index]="i" [info]="item" (resetItem)="resetItem($event)" [date]="selectedDate">
                     </app-subroute>
                 </div>
             </div>
-            <div nz-col [nzSpan]="14" *ngIf="isOpenInfo" nz-col >
+            <div nz-col [nzSpan]="14" *ngIf="isOpenInfo" nz-col>
                 <nz-radio-group [(ngModel)]="radioValue" (ngModelChange)="changeStatus($event)">
                     <label nz-radio nzValue="approved">Ընդունված</label>
                     <label nz-radio nzValue="pending">Սպասման մեջ</label>
                 </nz-radio-group>
                 <div>
                     <div class="title-container">
-                        <button *ngIf="timeItem && !timeItem.isDisabled" class="add-essence" nz-button nzType="primary" (click)="showModal()">
+                        <button [disabled]="timeItem.isDisabled" class="add-essence" nz-button nzType="primary"
+                            (click)="showModal()">
                             Ավելացնել ուղևոր
                         </button>
                     </div>
@@ -70,15 +71,18 @@
                                     <td>{{moderator?.order_type_details?.name_hy}}</td>
                                     <td>{{moderator?.person_count}}</td>
                                     <td (click)="onEditOrder(ind)" class="action-button edit" style="width:10px"><i
-                                            *ngIf="!moderator.is_in_approved_orders && timeItem && !timeItem.isDisabled" nz-icon nzType="edit"></i>
+                                            *ngIf="!moderator.is_in_approved_orders && timeItem && !timeItem.isDisabled"
+                                            nz-icon nzType="edit"></i>
                                     </td>
-                                    <td *ngIf="radioValue == 'approved'"> <label *ngIf="timeItem && !timeItem.isDisabled"
+                                    <td *ngIf="radioValue == 'approved'"> <label
+                                            *ngIf="timeItem && !timeItem.isDisabled"
                                             [disabled]="moderator.is_in_approved_orders || moderator?.isDisabled"
                                             nz-checkbox [(ngModel)]="moderator.isSelect"
                                             (ngModelChange)="selectCheckbox($event,ind)"></label>
                                     </td>
                                     <td class="action-button delete" style="width:10px">
-                                        <a *ngIf="timeItem && !timeItem.isDisabled" [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
+                                        <a *ngIf="timeItem && !timeItem.isDisabled" [nzCancelText]="'Ոչ'"
+                                            [nzOkText]="'Այո'" nz-popconfirm
                                             nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
                                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="onDeleteOrder(ind)">
                                             <!-- <i nz-icon nzType="edit"></i> -->
@@ -242,7 +246,7 @@
                         Ուղևորների քանակը {{userCounts}}
                     </div>
                 </div>
-                <div *ngIf="timeItem && !timeItem.isDisabled" class="margin-bottom-10" nz-row [nzGutter]="24">
+                <div class="margin-bottom-10" nz-row [nzGutter]="24">
                     <div nz-col [nzSpan]="12">
                         <nz-select class="w-100" nzShowSearch [(ngModel)]="driver">
                             <nz-option *ngFor="let dr of currentDriver" [nzValue]="dr.id"
@@ -251,8 +255,8 @@
                         </nz-select>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <button nz-button nzType="text" nz-button nzType="primary"
-                            (click)="addOrderByDriver()">Ավելացնել</button>
+                        <button [disabled]="timeItem.isDisabled" nz-button nzType="text" nz-button
+                            nzType="primary" (click)="addOrderByDriver()">Ավելացնել</button>
                     </div>
                 </div>
 
@@ -275,19 +279,20 @@
                                 <td>{{data.driver_details.user.first_name}} {{data.driver_details.user.last_name}}</td>
                                 <td> {{data.driver_details.car_model}} - {{data.seat_count}}</td>
                                 <td class="action-button edit" style="width:10px">
-                                    <svg *ngIf="timeItem && !timeItem.isDisabled"  (click)="addSelectedOrder(index)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green"
+                                    <svg *ngIf="timeItem && !timeItem.isDisabled" (click)="addSelectedOrder(index)"
+                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green"
                                         class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
                                         <path
                                             d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
                                     </svg>
                                 </td>
-
-                                <td  class="action-button edit" style="width:10px"><i (click)="onEditOrderMembers(index)" *ngIf="timeItem && !timeItem.isDisabled"
+                                <!--  *ngIf="timeItem && !timeItem.isDisabled" -->
+                                <td class="action-button edit" style="width:10px"><i [class.disabled]="timeItem.isDisabled" (click)="onEditOrderMembers(index)"
                                         nz-icon nzType="edit"></i>
                                 </td>
                                 <td class="action-button delete" style="width:10px">
-                                    <a *ngIf="timeItem && !timeItem.isDisabled" [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
-                                        (nzOnConfirm)="onDeleteApprovedOrder(index)"
+                                    <a [class.disabled]="timeItem.isDisabled" [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'"
+                                        nz-popconfirm (nzOnConfirm)="onDeleteApprovedOrder(index)"
                                         nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել" nzPopconfirmPlacement="bottom"
                                         class="d-flex">
                                         <!-- <i nz-icon nzType="edit"></i> -->
@@ -300,7 +305,8 @@
                                         </svg>
                                     </a>
                                 </td>
-                                <td > <button *ngIf="timeItem && !timeItem.isDisabled" nz-button nzType="text" nz-button nzType="primary">Ուղարկել</button></td>
+                                <td> <button [disabled]="timeItem.isDisabled" nz-button nzType="text" nz-button
+                                        nzType="primary">Ուղարկել</button></td>
                             </tr>
                         </tbody>
                     </nz-table>

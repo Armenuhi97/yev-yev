@@ -1,6 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Component } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
 import { NzMessageService } from "ng-zorro-antd/message";
 import { forkJoin, of, Subject, throwError } from "rxjs";
 import { catchError, map, switchMap, takeUntil } from "rxjs/operators";
@@ -21,6 +22,7 @@ import { MainRoutesService } from "./main-routes.service";
     providers: [DatePipe]
 })
 export class MainRoutesComponent {
+    selectIndex: number;
     isGetItem: boolean = false;
     userInfo: OrdersByHours[] = []
     currentDriver = []
@@ -52,6 +54,8 @@ export class MainRoutesComponent {
     drivers: User[];
     timeItem;
     windowHeight: number;
+    selectInfo;
+    private _param;
     orderTypes: OrderType[] = [
         {
             id: 0,
@@ -66,15 +70,58 @@ export class MainRoutesComponent {
             name_en: 'Ուղեբեռ'
         }
     ];
-    constructor(private _mainRoutesService: MainRoutesService, private selectedDatePipe: DatePipe,
+    constructor(private _mainRoutesService: MainRoutesService, private _datePipe: DatePipe,
         private _fb: FormBuilder,
+        private _activatedRoute: ActivatedRoute,
         private _mainRouteService: MainRoutesService,
         private _appService: AppService,
         private nzMessages: NzMessageService) {
     }
     ngOnInit() {
         this.combine();
-        this._initForm()
+        this._initForm();
+    }
+    private _checkQueryParams() {
+        return this._activatedRoute.queryParams.pipe(takeUntil(this.unsubscribe$), switchMap((param) => {
+
+            if (param.date && (!this._param || (this._param && (this._param.data !== param.data || this._param.subRoute !== param.subRoute || this._param.mainRoute !== param.mainRoute)))) {
+                console.log('yes');
+                this._param = param
+                this.userInfo = [];
+                this.isOpenInfo = false;
+                let item = this.mainRoutes.filter((val) => { return val.id == +param.mainRoute });
+                if (item && item[0]) {
+                    let index = this.mainRoutes.indexOf(item[0]);
+                    this.selectIndex = index;
+                }
+                this.selectedDate = param.date
+                this.currentId = +param.mainRoute;
+                let time = this._datePipe.transform(param.date, 'HH:mm');
+                return this.combineObservable(param.subRoute, time).pipe(
+                    map(() => {
+                        for (let i = 0; i < this.subRouteInfos.length - 1; i++) {
+                            // let item=Object.assign(this.subRouteInfos[i])
+                            if (this.subRouteInfos[i].id == param.subRoute) {
+                                this.subRouteInfos[i] = Object.assign(this.subRouteInfos[i], { selectInfo: time })
+                            }
+                        }
+                    })
+                )
+
+
+            } else {
+                if (!this._param || (this._param && param && this._param.mainRoute !== param.mainRoute)){
+                    console.log('false');
+
+                    return this.combineObservable()
+                }else{
+                    console.log('false123');
+
+                    return of()
+                }
+            }
+        }))
+
     }
     private _initForm() {
         this.validateForm = this._fb.group({
@@ -151,9 +198,18 @@ export class MainRoutesComponent {
         }))
     }
 
-    getRouteInfo(id) {
+    getRouteInfo(id, subrouteId?, time?) {
         return this._mainRoutesService.getSubRoute(id).pipe(
             map((data: ServerResponce<any>) => {
+                if (subrouteId && time) {
+                    data.results = data.results.map((data) => {
+                        let selectTime;
+                        if (+data.id == +subrouteId) {
+                            selectTime = time
+                        }
+                        return Object.assign(data, { selectTime: selectTime })
+                    })
+                }
                 this.subRouteInfos = data.results;
                 this.isGetItem = true
                 // return this.getHourlyOrdersByDate(id)
@@ -163,16 +219,22 @@ export class MainRoutesComponent {
         return `${dr.user.first_name} ${dr.user.last_name} (${dr.car_model}) (${dr.car_capacity})`
     }
     onChangeTab($event) {
-        this.currentId = this.mainRoutes[$event].id
-        this.combineObservable()
+        this.userInfo = [];
+        this.isOpenInfo = false;
+        this.selectIndex = $event
+        this.currentId = this.mainRoutes[this.selectIndex].id
+        this._checkQueryParams().pipe(takeUntil(this.unsubscribe$)).subscribe()
+        // 
 
     }
-    combineObservable() {
+    combineObservable(subrouteId?: number, time?: string) {
+        console.log('1');
+
         const combine = forkJoin(
-            this.getRouteInfo(this.currentId),
+            this.getRouteInfo(this.currentId, subrouteId, time),
             this.getDrivers()
         )
-        combine.pipe(takeUntil(this.unsubscribe$)).subscribe()
+        return combine
     }
     getDrivers() {
         return this._mainRoutesService.getDrivers(this.currentId).pipe(
@@ -196,8 +258,8 @@ export class MainRoutesComponent {
         )
     }
     private _formatDate(time, selectDate = this.selectedDate) {
-        
-        let date = this.selectedDatePipe.transform(selectDate, 'yyyy-MM-dd');
+
+        let date = this._datePipe.transform(selectDate, 'yyyy-MM-dd');
         let currenTime = time.slice(0, time.indexOf(' '))
         let current = `${date} ${currenTime}`;
         return current
@@ -245,13 +307,13 @@ export class MainRoutesComponent {
 
     }
     onOrderSave() {
-        
-        let item = this.orderMembers.filter((data) => { return (data.isSelect == true) })
+        if (this.timeItem && !this.timeItem.isDisabled) {
+            let item = this.orderMembers.filter((data) => { return (data.isSelect == true) })
 
-        let orderIds = item.map((data) => {
-            return { id: data.order.id }
-        });
-        // if (orderIds && orderIds.length) {
+            let orderIds = item.map((data) => {
+                return { id: data.order.id }
+            });
+            // if (orderIds && orderIds.length) {
             let sendObject = {
                 "sub_route": this.subRouteInfo.id,
                 "date": this._formatDate(this.selectedTime),
@@ -265,8 +327,8 @@ export class MainRoutesComponent {
                     this.nzMessages.success(Messages.success)
 
                 })).subscribe()
-        // }
-
+            // }
+        }
     }
     nzPageIndexChange(page: number) { }
 
@@ -362,9 +424,9 @@ export class MainRoutesComponent {
     }
     getInfo(time, status = this.radioValue) {
         if (time) {
-
             this.isOpenInfo = true;
-            let current = this._formatDate(time)
+            let current = this._formatDate(time);
+
             return this._mainRouteService.getOrdersByHour(this.subRouteInfo.id, current, status).pipe(takeUntil(this.unsubscribe$),
                 switchMap((data: OrdersByHours[]) => {
                     this.userInfo = data;
@@ -475,15 +537,16 @@ export class MainRoutesComponent {
         item.forEach((data) => {
             calculateCount += data.person_count
         })
-        if (calculateCount) {
-            this.currentDriver = this.drivers.filter((val) => {
-                return (+val.car_capacity >= calculateCount && val.user.is_active == true)
-            })
-        } else {
-            this.currentDriver = this.drivers.filter((val) => {
-                return (val.user.is_active == true)
-            })
-        }
+        if (this.drivers)
+            if (calculateCount) {
+                this.currentDriver = this.drivers.filter((val) => {
+                    return (+val.car_capacity >= calculateCount && val.user.is_active == true)
+                })
+            } else {
+                this.currentDriver = this.drivers.filter((val) => {
+                    return (val.user.is_active == true)
+                })
+            }
         return calculateCount
     }
     public onEditOrder(index) {
@@ -528,6 +591,7 @@ export class MainRoutesComponent {
         }
     }
     public onEditOrderMembers(index) {
+
         this.isOrderEditing = true;
         this.editOrderIndex = index;
         this.orderMembers = this.approvedOrders[this.editOrderIndex].approved_order_orders;
@@ -539,7 +603,7 @@ export class MainRoutesComponent {
 
     getInformation($event, index) {
         if ($event) {
-            this.timeItem=$event.timeItem
+            this.timeItem = $event.timeItem
             this.selectedTime = $event.time;
             this.subRouteInfo = this.subRouteInfos[index]
             this.getInfo($event.time).subscribe()
@@ -549,11 +613,13 @@ export class MainRoutesComponent {
     openCalendar($event) {
         this.isOpenCalendar = true;
         if ($event) {
+            this.userInfo = [];
+            this.isOpenInfo = false;
             this.isGetItem = true
             // this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
         }
-
     }
+
     closeCalendar() {
         this.isOpenCalendar = false;
     }

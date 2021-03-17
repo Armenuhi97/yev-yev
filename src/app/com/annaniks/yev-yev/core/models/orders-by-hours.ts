@@ -51,6 +51,7 @@ export interface OrdersByHours {
 export interface SubrouteDetails {
     countList?: any
     end_point: number
+    selectTime?:string
     end_point_address_en: string
     end_point_address_hy: string
     end_point_address_ru: string

@@ -15,5 +15,8 @@ export class MainService {
     formData.append('file_url', file);
     return this.httpClient.post<{ url: string }>(`files/files/`, formData);
   }
+  public getUnseenNotifications() {
+    return this.httpClient.get(`notifications/get-unseen-notifications/`)
+  }
 
 }
