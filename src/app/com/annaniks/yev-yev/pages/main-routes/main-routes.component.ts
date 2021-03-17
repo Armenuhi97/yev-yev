@@ -1,7 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Component } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { NzMessageService } from "ng-zorro-antd/message";
 import { forkJoin, of, Subject, throwError } from "rxjs";
 import { catchError, map, switchMap, takeUntil } from "rxjs/operators";
@@ -56,6 +56,7 @@ export class MainRoutesComponent {
     windowHeight: number;
     selectInfo;
     private _param;
+    private _lastMainRouteId: number;
     orderTypes: OrderType[] = [
         {
             id: 0,
@@ -70,13 +71,17 @@ export class MainRoutesComponent {
             name_en: 'Ուղեբեռ'
         }
     ];
+    isGetFunction: boolean = true;
+    isGet: boolean = true
     constructor(private _mainRoutesService: MainRoutesService, private _datePipe: DatePipe,
         private _fb: FormBuilder,
         private _activatedRoute: ActivatedRoute,
         private _mainRouteService: MainRoutesService,
         private _appService: AppService,
+        private _router: Router,
         private nzMessages: NzMessageService) {
     }
+    
     ngOnInit() {
         this.combine();
         this._initForm();
@@ -84,39 +89,43 @@ export class MainRoutesComponent {
     private _checkQueryParams() {
         return this._activatedRoute.queryParams.pipe(takeUntil(this.unsubscribe$), switchMap((param) => {
 
-            if (param.date && (!this._param || (this._param && (this._param.data !== param.data || this._param.subRoute !== param.subRoute || this._param.mainRoute !== param.mainRoute)))) {
-                console.log('yes');
-                this._param = param
-                this.userInfo = [];
-                this.isOpenInfo = false;
-                let item = this.mainRoutes.filter((val) => { return val.id == +param.mainRoute });
-                if (item && item[0]) {
-                    let index = this.mainRoutes.indexOf(item[0]);
-                    this.selectIndex = index;
+            if (this.isGet) {
+                this.isGet=true
+                if (param.date && (!this._param || (this._param && (this._param.data !== param.data || this._param.subRoute !== param.subRoute || this._param.mainRoute !== param.mainRoute)))) {
+                    this._param = param
+                    this.userInfo = [];
+                    this.isOpenInfo = false;
+                    let item = this.mainRoutes.filter((val) => { return val.id == +param.mainRoute });
+                    if (item && item[0]) {
+                        let index = this.mainRoutes.indexOf(item[0]);
+                        this.selectIndex = index;
+                    }
+                    this.selectedDate = param.date
+                    this.currentId = +param.mainRoute;
+                    this.isGetFunction = false;
+                    let time = this._datePipe.transform(param.date, 'HH:mm');
+
+                    return this.combineObservable(param.subRoute, time).pipe(
+                        map(() => {
+                            this.isGet=false
+                            this._router.navigate([], { queryParams: {} });
+
+                        })
+                    )
+
+
+                } else {
+                    if (!this._param || (this._param && +this._param.mainRoute !== +this.currentId ) || (+this._lastMainRouteId !== +this.currentId)) {
+                        console.log('yess');
+
+                        this._lastMainRouteId = this.currentId;
+                        return this.combineObservable()
+                    } else {
+                        return of()
+                    }
                 }
-                this.selectedDate = param.date
-                this.currentId = +param.mainRoute;
-                let time = this._datePipe.transform(param.date, 'HH:mm');
-                return this.combineObservable(param.subRoute, time).pipe(
-                    map(() => {
-                        for (let i = 0; i < this.subRouteInfos.length - 1; i++) {
-                            // let item=Object.assign(this.subRouteInfos[i])
-                            if (this.subRouteInfos[i].id == param.subRoute) {
-                                this.subRouteInfos[i] = Object.assign(this.subRouteInfos[i], { selectInfo: time })
-                            }
-                        }
-                    })
-                )
-
-
             } else {
-                if (!this._param || (this._param && param && this._param.mainRoute !== param.mainRoute) || (this._param && +this._param.subRoute !== +this.currentId)){
-                    return this.combineObservable()
-                }else{
-                    console.log('false123');
-
-                    return of()
-                }
+                return of()
             }
         }))
 
@@ -217,17 +226,24 @@ export class MainRoutesComponent {
         return `${dr.user.first_name} ${dr.user.last_name} (${dr.car_model}) (${dr.car_capacity})`
     }
     onChangeTab($event) {
+
         this.userInfo = [];
         this.isOpenInfo = false;
         this.selectIndex = $event
-        this.currentId = this.mainRoutes[this.selectIndex].id
-        this._checkQueryParams().pipe(takeUntil(this.unsubscribe$)).subscribe()
+        this.currentId = this.mainRoutes[this.selectIndex].id;
+        console.log($event);
+        if (this.isGetFunction) {
+            console.log(123456);
+
+            this._checkQueryParams().pipe(takeUntil(this.unsubscribe$)).subscribe()
+        } else {
+            this.isGetFunction = true
+        }
+
         // 
 
     }
     combineObservable(subrouteId?: number, time?: string) {
-        console.log('1');
-
         const combine = forkJoin(
             this.getRouteInfo(this.currentId, subrouteId, time),
             this.getDrivers()
@@ -622,7 +638,7 @@ export class MainRoutesComponent {
         this.isOpenCalendar = false;
     }
 
-    changeDate(type: number) {        
+    changeDate(type: number) {
         let date = new Date(this.selectedDate)
         date.setDate(date.getDate() + type);
         this.selectedDate = new Date(date);

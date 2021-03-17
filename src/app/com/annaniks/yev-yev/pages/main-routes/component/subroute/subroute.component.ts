@@ -60,7 +60,9 @@ export class SubrouteComponent {
     set setInfo($event) {
         this.subrouteInfo = $event;
         //set open times
-        if (this.subrouteInfo && this.subrouteInfo.countList)
+       
+        if (this.subrouteInfo && this.subrouteInfo.countList){
+          
             for (let item of this.subrouteInfo.countList.orders) {
                 let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
                 for (let time of this.openTimes) {
@@ -74,11 +76,12 @@ export class SubrouteComponent {
                     }
                 }
             }
+        }
         if (this.subrouteInfo && this.subrouteInfo.selectTime) {
             let time = this.openTimes.filter((data) => {
                 return data.start == this.subrouteInfo.selectTime
             });
-
+            
             this.getInformation(time[0])
         }
     }
@@ -102,7 +105,7 @@ export class SubrouteComponent {
     set setDate($event) {
         this._date = $event;
 
-        if (this._date) {
+        if (this._date) {            
             this.currentInterval = null
             this.selectedTime = null;
         }
@@ -164,7 +167,9 @@ export class SubrouteComponent {
         this.windowHeight = (window.innerHeight - 220) / 2;
     }
 
-    ngOnInit() { }
+    ngOnInit() {
+
+     }
 
     getHourlyOrdersByDate() {
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
@@ -232,6 +237,7 @@ export class SubrouteComponent {
 
     getInformation(time) {
         this.selectedTime = time.time;
+                
         this._info.emit({ timeItem: time, time: time.time })
         // this.getInfo(time, status).subscribe()
     }
