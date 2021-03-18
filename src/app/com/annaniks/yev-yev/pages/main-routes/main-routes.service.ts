@@ -79,7 +79,13 @@ export class MainRoutesService {
         return this._httpClient.post(`order/approve-order/${id}/`,{})
     }
     public deleteOrders(id:number){
-        return this._httpClient.delete(`order/order/${id}/`,{})
+        return this._httpClient.post(`order/cancel-order/${id}/`,{})
 
+    }
+    public approveCancelation(id:number){
+        return this._httpClient.post(`order/approve-cancelation-order/${id}/`,{})
+    }
+    public cancelCancelation(id:number){
+        return this._httpClient.post(`order/cancel-cancelation-order/${id}/`,{})
     }
 }

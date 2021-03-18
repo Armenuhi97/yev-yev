@@ -272,23 +272,23 @@ export class SubrouteComponent {
             data.isDisabled = true;
             data.isActive = false
         }
-
         if (moment(selectedDate).isAfter(currentDate)) {
             data.isDisabled = false;
         }
-        if (moment(selectedDate).isSame(currentDate)) {
+        if (moment(selectedDate).isSame(currentDate)) {            
             if ((moment(time).isSameOrAfter(start) && moment(time).isBefore(end)) || (moment(time).isBefore(start))) {
                 data.isDisabled = false
             } else {
                 data.isDisabled = true;
                 data.isActive = false
-            }
+            }               
             if ((moment(time).isSameOrAfter(start) && moment(time).isBefore(end))) {
+                
                 let element = document.getElementById(this.setId(data.start, this.index));
                 element.scrollIntoView();
                 this.currentInterval = data
             }
-        }
+        }        
 
     }
     setId(id: string, index: number): string {

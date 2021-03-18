@@ -52,7 +52,7 @@
                                     <th>Հեռ.</th>
                                     <th>Հասցե</th>
                                     <th>Տիպ</th>
-                                    <th>Տեղերի քանակը</th>
+                                    <th>Տեղ</th>
                                     <th></th>
                                     <th *ngIf="radioValue == 'approved'"></th>
                                     <th></th>
@@ -68,7 +68,7 @@
                                         <span [class.light]="checkAddress(moderator) == 'Հասցե չկա'">
                                             {{checkAddress(moderator)}}</span>
                                         <!-- {{moderator?.start_address}} - {{moderator?.end_address}}</td> -->
-                                    <td>{{moderator?.order_type_details?.name_hy}}</td>
+                                    <td>{{getOrderType(moderator?.order_type)}}</td>
                                     <td>{{moderator?.person_count}}</td>
                                     <td (click)="onEditOrder(ind)" class="action-button edit" style="width:10px"><i
                                             *ngIf="!moderator.is_in_approved_orders && timeItem && !timeItem.isDisabled"
@@ -81,7 +81,7 @@
                                             (ngModelChange)="selectCheckbox($event,ind)"></label>
                                     </td>
                                     <td class="action-button delete" style="width:10px">
-                                        <a *ngIf="timeItem && !timeItem.isDisabled" [nzCancelText]="'Ոչ'"
+                                        <a *ngIf="(timeItem && !timeItem.isDisabled) && !moderator.is_in_approved_orders" [nzCancelText]="'Ոչ'"
                                             [nzOkText]="'Այո'" nz-popconfirm
                                             nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
                                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="onDeleteOrder(ind)">
@@ -274,7 +274,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="cursor-pointer" *ngFor="let data of approvedOrders; let index = index">
+                            <tr [ngClass]="{'color-red':isCanceledByClient(data)}" class="cursor-pointer" *ngFor="let data of approvedOrders; let index = index">
                                 <td>{{index+1}}</td>
                                 <td>{{data.driver_details.user.first_name}} {{data.driver_details.user.last_name}}</td>
                                 <td> {{data.driver_details.car_model}} - {{data.seat_count}}</td>
@@ -310,7 +310,7 @@
                             </tr>
                         </tbody>
                     </nz-table>
-                    <nz-modal nzWidth="870px" [nzTitle]="'Փոփոխել'" [nzCancelText]="'Փակել'"
+                    <nz-modal nzWidth="1100px" [nzTitle]="'Փոփոխել'" [nzCancelText]="'Փակել'"
                         (nzOnCancel)="handleCancel()" [nzOkText]="'Հատատել'" (nzOnOk)="onOrderSave()"
                         [(nzVisible)]="isVisibleOrderInfo">
                         <div>
@@ -322,7 +322,9 @@
                                         <th>Հեռ.</th>
                                         <th>Հասցե</th>
                                         <th>Տիպ</th>
-                                        <th>Տեղերի քանակը</th>
+                                        <th>Տեղ.</th>
+                                        <th></th>
+                                        <th></th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -333,10 +335,14 @@
                                             {{moderator?.order?.client_details?.user?.last_name}}</td>
                                         <td>{{moderator?.order?.client_details?.phone_number}}</td>
                                         <td>{{moderator?.order?.start_address}} {{moderator?.end_address}}</td>
-                                        <td>{{moderator?.order?.order_type_details?.name_hy}}</td>
+                                        <td>{{getOrderType(moderator?.order?.order_type)}}</td>
                                         <td>{{moderator?.order?.person_count}}</td>
                                         <td> <label nz-checkbox [(ngModel)]="moderator.isSelect"></label>
                                         </td>
+                                        <td><button (click)="approveCancelation(moderator.order.id)" *ngIf="moderator.order.canceled_by_client" nz-button nzType="text" nz-button
+                                            nzType="primary"  class="color-green">Հաստատել</button></td>
+                                        <td><button (click)="cancelCancelation(moderator.order.id)"  *ngIf="moderator.order.canceled_by_client" nz-button nzType="text" nz-button
+                                            nzType="nzDanger">Չեղարկել</button></td>
                                     </tr>
                                 </tbody>
                             </nz-table>

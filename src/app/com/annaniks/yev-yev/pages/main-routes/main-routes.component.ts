@@ -71,6 +71,7 @@ export class MainRoutesComponent {
             name_en: 'Ուղեբեռ'
         }
     ];
+
     isGetFunction: boolean = true;
     isGet: boolean = true
     constructor(private _mainRoutesService: MainRoutesService, private _datePipe: DatePipe,
@@ -81,7 +82,7 @@ export class MainRoutesComponent {
         private _router: Router,
         private nzMessages: NzMessageService) {
     }
-    
+
     ngOnInit() {
         this.combine();
         this._initForm();
@@ -90,7 +91,7 @@ export class MainRoutesComponent {
         return this._activatedRoute.queryParams.pipe(takeUntil(this.unsubscribe$), switchMap((param) => {
 
             if (this.isGet) {
-                this.isGet=true
+                this.isGet = true
                 if (param.date && (!this._param || (this._param && (this._param.data !== param.data || this._param.subRoute !== param.subRoute || this._param.mainRoute !== param.mainRoute)))) {
                     this._param = param
                     this.userInfo = [];
@@ -104,10 +105,11 @@ export class MainRoutesComponent {
                     this.currentId = +param.mainRoute;
                     this.isGetFunction = false;
                     let time = this._datePipe.transform(param.date, 'HH:mm');
-
+                    
                     return this.combineObservable(param.subRoute, time).pipe(
                         map(() => {
-                            this.isGet=false
+                            this.isGet = false;
+                            this._param = {}
                             this._router.navigate([], { queryParams: {} });
 
                         })
@@ -115,9 +117,8 @@ export class MainRoutesComponent {
 
 
                 } else {
-                    if (!this._param || (this._param && +this._param.mainRoute !== +this.currentId ) || (+this._lastMainRouteId !== +this.currentId)) {
-                        console.log('yess');
-
+                    if (!this._param || (this._param && +this._param.mainRoute !== +this.currentId) || (+this._lastMainRouteId !== +this.currentId)) {
+                        
                         this._lastMainRouteId = this.currentId;
                         return this.combineObservable()
                     } else {
@@ -125,10 +126,24 @@ export class MainRoutesComponent {
                     }
                 }
             } else {
+                this.isGet = true
                 return of()
             }
         }))
 
+    }
+    public isCanceledByClient(data) {
+        let canceledByClient: boolean = false;
+        for (let item of data.approved_order_orders) {
+            if (item.order.canceled_by_client) {
+                canceledByClient = true;
+                break
+            }
+        }
+        return canceledByClient
+    }
+    getOrderType(type: number): string {
+        return this._appService.checkPropertyValue(this._appService.checkPropertyValue(this.orderTypes.filter((val) => { return +val.id == +type }), 0), 'name_en')
     }
     private _initForm() {
         this.validateForm = this._fb.group({
@@ -231,16 +246,11 @@ export class MainRoutesComponent {
         this.isOpenInfo = false;
         this.selectIndex = $event
         this.currentId = this.mainRoutes[this.selectIndex].id;
-        console.log($event);
         if (this.isGetFunction) {
-            console.log(123456);
-
             this._checkQueryParams().pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
             this.isGetFunction = true
         }
-
-        // 
 
     }
     combineObservable(subrouteId?: number, time?: string) {
@@ -304,7 +314,7 @@ export class MainRoutesComponent {
     }
 
     public openOrderModal() {
-        this.isVisibleOrderInfo = true
+        this.isVisibleOrderInfo = true;
     }
     handleCancel(): void {
         this.isVisible = false;
@@ -343,6 +353,25 @@ export class MainRoutesComponent {
                 })).subscribe()
             // }
         }
+    }
+    cancelCancelation(id: number) {
+        this._mainRouteService.cancelCancelation(id).pipe(takeUntil(this.unsubscribe$),
+            map(() => {
+                this.closeModal();
+                this.nzMessages.success(Messages.success)
+
+                this.getInfo(this.selectedTime).subscribe();
+            })).subscribe()
+    }
+    approveCancelation(id: number) {
+        this._mainRouteService.approveCancelation(id).pipe(takeUntil(this.unsubscribe$),
+            map(() => {
+                this.closeModal();
+                this.nzMessages.success(Messages.success)
+
+                this.getInfo(this.selectedTime).subscribe();
+
+            })).subscribe()
     }
     nzPageIndexChange(page: number) { }
 
@@ -523,12 +552,6 @@ export class MainRoutesComponent {
                 )
                 .subscribe(() => {
                     this.getInfo(this.selectedTime).subscribe()
-                    // this.driverRouteTable.splice(index, 1);
-
-                    // this.driverRouteTable = [...this.driverRouteTable];
-                    // if (!this.driverRouteTable.length && this.pageIndex !== 1) {
-                    //     this.nzPageIndexChange(this.pageIndex - 1)
-                    // }
                     this.nzMessages.success(Messages.success)
                 },
                     () => {
