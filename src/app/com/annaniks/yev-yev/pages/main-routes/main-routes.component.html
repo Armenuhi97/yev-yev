@@ -317,8 +317,10 @@
                                         </svg>
                                     </a>
                                 </td>
-                                <td> <button *ngIf="!data.viber_message_sended" (click)="send(data)" [disabled]="timeItem.isDisabled" nz-button nzType="text" nz-button
-                                        nzType="primary">Ուղարկել</button></td>
+                                <td> <img src="assets/viber.png" *ngIf="!data.viber_message_sended || timeItem.isDisabled" (click)="send(data)" style="height: 25px; width: 25px;" alt="">
+                                    <!-- <button *ngIf="!data.viber_message_sended" (click)="send(data)" [disabled]="timeItem.isDisabled" nz-button nzType="text" nz-button
+                                        nzType="primary">Ուղարկել</button> -->
+                                    </td>
                             </tr>
                         </tbody>
                     </nz-table>

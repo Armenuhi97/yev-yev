@@ -128,12 +128,14 @@ export class MainRoutesComponent {
             if (result.status_message == 'ok') {
                 this.nzMessages.success(Messages.success);
                 data.viber_message_sended = true
-
             } else {
                 this.nzMessages.error(Messages.fail);
-
             }
-        })
+        },
+            () => {
+                this.nzMessages.error(Messages.fail);
+
+            })
     }
     public isCanceledByClient(data) {
         let canceledByClient: boolean = false;
@@ -614,21 +616,23 @@ export class MainRoutesComponent {
         // 0
         // 1 nstatex
         // 2 avtomeqena      
-        let type = this.userInfo[index].order_type_details.id;
-        let id = this.userInfo[index].id;
-        for (let item of this.userInfo) {
-            if (type == 2) {
-                if ((item.order_type_details.id == 1 || item.order_type_details.id == 2) && (+id !== +item.id)) {
-                    // item.isSelect = false;
-                    item.isDisabled = $event ? true : false
-
-                }
-            } else {
-                if (type == 1) {
-                    if ((item.order_type_details.id == 2) && item.id !== id) {
+        if (this.userInfo[index].order_type_details && this.userInfo[index].order_type_details.id) {
+            let type = this.userInfo[index].order_type_details.id;
+            let id = this.userInfo[index].id;
+            for (let item of this.userInfo) {
+                if (type == 2) {
+                    if ((item.order_type_details.id == 1 || item.order_type_details.id == 2) && (+id !== +item.id)) {
                         // item.isSelect = false;
                         item.isDisabled = $event ? true : false
 
+                    }
+                } else {
+                    if (type == 1) {
+                        if ((item.order_type_details.id == 2) && item.id !== id) {
+                            // item.isSelect = false;
+                            item.isDisabled = $event ? true : false
+
+                        }
                     }
                 }
             }

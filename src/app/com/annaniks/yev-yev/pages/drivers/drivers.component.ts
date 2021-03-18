@@ -29,7 +29,7 @@ export class DriversComponent {
     routes: RouteItem[] = [];
     item: User;
     addedRoutes = [];
-    viberInfo:ViberInfo[]=[]
+    viberInfo: ViberInfo[] = []
     constructor(private _driavesService: DriverService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
@@ -50,8 +50,8 @@ export class DriversComponent {
             car_color: [null, Validators.required],
             car_number: [null, Validators.required],
             car_capacity: [null, Validators.required],
-            car_color_name:[null,Validators.required],
-            viber_id:[null,Validators.required]
+            car_color_name: [null, Validators.required],
+            viber_id: [null, Validators.required]
         })
     }
 
@@ -76,14 +76,14 @@ export class DriversComponent {
         )
         return combine.pipe(takeUntil(this.unsubscribe$))
     }
-    getDriversViberInfo(){
+    getDriversViberInfo() {
         return this._driavesService.getDriverViberInfo().pipe(
-            map((data:ViberInfo[]) => {                
+            map((data: ViberInfo[]) => {
                 this.viberInfo = data;
             }))
     }
     public getUsers() {
-        return this._driavesService.getUsers(this.pageIndex,(this.pageIndex-1)*10).pipe(
+        return this._driavesService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10).pipe(
             map((data: ServerResponce<User[]>) => {
                 this.total = data.count;
                 this.salaryTable = data.results;
@@ -112,8 +112,8 @@ export class DriversComponent {
                         car_color: this.item.car_color,
                         car_number: this.item.car_number,
                         car_capacity: this.item.car_capacity,
-                        car_color_name:this.item.car_color_name,
-                        viber_id:this.item.viber_id
+                        car_color_name: this.item.car_color_name,
+                        viber_id: this.item.viber_id
                     })
                 }
             })).subscribe()
@@ -135,7 +135,7 @@ export class DriversComponent {
         this.pageIndex = page;
         this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
-    public onsalarySave() {        
+    public onsalarySave() {
         if (this.validateForm.invalid) {
             this.nzMessages.error(Messages.fail);
             return;
@@ -162,18 +162,24 @@ export class DriversComponent {
                     this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
                     this.nzMessages.success(Messages.success)
                 },
-                    () => {
+                    (error) => {
+                        console.log(error);
+
                         this.nzMessages.error(Messages.fail)
                     })
-        } else {            
+        } else {
             this._driavesService.editUser(this.salaryTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: SalaryRespone) => {
                 this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
 
                 this.nzMessages.success(Messages.success)
                 this.closeModal()
             },
-                () => {
-                    this.nzMessages.error(Messages.fail)
+                (error) => {
+                    let failMessage = Messages.fail
+                    if (error && error.error && error.error[0] == 'Viber already in use.') {
+                        failMessage = Messages.viberError
+                    }
+                    this.nzMessages.error(failMessage)
                 })
         }
     }
