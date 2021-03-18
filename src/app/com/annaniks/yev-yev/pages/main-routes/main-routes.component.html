@@ -317,7 +317,7 @@
                                         </svg>
                                     </a>
                                 </td>
-                                <td> <button [disabled]="timeItem.isDisabled" nz-button nzType="text" nz-button
+                                <td> <button *ngIf="!data.viber_message_sended" (click)="send(data)" [disabled]="timeItem.isDisabled" nz-button nzType="text" nz-button
                                         nzType="primary">Ուղարկել</button></td>
                             </tr>
                         </tbody>

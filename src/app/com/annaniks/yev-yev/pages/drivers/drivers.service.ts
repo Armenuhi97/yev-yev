@@ -1,13 +1,15 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
 import { RouteItem } from "../../core/models/routes.model";
 import { User } from "../../core/models/salary";
 import { ServerResponce } from "../../core/models/server-reponce";
+import { ViberInfo } from "../../core/models/viber";
 
 @Injectable()
 export class DriverService {
     constructor(private _httpClient: HttpClient) { }
-    getUsers(page: number,offset:number) {
+    getUsers(page: number, offset: number) {
         return this._httpClient.get<ServerResponce<User[]>>(`userdetails/user/?search=&user_role__code=DR&page=${page}&limit=10&offset=${offset}`)
     }
     public getUserById(userId: number) {
@@ -16,7 +18,7 @@ export class DriverService {
     public getAllRoutes() {
         return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/`)
     }
-    public getDriverOfMainRoute(page:number,offset:number){
+    public getDriverOfMainRoute(page: number, offset: number) {
         return this._httpClient.get(`route/main-route-driver/?page=${page}&limit=10&offset=${offset}`)
     }
     public editUser(userId: number, body) {
@@ -38,5 +40,8 @@ export class DriverService {
     public deleteMainRouteToDriver(id: number) {
         return this._httpClient.delete(`route/main-route-driver/${id}/`)
     }
-    
+    public getDriverViberInfo(): Observable<ViberInfo[]> {
+        return this._httpClient.get<ViberInfo[]>(`userdetails/get-drivers-viber-info/`)
+    }
+
 }

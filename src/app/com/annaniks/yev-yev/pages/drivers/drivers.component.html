@@ -32,7 +32,8 @@
             <td (click)="onEditsalary(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
             </td>
             <td class="action-button delete" style="width:10px">
-                <nz-switch (ngModelChange)="changeUserStatus($event,data.id)" [(ngModel)]="data.user.is_active"></nz-switch>
+                <nz-switch (ngModelChange)="changeUserStatus($event,data.id)" [(ngModel)]="data.user.is_active">
+                </nz-switch>
 
             </td>
         </tr>
@@ -83,14 +84,15 @@
         </div>
 
         <div nz-row [nzGutter]="24">
-          
+
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Մեքենայի գույնը</nz-form-label>
                 <nz-form-item>
                     <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
                         <input class="w-100" [colorPicker]="validateForm.get('car_color').value"
                             (colorPickerChange)="changeColorPicker('car_color',$event)"
-                            [style.background]="validateForm.get('car_color').value" [style.border-color]="validateForm.get('car_color').value" />
+                            [style.background]="validateForm.get('car_color').value"
+                            [style.border-color]="validateForm.get('car_color').value" />
 
                     </nz-form-control>
                 </nz-form-item>
@@ -106,7 +108,7 @@
         </div>
 
         <div nz-row [nzGutter]="24">
-           
+
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Մեքենայի նստատեղերի քանակը</nz-form-label>
                 <nz-form-item>
@@ -124,8 +126,23 @@
                 </nz-form-item>
             </div>
         </div>
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Viber</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <nz-select nzPlaceHolder="" formControlName="viber_id">
+                            <nz-option *ngFor="let viber of viberInfo" [nzValue]="viber.id" [nzLabel]="viber.name">
+                            </nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
 
-        <app-driver-routes (removeRoute)="removeRoute($event)" (addRoute)="addRoute($event)" [editIndex]="editId" [routes]="routes" [selectedRoutes]="item">
+        </div>
+
+        <app-driver-routes (removeRoute)="removeRoute($event)" (addRoute)="addRoute($event)" [editIndex]="editId"
+            [routes]="routes" [selectedRoutes]="item">
         </app-driver-routes>
 
     </form>

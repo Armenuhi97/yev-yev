@@ -11,7 +11,7 @@ export interface SalaryRespone {
     driving_routes?: any
 }
 export interface User {
-
+    viber_id: number
     "id": number,
     "user": {
         "id": number,
@@ -31,13 +31,13 @@ export interface User {
     >,
     "phone_number": string,
     "image": string,
-    person_count:number
+    person_count: number
     "car_model": null,
     "car_color": null,
     "car_number": null,
     "car_capacity": number,
     "comment": null,
-    "car_color_name":string
+    "car_color_name": string
     "user_role": number
 
 }

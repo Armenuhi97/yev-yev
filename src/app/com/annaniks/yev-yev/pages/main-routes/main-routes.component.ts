@@ -34,7 +34,7 @@ export class MainRoutesComponent {
     approvedOrders = []
     public subRouteInfos = [];
     selectedTime;
-    public driver;
+    public driver: User;
     isVisible: boolean = false;
     unsubscribe$ = new Subject();
     validateForm: FormGroup;
@@ -56,7 +56,7 @@ export class MainRoutesComponent {
     timeItem;
     windowHeight: number;
     selectInfo;
-    private _param;
+    private _param
     private _lastMainRouteId: number;
     orderTypes: OrderType[] = [];
 
@@ -83,7 +83,7 @@ export class MainRoutesComponent {
 
             if (this.isGet) {
                 this.isGet = true
-                if (param.date && (!this._param || (this._param && (this._param.data !== param.data || this._param.subRoute !== param.subRoute || this._param.mainRoute !== param.mainRoute)))) {
+                if (param.date && (!this._param || (this._param && (this._param.date !== param.date || this._param.subRoute !== param.subRoute || this._param.mainRoute !== param.mainRoute)))) {
                     this._param = param
                     this.userInfo = [];
                     this.isOpenInfo = false;
@@ -122,6 +122,18 @@ export class MainRoutesComponent {
             }
         }))
 
+    }
+    public send(data) {
+        this._mainRouteService.sendMessage(data.id).pipe(takeUntil(this.unsubscribe$)).subscribe((result: { status_message: string }) => {
+            if (result.status_message == 'ok') {
+                this.nzMessages.success(Messages.success);
+                data.viber_message_sended = true
+
+            } else {
+                this.nzMessages.error(Messages.fail);
+
+            }
+        })
     }
     public isCanceledByClient(data) {
         let canceledByClient: boolean = false;
