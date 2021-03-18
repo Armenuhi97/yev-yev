@@ -1,8 +1,10 @@
 export interface OrdersByHours {
+    canceled_by_client: boolean
+    canceled_by_moderator: boolean
     address: string
     isSelect?: boolean
-    isDisabled?:boolean
-    is_in_approved_orders:boolean
+    isDisabled?: boolean
+    is_in_approved_orders: boolean
     end_address: null
     end_langitude: string
     end_latitude: string
@@ -10,7 +12,7 @@ export interface OrdersByHours {
     start_address: string
     start_langitude: string
     start_latitude: string
-    order_phone_number:string
+    order_phone_number: string
     client_details: {
         car_capacity: string
         car_color: string
@@ -51,7 +53,7 @@ export interface OrdersByHours {
 export interface SubrouteDetails {
     countList?: any
     end_point: number
-    selectTime?:string
+    selectTime?: string
     end_point_address_en: string
     end_point_address_hy: string
     end_point_address_ru: string

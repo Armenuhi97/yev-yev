@@ -135,6 +135,7 @@ export class SubrouteComponent {
         { start: '08:30', end: '09:00', time: '08:30 - 09:00', isActive: true, closeId: 0, isDisabled: false },
         { start: '09:00', end: '09:30', time: '09:00 - 09:30', isActive: true, closeId: 0, isDisabled: false },
         { start: '09:30', end: '10:00', time: '09:30 - 10:00', isActive: true, closeId: 0, isDisabled: false },
+        { start: '10:00', end: '10:30', time: '10:00 - 10:30', isActive: true, closeId: 0, isDisabled: false },
         { start: '10:30', end: '11:00', time: '10:30 - 11:00', isActive: true, closeId: 0, isDisabled: false },
         { start: '11:00', end: '11:30', time: '11:00 - 11:30', isActive: true, closeId: 0, isDisabled: false },
         { start: '11:30', end: '12:00', time: '11:30 - 12:00', isActive: true, closeId: 0, isDisabled: false },

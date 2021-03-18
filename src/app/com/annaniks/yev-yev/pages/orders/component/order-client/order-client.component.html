@@ -1,0 +1,26 @@
+<nz-table nzBordered #userTable [nzTitle]="title" [nzFrontPagination]="false" [nzData]="clientRoutes.orders">
+    <thead>
+        <tr>
+            <th>N</th>
+            <th>Ուղևոր</th>
+            <th>Հեռ.</th>
+            <th>Հասցե</th>
+            <th>Տիպ</th>
+            <th>Տեղ</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let moderator of clientRoutes.orders;let ind=index">
+            <td>{{ind+1}}</td>
+            <td>{{moderator?.client_details?.user?.first_name}}
+                {{moderator?.client_details?.user?.last_name}}</td>
+            <td>{{moderator?.client_details?.phone_number}}</td>
+            <td>
+                <span [class.light]="checkAddress(moderator) == 'Հասցե չկա'">
+                    {{checkAddress(moderator)}}</span>
+            <td>{{getOrderType(moderator?.order_type)}}</td>
+            <td>{{moderator?.person_count}}</td>          
+        </tr>
+    </tbody>
+</nz-table>

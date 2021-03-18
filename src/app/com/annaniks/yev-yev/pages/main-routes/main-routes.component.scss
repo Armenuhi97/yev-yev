@@ -68,7 +68,21 @@
 // .ant-modal-body{
 //     overflow-x: auto;
 // }
+.ant-table-row{
+    background-color: white;
+}
 .color-green{
     background-color: #2CAF2D;
     color: white;
+    border-color: #2CAF2D;
+}
+.cancel-item{
+    border:1px solid red !important;
+}
+.cancel-btns{
+    button{
+    margin: 3px ;
+    width: 100%;
+    }
+
 }

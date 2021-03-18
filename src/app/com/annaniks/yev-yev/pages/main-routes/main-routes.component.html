@@ -81,8 +81,8 @@
                                             (ngModelChange)="selectCheckbox($event,ind)"></label>
                                     </td>
                                     <td class="action-button delete" style="width:10px">
-                                        <a *ngIf="(timeItem && !timeItem.isDisabled) && !moderator.is_in_approved_orders" [nzCancelText]="'Ոչ'"
-                                            [nzOkText]="'Այո'" nz-popconfirm
+                                        <a *ngIf="(timeItem && !timeItem.isDisabled) && !moderator.is_in_approved_orders"
+                                            [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
                                             nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
                                             nzPopconfirmPlacement="bottom" (nzOnConfirm)="onDeleteOrder(ind)">
                                             <!-- <i nz-icon nzType="edit"></i> -->
@@ -199,12 +199,20 @@
                             </div>
                             <div nz-row [nzGutter]="24">
                                 <div nz-col [nzSpan]="12">
-                                    <nz-form-label class="inline-labels" nzRequired>Ուղևորների քանակ</nz-form-label>
-                                    <nz-form-item>
-                                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                            <input nz-input formControlName="personCount" placeholder="" />
-                                        </nz-form-control>
-                                    </nz-form-item>
+                                        <nz-form-label class="inline-labels" nzRequired>Ուղևորների քանակ</nz-form-label>
+                                        <nz-form-item>
+                                            <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                                <input *ngIf="!validateForm.get('orderType').value || validateForm.get('orderType').value !== 1" nz-input formControlName="personCount" placeholder="" />
+
+                                                <nz-select *ngIf="validateForm.get('orderType').value == 1" class="w-100" formControlName="personCount">
+                                                    <nz-option *ngFor="let seatCount of [4,5,6,7,8]" [nzValue]="seatCount"
+                                                        [nzLabel]="seatCount">
+                                                    </nz-option>
+                                                </nz-select>
+
+
+                                            </nz-form-control>
+                                        </nz-form-item>
                                 </div>
                                 <div nz-col [nzSpan]="12">
                                     <nz-form-label class="inline-labels">Մեկնաբանություն</nz-form-label>
@@ -255,8 +263,8 @@
                         </nz-select>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <button [disabled]="timeItem.isDisabled" nz-button nzType="text" nz-button
-                            nzType="primary" (click)="addOrderByDriver()">Ավելացնել</button>
+                        <button [disabled]="timeItem.isDisabled" nz-button nzType="text" nz-button nzType="primary"
+                            (click)="addOrderByDriver()">Ավելացնել</button>
                     </div>
                 </div>
 
@@ -271,13 +279,16 @@
                                 <th></th>
                                 <th></th>
                                 <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr [ngClass]="{'color-red':isCanceledByClient(data)}" class="cursor-pointer" *ngFor="let data of approvedOrders; let index = index">
+                            <tr [ngClass]="{'color-red':isCanceledByClient(data)}" class="cursor-pointer"
+                                *ngFor="let data of approvedOrders; let index = index">
                                 <td>{{index+1}}</td>
                                 <td>{{data.driver_details.user.first_name}} {{data.driver_details.user.last_name}}</td>
-                                <td> {{data.driver_details.car_model}} - {{data.seat_count}}</td>
+                                <td> {{data.driver_details.car_model}}</td>
+                                <td>{{data.driver_details.car_capacity}}/{{data.seat_count}}</td>
                                 <td class="action-button edit" style="width:10px">
                                     <svg *ngIf="timeItem && !timeItem.isDisabled" (click)="addSelectedOrder(index)"
                                         xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green"
@@ -287,7 +298,8 @@
                                     </svg>
                                 </td>
                                 <!--  *ngIf="timeItem && !timeItem.isDisabled" -->
-                                <td class="action-button edit" style="width:10px"><i [class.disabled]="timeItem.isDisabled" (click)="onEditOrderMembers(index)"
+                                <td class="action-button edit" style="width:10px"><i
+                                        [class.disabled]="timeItem.isDisabled" (click)="onEditOrderMembers(index)"
                                         nz-icon nzType="edit"></i>
                                 </td>
                                 <td class="action-button delete" style="width:10px">
@@ -324,25 +336,27 @@
                                         <th>Տիպ</th>
                                         <th>Տեղ.</th>
                                         <th></th>
-                                        <th></th>
-                                        <th></th>
+                                        <th>Մերժում</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let moderator of orderMembers;let ind=index">
+                                    <tr [class.cancel-item]="moderator.order.canceled_by_client" *ngFor="let moderator of orderMembers;let ind=index">
                                         <td>{{ind+1}}</td>
                                         <td>{{moderator?.order?.client_details?.user?.first_name}}
                                             {{moderator?.order?.client_details?.user?.last_name}}</td>
                                         <td>{{moderator?.order?.client_details?.phone_number}}</td>
-                                        <td>{{moderator?.order?.start_address}} {{moderator?.end_address}}</td>
+                                        <td><span [class.light]="checkAddress(moderator) == 'Հասցե չկա'">
+                                            {{checkAddress(moderator)}}</span></td>
                                         <td>{{getOrderType(moderator?.order?.order_type)}}</td>
                                         <td>{{moderator?.order?.person_count}}</td>
-                                        <td> <label nz-checkbox [(ngModel)]="moderator.isSelect"></label>
+                                        <td> <label [disabled]="moderator.order.canceled_by_client" nz-checkbox [(ngModel)]="moderator.isSelect"></label>
                                         </td>
-                                        <td><button (click)="approveCancelation(moderator.order.id)" *ngIf="moderator.order.canceled_by_client" nz-button nzType="text" nz-button
-                                            nzType="primary"  class="color-green">Հաստատել</button></td>
-                                        <td><button (click)="cancelCancelation(moderator.order.id)"  *ngIf="moderator.order.canceled_by_client" nz-button nzType="text" nz-button
-                                            nzType="nzDanger">Չեղարկել</button></td>
+                                        <td class="cancel-btns"><button (click)="approveCancelation(moderator.order.id,ind)"
+                                                *ngIf="moderator.order.canceled_by_client" nz-button 
+                                                nz-button nzType="primary" class="color-green">Հաստատել</button>
+                                        <button (click)="cancelCancelation(moderator)"
+                                                *ngIf="moderator.order.canceled_by_client" nz-button 
+                                                nz-button nzType="primary" nzDanger>Չեղարկել</button></td>
                                     </tr>
                                 </tbody>
                             </nz-table>

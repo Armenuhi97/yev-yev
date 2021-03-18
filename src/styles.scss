@@ -35,3 +35,16 @@ td{
 .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content{
     height: 16px !important;
 }
+
+.ant-form-item-label>label::after{
+    content: '' !important;
+}
+
+.table-item{
+    // .ant-table-title{
+    //     position: sticky;
+    //     top: 0;
+    //     z-index: 2;
+    //     background: white
+    // }
+}

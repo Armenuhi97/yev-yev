@@ -1,0 +1,46 @@
+<form class="w-95" action="" [formGroup]="filterForm">
+    <div nz-row [nzGutter]="24">
+        <div nz-col [nzSpan]="6">
+            <nz-form-label class="inline-labels">Ուղղություն</nz-form-label>
+            <nz-form-item>
+                <nz-form-control>
+                    <nz-select nzPlaceHolder="Ընտեք ուղղությունը" formControlName="mainRoute">
+                        <nz-option *ngFor="let route of mainRoutes" [nzValue]="route.id" [nzLabel]="route.route_name">
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="6">
+            <nz-form-label class="inline-labels">Ամսաթիվ</nz-form-label>
+            <nz-form-item>
+                <nz-form-control>
+                    <nz-date-picker placeholder="Ընտրեք ամսաթիվ" formControlName="date"></nz-date-picker>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="6">
+            <nz-form-label class="unpoint-label inline-labels"></nz-form-label>
+            <nz-form-item>
+                <nz-radio-group formControlName="person">
+                    <label *ngFor="let person of persons" nz-radio [nzValue]="person.key">{{person.name}}</label>
+                </nz-radio-group>
+            </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="6">
+            <nz-form-label class="unpoint-label inline-labels"></nz-form-label>
+            <nz-form-item>
+                <button (click)="getDailyOrders()" [disabled]="filterForm.invalid" nz-button
+                    nzType="primary">Փնտրել</button>
+            </nz-form-item>
+        </div>
+    </div>
+</form>
+<div *ngIf="person == 'client'">
+    <div *ngFor="let item of clientRoutes;let ind=index">
+        <app-order-client [order]="item"></app-order-client>
+    </div>
+</div>
+<div *ngIf="person == 'driver'">
+    <app-driver-order [order]="driverRoutes"></app-driver-order>
+</div>

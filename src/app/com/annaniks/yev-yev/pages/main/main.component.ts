@@ -20,7 +20,7 @@ export class MainComponent {
         { title: 'Ուղևորներ', path: '/dashboard/user' },
         { title: 'Ուղղություններ', path: '/dashboard/main-routes' },
         { title: 'Աշխատակիցներ', path: '/dashboard/moderator' },
-        { title: 'Պատվերներ', path: '#' },
+        { title: 'Պատվերներ', path: '/dashboard/orders' },
         { title: 'Կարգավորումներ', path: '/dashboard/settings' },
 
     ]
@@ -32,7 +32,7 @@ export class MainComponent {
 
         setInterval(() => {
             this.getUnseenNotifications().pipe(takeUntil(this.unsubscribe$)).subscribe()
-        }, 10000)
+        }, 5000)
     }
     getUnseenNotifications() {
         return this._mainService.getUnseenNotifications().pipe(
@@ -58,13 +58,11 @@ export class MainComponent {
         }
         return params
     }
-    setSeenNotification(id:number) {
-        console.log(id);
-        
-        // this._mainService.setSeenNotification(id).pipe(takeUntil(this.unsubscribe$),
-        //     switchMap(() => {
-        //         return this.getUnseenNotifications()
-        //     })).subscribe()
+    setSeenNotification(id:number) {        
+        this._mainService.setSeenNotification(id).pipe(takeUntil(this.unsubscribe$),
+            switchMap(() => {
+                return this.getUnseenNotifications()
+            })).subscribe()
     }
     ngOnDestroy(): void {
         this.unsubscribe$.next();

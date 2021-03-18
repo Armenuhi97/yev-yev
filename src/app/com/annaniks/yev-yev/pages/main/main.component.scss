@@ -2,6 +2,8 @@
     cursor: pointer;
     margin: 0 13px;
     outline: none !important;
+    font-size: 18px;
+    padding: 2px;
 }
 .logo {
     padding: 5px;
@@ -10,7 +12,9 @@
     }
 }
 .active {
-    color: #e6f7ff !important
+    
+    color: rgb(209 245 233) !important;
+    border: 1px solid white;
 }
 mat-toolbar{
     height: auto !important;
@@ -29,14 +33,15 @@ mat-toolbar{
         top: 33px;
         background: white;
         height: auto;
-        max-height: 200px;
+        max-height: 340px;
         overflow-y: auto;
         z-index: 9999;
         width: fit-content;
         right: 0;
         color: black;
-        padding:7px;
+        // padding:7px;
         .items{
+            padding:0 7px;
             border-bottom: 1px solid #ccc;
             cursor: pointer;
             &:hover{
@@ -50,6 +55,12 @@ mat-toolbar{
         }
       
     }
+}
+.created{
+    background-color: #bbebbb;
+}
+.canceled{
+    background-color: #ffc7c7;
 }
 .main-content{
     margin: 10px;

@@ -13,6 +13,7 @@ import { RouteItem } from "../../core/models/routes.model";
 import { User } from "../../core/models/salary";
 import { ServerResponce } from "../../core/models/server-reponce";
 import { AppService } from "../../core/services/app.service";
+import { OrderTypeService } from "../../core/services/order-type";
 import { MainRoutesService } from "./main-routes.service";
 
 @Component({
@@ -57,20 +58,7 @@ export class MainRoutesComponent {
     selectInfo;
     private _param;
     private _lastMainRouteId: number;
-    orderTypes: OrderType[] = [
-        {
-            id: 0,
-            name_en: 'Նստատեղ'
-        },
-        {
-            id: 1,
-            name_en: 'Ավտոմեքենա'
-        },
-        {
-            id: 2,
-            name_en: 'Ուղեբեռ'
-        }
-    ];
+    orderTypes: OrderType[] = [];
 
     isGetFunction: boolean = true;
     isGet: boolean = true
@@ -80,7 +68,10 @@ export class MainRoutesComponent {
         private _mainRouteService: MainRoutesService,
         private _appService: AppService,
         private _router: Router,
-        private nzMessages: NzMessageService) {
+        private nzMessages: NzMessageService,
+        private _orderTypeService: OrderTypeService) {
+        this.orderTypes = this._orderTypeService.getOrderTypes()
+
     }
 
     ngOnInit() {
@@ -105,7 +96,7 @@ export class MainRoutesComponent {
                     this.currentId = +param.mainRoute;
                     this.isGetFunction = false;
                     let time = this._datePipe.transform(param.date, 'HH:mm');
-                    
+
                     return this.combineObservable(param.subRoute, time).pipe(
                         map(() => {
                             this.isGet = false;
@@ -118,7 +109,7 @@ export class MainRoutesComponent {
 
                 } else {
                     if (!this._param || (this._param && +this._param.mainRoute !== +this.currentId) || (+this._lastMainRouteId !== +this.currentId)) {
-                        
+
                         this._lastMainRouteId = this.currentId;
                         return this.combineObservable()
                     } else {
@@ -163,12 +154,15 @@ export class MainRoutesComponent {
         })
 
         this.validateForm.get('orderType').valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((value) => {
+
             if (value == 2) {
                 this.validateForm.get('personCount').setValue(0);
                 this.validateForm.get('personCount').disable()
             } else {
-                this.validateForm.get('personCount').enable()
-
+                this.validateForm.get('personCount').enable();
+                if (value == 1 && ((this.validateForm.get('personCount').value < 4 || this.validateForm.get('personCount').value > 8) || !this.validateForm.get('personCount').value)) {
+                    this.validateForm.get('personCount').reset();
+                }
             }
         })
         this.validateForm.get('phone_number').valueChanges.pipe(takeUntil(this.unsubscribe$),
@@ -354,19 +348,20 @@ export class MainRoutesComponent {
             // }
         }
     }
-    cancelCancelation(id: number) {
-        this._mainRouteService.cancelCancelation(id).pipe(takeUntil(this.unsubscribe$),
+    cancelCancelation(moderator) {
+        this._mainRouteService.cancelCancelation(moderator.order.id).pipe(takeUntil(this.unsubscribe$),
             map(() => {
-                this.closeModal();
-                this.nzMessages.success(Messages.success)
-
-                this.getInfo(this.selectedTime).subscribe();
+                // this.closeModal();
+                this.nzMessages.success(Messages.success);
+                moderator.order.canceled_by_client = false;
+                // this.getInfo(this.selectedTime).subscribe();
             })).subscribe()
     }
-    approveCancelation(id: number) {
+    approveCancelation(id: number, index) {
         this._mainRouteService.approveCancelation(id).pipe(takeUntil(this.unsubscribe$),
             map(() => {
-                this.closeModal();
+                // this.closeModal();
+                this.orderMembers.splice(index, 1);
                 this.nzMessages.success(Messages.success)
 
                 this.getInfo(this.selectedTime).subscribe();
