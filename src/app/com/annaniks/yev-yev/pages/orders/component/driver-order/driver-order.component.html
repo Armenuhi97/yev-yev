@@ -15,7 +15,7 @@
     </tbody>
 </nz-table> -->
     <div class="d-flex align-item-center flex-wrap card" *ngFor="let item of order?.result">
-        <h4>{{item?.driver?.name}}</h4>
+        <h4>{{item?.driver?.name}} ({{item?.driver.car_model}} {{item?.driver.car_number}})</h4>
 
         <div *ngFor="let order of item.array">
             {{order?.date | date:'HH:mm'}} - {{order?.routeName}} - {{order?.seat_count}}
