@@ -165,7 +165,7 @@ export class SubrouteComponent {
         private _mainRouteService: MainRoutesService,
         private _appService: AppService,
         private nzMessages: NzMessageService,) {
-        this.windowHeight = (window.innerHeight - 220) / 2;
+        this.windowHeight = (window.innerHeight - 220-250) / 2;
     }
 
     ngOnInit() {

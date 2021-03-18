@@ -1,6 +1,6 @@
 <div>
-    <div class="table-item" style="overflow: auto;margin-top: 5px;" [ngStyle]="{'height':windowHeight + 'px'}">
-        <nz-table nzBordered [nzFrontPagination]="false" [nzTitle]="tableTitle" [nzData]="openTimes">
+    <div class="table-item">
+        <nz-table [nzScroll]="{y:windowHeight + 'px',x:'auto'}" nzBordered [nzFrontPagination]="false" [nzTitle]="tableTitle" [nzData]="openTimes">
             <thead>
                 <tr>
                     <th>Ժամեր</th>

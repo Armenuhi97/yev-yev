@@ -1,4 +1,4 @@
-<nz-table nzBordered #userTable  [nzFrontPagination]="false" [nzData]="order?.result">
+<!-- <nz-table nzBordered #userTable  [nzFrontPagination]="false" [nzData]="order?.result">
     <thead>
         <tr>
             <th>N</th>
@@ -13,4 +13,12 @@
             <td *ngFor="let route of order.sub_routes"> {{item.driver[route.id].seat_count?item.driver[route.id].seat_count:0}}</td>
         </tr>
     </tbody>
-</nz-table>
+</nz-table> -->
+    <div class="d-flex align-item-center flex-wrap card" *ngFor="let item of order?.result">
+        <h4>{{item?.driver?.name}}</h4>
+
+        <div *ngFor="let order of item.array">
+            {{order?.date | date:'HH:mm'}} - {{order?.routeName}} - {{order?.seat_count}}
+        </div>
+
+    </div>

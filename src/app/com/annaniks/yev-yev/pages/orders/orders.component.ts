@@ -21,7 +21,7 @@ export class OrdersComponent {
     mainRoutes: RouteItem[] = [];
     public person:string;
     public clientRoutes:DailyUserOrderType[];
-    public driverRoutes:DailyDriverOrderType[];
+    public driverRoutes:DailyDriverOrderType;
     persons = [{ key: 'driver', name: 'Վարորդ' }, { key: 'client', name: 'Ուղևոր' }]
     constructor(private _fb: FormBuilder, private _mainService: MainService, 
         private _datePipe:DatePipe,
@@ -53,7 +53,7 @@ export class OrdersComponent {
         let mainRoute=this.filterForm.get('mainRoute').value;
         this.person=this.filterForm.get('person').value;
         if (this.filterForm.get('person').value == 'driver') {
-            this._ordersService.getDriverMainRouteDailyOrders(mainRoute,date).pipe(takeUntil(this.unsubscribe$)).subscribe((data:DailyDriverOrderType[])=>{
+            this._ordersService.getDriverMainRouteDailyOrders(mainRoute,date).pipe(takeUntil(this.unsubscribe$)).subscribe((data:DailyDriverOrderType)=>{
                 this.driverRoutes=data
             })
         }else{

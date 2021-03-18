@@ -9,8 +9,8 @@ export class OrdersService{
     getMainRouteDailyOrders(mainRouteId:number,date:string):Observable<DailyUserOrderType[]>{
         return this._httpClient.get<DailyUserOrderType[]>(`order/get-main-route-daily-orders/${mainRouteId}/?date=${date}`)
     }
-    getDriverMainRouteDailyOrders(mainRouteId:number,date:string):Observable<DailyDriverOrderType[]>{
-        return this._httpClient.get<DailyDriverOrderType[]>(`order/get-dailiy-drivers-approved-orders/${mainRouteId}/?date=${date}`)
+    getDriverMainRouteDailyOrders(mainRouteId:number,date:string):Observable<DailyDriverOrderType>{
+        return this._httpClient.get<DailyDriverOrderType>(`order/get-dailiy-drivers-approved-orders/${mainRouteId}/?date=${date}`)
 
     }
 }
