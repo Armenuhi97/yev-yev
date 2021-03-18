@@ -132,7 +132,9 @@
                 <nz-form-item>
                     <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
                         <nz-select nzPlaceHolder="" formControlName="viber_id">
-                            <nz-option *ngFor="let viber of viberInfo" [nzValue]="viber.id" [nzLabel]="viber.name">
+                            <!-- <nz-option nzCustomContent nzLabel="Windows" nzValue="windows"><i nz-icon nzType="windows"></i> Windows</nz-option> -->
+                            <nz-option nzCustomContent *ngFor="let viber of viberInfo" [nzValue]="viber.id" [nzLabel]="viber.name">
+                                <img class="avatar" [src]="viber.avatar" alt=""> {{viber.name}}
                             </nz-option>
                         </nz-select>
                     </nz-form-control>
