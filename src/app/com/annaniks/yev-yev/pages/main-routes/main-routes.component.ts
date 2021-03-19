@@ -13,6 +13,7 @@ import { RouteItem } from "../../core/models/routes.model";
 import { User } from "../../core/models/salary";
 import { ServerResponce } from "../../core/models/server-reponce";
 import { AppService } from "../../core/services/app.service";
+import { OpenTimesService } from "../../core/services/open-times.service";
 import { OrderTypeService } from "../../core/services/order-type";
 import { MainRoutesService } from "./main-routes.service";
 
@@ -59,7 +60,7 @@ export class MainRoutesComponent {
     private _param
     private _lastMainRouteId: number;
     orderTypes: OrderType[] = [];
-
+    openTimes = []
     isGetFunction: boolean = true;
     isGet: boolean = true
     constructor(private _mainRoutesService: MainRoutesService, private _datePipe: DatePipe,
@@ -69,9 +70,10 @@ export class MainRoutesComponent {
         private _appService: AppService,
         private _router: Router,
         private nzMessages: NzMessageService,
-        private _orderTypeService: OrderTypeService) {
+        private _orderTypeService: OrderTypeService,
+        private _openTimesService: OpenTimesService) {
+        this.openTimes = this._openTimesService.getOpenTimes()
         this.orderTypes = this._orderTypeService.getOrderTypes()
-
     }
 
     ngOnInit() {
@@ -138,14 +140,8 @@ export class MainRoutesComponent {
             })
     }
     public isCanceledByClient(data) {
-        let canceledByClient: boolean = false;
-        for (let item of data.approved_order_orders) {
-            if (item.order.canceled_by_client) {
-                canceledByClient = true;
-                break
-            }
-        }
-        return canceledByClient
+        let item = data.approved_order_orders.filter((el) => { return el.order.canceled_by_client == true })
+        return (item && item.length) ? true : false
     }
     getOrderType(type: number): string {
         return this._appService.checkPropertyValue(this._appService.checkPropertyValue(this.orderTypes.filter((val) => { return +val.id == +type }), 0), 'name_en')
@@ -596,6 +592,8 @@ export class MainRoutesComponent {
         return calculateCount
     }
     public onEditOrder(index) {
+        console.log(this.selectedTime);
+
         this.isEditing = true;
         this.editIndex = index;
         let info = this.userInfo[this.editIndex]
@@ -613,31 +611,27 @@ export class MainRoutesComponent {
         this.showModal()
     }
     selectCheckbox($event, index) {
-        // 0
-        // 1 nstatex
-        // 2 avtomeqena      
-        if (this.userInfo[index].order_type_details && this.userInfo[index].order_type_details.id) {
-            let type = this.userInfo[index].order_type_details.id;
-            let id = this.userInfo[index].id;
-            for (let item of this.userInfo) {
-                if (type == 2) {
-                    if ((item.order_type_details.id == 1 || item.order_type_details.id == 2) && (+id !== +item.id)) {
+        let type = this.userInfo[index].order_type;
+        let id = this.userInfo[index].id;
+        for (let item of this.userInfo) {
+            if (type == 1) {
+                if ((item.order_type == 0 || item.order_type == 1) && (+id !== +item.id)) {
+                    // item.isSelect = false;
+                    item.isDisabled = $event ? true : false
+
+                }
+            } else {
+                if (type == 0) {
+                    if ((item.order_type == 1) && item.id !== id) {
                         // item.isSelect = false;
                         item.isDisabled = $event ? true : false
 
-                    }
-                } else {
-                    if (type == 1) {
-                        if ((item.order_type_details.id == 2) && item.id !== id) {
-                            // item.isSelect = false;
-                            item.isDisabled = $event ? true : false
-
-                        }
                     }
                 }
             }
         }
     }
+
     public onEditOrderMembers(index) {
 
         this.isOrderEditing = true;
