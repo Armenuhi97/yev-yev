@@ -103,7 +103,7 @@ export class UsersComponent {
             "last_name": this.validateForm.get('last_name').value,
             "phone_number": this.validateForm.get('phone_number').value,
             "image": '',
-            "comment": this.validateForm.get('comment').value,
+            "comment": this.validateForm.get('comment').value?this.validateForm.get('comment').value:'',
         }
         this.sendRequest(sendObject);
     }

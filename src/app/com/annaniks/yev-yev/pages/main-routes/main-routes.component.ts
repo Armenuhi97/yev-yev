@@ -47,7 +47,7 @@ export class MainRoutesComponent {
     radioValue: string = "approved";
     isEditing: boolean;
     editIndex;
-    selectedDate = new Date();
+    selectedDate = new FormControl(new Date());
     subRouteInfo: any;
     public mainRoutes: RouteItem[] = [];
     isOpenCalendar: boolean = false;
@@ -285,7 +285,7 @@ export class MainRoutesComponent {
             })
         )
     }
-    private _formatDate(time, selectDate = this.selectedDate) {
+    private _formatDate(time, selectDate = this.selectedDate.value) {
 
         let date = this._datePipe.transform(selectDate, 'yyyy-MM-dd');
         let currenTime = time.slice(0, time.indexOf(' '))
@@ -667,9 +667,9 @@ export class MainRoutesComponent {
     }
 
     changeDate(type: number) {
-        let date = new Date(this.selectedDate)
+        let date = new Date(this.selectedDate.value)
         date.setDate(date.getDate() + type);
-        this.selectedDate = new Date(date);
+        this.selectedDate.setValue(new Date(date));
         this.isGetItem = true;
         // this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }

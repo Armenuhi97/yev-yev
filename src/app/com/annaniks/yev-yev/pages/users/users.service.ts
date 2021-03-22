@@ -14,7 +14,7 @@ export class UsersService {
         return this._httpClient.put(`userdetails/edit-user-details/${userId}/`,body)
     }
     public addUser(body){
-        return this._httpClient.post(`userdetails/add-moderator/`,body)
+        return this._httpClient.post(`userdetails/add-client/`,body)
     }
     public getOrders(userId:number,page:number){
         let offset=(page-1)*10;

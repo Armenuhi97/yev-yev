@@ -9,11 +9,11 @@
             <div (clickOutside)="closeCalendar()">
 
                 <div class="cursor-pointer position-relative" (click)="openCalendar();$event.stopPropagation()">
-                    {{selectedDate |
+                    {{selectedDate.value |
                     date:'dd-MM-yyyy'}}
                     <div class="calendar" *ngIf="isOpenCalendar"
                         [ngStyle]="{ width: '300px', border: '1px solid #d9d9d9', borderRadius: '4px' }">
-                        <nz-calendar (nzSelectChange)="openCalendar($event)" [(ngModel)]="selectedDate"></nz-calendar>
+                        <nz-calendar (nzSelectChange)="openCalendar($event)" [formControl]="selectedDate"></nz-calendar>
                     </div>
                 </div>
             </div>
@@ -25,9 +25,9 @@
         </div>
         <div nz-row [nzGutter]="24">
             <div nz-col [nzSpan]="10">
-                <div *ngFor="let item of subRouteInfos;let i=index">
-                    <app-subroute [selectInfo]="selectInfo" [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)"
-                        [index]="i" [info]="item" (resetItem)="resetItem($event)" [date]="selectedDate">
+                <div >
+                    <app-subroute *ngFor="let item of subRouteInfos;let i=index" [selectInfo]="selectInfo" [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)"
+                        [index]="i" [info]="item" (resetItem)="resetItem($event)" [date]="selectedDate.value">
                     </app-subroute>
                 </div>
             </div>
