@@ -11,7 +11,6 @@ import { ServerResponce } from "../../../../core/models/server-reponce";
 import { AppService } from "../../../../core/services/app.service";
 import { MainRoutesService } from "../../main-routes.service";
 import * as moment from 'moment-timezone';
-import { OpenTimesService } from "../../../../core/services/open-times.service";
 
 @Component({
     selector: 'app-subroute',
@@ -60,10 +59,10 @@ export class SubrouteComponent {
     @Input('info')
     set setInfo($event) {
         this.subrouteInfo = $event;
-        console.log(this.subrouteInfo);
-
-        //set open times       
-        if (this.subrouteInfo && this.subrouteInfo.countList) {
+        //set open times
+       
+        if (this.subrouteInfo && this.subrouteInfo.countList){
+          
             for (let item of this.subrouteInfo.countList.orders) {
                 let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
                 for (let time of this.openTimes) {
@@ -82,7 +81,7 @@ export class SubrouteComponent {
             let time = this.openTimes.filter((data) => {
                 return data.start == this.subrouteInfo.selectTime
             });
-
+            
             this.getInformation(time[0])
         }
     }
@@ -96,8 +95,6 @@ export class SubrouteComponent {
     isGetOrderCounts: boolean;
     @Input('isGetItem')
     set isGetItem($event) {
-        console.log(this.index);
-
         this.isGetOrderCounts = $event;
         if ($event && this.selectedTime) {
             this.getHourlyOrdersByDate().pipe(takeUntil(this.unsubscribe$)).subscribe()
@@ -107,27 +104,26 @@ export class SubrouteComponent {
     @Input('date')
     set setDate($event) {
         this._date = $event;
-        if (this._date) {
+
+        if (this._date) {            
             this.currentInterval = null
             this.selectedTime = null;
         }
-        if ((this._date && !this.lastDate) || (this._date && this.lastDate && this.lastDate.getTime() !== this._date.getTime())) {
-            this.lastDate = this._date
-            if (this.subrouteInfo && this._date) {
-                this.getClosedHours(this.subrouteInfo.id).pipe(
-                    switchMap(() => {
-                        //     if (this.isOpenInfo && this.selectedTime) {
-                        //         return this.getInfo(this.selectedTime)
-                        //     } else {
-                        //         return of()
-                        //     }
-                        return this.getHourlyOrdersByDate()
-                    })
+        if (this.subrouteInfo && this._date) {
+            this.getClosedHours(this.subrouteInfo.id).pipe(
+                switchMap(() => {
+                    //     if (this.isOpenInfo && this.selectedTime) {
+                    //         return this.getInfo(this.selectedTime)
+                    //     } else {
+                    //         return of()
+                    //     }
+                    return this.getHourlyOrdersByDate()
+                })
 
-                ).subscribe()
-            }
-
+            ).subscribe()
         }
+
+
 
     }
     openTimes = [
@@ -162,29 +158,24 @@ export class SubrouteComponent {
         { start: '20:30', end: '21:00', time: '20:30 - 21:00', isActive: true, closeId: 0, isDisabled: false }
     ]
     windowHeight: number;
-    userInfo: OrdersByHours[] = [];
+    userInfo: OrdersByHours[] = []
     constructor(
         private _datePipe: DatePipe,
         private _mainRouteService: MainRoutesService,
         private _appService: AppService,
-        private nzMessages: NzMessageService,
-        private _openTimesService: OpenTimesService) {
-
-        this.windowHeight = (window.innerHeight - 220 - 250) / 2;
+        private nzMessages: NzMessageService,) {
+        this.windowHeight = (window.innerHeight - 220) / 2;
     }
 
     ngOnInit() {
 
-    }
+     }
 
     getHourlyOrdersByDate() {
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
         return this._mainRouteService.getHourlyOrdersByDate(this.subrouteInfo.main_route, date).pipe(
             map((data: any) => {
                 this.openTimes = this.openTimes.map((el) => { return Object.assign(el, { approved_seat_count: 0, pending_seat_count: 0, seat_count: 0 }) })
-                // console.log(data[this.index]);
-                // console.log(this.index);
-
                 if (data[this.index] && data[this.index].orders)
                     for (let item of data[this.index].orders) {
                         let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
@@ -246,7 +237,7 @@ export class SubrouteComponent {
 
     getInformation(time) {
         this.selectedTime = time.time;
-
+                
         this._info.emit({ timeItem: time, time: time.time })
         // this.getInfo(time, status).subscribe()
     }
@@ -284,22 +275,20 @@ export class SubrouteComponent {
         if (moment(selectedDate).isAfter(currentDate)) {
             data.isDisabled = false;
         }
-        if (moment(selectedDate).isSame(currentDate)) {
+        if (moment(selectedDate).isSame(currentDate)) {            
             if ((moment(time).isSameOrAfter(start) && moment(time).isBefore(end)) || (moment(time).isBefore(start))) {
                 data.isDisabled = false
             } else {
                 data.isDisabled = true;
                 data.isActive = false
-            }
+            }               
             if ((moment(time).isSameOrAfter(start) && moment(time).isBefore(end))) {
+                
                 let element = document.getElementById(this.setId(data.start, this.index));
                 element.scrollIntoView();
-                this.currentInterval = data;
-                // if(!this.subrouteInfo.selectTime){                    
-                //     this.getInformation(this.currentInterval)
-                // }
+                this.currentInterval = data
             }
-        }
+        }        
 
     }
     setId(id: string, index: number): string {
