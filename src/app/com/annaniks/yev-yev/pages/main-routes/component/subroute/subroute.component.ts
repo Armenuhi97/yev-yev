@@ -187,9 +187,13 @@ export class SubrouteComponent {
                 this.openTimes = this.openTimes.map((el) => { return Object.assign(el, { approved_seat_count: 0, pending_seat_count: 0, seat_count: 0 }) })
                 if (data[this.index] && data[this.index].orders)
                     for (let item of data[this.index].orders) {
-                        let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
+                        let dateFormat = moment(item.hour).format('HH:mm')
+                        let date = moment(dateFormat, "HH:mm");
+                        // let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
                         for (let time of this.openTimes) {
-                            if (time.time.startsWith(date)) {
+                            let start = moment(time.start, "HH:mm");
+                            let end = moment(time.end, "HH:mm");
+                            if ((moment(date).isSameOrAfter(start) && moment(date).isBefore(end))) {
                                 time = Object.assign(time, {
                                     approved_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'approved_seat_count', 0),
                                     pending_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'pending_seat_count', 0),
