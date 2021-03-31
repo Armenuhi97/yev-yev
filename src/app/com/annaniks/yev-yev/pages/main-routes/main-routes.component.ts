@@ -86,6 +86,7 @@ export class MainRoutesComponent {
             if (this.isGet) {
                 this.isGet = true
                 if (param.date && (!this._param || (this._param && (this._param.date !== param.date || this._param.subRoute !== param.subRoute || this._param.mainRoute !== param.mainRoute)))) {
+                
                     this._param = param
                     this.userInfo = [];
                     this.isOpenInfo = false;
@@ -99,7 +100,7 @@ export class MainRoutesComponent {
                     this.currentId = +param.mainRoute;
                     this.isGetFunction = false;
                     let time = this._datePipe.transform(param.date, 'HH:mm');
-
+                    
                     return this.combineObservable(param.subRoute, time).pipe(
                         map(() => {
                             this.isGet = false;
@@ -308,6 +309,9 @@ export class MainRoutesComponent {
         }
     }
     public checkAddress(moderator) {
+        if(moderator.order.is_extra_order){
+            return  `${moderator.order.start_address} -> ${moderator.order.end_address}`
+        }
         if (this.subRouteInfo.start_point_is_static) {
             return moderator.end_address ? moderator.end_address : 'Հասցե չկա'
         } else {
@@ -596,6 +600,7 @@ export class MainRoutesComponent {
     public onEditOrder(index) {
         this.isEditing = true;
         this.editIndex = index;
+        
         let info = this.userInfo[this.editIndex]
         this.validateForm.patchValue({
             startPointAddress: info.start_address,
@@ -604,7 +609,7 @@ export class MainRoutesComponent {
             orderType: info.order_type,
             personCount: info.person_count,
             comment: info.comment,
-            date: this.selectedDate,
+            date: this.selectedDate.value,
             time: this.selectedTime,
         })
         this.userId = info.user

@@ -83,8 +83,8 @@ export class SubrouteComponent {
         }
         if (this.subrouteInfo && this.subrouteInfo.selectTime) {
 
-            let time = this.openTimes.filter((data) => {
-                return (this.subrouteInfo.selectTime >= data.start && this.subrouteInfo.selectTime <= data.end)
+            let time = this.openTimes.filter((data) => {                
+                return (this.subrouteInfo.selectTime >= data.start && this.subrouteInfo.selectTime < data.end)
             });
             if (time && time[0]) {
                 this.selectedTime = time[0];

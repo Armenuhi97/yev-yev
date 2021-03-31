@@ -10,7 +10,8 @@ const mainRoutes: Routes = [{
         { path: 'driver', loadChildren: () => import("../drivers/drivers.module").then((m => m.DriverModule)) },
         { path: 'user', loadChildren: () => import("../users/users.module").then((m => m.UsersModule)) },
         { path: 'main-routes', loadChildren: () => import("../main-routes/main-routes.module").then((m => m.MainRoutesModule)) },
-        { path: 'orders', loadChildren: () => import("../orders/orders.module").then((m => m.OrdersModule)) }
+        { path: 'orders', loadChildren: () => import("../orders/orders.module").then((m => m.OrdersModule)) },
+        { path: 'other-orders', loadChildren: () => import("../other-orders/other-orders.module").then((m => m.otherOrdersModule)) }
     ]
 }];
 @NgModule({

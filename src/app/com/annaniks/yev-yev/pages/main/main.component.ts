@@ -21,6 +21,7 @@ export class MainComponent {
         { title: 'Ուղղություններ', path: '/dashboard/main-routes' },
         { title: 'Աշխատակիցներ', path: '/dashboard/moderator' },
         { title: 'Պատվերներ', path: '/dashboard/orders' },
+        { title: 'Այլ', path: '/dashboard/other-orders' },
         { title: 'Կարգավորումներ', path: '/dashboard/settings' },
 
     ]
@@ -58,7 +59,7 @@ export class MainComponent {
         }
         return params
     }
-    setSeenNotification(id:number) {        
+    setSeenNotification(id: number) {
         this._mainService.setSeenNotification(id).pipe(takeUntil(this.unsubscribe$),
             switchMap(() => {
                 return this.getUnseenNotifications()

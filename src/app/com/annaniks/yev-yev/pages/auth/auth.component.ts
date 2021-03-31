@@ -34,8 +34,9 @@ export class AuthComponent implements OnInit, OnDestroy {
             username:this.loginForm.get('username').value,
             password:this.loginForm.get('password').value
         }
-        this._authService.loginAdmin(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data:{token:string})=>{
+        this._authService.loginAdmin(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data:any)=>{
             this._cookieService.set('access',data.token);
+            this._cookieService.set('access',data.role_code);
             this._router.navigate(['/dashboard']);
 
         })
