@@ -51,7 +51,7 @@ export class DriversComponent {
             car_number: [null, Validators.required],
             car_capacity: [null, Validators.required],
             car_color_name: [null, Validators.required],
-            viber_id: [null, Validators.required]
+            viber_id: [null]
         })
     }
 

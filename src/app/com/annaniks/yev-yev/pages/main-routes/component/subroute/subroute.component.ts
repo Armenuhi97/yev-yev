@@ -55,14 +55,18 @@ export class SubrouteComponent {
     editIndex;
     @Output('getInfo') private _info = new EventEmitter();
     @Output('resetItem') private _reset = new EventEmitter()
-
+    index: number;
+    @Input('index')
+    set setIndex($event) {
+        this.index = +$event
+    }
     @Input('info')
     set setInfo($event) {
         this.subrouteInfo = $event;
         //set open times
-       
-        if (this.subrouteInfo && this.subrouteInfo.countList){
-          
+
+        if (this.subrouteInfo && this.subrouteInfo.countList) {
+
             for (let item of this.subrouteInfo.countList.orders) {
                 let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
                 for (let time of this.openTimes) {
@@ -78,20 +82,24 @@ export class SubrouteComponent {
             }
         }
         if (this.subrouteInfo && this.subrouteInfo.selectTime) {
+
             let time = this.openTimes.filter((data) => {
-                return data.start == this.subrouteInfo.selectTime
+                return (this.subrouteInfo.selectTime >= data.start && this.subrouteInfo.selectTime <= data.end)
             });
-            
-            this.getInformation(time[0])
+            if (time && time[0]) {
+                this.selectedTime = time[0];
+                setTimeout(() => {
+                    let element = document.getElementById(this.setId(time[0].start, this.index));
+                    element.scrollIntoView();
+                }, 500);
+
+                this.getInformation(time[0])
+            }
         }
     }
 
 
-    index: number;
-    @Input('index')
-    set setIndex($event) {
-        this.index = +$event
-    }
+
     isGetOrderCounts: boolean;
     @Input('isGetItem')
     set isGetItem($event) {
@@ -104,10 +112,10 @@ export class SubrouteComponent {
     @Input('date')
     set setDate($event) {
         this._date = $event;
-
-        if (this._date) {            
-            this.currentInterval = null
-            this.selectedTime = null;
+        if (this._date) {
+            this.currentInterval = null;
+            if (!this.subrouteInfo.selectTime)
+                this.selectedTime = null;
         }
         if (this.subrouteInfo && this._date) {
             this.getClosedHours(this.subrouteInfo.id).pipe(
@@ -135,6 +143,7 @@ export class SubrouteComponent {
         { start: '08:30', end: '09:00', time: '08:30 - 09:00', isActive: true, closeId: 0, isDisabled: false },
         { start: '09:00', end: '09:30', time: '09:00 - 09:30', isActive: true, closeId: 0, isDisabled: false },
         { start: '09:30', end: '10:00', time: '09:30 - 10:00', isActive: true, closeId: 0, isDisabled: false },
+        { start: '10:00', end: '10:30', time: '10:00 - 10:30', isActive: true, closeId: 0, isDisabled: false },
         { start: '10:30', end: '11:00', time: '10:30 - 11:00', isActive: true, closeId: 0, isDisabled: false },
         { start: '11:00', end: '11:30', time: '11:00 - 11:30', isActive: true, closeId: 0, isDisabled: false },
         { start: '11:30', end: '12:00', time: '11:30 - 12:00', isActive: true, closeId: 0, isDisabled: false },
@@ -164,12 +173,12 @@ export class SubrouteComponent {
         private _mainRouteService: MainRoutesService,
         private _appService: AppService,
         private nzMessages: NzMessageService,) {
-        this.windowHeight = (window.innerHeight - 220) / 2;
+        this.windowHeight = (window.innerHeight - 470) / 2;
     }
 
     ngOnInit() {
 
-     }
+    }
 
     getHourlyOrdersByDate() {
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
@@ -237,7 +246,7 @@ export class SubrouteComponent {
 
     getInformation(time) {
         this.selectedTime = time.time;
-                
+
         this._info.emit({ timeItem: time, time: time.time })
         // this.getInfo(time, status).subscribe()
     }
@@ -275,20 +284,21 @@ export class SubrouteComponent {
         if (moment(selectedDate).isAfter(currentDate)) {
             data.isDisabled = false;
         }
-        if (moment(selectedDate).isSame(currentDate)) {            
+        if (moment(selectedDate).isSame(currentDate)) {
             if ((moment(time).isSameOrAfter(start) && moment(time).isBefore(end)) || (moment(time).isBefore(start))) {
                 data.isDisabled = false
             } else {
                 data.isDisabled = true;
                 data.isActive = false
-            }               
+            }
             if ((moment(time).isSameOrAfter(start) && moment(time).isBefore(end))) {
-                
+
                 let element = document.getElementById(this.setId(data.start, this.index));
                 element.scrollIntoView();
-                this.currentInterval = data
+                this.currentInterval = data;
+
             }
-        }        
+        }
 
     }
     setId(id: string, index: number): string {

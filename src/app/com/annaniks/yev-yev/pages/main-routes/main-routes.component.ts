@@ -94,7 +94,8 @@ export class MainRoutesComponent {
                         let index = this.mainRoutes.indexOf(item[0]);
                         this.selectIndex = index;
                     }
-                    this.selectedDate = param.date
+                    
+                    this.selectedDate.setValue(param.date)
                     this.currentId = +param.mainRoute;
                     this.isGetFunction = false;
                     let time = this._datePipe.transform(param.date, 'HH:mm');
@@ -227,6 +228,7 @@ export class MainRoutesComponent {
     getRouteInfo(id, subrouteId?, time?) {
         return this._mainRoutesService.getSubRoute(id).pipe(
             map((data: ServerResponce<any>) => {
+                
                 if (subrouteId && time) {
                     data.results = data.results.map((data) => {
                         let selectTime;
@@ -592,8 +594,6 @@ export class MainRoutesComponent {
         return calculateCount
     }
     public onEditOrder(index) {
-        console.log(this.selectedTime);
-
         this.isEditing = true;
         this.editIndex = index;
         let info = this.userInfo[this.editIndex]
@@ -658,6 +658,9 @@ export class MainRoutesComponent {
             this.userInfo = [];
             this.isOpenInfo = false;
             this.isGetItem = true
+            this.subRouteInfos=this.subRouteInfos.map((el)=>{
+                return Object.assign({},el,{selectTime:null})
+            })
             // this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
         }
     }
@@ -671,6 +674,11 @@ export class MainRoutesComponent {
         date.setDate(date.getDate() + type);
         this.selectedDate.setValue(new Date(date));
         this.isGetItem = true;
+        this.subRouteInfos=this.subRouteInfos.map((el)=>{
+            return Object.assign({},el,{selectTime:null})
+        })
+        console.log(this.subRouteInfos);
+        
         // this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     ngOnDestroy() {
