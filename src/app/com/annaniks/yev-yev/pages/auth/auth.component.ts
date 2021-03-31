@@ -36,7 +36,7 @@ export class AuthComponent implements OnInit, OnDestroy {
         }
         this._authService.loginAdmin(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data:any)=>{
             this._cookieService.set('access',data.token);
-            this._cookieService.set('access',data.role_code);
+            this._cookieService.set('role',data.role_code);
             this._router.navigate(['/dashboard']);
 
         })

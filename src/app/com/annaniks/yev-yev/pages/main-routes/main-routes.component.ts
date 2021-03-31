@@ -309,7 +309,7 @@ export class MainRoutesComponent {
         }
     }
     public checkAddress(moderator) {
-        if(moderator.order.is_extra_order){
+        if(moderator.order && moderator.order.is_extra_order){
             return  `${moderator.order.start_address} -> ${moderator.order.end_address}`
         }
         if (this.subRouteInfo.start_point_is_static) {
