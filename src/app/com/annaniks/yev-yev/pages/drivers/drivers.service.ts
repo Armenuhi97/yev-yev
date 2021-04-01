@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { CookieService } from "ngx-cookie-service";
 import { Observable } from "rxjs";
 import { RouteItem } from "../../core/models/routes.model";
 import { User } from "../../core/models/salary";
@@ -9,6 +10,7 @@ import { ViberInfo } from "../../core/models/viber";
 @Injectable()
 export class DriverService {
     constructor(private _httpClient: HttpClient) { }
+
     getUsers(page: number, offset: number) {
         return this._httpClient.get<ServerResponce<User[]>>(`userdetails/user/?search=&user_role__code=DR&page=${page}&limit=10&offset=${offset}`)
     }
@@ -16,7 +18,8 @@ export class DriverService {
         return this._httpClient.get(`userdetails/user/?search=&user_role__code=DR&id=${userId}`)
     }
     public getAllRoutes() {
-        return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/`)
+
+        return this._httpClient.get<ServerResponce<RouteItem[]>>('route/main-route/?only_my=True')
     }
     public getDriverOfMainRoute(page: number, offset: number) {
         return this._httpClient.get(`route/main-route-driver/?page=${page}&limit=10&offset=${offset}`)

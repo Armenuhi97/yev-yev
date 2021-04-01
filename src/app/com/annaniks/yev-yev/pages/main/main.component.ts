@@ -32,6 +32,8 @@ export class MainComponent {
     constructor(private _router: Router, private _datePipe: DatePipe, private _mainService: MainService,private _cookieService:CookieService) {
         if(this._cookieService.get('role') == 'ADM'){
             this.tabs=[...this.moderatorTabs,...this.otherTabs]
+        }else{
+            this.tabs=this.moderatorTabs
         }
      }
     ngOnInit() {

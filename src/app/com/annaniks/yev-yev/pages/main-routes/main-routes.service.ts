@@ -10,7 +10,7 @@ export class MainRoutesService {
     constructor(private _httpClient: HttpClient) { }
     public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
         let offset = (page - 1) * 10;
-        return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?page=${page}&limit=10&offset=${offset}`)
+        return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?only_my=True&page=${page}&limit=10&offset=${offset}`)
     }
     public getDrivers(mainRouteId: number) {
         return this._httpClient.get(`userdetails/user/?search=&driving_routes__main_route=${mainRouteId}&user_role__code=DR`)

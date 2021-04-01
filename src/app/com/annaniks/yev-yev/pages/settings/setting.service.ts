@@ -10,7 +10,7 @@ export class SettingsService {
     constructor(private _httpClient: HttpClient) { }
     public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
         let offset=(page-1)*10;
-        return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?page=${page}&limit=10&offset=${offset}`)
+        return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?only_my=True&page=${page}&limit=10&offset=${offset}`)
     }
     public addRoutes(name: string) {
         return this._httpClient.post(`route/main-route/`, { route_name: name })
