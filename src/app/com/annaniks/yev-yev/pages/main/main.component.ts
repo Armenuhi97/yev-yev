@@ -15,30 +15,28 @@ import { MainService } from "./main.service";
 })
 export class MainComponent {
     unsubscribe$ = new Subject();
-    public tabs=[]
-    public otherTabs = [
-        { title: 'Աշխատակիցներ', path: '/dashboard/moderator' },
-        { title: 'Կարգավորումներ', path: '/dashboard/settings' },
-        
-    ]
-    public moderatorTabs=[
+    public tabs = [
         { title: 'Վարորդներ', path: '/dashboard/driver' },
         { title: 'Ուղևորներ', path: '/dashboard/user' },
-        { title: 'Ուղղություններ', path: '/dashboard/main-routes' },
+        { title: 'Ուղղ.', path: '/dashboard/main-routes' },
         { title: 'Պատվերներ', path: '/dashboard/orders' },
+        { title: 'Աշխատակիցներ', path: '/dashboard/moderator' },
         { title: 'Այլ', path: '/dashboard/other-orders' },
-        {title:'Տվյալներ',path:'/dashboard/moderator-settings'}
+        { title: 'Տվյալներ', path: '/dashboard/moderator-settings' },
+        { title: 'Կարգավորումներ', path: '/dashboard/settings' },
+
     ]
-  
+    role:string;
     isOpenNotification: boolean = false;
     notifications: Notification[] = []
-    constructor(private _router: Router, private _datePipe: DatePipe, private _mainService: MainService,private _cookieService:CookieService) {
-        if(this._cookieService.get('role') == 'ADM'){
-            this.tabs=[...this.moderatorTabs,...this.otherTabs]
-        }else{
-            this.tabs=[...this.moderatorTabs]
-        }
-     }
+    constructor(private _router: Router, private _datePipe: DatePipe, private _mainService: MainService, private _cookieService: CookieService) {
+       this.role=this._cookieService.get('role')
+        // if ( == 'ADM') {
+        //     this.tabs = [...this.moderatorTabs, ...this.otherTabs]
+        // } else {
+        //     this.tabs = [...this.moderatorTabs]
+        // }
+    }
     ngOnInit() {
         this.getUnseenNotifications().pipe(takeUntil(this.unsubscribe$)).subscribe()
 
@@ -46,7 +44,7 @@ export class MainComponent {
             this.getUnseenNotifications().pipe(takeUntil(this.unsubscribe$)).subscribe()
         }, 5000)
     }
-    public logOut(){
+    public logOut() {
         this._cookieService.delete('role');
         this._cookieService.delete('access');
         localStorage.removeItem('user')
