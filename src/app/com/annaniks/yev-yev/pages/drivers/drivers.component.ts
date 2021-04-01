@@ -29,6 +29,7 @@ export class DriversComponent {
     routes: RouteItem[] = [];
     item: User;
     addedRoutes = [];
+    mainRouteFiler:number;
     viberInfo: ViberInfo[] = []
     constructor(private _driavesService: DriverService,
         private nzMessages: NzMessageService,
@@ -54,11 +55,16 @@ export class DriversComponent {
             viber_id: [null]
         })
     }
-
+    public changeFilter($event){
+        this.pageIndex=1;
+        this.getUsers($event).pipe(takeUntil(this.unsubscribe$)).subscribe()
+    }
     public getAllRoutes() {
         return this._driavesService.getAllRoutes().pipe(map((data: ServerResponce<RouteItem[]>) => {
             this.total = data.count;
             this.routes = data.results;
+            console.log(this.routes);
+            
             return data
         }))
     }
@@ -82,8 +88,8 @@ export class DriversComponent {
                 this.viberInfo = data;
             }))
     }
-    public getUsers() {
-        return this._driavesService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10).pipe(
+    public getUsers(mainRouteFiler?) {
+        return this._driavesService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10,mainRouteFiler).pipe(
             map((data: ServerResponce<User[]>) => {
                 this.total = data.count;
                 this.salaryTable = data.results;

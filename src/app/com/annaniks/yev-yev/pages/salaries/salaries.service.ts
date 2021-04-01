@@ -18,4 +18,7 @@ export class SalaryService{
     public addUser(body){
         return this._httpClient.post(`userdetails/add-moderator/`,body)
     }
+    public changePassword(id:number,body){
+        return this._httpClient.put(`login/change-password/${id}/?is_admin=true`,body)
+    }
 }

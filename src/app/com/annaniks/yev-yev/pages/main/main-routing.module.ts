@@ -11,7 +11,8 @@ const mainRoutes: Routes = [{
         { path: 'user', loadChildren: () => import("../users/users.module").then((m => m.UsersModule)) },
         { path: 'main-routes', loadChildren: () => import("../main-routes/main-routes.module").then((m => m.MainRoutesModule)) },
         { path: 'orders', loadChildren: () => import("../orders/orders.module").then((m => m.OrdersModule)) },
-        { path: 'other-orders', loadChildren: () => import("../other-orders/other-orders.module").then((m => m.otherOrdersModule)) }
+        { path: 'other-orders', loadChildren: () => import("../other-orders/other-orders.module").then((m => m.otherOrdersModule)) },
+        { path: 'moderator-settings', loadChildren: () => import("../moderator-settings/moderator-settings.module").then(m => m.ModeratorSettingsModule) }
     ]
 }];
 @NgModule({

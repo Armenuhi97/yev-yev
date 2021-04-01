@@ -19,6 +19,7 @@ export class MainComponent {
     public otherTabs = [
         { title: 'Աշխատակիցներ', path: '/dashboard/moderator' },
         { title: 'Կարգավորումներ', path: '/dashboard/settings' },
+        
     ]
     public moderatorTabs=[
         { title: 'Վարորդներ', path: '/dashboard/driver' },
@@ -26,14 +27,16 @@ export class MainComponent {
         { title: 'Ուղղություններ', path: '/dashboard/main-routes' },
         { title: 'Պատվերներ', path: '/dashboard/orders' },
         { title: 'Այլ', path: '/dashboard/other-orders' },
+        {title:'Տվյալներ',path:'/dashboard/moderator-settings'}
     ]
+  
     isOpenNotification: boolean = false;
     notifications: Notification[] = []
     constructor(private _router: Router, private _datePipe: DatePipe, private _mainService: MainService,private _cookieService:CookieService) {
         if(this._cookieService.get('role') == 'ADM'){
             this.tabs=[...this.moderatorTabs,...this.otherTabs]
         }else{
-            this.tabs=this.moderatorTabs
+            this.tabs=[...this.moderatorTabs]
         }
      }
     ngOnInit() {
@@ -42,6 +45,12 @@ export class MainComponent {
         setInterval(() => {
             this.getUnseenNotifications().pipe(takeUntil(this.unsubscribe$)).subscribe()
         }, 5000)
+    }
+    public logOut(){
+        this._cookieService.delete('role');
+        this._cookieService.delete('access');
+        localStorage.removeItem('user')
+        this._router.navigate(['/auth'])
     }
     getUnseenNotifications() {
         return this._mainService.getUnseenNotifications().pipe(

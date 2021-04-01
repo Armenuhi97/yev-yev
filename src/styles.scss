@@ -32,6 +32,9 @@ td{
 .action-button{
     cursor: pointer;
 }
+.ant-table-tbody{
+    background: white;
+}
 .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content{
     height: 16px !important;
 }
@@ -39,7 +42,10 @@ td{
 .ant-form-item-label>label::after{
     content: '' !important;
 }
-
+.required-field{
+    color: red;
+    width: 100%;
+}
 .table-item{
     // .ant-table-title{
     //     position: sticky;

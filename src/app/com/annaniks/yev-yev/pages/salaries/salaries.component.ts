@@ -6,6 +6,7 @@ import { takeUntil } from "rxjs/operators";
 import { Messages } from "../../core/models/mesages";
 import { SalaryRespone, User } from "../../core/models/salary";
 import { ServerResponce } from "../../core/models/server-reponce";
+import { PasswordValidation } from "../../core/utilities/validators";
 import { MainService } from "../main/main.service";
 import { SalaryService } from "./salaries.service";
 
@@ -15,6 +16,7 @@ import { SalaryService } from "./salaries.service";
     styleUrls: ['salaries.component.scss']
 })
 export class SalariesComponent {
+    isVisiblePasswordModal: boolean = false
     salaryTable: User[] = []
     pageSize: number = 10;
     unsubscribe$ = new Subject();
@@ -24,7 +26,8 @@ export class SalariesComponent {
     isVisible: boolean = false;
     validateForm: FormGroup;
     editIndex: number = null;
-
+    changeUserId: number;
+    passwordForm:FormGroup;
     constructor(private _salaryService: SalaryService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
@@ -33,6 +36,7 @@ export class SalariesComponent {
 
     ngOnInit() {
         this._initForm();
+        this._initPasswordForm();
         this.getUsers()
     }
     private _initForm() {
@@ -44,6 +48,30 @@ export class SalariesComponent {
 
         })
     }
+    private _initPasswordForm(){
+        this.passwordForm = this._fb.group({
+            password: [null, [Validators.required,Validators.minLength(6)]],
+            repeatPassword: [null, [Validators.required]]
+        },
+            { validator: PasswordValidation.MatchPassword })
+    }
+    public changePassword() {
+        console.log(this.passwordForm);
+        
+        if (this.passwordForm.valid) {
+            let sendRequest = {
+                "new_password": this.passwordForm.get('password').value,
+                "repeat_password": this.passwordForm.get('repeatPassword').value
+            }
+            this._salaryService.changePassword(this.changeUserId, sendRequest).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+                this.nzMessages.success(Messages.success);
+                this.handleCancelPassword()
+            },
+                (err) => {
+                    this.nzMessages.error(Messages.fail)
+                })
+        }
+    }
     public changeUserStatus($event, id: number) {
         this._salaryService.editUser(id, { is_active: $event }).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
@@ -53,7 +81,15 @@ export class SalariesComponent {
             this.salaryTable = data.results;
         })
     }
-
+    public openPasswordModal(data: User) {
+        this.isVisiblePasswordModal = true;
+        this.changeUserId = data.user.id
+    }
+    public handleCancelPassword() {
+        this.isVisiblePasswordModal = false;
+        this.changeUserId = null
+    }
+ 
     onEditsalary(index: number) {
         this.isEditing = true;
         this.editIndex = index;
@@ -62,7 +98,7 @@ export class SalariesComponent {
     }
     public getsalaryById(id: number) {
         this._salaryService.getUserById(id).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<User>) => {
-            if(data.results && data.results[0]) {
+            if (data.results && data.results[0]) {
                 let item = data.results[0]
                 this.validateForm.patchValue({
                     first_name: item.user.first_name,
@@ -112,7 +148,7 @@ export class SalariesComponent {
 
                 this.closeModal();
                 // if (this.salaryTable.length == 10) {
-                    this.pageIndex = 1
+                this.pageIndex = 1
                 // }
                 this.getUsers()
             },

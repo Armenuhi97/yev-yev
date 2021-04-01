@@ -11,8 +11,12 @@ import { ViberInfo } from "../../core/models/viber";
 export class DriverService {
     constructor(private _httpClient: HttpClient) { }
 
-    getUsers(page: number, offset: number) {
-        return this._httpClient.get<ServerResponce<User[]>>(`userdetails/user/?search=&user_role__code=DR&page=${page}&limit=10&offset=${offset}`)
+    getUsers(page: number, offset: number,mainRouteId?:number) {
+        let url=`userdetails/user/?search=&user_role__code=DR&page=${page}&limit=10&offset=${offset}`;
+        if(mainRouteId){
+            url+=`&driving_routes__main_route=${mainRouteId}`
+        }
+        return this._httpClient.get<ServerResponce<User[]>>(url)
     }
     public getUserById(userId: number) {
         return this._httpClient.get(`userdetails/user/?search=&user_role__code=DR&id=${userId}`)

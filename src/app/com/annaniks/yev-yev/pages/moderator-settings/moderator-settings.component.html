@@ -1,0 +1,56 @@
+<div class="form">
+  
+  <nz-form-item>
+    <nz-form-label class="inline-labels" nzRequired>username</nz-form-label>
+
+    <nz-form-control nzErrorTip="Պետք է լինի 6 սիմվոլից ոչ պակաս">
+      <nz-input-group>
+        <input type="text" nz-input [formControl]="userName" placeholder="userName" />
+      </nz-input-group>
+    </nz-form-control>
+    <!--
+    <div class="required-field" *ngIf="userName.hasError('minLength')">Պետք է լինի 6 սիմվոլից ոչ
+      պակաս</div> -->
+  </nz-form-item>
+  
+
+  <button nz-button class="form-button form-margin" [nzType]="'primary'" (click)="changeUserName()">Պահպանել</button>
+</div>
+<form nz-form [formGroup]="validateForm" class="form" (ngSubmit)="changePassword()">
+  <div class="title">Գաղտնաբառի փոփոխություն</div>
+
+  <nz-form-item>
+    <nz-form-label class="inline-labels" nzRequired>Հին գաղտնաբառ</nz-form-label>
+
+    <nz-form-control nzErrorTip="">
+      <nz-input-group>
+        <input type="password" nz-input formControlName="oldPassword" placeholder="Հին գաղտնաբառ" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label class="inline-labels" nzRequired>Գաղտնաբառ</nz-form-label>
+
+    <nz-form-control nzErrorTip="Պետք է լինի 6 սիմվոլից ոչ պակաս">
+      <nz-input-group>
+        <input type="password" nz-input formControlName="password" placeholder="Գաղտնաբառ" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label class="inline-labels" nzRequired>Կրկնել գաղտնաբառը</nz-form-label>
+
+    <nz-form-control nzErrorTip="">
+      <nz-input-group>
+        <input type="password" nz-input formControlName="repeatPassword" placeholder="Կրկնել գաղտնաբառը" />
+      </nz-input-group>
+    </nz-form-control>
+    <div class="required-field"
+    *ngIf="validateForm.get('repeatPassword').hasError('MatchPassword') && validateForm.get('repeatPassword').touched">
+    Գաղտնաբառերը չեն համընկնում *</div>
+  </nz-form-item>
+ 
+  <button nz-button class="form-button form-margin" [nzType]="'primary'" >Փոխել</button>
+
+</form>

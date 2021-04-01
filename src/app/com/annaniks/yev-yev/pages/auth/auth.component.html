@@ -1,4 +1,9 @@
+
 <form nz-form [formGroup]="loginForm" class="login-form" (ngSubmit)="submitForm()">
+  <div class="title-container">
+    <h1>Մուտք</h1>
+   
+  </div>
     <nz-form-item>
       <nz-form-control nzErrorTip="Խնդրում եմ մուտքագրեք Ձեր անունը">
         <nz-input-group >
@@ -14,5 +19,5 @@
       </nz-form-control>
     </nz-form-item>
     
-    <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Log in</button>
+    <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Մուտք</button>
   </form>

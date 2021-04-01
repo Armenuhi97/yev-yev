@@ -16,34 +16,37 @@ export class AuthComponent implements OnInit, OnDestroy {
     public loginForm: FormGroup;
     private unsubscribe$ = new Subject<void>();
 
-    constructor(private _fb: FormBuilder,private _authService:AuthService,
-        private _router:Router,
-        private _cookieService:CookieService) { }
+    constructor(private _fb: FormBuilder, private _authService: AuthService,
+        private _router: Router,
+        private _cookieService: CookieService) { }
 
     ngOnInit() {
         this._initForm()
     }
-    private _initForm():void {
+    private _initForm(): void {
+        // admin
+        // Gyumri22+
         this.loginForm = this._fb.group({
-            username: ['admin', Validators.required],
-            password: ['Gyumri22+', Validators.required]
+            username: ['', Validators.required],
+            password: ['', Validators.required]
         })
     }
-    public submitForm():void {
-        let sendObject:LoginSendResponse={
-            username:this.loginForm.get('username').value,
-            password:this.loginForm.get('password').value
+    public submitForm(): void {
+        let sendObject: LoginSendResponse = {
+            username: this.loginForm.get('username').value,
+            password: this.loginForm.get('password').value
         }
-        this._authService.loginAdmin(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data:any)=>{
-            this._cookieService.set('access',data.token);
-            this._cookieService.set('role',data.role_code);
+        this._authService.loginAdmin(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: any) => {
+            this._cookieService.set('access', data.token);
+            this._cookieService.set('role', data.role_code);
+            localStorage.setItem('user', JSON.stringify(data.user.user))
             this._router.navigate(['/dashboard']);
 
         })
-     }
-     ngOnDestroy() {
+    }
+    ngOnDestroy() {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
-    
-      }
+
+    }
 }
