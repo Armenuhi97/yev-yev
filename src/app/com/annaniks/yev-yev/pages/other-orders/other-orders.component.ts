@@ -182,7 +182,7 @@ export class OtherOrdersComponent {
         this.validateForm = this._fb.group({
             startPointAddress: [null],
             endPointAddress: [null],
-            order_phone_number: [null, [Validators.minLength(8), Validators.maxLength(8)]],
+            order_phone_number: [null],
             personCount: [null, Validators.required],
             subroute: [null, Validators.required],
             driver: [null, Validators.required],
