@@ -11,10 +11,10 @@ import { ViberInfo } from "../../core/models/viber";
 export class DriverService {
     constructor(private _httpClient: HttpClient) { }
 
-    getUsers(page: number, offset: number,mainRouteId?:number) {
-        let url=`userdetails/user/?search=&user_role__code=DR&page=${page}&limit=10&offset=${offset}`;
-        if(mainRouteId){
-            url+=`&driving_routes__main_route=${mainRouteId}`
+    getUsers(page: number, offset: number, mainRouteId?: number) {
+        let url = `userdetails/user/?search=&user_role__code=DR&page=${page}&limit=10&offset=${offset}`;
+        if (mainRouteId) {
+            url += `&driving_routes__main_route=${mainRouteId}`
         }
         return this._httpClient.get<ServerResponce<User[]>>(url)
     }
@@ -50,5 +50,8 @@ export class DriverService {
     public getDriverViberInfo(): Observable<ViberInfo[]> {
         return this._httpClient.get<ViberInfo[]>(`userdetails/get-drivers-viber-info/`)
     }
-
+    public getOrders(driverId: number,page:number) {
+        let offset=(page-1)*10;
+        return this._httpClient.get(`order/approved-order/?driver_id=${driverId}&limit=10&offset=${offset}`)
+    }
 }

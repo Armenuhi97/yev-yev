@@ -29,10 +29,12 @@ export class RoutesListComponent {
         private _datePipe: DatePipe) { }
 
     public getOrders() {
-        // this._driverService.getOrders(this.userId, this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
-        //     this.total = data.count;
-        //     this.orders = data.results;
-        // })
+        this._driverService.getOrders(this.userId, this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
+            this.total = data.count;
+            this.orders = data.results;
+            console.log(this.orders);
+            
+        })
     }
     transformDate(date) {
         return this._datePipe.transform(date, 'dd-MM-YYYY HH:mm')

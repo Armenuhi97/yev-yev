@@ -2,7 +2,6 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/c
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
 import { LoaderService } from '../services/loaders.service';
 
 @Injectable()

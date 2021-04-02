@@ -22,12 +22,11 @@
                 {{transformDate(data.date)}}
             </td>
             <td>
-                {{data?.sub_route_details?.main_route_name}}
+                {{data?.sub_route_details?.start_point_city?.name_hy}} - {{data?.sub_route_details?.end_point_city?.name_hy}}
             </td>
-            <td>{{data?.person_count}}</td>
-            <td> <span [class.light]="checkAddress(data) == 'Հասցե չկա'">
-                    {{checkAddress(data)}}</span></td>
-            <td></td>
+            <td>{{data?.seat_count}}</td>
+          
+            
             <!-- <td>{{data.comment}}</td>
             <td>{{ (data?.status == 'approved')? 'Հաստատված' : 'Չեղարկված' }}</td> -->
         </tr>

@@ -66,9 +66,7 @@ export class DriversComponent {
     public getAllRoutes() {
         return this._driavesService.getAllRoutes().pipe(map((data: ServerResponce<RouteItem[]>) => {
             this.total = data.count;
-            this.routes = data.results;
-            console.log(this.routes);
-            
+            this.routes = data.results;            
             return data
         }))
     }
