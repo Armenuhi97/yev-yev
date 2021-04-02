@@ -17,4 +17,5 @@ export interface OrderResponse {
     "comment": string,
     user_comment:string
     status:string
+    is_free:boolean
 }

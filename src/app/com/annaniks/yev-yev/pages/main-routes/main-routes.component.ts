@@ -163,7 +163,8 @@ export class MainRoutesComponent {
             comment: [null],
             date: [null],
             time: [null],
-            isChangeStatus: [false]
+            isChangeStatus: [false],
+            isFree: [false]
         })
 
         this.validateForm.get('orderType').valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((value) => {
@@ -196,6 +197,7 @@ export class MainRoutesComponent {
                                     first_name: item.user.first_name,
                                     last_name: item.user.last_name,
                                     userComment: item.comment
+                                  
                                 })
                                 this.validateForm.get('first_name').disable()
                                 this.validateForm.get('last_name').disable()
@@ -430,6 +432,7 @@ export class MainRoutesComponent {
                 "end_address": this.validateForm.get('endPointAddress').value,
                 "end_langitude": '',
                 "end_latitude": '',
+                "is_free": this.validateForm.get('isFree').value,
                 "user": this.userId ? this.userId : null,
                 "order_phone_number": this.validateForm.get('order_phone_number').value ? '+374' + this.validateForm.get('order_phone_number').value : null,
                 "order_type": this.validateForm.get('orderType').value,
@@ -447,6 +450,7 @@ export class MainRoutesComponent {
                 "first_name": this._appService.checkPropertyValue(this.validateForm.get('first_name'), 'value', ""),
                 "last_name": this._appService.checkPropertyValue(this.validateForm.get('last_name'), 'value', ""),
                 "user_comment": this.validateForm.get('userComment').value,
+                "is_free": this.validateForm.get('isFree').value,
                 "phone_number": '+374' + this.validateForm.get('phone_number').value,
                 "comment": this.validateForm.get('comment').value,
                 "sub_route": this.subRouteInfo.id,
@@ -612,6 +616,7 @@ export class MainRoutesComponent {
             comment: info.comment,
             date: this.selectedDate.value,
             time: this.selectedTime,
+            isFree: info.is_free
         })
         this.userId = info.user
         this.showModal()

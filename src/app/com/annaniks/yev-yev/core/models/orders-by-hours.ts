@@ -2,6 +2,7 @@ export interface OrdersByHours {
     canceled_by_client: boolean
     canceled_by_moderator: boolean
     address: string
+    is_free:boolean
     isSelect?: boolean
     isDisabled?: boolean
     is_in_approved_orders: boolean

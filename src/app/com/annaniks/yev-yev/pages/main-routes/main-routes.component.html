@@ -54,6 +54,7 @@
                                     <th>Հասցե</th>
                                     <th>Տիպ</th>
                                     <th>Տեղ</th>
+                                    <th>Անվճար</th>
                                     <th></th>
                                     <th *ngIf="radioValue == 'approved'"></th>
                                     <th></th>
@@ -71,6 +72,9 @@
                                         <!-- {{moderator?.start_address}} - {{moderator?.end_address}}</td> -->
                                     <td>{{getOrderType(moderator?.order_type)}}</td>
                                     <td>{{moderator?.person_count}}</td>
+                                    <td>
+                                        <label [disabled]="true" nz-checkbox [(ngModel)]="moderator.is_free"></label>
+                                    </td>
                                     <td (click)="onEditOrder(ind)" class="action-button edit" style="width:10px"><i
                                             *ngIf="!moderator.is_in_approved_orders && timeItem && !timeItem.isDisabled"
                                             nz-icon nzType="edit"></i>
@@ -240,14 +244,21 @@
                                     </nz-select>
                                 </div>
                             </div>
-                            <div nz-row [nzGutter]="24" class="d-flex align-items-center justify-content-between"
-                                *ngIf="isEditing && radioValue == 'pending'">
-                                <div nz-col [nzSpan]="12">
+                            <div  nz-row [nzGutter]="24" class="d-flex align-items-center margin-top-10 justify-content-between">
+                                <div *ngIf="isEditing && radioValue == 'pending'" nz-col [nzSpan]="12">
                                     <nz-form-control>
                                         <label nz-checkbox formControlName="isChangeStatus">Փոխել կարգավիճակը</label>
                                     </nz-form-control>
                                 </div>
+                                <div nz-col [nzSpan]="12">
+                                    <nz-form-label class="inline-labels">Անվճար</nz-form-label>
+                                    <!-- <nz-form-item> -->
+                                        <nz-form-control>
+                                            <nz-switch formControlName="isFree"></nz-switch>
+                                        </nz-form-control>
+                                    <!-- </nz-form-item> -->
 
+                                </div>
                             </div>
                         </form>
 
@@ -342,9 +353,7 @@
                         </nz-select>
                     </nz-modal>
 
-                    <nz-modal nzWidth="1100px" 
-                        (nzOnCancel)="handleCancel()" 
-                        [(nzVisible)]="isVisibleOrderInfo">
+                    <nz-modal nzWidth="1100px" (nzOnCancel)="handleCancel()" [(nzVisible)]="isVisibleOrderInfo">
                         <div *nzModalContent>
                             <nz-table nzBordered [nzFrontPagination]="false" [nzData]="orderMembers">
                                 <thead>
@@ -390,7 +399,8 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <div *ngIf="!timeItem.isDisabled" class="cancel-btns d-flex align-items-center flex-wrap">
+                                            <div *ngIf="!timeItem.isDisabled"
+                                                class="cancel-btns d-flex align-items-center flex-wrap">
                                                 <button (click)="approveCancelation(moderator.order.id,ind)"
                                                     *ngIf="moderator.order.canceled_by_client" nz-button nz-button
                                                     nzType="primary" class="color-green">Հաստատել</button>
@@ -405,8 +415,8 @@
                         </div>
                         <div *nzModalFooter>
                             <button nz-button nzType="default" (click)="handleCancel()">Փակել</button>
-                            <button *ngIf="!timeItem.isDisabled" nz-button nzType="primary" (click)="onOrderSave()"
-                              >Հաստատել</button>
+                            <button *ngIf="!timeItem.isDisabled" nz-button nzType="primary"
+                                (click)="onOrderSave()">Հաստատել</button>
                         </div>
                     </nz-modal>
                 </div>

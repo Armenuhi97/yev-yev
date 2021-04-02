@@ -31,6 +31,7 @@ export interface User {
     >,
     "phone_number": string,
     "image": string,
+    is_free:boolean
     person_count: number
     "car_model": null,
     "car_color": null,
