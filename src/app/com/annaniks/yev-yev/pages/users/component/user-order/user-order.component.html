@@ -11,7 +11,7 @@
             <th>Նստ.</th>
             <th>Հասցե</th>
             <th>Վարորդ</th>
-            <th>Մեկ.</th>
+            <th>Մեկն.</th>
             <th>Տեսակ</th>
         </tr>
     </thead>
@@ -22,12 +22,12 @@
                 {{transformDate(data.date)}}
             </td>
             <td>
-                {{data?.sub_route_details?.main_route_name}}
+                {{data?.sub_route_details?.start_point_city?.name_hy}} - {{data?.sub_route_details?.end_point_city?.name_hy}}
             </td>
             <td>{{data?.person_count}}</td>
             <td> <span [class.light]="checkAddress(data) == 'Հասցե չկա'">
                     {{checkAddress(data)}}</span></td>
-            <td></td>
+            <td>{{data?.approved_order_details[0]?.approved_order?.driver_details?.user?.first_name}} {{data?.approved_order_details[0]?.approved_order?.driver_details?.user?.last_name}}</td>
             <td>{{data.comment}}</td>
             <td>{{ (data?.status == 'approved')? 'Հաստատված' : 'Չեղարկված' }}</td>
         </tr>

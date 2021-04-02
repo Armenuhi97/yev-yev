@@ -53,7 +53,9 @@ export class DriversComponent {
             car_color: [null, Validators.required],
             car_number: [null, Validators.required],
             car_capacity: [null, Validators.required],
-            car_color_name: [null, Validators.required],
+            car_color_name_hy: [null, Validators.required],
+            car_color_name_en: [null, Validators.required],
+            car_color_name_ru: [null, Validators.required],
             viber_id: [null]
         })
     }
@@ -122,7 +124,9 @@ export class DriversComponent {
                         car_color: this.item.car_color,
                         car_number: this.item.car_number,
                         car_capacity: this.item.car_capacity,
-                        car_color_name: this.item.car_color_name,
+                        car_color_name_hy: this.item.car_color_name_hy,
+                        car_color_name_en: this.item.car_color_name_en,
+                        car_color_name_ru: this.item.car_color_name_ru,
                         viber_id: this.item.viber_id
                     })
                 }

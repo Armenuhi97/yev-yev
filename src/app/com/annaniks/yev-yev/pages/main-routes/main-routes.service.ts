@@ -91,4 +91,18 @@ export class MainRoutesService {
     public sendMessage(orderId: number) {
         return this._httpClient.get(`order/send-viber-message/?approved_order_id=${orderId}`)
     }
+    public changeApprovedOrderGroup(orderId: number, driverId: number) {
+        return this._httpClient.post('order/change-approved-order-group/',
+            {
+                "approved_order_id": orderId,
+                "driver_id": driverId
+            })
+    }
+    public removeAndCancelOrder(approvedOrderId: number, orderId: number) {
+        return this._httpClient.post('order/remove-and-cancel-order/',
+            {
+                "approved_order_id": approvedOrderId,
+                "order_id": orderId
+            })
+    }
 }

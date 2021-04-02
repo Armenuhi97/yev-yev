@@ -25,9 +25,10 @@
         </div>
         <div nz-row [nzGutter]="24">
             <div nz-col [nzSpan]="10">
-                <div >
-                    <app-subroute *ngFor="let item of subRouteInfos;let i=index" [selectInfo]="selectInfo" [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)"
-                        [index]="i" [info]="item" (resetItem)="resetItem($event)" [date]="selectedDate.value">
+                <div>
+                    <app-subroute *ngFor="let item of subRouteInfos;let i=index" [selectInfo]="selectInfo"
+                        [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)" [index]="i" [info]="item"
+                        (resetItem)="resetItem($event)" [date]="selectedDate.value">
                     </app-subroute>
                 </div>
             </div>
@@ -289,7 +290,9 @@
                             <tr [ngClass]="{'color-red':isCanceledByClient(data)}" class="cursor-pointer"
                                 *ngFor="let data of approvedOrders; let index = index">
                                 <td>{{index+1}}</td>
-                                <td>{{data.driver_details.user.first_name}} {{data.driver_details.user.last_name}}</td>
+                                <td>{{data.driver_details.user.first_name}} {{data.driver_details.user.last_name}}
+                                    <i (click)="changeDriverName(data)" nz-icon nzType="edit"></i>
+                                </td>
                                 <td> {{data.driver_details.car_model}}</td>
                                 <td>{{data.driver_details.car_capacity}}/{{data.seat_count}}</td>
                                 <td class="action-button edit" style="width:10px">
@@ -301,8 +304,7 @@
                                     </svg>
                                 </td>
                                 <!--  *ngIf="timeItem && !timeItem.isDisabled" -->
-                                <td class="action-button edit" style="width:10px"><i
-                                        [class.disabled]="timeItem.isDisabled" (click)="onEditOrderMembers(index)"
+                                <td class="action-button edit" style="width:10px"><i (click)="onEditOrderMembers(index)"
                                         nz-icon nzType="edit"></i>
                                 </td>
                                 <td class="action-button delete" style="width:10px">
@@ -320,20 +322,30 @@
                                         </svg>
                                     </a>
                                 </td>
-                                <td> <img src="assets/viber.png"
-                                        *ngIf="!timeItem.isDisabled" (click)="send(data)"
+                                <td> <img src="assets/viber.png" *ngIf="!timeItem.isDisabled" (click)="send(data)"
                                         style="height: 25px; width: 25px;" alt="">
-                                        <span *ngIf="data.viber_message_sended">Ուղղարկված է </span>
+                                    <span *ngIf="data.viber_message_sended">Ուղղարկված է </span>
                                     <!-- <button *ngIf="!data.viber_message_sended" (click)="send(data)" [disabled]="timeItem.isDisabled" nz-button nzType="text" nz-button
                                         nzType="primary">Ուղարկել</button> -->
                                 </td>
                             </tr>
                         </tbody>
                     </nz-table>
-                    <nz-modal nzWidth="1100px" [nzTitle]="'Փոփոխել'" [nzCancelText]="'Փակել'"
-                        (nzOnCancel)="handleCancel()" [nzOkText]="'Հատատել'" (nzOnOk)="onOrderSave()"
+
+                    <nz-modal nzWidth="500px" [nzTitle]="'Փոփոխել'" [nzCancelText]="'Փակել'"
+                        (nzOnCancel)="handleCancelDriver()" [nzOkText]="'Հատատել'" (nzOnOk)="onSaveDriver()"
+                        [(nzVisible)]="isVisibleDriverModal">
+                        <nz-select class="w-100" nzShowSearch [formControl]="driverControl">
+                            <nz-option *ngFor="let dr of modalDrivers" [nzValue]="dr.id"
+                                [nzLabel]="getLabelOfDrivers(dr) ">
+                            </nz-option>
+                        </nz-select>
+                    </nz-modal>
+
+                    <nz-modal nzWidth="1100px" 
+                        (nzOnCancel)="handleCancel()" 
                         [(nzVisible)]="isVisibleOrderInfo">
-                        <div>
+                        <div *nzModalContent>
                             <nz-table nzBordered [nzFrontPagination]="false" [nzData]="orderMembers">
                                 <thead>
                                     <tr>
@@ -344,6 +356,7 @@
                                         <th>Տիպ</th>
                                         <th>Տեղ.</th>
                                         <th></th>
+                                        <th>Ջնջել</th>
                                         <th>Մերժում</th>
                                     </tr>
                                 </thead>
@@ -362,7 +375,22 @@
                                                 [(ngModel)]="moderator.isSelect"></label>
                                         </td>
                                         <td>
-                                            <div class="cancel-btns d-flex align-items-center flex-wrap">
+                                            <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
+                                                nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
+                                                nzPopconfirmPlacement="bottom"
+                                                (nzOnConfirm)="removeAndCancelOrder(moderator,ind)">
+                                                <!-- <i nz-icon nzType="edit"></i> -->
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                                </svg>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <div *ngIf="!timeItem.isDisabled" class="cancel-btns d-flex align-items-center flex-wrap">
                                                 <button (click)="approveCancelation(moderator.order.id,ind)"
                                                     *ngIf="moderator.order.canceled_by_client" nz-button nz-button
                                                     nzType="primary" class="color-green">Հաստատել</button>
@@ -374,6 +402,11 @@
                                     </tr>
                                 </tbody>
                             </nz-table>
+                        </div>
+                        <div *nzModalFooter>
+                            <button nz-button nzType="default" (click)="handleCancel()">Փակել</button>
+                            <button *ngIf="!timeItem.isDisabled" nz-button nzType="primary" (click)="onOrderSave()"
+                              >Հաստատել</button>
                         </div>
                     </nz-modal>
                 </div>

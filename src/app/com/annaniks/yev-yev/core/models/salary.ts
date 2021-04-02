@@ -37,7 +37,9 @@ export interface User {
     "car_number": null,
     "car_capacity": number,
     "comment": null,
-    "car_color_name": string
+    car_color_name_hy: string
+    car_color_name_en: string
+    car_color_name_ru: string
     "user_role": number
 
 }

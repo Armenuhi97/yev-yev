@@ -36,6 +36,7 @@ export class UserOrderComponent {
     transformDate(date) {
         return this._datePipe.transform(date, 'dd-MM-YYYY HH:mm')
     }
+  
     public checkAddress(data) {
         if (data && data.sub_route_details) {            
             if (data.sub_route_details.start_point_is_static) {

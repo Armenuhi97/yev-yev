@@ -42,7 +42,7 @@ export class MainComponent {
 
         setInterval(() => {
             this.getUnseenNotifications().pipe(takeUntil(this.unsubscribe$)).subscribe()
-        }, 5000)
+        }, 10000)
     }
     public logOut() {
         this._cookieService.delete('role');

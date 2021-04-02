@@ -60,9 +60,10 @@ export class MainRoutesComponent {
     private _param
     private _lastMainRouteId: number;
     orderTypes: OrderType[] = [];
-    openTimes =[]
+    openTimes = []
     isGetFunction: boolean = true;
-    isGet: boolean = true
+    isGet: boolean = true;
+    driverControl = new FormControl('', Validators.required)
     constructor(private _mainRoutesService: MainRoutesService, private _datePipe: DatePipe,
         private _fb: FormBuilder,
         private _activatedRoute: ActivatedRoute,
@@ -86,7 +87,7 @@ export class MainRoutesComponent {
             if (this.isGet) {
                 this.isGet = true
                 if (param.date && (!this._param || (this._param && (this._param.date !== param.date || this._param.subRoute !== param.subRoute || this._param.mainRoute !== param.mainRoute)))) {
-                
+
                     this._param = param
                     this.userInfo = [];
                     this.isOpenInfo = false;
@@ -95,12 +96,12 @@ export class MainRoutesComponent {
                         let index = this.mainRoutes.indexOf(item[0]);
                         this.selectIndex = index;
                     }
-                    
+
                     this.selectedDate.setValue(param.date)
                     this.currentId = +param.mainRoute;
                     this.isGetFunction = false;
                     let time = this._datePipe.transform(param.date, 'HH:mm');
-                    
+
                     return this.combineObservable(param.subRoute, time).pipe(
                         map(() => {
                             this.isGet = false;
@@ -229,7 +230,7 @@ export class MainRoutesComponent {
     getRouteInfo(id, subrouteId?, time?) {
         return this._mainRoutesService.getSubRoute(id).pipe(
             map((data: ServerResponce<any>) => {
-                
+
                 if (subrouteId && time) {
                     data.results = data.results.map((data) => {
                         let selectTime;
@@ -309,8 +310,8 @@ export class MainRoutesComponent {
         }
     }
     public checkAddress(moderator) {
-        if(moderator.order && moderator.order.is_extra_order){
-            return  `${moderator.order.start_address} -> ${moderator.order.end_address}`
+        if (moderator.order && moderator.order.is_extra_order) {
+            return `${moderator.order.start_address} -> ${moderator.order.end_address}`
         }
         if (this.subRouteInfo.start_point_is_static) {
             return moderator.end_address ? moderator.end_address : 'Հասցե չկա'
@@ -600,7 +601,7 @@ export class MainRoutesComponent {
     public onEditOrder(index) {
         this.isEditing = true;
         this.editIndex = index;
-        
+
         let info = this.userInfo[this.editIndex]
         this.validateForm.patchValue({
             startPointAddress: info.start_address,
@@ -647,13 +648,46 @@ export class MainRoutesComponent {
         this.openOrderModal()
 
     }
+    modalDrivers = [];
+    isVisibleDriverModal: boolean = false;
+    selectOrderId;
+    changeDriverName(data) {
+        this.selectOrderId = data.id
+        this.isVisibleDriverModal = true;
+        this.modalDrivers = this.drivers.filter((val) => {
+            return (+val.car_capacity >= data.seat_count)
+        })
+        this.driverControl.setValue(data.driver)
+    }
+    handleCancelDriver() {
+        this.isVisibleDriverModal = false;
+        this.modalDrivers = [];
+        this.driverControl.reset();
+        this.selectOrderId = null
+    }
 
-    getInformation($event, index) {
+    onSaveDriver() {
+        if (this.driverControl.value)
+            this._mainRouteService.changeApprovedOrderGroup(this.selectOrderId, this.driverControl.value).pipe(takeUntil(this.unsubscribe$),
+                switchMap(() => {
+                    this.handleCancelDriver()
+                    return this.getInfo(this.selectedTime)
+                })).subscribe()
+    }
+    removeAndCancelOrder(moderator, ind: number) {
+        // this.orderMembers.splice(ind, 1)
+        this._mainRouteService.removeAndCancelOrder(moderator.order.approved_order_details[0].approved_order.id, moderator.order.id).pipe(takeUntil(this.unsubscribe$),
+            switchMap(() => {
+                this.orderMembers.splice(ind, 1)
+                return this.getInfo(this.selectedTime)
+            })).subscribe()
+    }
+    getInformation($event, index: number) {
         if ($event) {
             this.timeItem = $event.timeItem
             this.selectedTime = $event.time;
             this.subRouteInfo = this.subRouteInfos[index];
-            this.radioValue='approved'
+            this.radioValue = 'approved'
             this.getInfo($event.time).subscribe()
         }
     }
@@ -661,12 +695,12 @@ export class MainRoutesComponent {
     openCalendar($event) {
         this.isOpenCalendar = true;
         if ($event) {
-            this.radioValue='approved'
+            this.radioValue = 'approved'
             this.userInfo = [];
             this.isOpenInfo = false;
             this.isGetItem = true
-            this.subRouteInfos=this.subRouteInfos.map((el)=>{
-                return Object.assign({},el,{selectTime:null})
+            this.subRouteInfos = this.subRouteInfos.map((el) => {
+                return Object.assign({}, el, { selectTime: null })
             })
             // this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
         }
@@ -681,14 +715,10 @@ export class MainRoutesComponent {
         date.setDate(date.getDate() + type);
         this.selectedDate.setValue(new Date(date));
         this.isGetItem = true;
-        this.radioValue='approved';
-        console.log(this.radioValue);
-        
-        this.subRouteInfos=this.subRouteInfos.map((el)=>{
-            return Object.assign({},el,{selectTime:null})
+        this.radioValue = 'approved';
+        this.subRouteInfos = this.subRouteInfos.map((el) => {
+            return Object.assign({}, el, { selectTime: null })
         })
-        console.log(this.subRouteInfos);
-        
         // this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     ngOnDestroy() {

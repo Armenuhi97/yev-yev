@@ -58,7 +58,9 @@ export class OrdersComponent {
             })
         }else{
             this._ordersService.getMainRouteDailyOrders(mainRoute,date).pipe(takeUntil(this.unsubscribe$)).subscribe((data:DailyUserOrderType[])=>{
-                this.clientRoutes=data
+                this.clientRoutes=data;
+                console.log(this.clientRoutes);
+                
             })
         }
     }
