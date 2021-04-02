@@ -13,6 +13,7 @@ export class LoaderInterceptor implements HttpInterceptor {
   constructor(private loaderService: LoaderService) {
       this.urlsToNotUse = [
       'notifications/.+',
+      'order/get-new-extra-order-count/'
     //   'products/search-product/.+'
     ];
   }

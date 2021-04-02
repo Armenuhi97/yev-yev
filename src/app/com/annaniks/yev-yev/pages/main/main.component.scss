@@ -1,34 +1,46 @@
 .item {
     cursor: pointer;
-    margin: 0 3px;
+    margin: 0 8px;
     outline: none !important;
     font-size: 18px;
     padding: 2px;
 }
 .logo {
     padding: 5px;
-    img{
+    img {
         width: 50px;
     }
 }
+:host::ng-deep {
+    .extra-order-count {
+        .ant-scroll-number {
+            top: -8px;
+        }
+    }
+}
 .active {
-    
     color: rgb(209 245 233) !important;
     border: 1px solid white;
 }
-mat-toolbar{
+mat-toolbar {
     height: auto !important;
-    background-color: #2CAF2D;
+    background-color: #2caf2d;
     color: white;
     padding: 10px;
 }
-.notification{
+nz-badge {
+    span {
+        font-size: 18px;
+        color: white;
+    }
+}
+.notification {
     position: relative;
-    svg{
+    svg {
         cursor: pointer;
         color: white;
     }
-    .notification-item{
+    .notification-item {
         position: absolute;
         top: 33px;
         background: white;
@@ -40,28 +52,27 @@ mat-toolbar{
         right: 0;
         color: black;
         // padding:7px;
-        .items{
-            padding:0 7px;
+        .items {
+            padding: 0 7px;
             border-bottom: 1px solid #ccc;
             cursor: pointer;
-            &:hover{
+            &:hover {
                 background: #e4e4e4;
             }
-            .item{
+            .item {
                 font-size: 15px;
-               
+
                 margin-left: 5px;
             }
         }
-      
     }
 }
-.created{
+.created {
     background-color: #bbebbb;
 }
-.canceled{
+.canceled {
     background-color: #ffc7c7;
 }
-.main-content{
+.main-content {
     margin: 10px;
 }

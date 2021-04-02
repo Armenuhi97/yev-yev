@@ -33,4 +33,7 @@ export class MainService {
   
     return this.httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?only_my=True&page=${page}&limit=10&offset=${offset}`)
   }
+  public getExtraOrdersCount(){
+    return this.httpClient.get(`order/get-new-extra-order-count/`)
+  }
 }

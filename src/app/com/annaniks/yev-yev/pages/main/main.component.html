@@ -8,7 +8,8 @@
                 <img src="assets/CarAnm_002_00001.png" alt="">
             </div>
             <!-- The following menu items will be hidden on both SM and XS screen sizes -->
-            <div [class.d-none]="role == 'MDR' && (tab.title == 'Կարգավորումներ' || tab.title == 'Աշխատակիցներ')" routerLinkActive="active" class="item" *ngFor="let tab of tabs" [routerLink]="tab.path" mat-button>
+            <div [class.d-none]="role == 'MDR' && (tab.title == 'Կարգավորումներ' || tab.title == 'Աշխատակիցներ')"
+                routerLinkActive="active" class="item" *ngFor="let tab of tabs" [routerLink]="tab.path" mat-button>
                 <div class="d-flex align-items-center" *ngIf="tab.title == 'Կարգավորումներ'">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                         class="bi bi-gear" viewBox="0 0 16 16">
@@ -19,15 +20,20 @@
                     </svg>
                 </div>
                 <div class="d-flex align-items-center" *ngIf="tab.title == 'Տվյալներ'">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-                      </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                        class="bi bi-person-circle" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                        <path fill-rule="evenodd"
+                            d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
+                    </svg>
                 </div>
-                <span *ngIf="tab.title !== 'Կարգավորումներ' && tab.title !== 'Տվյալներ'">{{tab.title}}</span>
+                <nz-badge class="extra-order-count" *ngIf="tab.title == 'Այլ'" [nzCount]="extraOrderCount">
+                    <span >{{tab.title}}</span>
+                </nz-badge>
+                <span *ngIf="tab.title !== 'Կարգավորումներ' && tab.title !== 'Տվյալներ' && tab.title !== 'Այլ'">{{tab.title}}</span>
             </div>
-            <div  class="item" (click)="logOut()" mat-button>               
-                <span >Ելք</span>
+            <div class="item" (click)="logOut()" mat-button>
+                <span>Ելք</span>
             </div>
             <div (clickOutside)="closeNotificationItem()" (click)="openNotificationItem()"
                 class="notification d-flex align-items-center">
@@ -39,7 +45,9 @@
                     </svg>
                 </nz-badge>
                 <div *ngIf="isOpenNotification" class="notification-item">
-                    <div [ngClass]="{'created':item.type == 'created','canceled':item.type == 'canceled'}" (click)="setSeenNotification(item.id)" class="d-flex items" routerLink="/dashboard/main-routes" [queryParams]="sendQueryParams(item)"  *ngFor="let item of notifications">
+                    <div [ngClass]="{'created':item.type == 'created','canceled':item.type == 'canceled'}"
+                        (click)="setSeenNotification(item.id)" class="d-flex items" routerLink="/dashboard/main-routes"
+                        [queryParams]="sendQueryParams(item)" *ngFor="let item of notifications">
                         <div class="item">{{item.order_details.date | date:'dd.MM.yyyy HH:mm'}}</div>
                         <div class="item">{{item.type == 'created'?"Նոր պատվեր":"Չեղարկված պատվեր"}}</div>
                     </div>

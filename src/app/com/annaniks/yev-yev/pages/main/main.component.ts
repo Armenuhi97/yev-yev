@@ -2,7 +2,7 @@ import { DatePipe } from "@angular/common";
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
-import { Subject } from "rxjs";
+import { forkJoin, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { Notification } from "../../core/models/notification";
 import { MainService } from "./main.service";
@@ -18,7 +18,7 @@ export class MainComponent {
     public tabs = [
         { title: 'Վարորդներ', path: '/dashboard/driver' },
         { title: 'Ուղևորներ', path: '/dashboard/user' },
-        { title: 'Ուղղ.', path: '/dashboard/main-routes' },
+        { title: 'Երթեր', path: '/dashboard/main-routes' },
         { title: 'Պատվերներ', path: '/dashboard/orders' },
         { title: 'Աշխատակիցներ', path: '/dashboard/moderator' },
         { title: 'Այլ', path: '/dashboard/other-orders' },
@@ -26,22 +26,18 @@ export class MainComponent {
         { title: 'Կարգավորումներ', path: '/dashboard/settings' },
 
     ]
-    role:string;
+    role: string;
     isOpenNotification: boolean = false;
-    notifications: Notification[] = []
+    notifications: Notification[] = [];
+    extraOrderCount: number;
     constructor(private _router: Router, private _datePipe: DatePipe, private _mainService: MainService, private _cookieService: CookieService) {
-       this.role=this._cookieService.get('role')
-        // if ( == 'ADM') {
-        //     this.tabs = [...this.moderatorTabs, ...this.otherTabs]
-        // } else {
-        //     this.tabs = [...this.moderatorTabs]
-        // }
+        this.role = this._cookieService.get('role')
     }
     ngOnInit() {
-        this.getUnseenNotifications().pipe(takeUntil(this.unsubscribe$)).subscribe()
+        this._getCounts()
 
         setInterval(() => {
-            this.getUnseenNotifications().pipe(takeUntil(this.unsubscribe$)).subscribe()
+            this._getCounts()
         }, 10000)
     }
     public logOut() {
@@ -50,7 +46,22 @@ export class MainComponent {
         localStorage.removeItem('user')
         this._router.navigate(['/auth'])
     }
-    getUnseenNotifications() {
+    private _getCounts() {
+        const combine = forkJoin(
+            this._getUnseenNotifications(),
+            this._getExtrarderCount()
+        )
+        combine.pipe(takeUntil(this.unsubscribe$)).subscribe()
+    }
+    private _getExtrarderCount() {
+        return this._mainService.getExtraOrdersCount().pipe(
+            map((data: { count: number }) => {
+                this.extraOrderCount = data.count;
+                return data
+            })
+        )
+    }
+    private _getUnseenNotifications() {
         return this._mainService.getUnseenNotifications().pipe(
             map((data: Notification[]) => {
                 this.notifications = data
@@ -77,7 +88,7 @@ export class MainComponent {
     setSeenNotification(id: number) {
         this._mainService.setSeenNotification(id).pipe(takeUntil(this.unsubscribe$),
             switchMap(() => {
-                return this.getUnseenNotifications()
+                return this._getUnseenNotifications()
             })).subscribe()
     }
     ngOnDestroy(): void {
