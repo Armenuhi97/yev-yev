@@ -25,10 +25,10 @@
         </div>
         <div nz-row [nzGutter]="24">
             <div nz-col [nzSpan]="10">
-                <div>
-                    <app-subroute *ngFor="let item of subRouteInfos;let i=index" [selectInfo]="selectInfo"
-                        [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)" [index]="i" [info]="item"
-                        (resetItem)="resetItem($event)" [date]="selectedDate.value">
+                <div *ngFor="let item of subRouteInfos;let i=index">
+                    <div class="title" [class.active-route]="subRouteInfo?.id == item?.id">{{getTableTitle(item)}}</div>
+                    <app-subroute [selectInfo]="selectInfo" [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)"
+                        [index]="i" [info]="item" (resetItem)="resetItem($event)" [date]="selectedDate.value">
                     </app-subroute>
                 </div>
             </div>

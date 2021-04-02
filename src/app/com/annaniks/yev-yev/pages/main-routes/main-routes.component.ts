@@ -412,6 +412,13 @@ export class MainRoutesComponent {
                 this.getInfo(this.selectedTime).subscribe()
             })).subscribe()
     }
+     getTableTitle(subrouteInfo) {
+        if (subrouteInfo && subrouteInfo.start_point_city) {
+            return `${subrouteInfo.start_point_city.name_hy} - ${subrouteInfo?.end_point_city.name_hy}`
+        } else {
+            return
+        }
+    }
     public onclientSave() {
         if (this.isEditing) {
             let date = this._formatDate(this.validateForm.get('time').value, this.validateForm.get('date').value)
