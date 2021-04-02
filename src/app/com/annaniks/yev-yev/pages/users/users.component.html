@@ -1,17 +1,31 @@
-<div class="title-container">
-    <h1>Ուղևորներ</h1>
-    <button class="add-essence" nz-button nzType="primary" (click)="showModal()">
-        Ավելացնել ուղևոր
-    </button>
+<!-- <div class="title-container"> -->
+<div class="w-98" nz-row [nzGutter]="24">
+    <div nz-col [nzSpan]="12">
+        <h1>Ուղևորներ</h1>
+    </div>
+    <div class="d-flex align-items-center" nz-col [nzSpan]="6">
+        <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+            <input type="text" [formControl]="search" nz-input placeholder="Հեռ․" />
+        </nz-input-group>
+        <ng-template #suffixIconButton>
+            <button (click)="searchUser()" nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
+        </ng-template>
+    </div>
+    <div class="d-flex align-items-center" nz-col [nzSpan]="6">
+        <button class="add-essence" nz-button nzType="primary" (click)="showModal()">
+            Ավելացնել ուղևոր
+        </button>
+    </div>
 </div>
+<!-- </div> -->
 <nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" nzTableLayout="fixed" [nzTotal]="total"
     [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="clientTable">
     <thead>
         <tr>
-            <th>N</th>
+            <th style="width:20px">N</th>
             <th>Անուն</th>
             <th>Ազգանուն</th>
-            <th>Հեռախոսահամար</th>
+            <th>Հեռ.</th>
             <th nzSortFn="true" (nzSortOrderChange)="sort($event,'orders_count')">Հաստատված</th>
             <th nzSortFn="true" (nzSortOrderChange)="sort($event,'canceled_orders')">Չեղարկված</th>
             <th></th>
@@ -42,7 +56,7 @@
 </nz-table>
 
 <nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" [nzTitle]="userName"
-    (nzOnCancel)="handleCancel()" nzWidth="870px" (nzOnOk)="onclientSave()">
+    (nzOnCancel)="handleCancel()" nzWidth="1000px" (nzOnOk)="onclientSave()">
     <nz-tabset (nzSelectedIndexChange)="onChangeTab($event)" [nzSelectedIndex]="activeTab">
         <nz-tab [nzTitle]="'Տվյալներ'">
             <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">

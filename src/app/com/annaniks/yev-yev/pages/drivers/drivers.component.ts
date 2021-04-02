@@ -16,6 +16,8 @@ import { DriverService } from "./drivers.service";
     styleUrls: ['drivers.component.scss']
 })
 export class DriversComponent {
+    public activeTab: number = 0;
+
     salaryTable: User[] = []
     pageSize: number = 10;
     unsubscribe$ = new Subject();
@@ -73,7 +75,9 @@ export class DriversComponent {
             this.addedRoutes.push({ "main_route": $event })
         }
     }
-
+    public onChangeTab($event) {        
+        this.activeTab = $event;       
+    }
     private _combineObsevable() {
         const combine = forkJoin(
             this.getAllRoutes(),
@@ -135,6 +139,7 @@ export class DriversComponent {
         this.item = null
         this.addedRoutes = []
         this.editIndex = null
+        this.activeTab = 0;
         this.editId = 0
     }
     nzPageIndexChange(page: number) {
@@ -203,6 +208,7 @@ export class DriversComponent {
         this.item = null
         this.editIndex = null
         this.editId = 0
+        this.activeTab = 0;
     }
 
     ngOnDestroy(): void {

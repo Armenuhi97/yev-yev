@@ -1,18 +1,18 @@
 <div class="title-container">
-    <h1>Պատվերներ</h1>
+    <h1>Ուղղություններ</h1>
 </div>
 <nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" [nzTotal]="total" [nzPageSize]="pageSize"
     [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="orders">
     <thead>
         <tr>
-            <th>N</th>
+            <th style="width:30px">N</th>
             <th>Ամսաթիվ</th>
-            <th>Ուղղ.</th>
+            <th>Ուղղ․</th>
             <th>Նստ.</th>
-            <th>Հասցե</th>
+            <!-- <th>Հասցե</th>
             <th>Վարորդ</th>
             <th>Մեկ.</th>
-            <th>Տեսակ</th>
+            <th>Տեսակ</th> -->
         </tr>
     </thead>
     <tbody>
@@ -28,8 +28,8 @@
             <td> <span [class.light]="checkAddress(data) == 'Հասցե չկա'">
                     {{checkAddress(data)}}</span></td>
             <td></td>
-            <td>{{data.comment}}</td>
-            <td>{{ (data?.status == 'approved')? 'Հաստատված' : 'Չեղարկված' }}</td>
+            <!-- <td>{{data.comment}}</td>
+            <td>{{ (data?.status == 'approved')? 'Հաստատված' : 'Չեղարկված' }}</td> -->
         </tr>
     </tbody>
 </nz-table>

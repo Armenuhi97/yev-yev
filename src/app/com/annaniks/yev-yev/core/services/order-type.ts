@@ -11,11 +11,11 @@ export class OrderTypeService {
             name_en: 'Նստատեղ'
         },
         {
-            id: 1,
+            id: 2,
             name_en: 'Ավտոմեքենա'
         },
         {
-            id: 2,
+            id: 1,
             name_en: 'Ուղեբեռ'
         }
     ];

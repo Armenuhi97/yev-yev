@@ -4,10 +4,10 @@ import { DriverService } from "./drivers.service";
 import { DriversRoutingModule } from "./drivers-routing.module";
 import { DriversComponent } from "./drivers.component";
 import { ColorPickerModule } from 'ngx-color-picker';
-import { DriverRoutesComponent } from "./component/driver-routes/driver-routes.component";
+import { RoutesListComponent, DriverRoutesComponent } from "./component";
 
 @NgModule({
-    declarations: [DriversComponent, DriverRoutesComponent],
+    declarations: [DriversComponent, DriverRoutesComponent, RoutesListComponent],
     imports: [SharedModule, ColorPickerModule, DriversRoutingModule],
     providers: [DriverService]
 })

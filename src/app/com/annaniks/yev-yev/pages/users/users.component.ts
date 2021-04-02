@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
-import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { pipe, Subject } from "rxjs";
+import { map, switchMap, takeUntil } from "rxjs/operators";
 import { Messages } from "../../core/models/mesages";
 import { Client } from "../../core/models/salary";
 import { ServerResponce } from "../../core/models/server-reponce";
@@ -20,6 +20,7 @@ export class UsersComponent {
     pageSize: number = 10;
     unsubscribe$ = new Subject();
     total: number;
+    search = new FormControl('')
     pageIndex: number = 1;
     isEditing: boolean = false;
     isVisible: boolean = false;
@@ -35,7 +36,7 @@ export class UsersComponent {
 
     ngOnInit() {
         this._initForm();
-        this.getUsers()
+        this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
     }
     private _initForm() {
         this.validateForm = this._fb.group({
@@ -45,14 +46,22 @@ export class UsersComponent {
             comment: [null]
         })
     }
+    public searchUser() {
+        // this.search.valueChanges.pipe(takeUntil(this.unsubscribe$),
+        // switchMap((value) => {
+        this.getUsers(this.search.value).pipe(takeUntil(this.unsubscribe$)).subscribe()
+        // })).subscribe()
+    }
     public changeUserStatus($event, id: number) {
         this._userService.editUser(id, { is_active: $event }).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
-    public getUsers() {
-        this._userService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<Client[]>) => {
-            this.total = data.count;
-            this.clientTable = data.results;            
-        })
+    public getUsers(search?) {
+        return this._userService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, search).pipe(
+            map((data: ServerResponce<Client[]>) => {
+                this.total = data.count;
+                this.clientTable = data.results;
+                return data
+            }))
     }
 
     onEditclient(index: number) {
@@ -91,7 +100,7 @@ export class UsersComponent {
     }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
-        this.getUsers()
+        this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     public onclientSave() {
         if (this.validateForm.invalid) {
@@ -103,7 +112,7 @@ export class UsersComponent {
             "last_name": this.validateForm.get('last_name').value,
             "phone_number": this.validateForm.get('phone_number').value,
             "image": '',
-            "comment": this.validateForm.get('comment').value?this.validateForm.get('comment').value:'',
+            "comment": this.validateForm.get('comment').value ? this.validateForm.get('comment').value : '',
         }
         this.sendRequest(sendObject);
     }
@@ -113,14 +122,14 @@ export class UsersComponent {
                 this.nzMessages.success(Messages.success)
                 this.closeModal();
                 this.pageIndex = 1
-                this.getUsers()
+                this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
             },
                 () => {
                     this.nzMessages.error(Messages.fail)
                 })
         } else {
             this._userService.editUser(this.clientTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: any) => {
-                this.getUsers()
+                this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
                 this.nzMessages.success(Messages.success)
                 this.closeModal()
             },
@@ -137,20 +146,21 @@ export class UsersComponent {
         this.activeTab = 0;
         this.userName = null
     }
-    public onChangeTab($event) {
-        this.activeTab = $event.index
+    public onChangeTab($event) {        
+        this.activeTab = $event;       
     }
+
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
-    sort(sort, key: string): void {        
+    sort(sort, key: string): void {
         if (sort == 'ascend') {
-            this.clientTable.sort((a, b) => {return b[key] - a[key]  });
+            this.clientTable.sort((a, b) => { return b[key] - a[key] });
         } else {
-            if(sort == 'descend'){
-            this.clientTable.sort((a, b) => { return a[key] - b[key] });
-            }else{
+            if (sort == 'descend') {
+                this.clientTable.sort((a, b) => { return a[key] - b[key] });
+            } else {
                 this.clientTable.sort((a, b) => { return b.id - a.id });
             }
         }

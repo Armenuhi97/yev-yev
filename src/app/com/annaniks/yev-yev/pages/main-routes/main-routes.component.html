@@ -203,10 +203,10 @@
                                     <nz-form-item>
                                         <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
                                             <input
-                                                *ngIf="!validateForm.get('orderType').value || validateForm.get('orderType').value !== 1"
+                                                *ngIf="!validateForm.get('orderType').value || validateForm.get('orderType').value !== 2"
                                                 nz-input formControlName="personCount" placeholder="" />
 
-                                            <nz-select *ngIf="validateForm.get('orderType').value == 1" class="w-100"
+                                            <nz-select *ngIf="validateForm.get('orderType').value == 2" class="w-100"
                                                 formControlName="personCount">
                                                 <nz-option *ngFor="let seatCount of [4,5,6,7,8]" [nzValue]="seatCount"
                                                     [nzLabel]="seatCount">

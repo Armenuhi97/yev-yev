@@ -157,7 +157,7 @@ export class MainRoutesComponent {
             startPointAddress: [null],
             endPointAddress: [null],
             order_phone_number: [null],
-            orderType: [null, Validators.required],
+            orderType: [0, Validators.required],
             personCount: [null, Validators.required],
             comment: [null],
             date: [null],
@@ -167,12 +167,12 @@ export class MainRoutesComponent {
 
         this.validateForm.get('orderType').valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((value) => {
 
-            if (value == 2) {
+            if (value == 1) {
                 this.validateForm.get('personCount').setValue(0);
                 this.validateForm.get('personCount').disable()
             } else {
                 this.validateForm.get('personCount').enable();
-                if (value == 1 && ((this.validateForm.get('personCount').value < 4 || this.validateForm.get('personCount').value > 8) || !this.validateForm.get('personCount').value)) {
+                if (value == 2 && ((this.validateForm.get('personCount').value < 4 || this.validateForm.get('personCount').value > 8) || !this.validateForm.get('personCount').value)) {
                     this.validateForm.get('personCount').reset();
                 }
             }
@@ -619,15 +619,15 @@ export class MainRoutesComponent {
         let type = this.userInfo[index].order_type;
         let id = this.userInfo[index].id;
         for (let item of this.userInfo) {
-            if (type == 1) {
-                if ((item.order_type == 0 || item.order_type == 1) && (+id !== +item.id)) {
+            if (type == 2) {
+                if ((item.order_type == 0 || item.order_type == 2) && (+id !== +item.id)) {
                     // item.isSelect = false;
                     item.isDisabled = $event ? true : false
 
                 }
             } else {
                 if (type == 0) {
-                    if ((item.order_type == 1) && item.id !== id) {
+                    if ((item.order_type == 2) && item.id !== id) {
                         // item.isSelect = false;
                         item.isDisabled = $event ? true : false
 
@@ -652,7 +652,8 @@ export class MainRoutesComponent {
         if ($event) {
             this.timeItem = $event.timeItem
             this.selectedTime = $event.time;
-            this.subRouteInfo = this.subRouteInfos[index]
+            this.subRouteInfo = this.subRouteInfos[index];
+            this.radioValue='approved'
             this.getInfo($event.time).subscribe()
         }
     }
@@ -660,6 +661,7 @@ export class MainRoutesComponent {
     openCalendar($event) {
         this.isOpenCalendar = true;
         if ($event) {
+            this.radioValue='approved'
             this.userInfo = [];
             this.isOpenInfo = false;
             this.isGetItem = true
@@ -679,6 +681,9 @@ export class MainRoutesComponent {
         date.setDate(date.getDate() + type);
         this.selectedDate.setValue(new Date(date));
         this.isGetItem = true;
+        this.radioValue='approved';
+        console.log(this.radioValue);
+        
         this.subRouteInfos=this.subRouteInfos.map((el)=>{
             return Object.assign({},el,{selectTime:null})
         })
