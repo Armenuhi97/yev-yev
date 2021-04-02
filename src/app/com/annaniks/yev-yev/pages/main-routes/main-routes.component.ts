@@ -83,11 +83,9 @@ export class MainRoutesComponent {
     }
     private _checkQueryParams() {
         return this._activatedRoute.queryParams.pipe(takeUntil(this.unsubscribe$), switchMap((param) => {
-
             if (this.isGet) {
                 this.isGet = true
                 if (param.date && (!this._param || (this._param && (this._param.date !== param.date || this._param.subRoute !== param.subRoute || this._param.mainRoute !== param.mainRoute)))) {
-
                     this._param = param
                     this.userInfo = [];
                     this.isOpenInfo = false;
@@ -96,12 +94,10 @@ export class MainRoutesComponent {
                         let index = this.mainRoutes.indexOf(item[0]);
                         this.selectIndex = index;
                     }
-
                     this.selectedDate.setValue(param.date)
                     this.currentId = +param.mainRoute;
                     this.isGetFunction = false;
                     let time = this._datePipe.transform(param.date, 'HH:mm');
-
                     return this.combineObservable(param.subRoute, time).pipe(
                         map(() => {
                             this.isGet = false;
@@ -110,8 +106,6 @@ export class MainRoutesComponent {
 
                         })
                     )
-
-
                 } else {
                     if (!this._param || (this._param && +this._param.mainRoute !== +this.currentId) || (+this._lastMainRouteId !== +this.currentId)) {
 

@@ -244,7 +244,8 @@
                                     </nz-select>
                                 </div>
                             </div>
-                            <div  nz-row [nzGutter]="24" class="d-flex align-items-center margin-top-10 justify-content-between">
+                            <div nz-row [nzGutter]="24"
+                                class="d-flex align-items-center margin-top-10 justify-content-between">
                                 <div *ngIf="isEditing && radioValue == 'pending'" nz-col [nzSpan]="12">
                                     <nz-form-control>
                                         <label nz-checkbox formControlName="isChangeStatus">Փոխել կարգավիճակը</label>
@@ -253,9 +254,9 @@
                                 <div nz-col [nzSpan]="12">
                                     <nz-form-label class="inline-labels">Անվճար</nz-form-label>
                                     <!-- <nz-form-item> -->
-                                        <nz-form-control>
-                                            <nz-switch formControlName="isFree"></nz-switch>
-                                        </nz-form-control>
+                                    <nz-form-control>
+                                        <nz-switch formControlName="isFree"></nz-switch>
+                                    </nz-form-control>
                                     <!-- </nz-form-item> -->
 
                                 </div>
@@ -383,7 +384,7 @@
                                         <td> <label [disabled]="moderator.order.canceled_by_client" nz-checkbox
                                                 [(ngModel)]="moderator.isSelect"></label>
                                         </td>
-                                        <td>
+                                        <td class="delete action-button">
                                             <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
                                                 nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
                                                 nzPopconfirmPlacement="bottom"
