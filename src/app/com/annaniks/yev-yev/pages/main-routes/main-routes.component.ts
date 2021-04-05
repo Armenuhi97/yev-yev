@@ -87,9 +87,6 @@ export class MainRoutesComponent {
                 this.isGet = true
                 if (param.date && (!this._param || (this._param && (this._param.date !== param.date || this._param.subRoute !== param.subRoute || this._param.mainRoute !== param.mainRoute)))) {
                     this._param = param;
-                    console.log(param.status);
-
-
                     this.userInfo = [];
                     this.isOpenInfo = false;
                     let item = this.mainRoutes.filter((val) => { return val.id == +param.mainRoute });
@@ -696,6 +693,8 @@ export class MainRoutesComponent {
     }
     getInformation($event, index: number) {
         if ($event) {
+            console.log(this.radioValue );
+            
             this.timeItem = $event.timeItem
             this.selectedTime = $event.time;
             this.subRouteInfo = this.subRouteInfos[index];

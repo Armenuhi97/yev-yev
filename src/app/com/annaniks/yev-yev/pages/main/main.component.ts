@@ -88,10 +88,10 @@ export class MainComponent {
         return params
     }
     setSeenNotification(id: number) {
-        // this._mainService.setSeenNotification(id).pipe(takeUntil(this.unsubscribe$),
-        //     switchMap(() => {
-        //         return this._getUnseenNotifications()
-        //     })).subscribe()
+        this._mainService.setSeenNotification(id).pipe(takeUntil(this.unsubscribe$),
+            switchMap(() => {
+                return this._getUnseenNotifications()
+            })).subscribe()
     }
     ngOnDestroy(): void {
         this.unsubscribe$.next();
