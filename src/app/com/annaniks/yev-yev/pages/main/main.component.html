@@ -45,7 +45,7 @@
                     </svg>
                 </nz-badge>
                 <div *ngIf="isOpenNotification" class="notification-item">
-                    <div [ngClass]="{'created':item.type == 'created','canceled':item.type == 'canceled'}"
+                    <div [ngClass]="{'created':item.order_details.status == 'approved','canceled':item.order_details.status == 'canceled','pending':item.order_details.status == 'pending'}"
                         (click)="setSeenNotification(item.id)" class="d-flex items" routerLink="/dashboard/main-routes"
                         [queryParams]="sendQueryParams(item)" *ngFor="let item of notifications">
                         <div class="item">{{item.order_details.date | date:'dd.MM.yyyy HH:mm'}}</div>

@@ -81,7 +81,8 @@ export class MainComponent {
         let params = {
             date: notification.order_details.date,
             subRoute: notification.order_details.sub_route,
-            mainRoute: notification.order_details.sub_route_details.main_route
+            mainRoute: notification.order_details.sub_route_details.main_route,
+            status: notification.order_details.status
         }
         return params
     }

@@ -86,7 +86,10 @@ export class MainRoutesComponent {
             if (this.isGet) {
                 this.isGet = true
                 if (param.date && (!this._param || (this._param && (this._param.date !== param.date || this._param.subRoute !== param.subRoute || this._param.mainRoute !== param.mainRoute)))) {
-                    this._param = param
+                    this._param = param;
+                    console.log(param.status);
+                    
+                    this.radioValue=param.status?param.status:'approved';
                     this.userInfo = [];
                     this.isOpenInfo = false;
                     let item = this.mainRoutes.filter((val) => { return val.id == +param.mainRoute });
