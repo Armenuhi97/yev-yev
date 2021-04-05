@@ -75,9 +75,9 @@
                                     <td>
                                         <label [disabled]="true" nz-checkbox [(ngModel)]="moderator.is_free"></label>
                                     </td>
-                                    <td (click)="onEditOrder(ind)" class="action-button edit" style="width:10px"><i
-                                            *ngIf="!moderator.is_in_approved_orders && timeItem && !timeItem.isDisabled"
-                                            nz-icon nzType="edit"></i>
+                                    <td class="action-button edit" style="width:10px"><i
+                                            *ngIf="!moderator.is_in_approved_orders && timeItem && !timeItem.isDisabled "
+                                            (click)="onEditOrder(ind)" nz-icon nzType="edit"></i>
                                     </td>
                                     <td *ngIf="radioValue == 'approved'"> <label
                                             *ngIf="timeItem && !timeItem.isDisabled"
