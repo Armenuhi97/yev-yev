@@ -88,8 +88,8 @@ export class MainRoutesComponent {
                 if (param.date && (!this._param || (this._param && (this._param.date !== param.date || this._param.subRoute !== param.subRoute || this._param.mainRoute !== param.mainRoute)))) {
                     this._param = param;
                     console.log(param.status);
-                    
-                    this.radioValue=param.status?param.status:'approved';
+
+
                     this.userInfo = [];
                     this.isOpenInfo = false;
                     let item = this.mainRoutes.filter((val) => { return val.id == +param.mainRoute });
@@ -103,6 +103,9 @@ export class MainRoutesComponent {
                     let time = this._datePipe.transform(param.date, 'HH:mm');
                     return this.combineObservable(param.subRoute, time).pipe(
                         map(() => {
+                            this.radioValue = param.status ? param.status : 'approved';
+                            if (this.radioValue == 'pending')
+                                this.changeStatus(this.radioValue)
                             this.isGet = false;
                             this._param = {}
                             this._router.navigate([], { queryParams: {} });
@@ -194,7 +197,7 @@ export class MainRoutesComponent {
                                     first_name: item.user.first_name,
                                     last_name: item.user.last_name,
                                     userComment: item.comment
-                                  
+
                                 })
                                 this.validateForm.get('first_name').disable()
                                 this.validateForm.get('last_name').disable()
@@ -415,7 +418,7 @@ export class MainRoutesComponent {
                 this.getInfo(this.selectedTime).subscribe()
             })).subscribe()
     }
-     getTableTitle(subrouteInfo) {
+    getTableTitle(subrouteInfo) {
         if (subrouteInfo && subrouteInfo.start_point_city) {
             return `${subrouteInfo.start_point_city.name_hy} - ${subrouteInfo?.end_point_city.name_hy}`
         } else {

@@ -84,13 +84,14 @@ export class MainComponent {
             mainRoute: notification.order_details.sub_route_details.main_route,
             status: notification.order_details.status
         }
+        // notification.order_details.status
         return params
     }
     setSeenNotification(id: number) {
-        this._mainService.setSeenNotification(id).pipe(takeUntil(this.unsubscribe$),
-            switchMap(() => {
-                return this._getUnseenNotifications()
-            })).subscribe()
+        // this._mainService.setSeenNotification(id).pipe(takeUntil(this.unsubscribe$),
+        //     switchMap(() => {
+        //         return this._getUnseenNotifications()
+        //     })).subscribe()
     }
     ngOnDestroy(): void {
         this.unsubscribe$.next();
