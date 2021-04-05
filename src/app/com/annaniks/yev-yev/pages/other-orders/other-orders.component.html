@@ -19,17 +19,17 @@
         <tr *ngFor="let data of extraOrders; let ind = index">
             <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10) }}</td>
             <td>
-                {{data.connected_order_details.client_details.user.first_name}}
-                {{data.connected_order_details.client_details.user.last_name}}
-                <div> {{data.connected_order_details.client_details.phone_number}}</div>
+                {{data.connected_order_details?.client_details?.user?.first_name}}
+                {{data.connected_order_details?.client_details?.user?.last_name}}
+                <div> {{data.connected_order_details?.client_details?.phone_number}}</div>
             </td>
             <td>
-                {{data.connected_order_details.start_address}}
+                {{data?.connected_order_details?.start_address}}
             </td>
             <td>
-                {{data.connected_order_details.end_address}}
+                {{data?.connected_order_details?.end_address}}
             </td>
-            <td>{{data.connected_order_details.date | date:'yyyy-MM-dd HH:mm'}}</td>
+            <td>{{data?.connected_order_details?.date | date:'yyyy-MM-dd HH:mm'}}</td>
 
             <td (click)="onEditExtraOrders(ind)" class="action-button edit" style="width:10px"><i nz-icon
                     nzType="edit"></i>
