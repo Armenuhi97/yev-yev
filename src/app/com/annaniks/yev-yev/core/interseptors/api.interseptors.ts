@@ -10,15 +10,18 @@ export class ApiInterceptor implements HttpInterceptor {
         @Inject('BASE_URL') private baseUrl: string,
         private cookieService: CookieService
     ) { }
-
+    private _checkIsRelativePath(url: string): boolean {
+        return url.startsWith('/assets') || url.startsWith('http://') || url.startsWith('https://')
+    }
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
         if (req.headers.get('skip')) {
             return next.handle(req);
         }
         let params: HttpParams = (req.params) ? req.params : new HttpParams();
-        let headers: HttpHeaders = (req.headers) ? req.headers : new HttpHeaders();
-        const url = `${this.baseUrl}${req.url}`;
+        let headers: HttpHeaders = (req.headers) ? req.headers : new HttpHeaders();        
+        const url = this._checkIsRelativePath(req.url) ? `${req.url}` : `${this.baseUrl}${req.url}`;
+
         if (req.url !== 'login/login/')
             headers = headers.append('Authorization', 'Token ' + this.cookieService.get('access'));
         // if (!params.has('authorization') || (params.has('authorization') && params.get('authorization') === 'true')) {

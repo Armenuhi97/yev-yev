@@ -9,6 +9,7 @@ export class OpenTimesService {
         { start: '06:30', end: '07:00', time: '06:30 - 07:00', isActive: true, closeId: 0, isDisabled: false },
         { start: '07:00', end: '07:30', time: '07:00 - 07:30', isActive: true, closeId: 0, isDisabled: false },
         { start: '07:30', end: '08:00', time: '07:30 - 08:00', isActive: true, closeId: 0, isDisabled: false },
+        { start: '08:00', end: '08:30', time: '08:00 - 08:30', isActive: true, closeId: 0, isDisabled: false },
         { start: '08:30', end: '09:00', time: '08:30 - 09:00', isActive: true, closeId: 0, isDisabled: false },
         { start: '09:00', end: '09:30', time: '09:00 - 09:30', isActive: true, closeId: 0, isDisabled: false },
         { start: '09:30', end: '10:00', time: '09:30 - 10:00', isActive: true, closeId: 0, isDisabled: false },

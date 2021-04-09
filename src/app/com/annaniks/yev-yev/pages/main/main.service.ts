@@ -5,6 +5,7 @@ import { Notification } from "../../core/models/notification";
 import { ServerResponce } from '../../core/models/server-reponce';
 import { RouteItem } from '../../core/models/routes.model';
 import { CookieService } from 'ngx-cookie-service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -33,10 +34,13 @@ export class MainService {
   }
   public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
     let offset = (page - 1) * 10;
-  
+
     return this.httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?only_my=True&page=${page}&limit=10&offset=${offset}`)
   }
-  public getExtraOrdersCount(){
+  public getExtraOrdersCount() {
     return this.httpClient.get(`order/get-new-extra-order-count/`)
+  }
+  public getSound() {
+    return this.httpClient.get(`/assets/notification.mp3`)
   }
 }

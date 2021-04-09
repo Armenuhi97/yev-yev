@@ -6,6 +6,7 @@ import { forkJoin, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { Notification } from "../../core/models/notification";
 import { MainService } from "./main.service";
+import { Howl, Howler } from 'howler';
 
 @Component({
     selector: 'app-main',
@@ -30,8 +31,8 @@ export class MainComponent {
     isOpenNotification: boolean = false;
     notifications: Notification[] = [];
     extraOrderCount: number;
-    isOpenPendingNotification:boolean=false;
-    pendiningNotification:Notification[]=[]
+    isOpenPendingNotification: boolean = false;
+    pendiningNotification: Notification[] = []
     constructor(private _router: Router, private _datePipe: DatePipe, private _mainService: MainService, private _cookieService: CookieService) {
         this.role = this._cookieService.get('role')
     }
@@ -64,16 +65,33 @@ export class MainComponent {
             })
         )
     }
+
     private _getUnseenNotifications() {
         return this._mainService.getUnseenNotifications().pipe(
             map((data: Notification[]) => {
+                if (this.notifications.length !== data.length) {                 
+                    setTimeout(() => {
+                       this.playAudio()
+                    }, 1000);                 
+
+                }
                 this.notifications = data
             }))
     }
-    private _getUnseenPendingNotifications() {
+    playAudio() {
+        var audio =new Audio('../../../../assets/notification.mp3');
+        audio.play() 
+    }
+    public _getUnseenPendingNotifications() {
         return this._mainService.getUnseenPendingNotifications().pipe(
             map((data: Notification[]) => {
                 this.pendiningNotification = data
+                if (this.pendiningNotification.length !== data.length) {                 
+                    setTimeout(() => {
+                       this.playAudio()
+                    }, 1000);                 
+
+                }
             }))
     }
     formatDate(date) {
@@ -86,10 +104,10 @@ export class MainComponent {
     openNotificationItem() {
         this.isOpenNotification = !this.isOpenNotification
     }
-    openPendingNotificationItem(){
+    openPendingNotificationItem() {
         this.isOpenPendingNotification = !this.isOpenNotification
     }
-    closePendingNotificationItem(){
+    closePendingNotificationItem() {
         this.isOpenPendingNotification = false
     }
     sendQueryParams(notification: Notification) {
@@ -105,7 +123,7 @@ export class MainComponent {
     setSeenNotification(id: number) {
         this._mainService.setSeenNotification(id).pipe(takeUntil(this.unsubscribe$),
             switchMap(() => {
-                return this._getUnseenNotifications()
+                return forkJoin(this._getUnseenPendingNotifications(),this._getUnseenNotifications())
             })).subscribe()
     }
     ngOnDestroy(): void {

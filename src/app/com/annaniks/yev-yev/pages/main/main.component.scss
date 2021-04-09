@@ -34,54 +34,7 @@ nz-badge {
         color: white;
     }
 }
-// .notification {
-//     position: relative;
-//     svg {
-//         cursor: pointer;
-//         color: white;
-//     }
-//     .notification-item {
-//         position: absolute;
-//         top: 33px;
-//         background: white;
-//         height: auto;
-//         max-height: 340px;
-//         overflow-y: auto;
-//         z-index: 9999;
-//         width: fit-content;
-//         right: 0;
-//         color: black;
-//         // padding:7px;
-//         .items {
-//             padding: 0 7px;
-//             border-bottom: 1px solid #ccc;
-//             cursor: pointer;
-//             &:hover {
-//                 background: #e4e4e4;
-//             }
-//             .item {
-//                 font-size: 15px;
 
-//                 margin-left: 5px;
-//             }
-//         }
-//     }
-// }
-// .created {
-//     background-color: #bbebbb;
-// }
-// .canceled {
-//     background-color: #ffc7c7;
-// }
-// .pending-notification{
-//     margin-left: 8px;
-//     svg{
-//         color: rgb(230, 175, 24);
-//     }
-// }
-// .pending{
-//     background-color: rgb(230, 175, 24);
-// }
 .main-content {
     margin: 10px;
 }

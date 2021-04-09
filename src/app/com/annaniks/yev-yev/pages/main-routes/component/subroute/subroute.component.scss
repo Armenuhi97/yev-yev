@@ -1,60 +1,64 @@
-.ant-table tfoot>tr>td, .ant-table tfoot>tr>th, .ant-table-tbody>tr>td, .ant-table-thead>tr>th{
-    padding: 1px 7px !important;
+.ant-table tfoot > tr > td,
+.ant-table tfoot > tr > th,
+.ant-table-tbody > tr > td,
+.ant-table-thead > tr > th {
+    padding: 1px !important;
+    text-align: center;
 }
-:host::ng-deep{
-.ant-table table {
-    width: 100% !important;
-    th{
-        padding: 4px !important;
+:host::ng-deep {
+    .ant-table table {
+        width: 100% !important;
+        th {
+            padding: 4px !important;
+        }
     }
 }
-}
-:host:ng-deep{
-    .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content{
+:host:ng-deep {
+    .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content {
         display: none !important;
     }
-  
+}
+.time {
+    font-size: 12px;
 }
 
-
-.list{    
-
+.list {
     padding-top: 10px;
     margin-top: 15px;
-    th{
+    th {
         padding: 0;
     }
 }
-.current-time{
-    background-color: #2CAF2D;
+.current-time {
+    background-color: #2caf2d;
 }
-.active{
-    background-color: #2CAF2D !important;
+.active {
+    background-color: #2caf2d !important;
 }
-.disable{
+.disable {
     color: #c1c1c1;
 }
-.error{
+.error {
     color: red;
 }
-.light{
+.light {
     color: grey;
 }
-.margin-10{
-    margin:10px 0;
+.margin-10 {
+    margin: 10px 0;
     border-top: 1px solid #cccc;
     padding-top: 10px;
 }
-.margin-left-auto{
-    margin-left:auto
+.margin-left-auto {
+    margin-left: auto;
 }
-.margin-bottom-10{
+.margin-bottom-10 {
     margin-bottom: 10px;
 }
-.mr-5{
-    margin-left:5px
+.mr-5 {
+    margin-left: 5px;
 }
-.scroll{
+.scroll {
     max-height: 360px;
     overflow: auto;
 }
