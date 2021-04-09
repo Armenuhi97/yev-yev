@@ -23,7 +23,10 @@ export class MainService {
     return this.httpClient.post<{ url: string }>(`files/files/`, formData);
   }
   public getUnseenNotifications(): Observable<Notification[]> {
-    return this.httpClient.get<Notification[]>(`notifications/get-unseen-notifications/`)
+    return this.httpClient.get<Notification[]>(`notifications/get-unseen-notifications-without-pendings/`)
+  }
+  public getUnseenPendingNotifications(): Observable<Notification[]> {
+    return this.httpClient.get<Notification[]>(`notifications/get-unseen-pending-notifications/`)
   }
   public setSeenNotification(id: number) {
     return this.httpClient.get(`notifications/set-seen/${id}/`)

@@ -1,5 +1,5 @@
 import { DatePipe } from "@angular/common";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, HostListener, Input, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
 import { Observable, of, Subject } from "rxjs";
@@ -36,6 +36,10 @@ export class SubrouteComponent {
     currentInterval;
     lastDate;
     isShowError: boolean = false;
+    @HostListener('window:resize', ['$event'])
+    private _onResize(): void {
+        this.windowHeight = window.innerHeight > 700 ? (window.innerHeight - 470) / 2 : (window.innerHeight) / 2;
+    }
     orderTypes: OrderType[] = [
         {
             id: 0,
@@ -83,7 +87,7 @@ export class SubrouteComponent {
         }
         if (this.subrouteInfo && this.subrouteInfo.selectTime) {
 
-            let time = this.openTimes.filter((data) => {                
+            let time = this.openTimes.filter((data) => {
                 return (this.subrouteInfo.selectTime >= data.start && this.subrouteInfo.selectTime < data.end)
             });
             if (time && time[0]) {
@@ -173,7 +177,8 @@ export class SubrouteComponent {
         private _mainRouteService: MainRoutesService,
         private _appService: AppService,
         private nzMessages: NzMessageService,) {
-        this.windowHeight = (window.innerHeight - 470) / 2;
+        this._onResize()
+
     }
 
     ngOnInit() {

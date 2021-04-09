@@ -1,7 +1,14 @@
 .ant-table tfoot>tr>td, .ant-table tfoot>tr>th, .ant-table-tbody>tr>td, .ant-table-thead>tr>th{
-    padding: 1px 12px !important;
+    padding: 1px 7px !important;
 }
-
+:host::ng-deep{
+.ant-table table {
+    width: 100% !important;
+    th{
+        padding: 4px !important;
+    }
+}
+}
 :host:ng-deep{
     .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content{
         display: none !important;

@@ -30,6 +30,8 @@ export class MainComponent {
     isOpenNotification: boolean = false;
     notifications: Notification[] = [];
     extraOrderCount: number;
+    isOpenPendingNotification:boolean=false;
+    pendiningNotification:Notification[]=[]
     constructor(private _router: Router, private _datePipe: DatePipe, private _mainService: MainService, private _cookieService: CookieService) {
         this.role = this._cookieService.get('role')
     }
@@ -49,6 +51,7 @@ export class MainComponent {
     private _getCounts() {
         const combine = forkJoin(
             this._getUnseenNotifications(),
+            this._getUnseenPendingNotifications(),
             this._getExtrarderCount()
         )
         combine.pipe(takeUntil(this.unsubscribe$)).subscribe()
@@ -67,6 +70,12 @@ export class MainComponent {
                 this.notifications = data
             }))
     }
+    private _getUnseenPendingNotifications() {
+        return this._mainService.getUnseenPendingNotifications().pipe(
+            map((data: Notification[]) => {
+                this.pendiningNotification = data
+            }))
+    }
     formatDate(date) {
         let selectDate = new Date(date);
         this._datePipe.transform(selectDate, 'dd.MM.yyyy HH:mm')
@@ -76,6 +85,12 @@ export class MainComponent {
     }
     openNotificationItem() {
         this.isOpenNotification = !this.isOpenNotification
+    }
+    openPendingNotificationItem(){
+        this.isOpenPendingNotification = !this.isOpenNotification
+    }
+    closePendingNotificationItem(){
+        this.isOpenPendingNotification = false
     }
     sendQueryParams(notification: Notification) {
         let params = {
