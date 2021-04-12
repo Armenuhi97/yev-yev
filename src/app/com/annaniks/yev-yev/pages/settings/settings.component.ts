@@ -18,7 +18,8 @@ export class SettingsComponent {
     phoneTotal: number
     phoneTable: RouteItem[] = []
     cityTable: CityItem[] = []
-    cityTotal: number
+    cityTotal: number;
+    workingTimes;
     constructor(private _settingsService: SettingsService) { }
 
     ngOnInit() {
@@ -28,9 +29,10 @@ export class SettingsComponent {
         forkJoin(
             this.getAllRoutes(),
             this.getAllcities(),
-            this.getAllPhones()
+            this.getAllPhones(),
         ).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
+  
     getAllRoutes() {
         return this._settingsService.getAllRoutes(1).pipe(map((data: ServerResponce<RouteItem[]>) => {
             this.routeTotal = data.count;

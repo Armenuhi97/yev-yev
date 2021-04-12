@@ -2,7 +2,7 @@ export interface OrdersByHours {
     canceled_by_client: boolean
     canceled_by_moderator: boolean
     address: string
-    is_free:boolean
+    is_free: boolean
     isSelect?: boolean
     isDisabled?: boolean
     is_in_approved_orders: boolean
@@ -68,5 +68,10 @@ export interface SubrouteDetails {
     start_point_address_hy: string
     start_point_address_ru: string
     start_point_city: { id: number, name_hy: string, name_ru: string, name_en: string }
-    start_point_is_static: boolean
+    start_point_is_static: boolean,
+    work_start_time: string
+    work_end_time: string
+    openTimes:Array<any>
+
+
 }

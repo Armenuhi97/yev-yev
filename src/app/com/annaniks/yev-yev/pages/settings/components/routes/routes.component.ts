@@ -1,5 +1,7 @@
+import { DatePipe } from "@angular/common";
 import { Component, Input } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
+import * as moment from "moment";
 import { NzMessageService } from "ng-zorro-antd/message";
 import { forkJoin, of, Subject, throwError } from "rxjs";
 import { catchError, map, switchMap, takeUntil } from "rxjs/operators";
@@ -13,7 +15,8 @@ import { SettingsService } from "../../setting.service";
 @Component({
     selector: 'app-routes',
     templateUrl: 'routes.component.html',
-    styleUrls: ['routes.component.scss']
+    styleUrls: ['routes.component.scss'],
+    providers: [DatePipe]
 })
 export class RoutesComponent {
     routeTable: RouteItem[] = []
@@ -39,6 +42,7 @@ export class RoutesComponent {
     }
     constructor(private _settingsService: SettingsService,
         private nzMessages: NzMessageService,
+        private _datePipe: DatePipe,
         private _fb: FormBuilder) {
     }
 
@@ -62,7 +66,19 @@ export class RoutesComponent {
 
         }))
     }
+    newArray = (start, end) => {
+        const result = [];
+        for (let i = start; i <= end; i++) {
+            result.push(i);
+        }
+        return result;
+    };
 
+    disabledMinutes = (h) => {
+        let arr = [...this.newArray(1, 29), ...this.newArray(31, 59)]
+        return arr
+
+    };
     addField() {
         let value = this.validateForm.get('routes') as FormArray;
         let item = this._fb.group({
@@ -77,7 +93,9 @@ export class RoutesComponent {
             end_point_address_ru: [null],
             end_point_address_hy: [null],
             end_point_is_static: [false],
-            price:[null]
+            price: [null],
+            work_start_time: [null],
+            work_end_time: [null]
         })
         value.push(item);
 
@@ -125,13 +143,28 @@ export class RoutesComponent {
                 return this._combineObsevable(id)
             })).subscribe()
     }
+    getHourAndTime(time: string) {
+        if (time) {
+            let hourLastIndex = time.indexOf(':')
+            let hour = time.substr(0, hourLastIndex);
+            let minutesIndex = time.indexOf(':', hourLastIndex)
+            let minutes = time.substr(hourLastIndex + 1, minutesIndex);
+            let date = new Date();
+            date.setHours(+hour);
+            date.setMinutes(+minutes);
+            return date
+        } else {
+            return null
+        }
 
+    }
     getRouteSubList(id: number) {
         return this._settingsService.getRouteSubList(id).pipe(
             map((data: ServerResponce<any>) => {
                 let subList = data.results;
                 if (subList && subList.length) {
-                    ((this.validateForm.get('routes')) as FormArray).controls = subList.map((el) => {
+                    ((this.validateForm.get('routes')) as FormArray).controls = subList.map((el) => {                
+
                         return this._fb.group({
                             end_point: el.end_point,
                             end_point_address_en: el.end_point_address_en,
@@ -140,7 +173,9 @@ export class RoutesComponent {
                             end_point_is_static: el.end_point_is_static,
                             start_point: el.start_point,
                             id: el.id,
-                            price:el.price,
+                            price: el.price,
+                            work_start_time:this.getHourAndTime(el.work_start_time),
+                            work_end_time: this.getHourAndTime(el.work_end_time),
                             start_point_address_en: el.start_point_address_en,
                             start_point_address_hy: el.start_point_address_hy,
                             start_point_address_ru: el.start_point_address_ru,
@@ -215,11 +250,13 @@ export class RoutesComponent {
         let formArray = (this.validateForm.get('routes') as FormArray).controls;
         if (formArray[index].value) {
             let value = formArray[index].value;
-            
+            value.work_start_time = this._datePipe.transform(value.work_start_time, 'HH:mm');
+
+            value.work_end_time = this._datePipe.transform(value.work_end_time, 'HH:mm')
             let sendObject = Object.assign({}, value, { main_route: this.routeTable[this.editIndex].id })
             if (formArray[index].value.id) {
                 delete sendObject.id
-                this._settingsService.editSubRoute(formArray[index].value.id,sendObject).pipe(takeUntil((this.unsubscribe$))).subscribe(() => {
+                this._settingsService.editSubRoute(formArray[index].value.id, sendObject).pipe(takeUntil((this.unsubscribe$))).subscribe(() => {
                     this.nzMessages.success(Messages.success)
                 },
                     () => {

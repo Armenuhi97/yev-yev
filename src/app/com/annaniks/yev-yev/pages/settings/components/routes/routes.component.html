@@ -16,7 +16,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let data of routeTable; let ind = index">
-            <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10)  }}</td>
+            <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10) }}</td>
             <td>
                 {{data.route_name}}
             </td>
@@ -77,6 +77,24 @@
                             <input nz-input formControlName="price" placeholder="" />
                         </nz-form-control>
                     </nz-form-item>
+                    <div class="d-flex align-items-center">
+                        <nz-form-item class="w-45">
+                            <nz-form-label class="inline-labels">Սկիզբ</nz-form-label>
+
+                            <nz-form-control>
+                                <nz-time-picker [nzDisabledMinutes]="disabledMinutes" formControlName="work_start_time" nzFormat="HH:mm"></nz-time-picker>
+                                <!-- <input nz-input formControlName="start_time" placeholder="" /> -->
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item class="w-45">
+                            <nz-form-label class="inline-labels">Վերջ</nz-form-label>
+
+                            <nz-form-control>
+                                <nz-time-picker [nzDisabledMinutes]="disabledMinutes" formControlName="work_end_time" nzFormat="HH:mm"></nz-time-picker>
+                                <!-- <input nz-input formControlName="end_time" placeholder="" /> -->
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
                     <div class="d-flex justify-content-between align-items-baseline ">
                         <div class="w-45">
                             <nz-select nzPlaceHolder="Start point" formControlName="start_point">

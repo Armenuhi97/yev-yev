@@ -1,5 +1,5 @@
     <div class="table-item">
-        <nz-table [nzScroll]="{y:windowHeight + 'px',x:'auto'}" nzBordered [nzFrontPagination]="false" [nzData]="openTimes">
+        <nz-table [nzScroll]="{y:windowHeight + 'px',x:'auto'}" nzBordered [nzFrontPagination]="false" [nzData]="subrouteInfo?.openTimes">
             <thead>
                 <tr>
                     <th style="width:100px">Ժամեր</th>
@@ -13,7 +13,7 @@
             <tbody>
                 <tr [id]="setId(data.start,index)"
                     [ngClass]="{'disable':data.isDisabled,'active':data.time == selectedTime,'current-time':(currentInterval && currentInterval.start == data.start && !data.isDisabled && !selectedTime)}"
-                    class="cursor-pointer" *ngFor="let data of openTimes; let ind = index">
+                    class="cursor-pointer" *ngFor="let data of subrouteInfo?.openTimes; let ind = index">
                     <td  style="width:100px" (click)="getInformation(data)"><span class="time">{{data.start}}</span></td>
                     <td class="action-button delete" style="width:10px">
                         <nz-switch [disabled]="data.isDisabled" [(ngModel)]="data.isActive"

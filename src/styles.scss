@@ -35,6 +35,9 @@ td{
     cursor: pointer;
     }
 }
+.ant-picker-time-panel-column>li.ant-picker-time-panel-cell-disabled .ant-picker-time-panel-cell-inner {
+    display: none !important;
+}
 .ant-table-tbody{
     background: white;
 }

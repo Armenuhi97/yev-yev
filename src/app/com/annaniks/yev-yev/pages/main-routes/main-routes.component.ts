@@ -60,7 +60,7 @@ export class MainRoutesComponent {
     private _param
     private _lastMainRouteId: number;
     orderTypes: OrderType[] = [];
-    openTimes = []
+    // openTimes = []
     isGetFunction: boolean = true;
     isGet: boolean = true;
     driverControl = new FormControl('', Validators.required)
@@ -73,7 +73,7 @@ export class MainRoutesComponent {
         private nzMessages: NzMessageService,
         private _orderTypeService: OrderTypeService,
         private _openTimesService: OpenTimesService) {
-        this.openTimes = this._openTimesService.getOpenTimes()
+        // this.openTimes = this._openTimesService.getOpenTimes()
         this.orderTypes = this._orderTypeService.getOrderTypes()
     }
 
@@ -240,9 +240,55 @@ export class MainRoutesComponent {
                     })
                 }
                 this.subRouteInfos = data.results;
+                for (let route of this.subRouteInfos) {
+                    this._createTimesArray(route.work_start_time, route.work_end_time, route)
+                }
                 this.isGetItem = true
                 // return this.getHourlyOrdersByDate(id)
             }))
+    }
+    getHour(time: string) {
+        if (time) {
+            let hourLastIndex = time.indexOf(':')
+            let hour = time.substr(0, hourLastIndex);    
+            return +hour
+        } else {
+            return null
+        }
+
+    }
+    getMin(time: string) {
+        if (time) {
+            let hourLastIndex = time.indexOf(':')
+            let minutesIndex = time.indexOf(':', hourLastIndex)
+            let minutes = time.substr(hourLastIndex + 1, minutesIndex);
+            return +minutes
+        } else {
+            return null
+        }
+
+    }
+    private _createTimesArray(start, end, subroute) {
+        let startHour = this.getHour(start);
+        let startMin = this.getMin(start);
+        let endHour = this.getHour(end);
+        let endMin = this.getMin(end);
+        let arr = [];
+        if (startHour && endHour) {
+            for (let i = startHour; i <= endHour; i++) {
+                if ((i == startHour && +startMin !== 30) || i !== startHour) {
+                    let startTime = `${i <= 9 ? `0${i}` : i}:00`;
+                    let endTime = `${i <= 9 ? `0${i}` : i}:30`;
+                    arr.push({ start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: true, closeId: 0, isDisabled: false })
+                }
+                if ((i == endHour && +endMin == 30) || i !== endHour) {
+                    let startTime = `${i <= 9 ? `0${i}` : i}:30`;
+                    let endTime = `${i + 1 <= 9 ? `0${i + 1}` : i + 1}:00`;
+                    arr.push({ start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: true, closeId: 0, isDisabled: false })
+                }
+            }
+        }
+        subroute.openTimes = arr
     }
     getLabelOfDrivers(dr: User) {
         return `${dr.user.first_name} ${dr.user.last_name} (${dr.car_model}) (${dr.car_capacity})`
@@ -693,8 +739,8 @@ export class MainRoutesComponent {
     }
     getInformation($event, index: number) {
         if ($event) {
-            console.log(this.radioValue );
-            
+            console.log(this.radioValue);
+
             this.timeItem = $event.timeItem
             this.selectedTime = $event.time;
             this.subRouteInfo = this.subRouteInfos[index];

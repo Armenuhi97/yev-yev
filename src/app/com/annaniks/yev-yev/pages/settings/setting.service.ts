@@ -77,4 +77,8 @@ export class SettingsService {
     public deletephone(id: number) {
         return this._httpClient.delete(`utils/contact-information/${id}/`)
     }
+    public getWorkingTimes() {
+        return this._httpClient.get(`utils/general-settings/`)
+    }
+
 }
