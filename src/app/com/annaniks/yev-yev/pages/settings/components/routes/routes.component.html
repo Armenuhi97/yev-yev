@@ -82,7 +82,7 @@
                             <nz-form-label class="inline-labels">Սկիզբ</nz-form-label>
 
                             <nz-form-control>
-                                <nz-time-picker [nzDisabledMinutes]="disabledMinutes" formControlName="work_start_time" nzFormat="HH:mm"></nz-time-picker>
+                                <nz-time-picker [nzSecondStep]="'30'"  formControlName="work_start_time" nzFormat="HH"></nz-time-picker>
                                 <!-- <input nz-input formControlName="start_time" placeholder="" /> -->
                             </nz-form-control>
                         </nz-form-item>
@@ -90,7 +90,7 @@
                             <nz-form-label class="inline-labels">Վերջ</nz-form-label>
 
                             <nz-form-control>
-                                <nz-time-picker [nzDisabledMinutes]="disabledMinutes" formControlName="work_end_time" nzFormat="HH:mm"></nz-time-picker>
+                                <nz-time-picker [nzDisabledMinutes]="disabledMinutes" formControlName="work_end_time" nzFormat="HH"></nz-time-picker>
                                 <!-- <input nz-input formControlName="end_time" placeholder="" /> -->
                             </nz-form-control>
                         </nz-form-item>

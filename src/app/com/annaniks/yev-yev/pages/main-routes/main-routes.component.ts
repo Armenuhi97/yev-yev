@@ -257,31 +257,30 @@ export class MainRoutesComponent {
         }
 
     }
-    getMin(time: string) {
-        if (time) {
-            let hourLastIndex = time.indexOf(':')
-            let minutesIndex = time.indexOf(':', hourLastIndex)
-            let minutes = time.substr(hourLastIndex + 1, minutesIndex);
-            return +minutes
-        } else {
-            return null
-        }
+    // getMin(time: string) {
+    //     if (time) {
+    //         let hourLastIndex = time.indexOf(':')
+    //         let minutesIndex = time.indexOf(':', hourLastIndex)
+    //         let minutes = time.substr(hourLastIndex + 1, minutesIndex);
+    //         return +minutes
+    //     } else {
+    //         return null
+    //     }
 
-    }
+    // }
     private _createTimesArray(start, end, subroute) {
         let startHour = this.getHour(start);
-        let startMin = this.getMin(start);
-        let endHour = this.getHour(end);
-        let endMin = this.getMin(end);
+        // let startMin = this.getMin(start);
+        let endHour = this.getHour(end)
+        // let endMin = end;
         let arr = [];
         if (startHour && endHour) {
             for (let i = startHour; i <= endHour; i++) {
-                if ((i == startHour && +startMin !== 30) || i !== startHour) {
-                    let startTime = `${i <= 9 ? `0${i}` : i}:00`;
-                    let endTime = `${i <= 9 ? `0${i}` : i}:30`;
-                    arr.push({ start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: true, closeId: 0, isDisabled: false })
-                }
-                if ((i == endHour && +endMin == 30) || i !== endHour) {
+                let startTime = `${i <= 9 ? `0${i}` : i}:00`;
+                let endTime = `${i <= 9 ? `0${i}` : i}:30`;
+                arr.push({ start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: true, closeId: 0, isDisabled: false })
+
+                if (i !== endHour) {
                     let startTime = `${i <= 9 ? `0${i}` : i}:30`;
                     let endTime = `${i + 1 <= 9 ? `0${i + 1}` : i + 1}:00`;
                     arr.push({ start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: true, closeId: 0, isDisabled: false })

@@ -143,15 +143,13 @@ export class RoutesComponent {
                 return this._combineObsevable(id)
             })).subscribe()
     }
-    getHourAndTime(time: string) {
+    getHourAndTime(time) {
         if (time) {
             let hourLastIndex = time.indexOf(':')
-            let hour = time.substr(0, hourLastIndex);
-            let minutesIndex = time.indexOf(':', hourLastIndex)
-            let minutes = time.substr(hourLastIndex + 1, minutesIndex);
+            let hour = time.substr(0, hourLastIndex);            
             let date = new Date();
-            date.setHours(+hour);
-            date.setMinutes(+minutes);
+            date.setHours(+hour);            
+            // date.setMinutes(+minutes);
             return date
         } else {
             return null
@@ -163,7 +161,7 @@ export class RoutesComponent {
             map((data: ServerResponce<any>) => {
                 let subList = data.results;
                 if (subList && subList.length) {
-                    ((this.validateForm.get('routes')) as FormArray).controls = subList.map((el) => {                
+                    ((this.validateForm.get('routes')) as FormArray).controls = subList.map((el) => {
 
                         return this._fb.group({
                             end_point: el.end_point,
@@ -174,7 +172,7 @@ export class RoutesComponent {
                             start_point: el.start_point,
                             id: el.id,
                             price: el.price,
-                            work_start_time:this.getHourAndTime(el.work_start_time),
+                            work_start_time: this.getHourAndTime(el.work_start_time),
                             work_end_time: this.getHourAndTime(el.work_end_time),
                             start_point_address_en: el.start_point_address_en,
                             start_point_address_hy: el.start_point_address_hy,
@@ -250,9 +248,11 @@ export class RoutesComponent {
         let formArray = (this.validateForm.get('routes') as FormArray).controls;
         if (formArray[index].value) {
             let value = formArray[index].value;
-            value.work_start_time = this._datePipe.transform(value.work_start_time, 'HH:mm');
+            console.log(value.work_start_time);
 
-            value.work_end_time = this._datePipe.transform(value.work_end_time, 'HH:mm')
+            value.work_start_time = value.work_start_time ? this._datePipe.transform(value.work_start_time, 'HH') + ':00' : null;
+
+            value.work_end_time = value.work_end_time ? this._datePipe.transform(value.work_end_time, 'HH') + ':00' : null
             let sendObject = Object.assign({}, value, { main_route: this.routeTable[this.editIndex].id })
             if (formArray[index].value.id) {
                 delete sendObject.id
