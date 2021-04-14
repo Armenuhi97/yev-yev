@@ -15,7 +15,7 @@ import { Router } from "@angular/router";
 export class AuthComponent implements OnInit, OnDestroy {
     public loginForm: FormGroup;
     private unsubscribe$ = new Subject<void>();
-
+    errorMessage: string = ''
     constructor(private _fb: FormBuilder, private _authService: AuthService,
         private _router: Router,
         private _cookieService: CookieService) { }
@@ -30,8 +30,12 @@ export class AuthComponent implements OnInit, OnDestroy {
             username: ['', Validators.required],
             password: ['', Validators.required]
         })
+        this.loginForm.valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+            this.errorMessage = ''
+        })
     }
     public submitForm(): void {
+        this.errorMessage = ''
         let sendObject: LoginSendResponse = {
             username: this.loginForm.get('username').value,
             password: this.loginForm.get('password').value
@@ -42,7 +46,11 @@ export class AuthComponent implements OnInit, OnDestroy {
             localStorage.setItem('user', JSON.stringify(data.user.user))
             this._router.navigate(['/dashboard']);
 
-        })
+        },
+            (err) => {
+                if (err && err.error && err.error.message)
+                    this.errorMessage = err.error.message
+            })
     }
     ngOnDestroy() {
         this.unsubscribe$.next();

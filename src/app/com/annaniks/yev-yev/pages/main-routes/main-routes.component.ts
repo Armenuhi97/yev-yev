@@ -126,8 +126,8 @@ export class MainRoutesComponent {
 
     }
     public send(data) {
-        this._mainRouteService.sendMessage(data.id).pipe(takeUntil(this.unsubscribe$)).subscribe((result: { status_message: string }) => {
-            if (result.status_message == 'ok') {
+        this._mainRouteService.sendMessage(data.id).pipe(takeUntil(this.unsubscribe$)).subscribe((result: { ok: boolean }) => {
+            if (result.ok) {
                 this.nzMessages.success(Messages.success);
                 data.viber_message_sended = true
             } else {
