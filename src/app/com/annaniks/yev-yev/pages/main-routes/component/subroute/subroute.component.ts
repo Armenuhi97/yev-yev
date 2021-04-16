@@ -2,7 +2,7 @@ import { DatePipe } from "@angular/common";
 import { Component, EventEmitter, HostListener, Input, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
-import { Observable, of, Subject } from "rxjs";
+import { forkJoin, Observable, of, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { ClosedHours } from "../../../../core/models/closed-hours";
 import { OrderType } from "../../../../core/models/order-type";
@@ -69,7 +69,7 @@ export class SubrouteComponent {
     set setInfo($event) {
         this.subrouteInfo = $event;
         // if (this.subrouteInfo)
-            // this._createTimesArray(this.subrouteInfo.work_start_time, this.subrouteInfo.work_end_time)
+        // this._createTimesArray(this.subrouteInfo.work_start_time, this.subrouteInfo.work_end_time)
         if (this.subrouteInfo && this.subrouteInfo.countList) {
             for (let item of this.subrouteInfo.countList.orders) {
                 let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
@@ -122,23 +122,31 @@ export class SubrouteComponent {
                 this.selectedTime = null;
         }
         if (this.subrouteInfo && this._date) {
-            this.getClosedHours(this.subrouteInfo.id).pipe(
-                switchMap(() => {
-                    //     if (this.isOpenInfo && this.selectedTime) {
-                    //         return this.getInfo(this.selectedTime)
-                    //     } else {
-                    //         return of()
-                    //     }
-                    return this.getHourlyOrdersByDate()
-                })
+            forkJoin([
+                this.getBlockedHours(this.subrouteInfo.id),
+                this.getClosedHours(this.subrouteInfo.id)
 
-            ).subscribe()
+            ]).pipe(switchMap(() => {
+                return this.getHourlyOrdersByDate()
+            })).subscribe()
+
+            //     this.getClosedHours(this.subrouteInfo.id).pipe(
+            //     switchMap(() => {
+            //         //     if (this.isOpenInfo && this.selectedTime) {
+            //         //         return this.getInfo(this.selectedTime)
+            //         //     } else {
+            //         //         return of()
+            //         //     }
+            //         return this.getHourlyOrdersByDate()
+            //     })
+
+            // ).subscribe()
         }
 
 
 
     }
-   
+
     windowHeight: number;
     userInfo: OrdersByHours[] = []
     constructor(
@@ -149,7 +157,7 @@ export class SubrouteComponent {
         this._onResize()
     }
 
-    ngOnInit() {    }
+    ngOnInit() { }
 
 
     getHourlyOrdersByDate() {
@@ -175,30 +183,41 @@ export class SubrouteComponent {
 
                             }
                         }
-                    }                    
+                    }
                 this._reset.emit(false)
             })
         )
 
     }
-
-
-    public getClosedHours(id: number): Observable<any> {
-
-        let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
-        return this._mainRouteService.getCloseHours(id, date).pipe(takeUntil(this.unsubscribe$), map((data: ServerResponce<ClosedHours[]>) => {
-            this.subrouteInfo.openTimes.map((val) => { return Object.assign(val, { isActive: true }) })
-            let items = data.results
-            for (let item of items) {
-                let date = this._datePipe.transform(new Date(item.time), 'HH:mm');
-                for (let time of this.subrouteInfo.openTimes) {
-                    if (time.time.startsWith(date)) {
-                        time.isActive = false;
-                        time.closeId = item.id
-                    }
-                    this.checkCloseTimes(time)
+    setBlockOrCloseHours(items, key, idKey) {
+        for (let item of items) {
+            let date = this._datePipe.transform(new Date(item.time), 'HH:mm');
+            for (let time of this.subrouteInfo.openTimes) {
+                if (time.time.startsWith(date)) {
+                    time[key] = key == 'isBlocked'?false:true;
+                    time[idKey] = item.id
                 }
+                if (key == 'isBlocked')
+                    this.checkCloseTimes(time)
             }
+        }
+    }
+    public getBlockedHours(id: number) {
+        let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
+        return this._mainRouteService.getBlockedHours(id, date).pipe(takeUntil(this.unsubscribe$), map((data: ServerResponce<ClosedHours[]>) => {
+            this.subrouteInfo.openTimes.map((val) => { return Object.assign(val, { isBlocked: true }) })
+            let items = data.results
+            // for (let item of items) {
+            //     let date = this._datePipe.transform(new Date(item.time), 'HH:mm');
+            //     for (let time of this.subrouteInfo.openTimes) {
+            //         if (time.time.startsWith(date)) {
+            //             time.isBlocked = false;
+            //             time.blockId = item.id
+            //         }
+            //         this.checkCloseTimes(time)
+            //     }
+            // }
+            this.setBlockOrCloseHours(items, 'isBlocked', 'blockId')
             if (!items.length) {
                 for (let time of this.subrouteInfo.openTimes) {
                     this.checkCloseTimes(time)
@@ -207,12 +226,47 @@ export class SubrouteComponent {
 
         }))
     }
-    changeUserStatus($event, data) {
+
+    public getClosedHours(id: number): Observable<any> {
+
+        let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
+        return this._mainRouteService.getCloseHours(id, date).pipe(takeUntil(this.unsubscribe$), map((data: ServerResponce<ClosedHours[]>) => {
+            this.subrouteInfo.openTimes.map((val) => { return Object.assign(val, { isActive: false }) })
+            let items = data.results
+            // for (let item of items) {
+            //     let date = this._datePipe.transform(new Date(item.time), 'HH:mm');
+            //     for (let time of this.subrouteInfo.openTimes) {
+            //         if (time.time.startsWith(date)) {
+            //             time.isActive = false;
+            //             time.closeId = item.id
+            //         }
+            //         // this.checkCloseTimes(time)
+            //     }
+            // }
+            this.setBlockOrCloseHours(items, 'isActive', 'closeId')
+
+            // if (!items.length) {
+            //     for (let time of this.subrouteInfo.openTimes) {
+            //         this.checkCloseTimes(time)
+            //     }
+            // }
+
+        }))
+    }
+    openOrCloseHour($event, data) {
         if (data.closeId && $event) {
             this._mainRouteService.openHours(data.closeId).pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
             let current = this._formatDate(data.time)
             this._mainRouteService.closeHours(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe()
+        }
+    }
+    blockOrUnBlockHour($event, data) {
+        if (data.blockId && $event) {
+            this._mainRouteService.openBlockedHours(data.blockId).pipe(takeUntil(this.unsubscribe$)).subscribe()
+        } else {
+            let current = this._formatDate(data.time)
+            this._mainRouteService.blockHour(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe()
         }
     }
 
@@ -255,18 +309,18 @@ export class SubrouteComponent {
         let end = moment(data.end, "HH:mm");
         if (moment(selectedDate).isBefore(currentDate)) {
             data.isDisabled = true;
-            data.isActive = false
+            data.isBlocked = false
         }
         if (moment(selectedDate).isAfter(currentDate)) {
             data.isDisabled = false;
         }
-        if (moment(selectedDate).isSame(currentDate)) {   
+        if (moment(selectedDate).isSame(currentDate)) {
             if ((moment(time).isSameOrAfter(start) && moment(time).isBefore(end)) || (moment(time).isBefore(start))) {
                 data.isDisabled = false
             } else {
-                
+
                 data.isDisabled = true;
-                data.isActive = false
+                data.isBlocked = false
             }
             if ((moment(time).isSameOrAfter(start) && moment(time).isBefore(end))) {
 

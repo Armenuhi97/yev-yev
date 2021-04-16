@@ -36,6 +36,7 @@ export class MainRoutesService {
 
         return this._httpClient.get(`route/closed-hour/?sub_route=${subRouteId}&date=${date}`)
     }
+   
     public closeHours(subrouteId: number, date) {
         return this._httpClient.post(`route/closed-hour/`, {
             "sub_route": subrouteId,
@@ -45,6 +46,24 @@ export class MainRoutesService {
     public openHours(id: number) {
         return this._httpClient.delete(`route/closed-hour/${id}/`)
     }
+
+    public getBlockedHours(subRouteId: number, date: string) {
+
+        return this._httpClient.get(`route/blocked-hour/?sub_route=${subRouteId}&date=${date}`)
+    }
+    public blockHour(subrouteId: number, date) {
+        return this._httpClient.post(`route/blocked-hour/`, {
+            "sub_route": subrouteId,
+            "time": date
+        })
+    }
+    public openBlockedHours(id: number) {
+        return this._httpClient.delete(`route/blocked-hour/${id}/`)
+    }
+    public finishOrder(id:number){
+        return this._httpClient.get(`order/finish-approved-order/${id}/`)
+    }
+
     public getHourlyOrdersByDate(routeId: number, date: string) {
         return this._httpClient.post(`order/get-hourly-orders-by-date/`, {
             "route_id": routeId,

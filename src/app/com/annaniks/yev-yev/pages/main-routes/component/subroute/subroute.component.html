@@ -3,7 +3,8 @@
             <thead>
                 <tr>
                     <th style="width:100px">Ժամեր</th>
-                    <th></th>
+                    <th>Փակել</th>
+                    <th>Սպասում</th>
                     <th>Ընդ․</th>
                     <th>Ձև․</th>
                     <th>Սպ․</th>
@@ -16,9 +17,13 @@
                     class="cursor-pointer" *ngFor="let data of subrouteInfo?.openTimes; let ind = index">
                     <td  style="width:100px" (click)="getInformation(data)"><span class="time">{{data.start}}</span></td>
                     <td class="action-button delete" style="width:10px">
-                        <nz-switch [disabled]="data.isDisabled" [(ngModel)]="data.isActive"
-                            (ngModelChange)="changeUserStatus($event,data)">
+                        <nz-switch [disabled]="data.isDisabled" [(ngModel)]="data.isBlocked"
+                            (ngModelChange)="blockOrUnBlockHour($event,data)">
                         </nz-switch>
+                    </td>
+                    <td>
+                        <label *ngIf="data.isBlocked" nz-checkbox [(ngModel)]="data.isActive"
+                        (ngModelChange)="openOrCloseHour($event,data)"></label>
                     </td>
                     <td (click)="getInformation(data)">
                         {{ check(data.seat_count)}}

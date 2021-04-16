@@ -292,16 +292,30 @@ export class MainRoutesComponent {
             for (let i = startHour; i <= endHour; i++) {
                 let startTime = `${i <= 9 ? `0${i}` : i}:00`;
                 let endTime = `${i <= 9 ? `0${i}` : i}:30`;
-                arr.push({ start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: true, closeId: 0, isDisabled: false })
+                arr.push({ start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: false, closeId: 0, isDisabled: false, isBlocked: true, blockId: 0 })
 
                 if (i !== endHour) {
                     let startTime = `${i <= 9 ? `0${i}` : i}:30`;
                     let endTime = `${i + 1 <= 9 ? `0${i + 1}` : i + 1}:00`;
-                    arr.push({ start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: true, closeId: 0, isDisabled: false })
+                    arr.push({ start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: false, closeId: 0, isDisabled: false, isBlocked: true, blockId: 0 })
                 }
             }
         }
         subroute.openTimes = arr
+    }
+    finishOrder(data) {
+        if (data.status == 'done') {
+            return
+        }
+        this._mainRouteService.finishOrder(data.id).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+            data.status = 'done';
+            this.nzMessages.success(Messages.success);
+        },
+            () => {
+                this.nzMessages.error(Messages.fail);
+
+            })
+
     }
     getLabelOfDrivers(dr: User) {
         return `${dr.user.first_name} ${dr.user.last_name} (${dr.car_model}) (${dr.car_capacity})`
@@ -356,6 +370,7 @@ export class MainRoutesComponent {
     }
     public showModal(): void {
         this.isVisible = true;
+        this.validateForm.get('orderType').setValue(0)
         if (this.subRouteInfo.start_point_is_static) {
             this.validateForm.get('startPointAddress').setValue(this.subRouteInfo.start_point_address_hy);
             this.validateForm.get('startPointAddress').disable()
@@ -793,42 +808,19 @@ export class MainRoutesComponent {
         this.getWorkTimes()
         // this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
-    getDay() {
+    getDay(): string {
         if (this.selectedDate && this.selectedDate.value) {
             let dayIndex = this.selectedDate.value.getDay()
-
             switch (dayIndex) {
-                case (0): {
-                    return 'Կիրակի'
-
-                }
-                case (1): {
-                    return 'Երկուշաբթի'
-
-                }
-                case (2): {
-                    return 'Երեքշաբթի'
-
-                }
-                case (3): {
-                    return 'Չորեքշաբթի'
-
-                }
-                case (4): {
-                    return 'Հինգշաբթի'
-
-                }
-                case (5): {
-                    return 'Ուրբաթ'
-
-                }
-                case (6): {
-                    return 'Շաբաթ'
-
-                }
+                case (0): { return 'Կիրակի' }
+                case (1): { return 'Երկուշաբթի' }
+                case (2): { return 'Երեքշաբթի' }
+                case (3): { return 'Չորեքշաբթի' }
+                case (4): { return 'Հինգշաբթի' }
+                case (5): { return 'Ուրբաթ' }
+                case (6): { return 'Շաբաթ' }
             }
         }
-
     }
     ngOnDestroy() {
         this.unsubscribe$.next();
