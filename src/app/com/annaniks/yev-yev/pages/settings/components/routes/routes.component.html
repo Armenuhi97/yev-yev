@@ -77,13 +77,147 @@
                             <input nz-input formControlName="price" placeholder="" />
                         </nz-form-control>
                     </nz-form-item>
-                    <div class="d-flex align-items-center">
+                    <div nz-row [nzGutter]="24">
+                        <div nz-col [nzSpan]="8">
+                            <nz-descriptions [nzColumn]="1" class="order-details" nzTitle="Երկուշաբթի">
+                                <nz-descriptions-item nzTitle="Սկիզբ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="monday_start"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                                <nz-descriptions-item nzTitle="Վերջ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="monday_end"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                            </nz-descriptions>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <nz-descriptions [nzColumn]="1" class="order-details" nzTitle="Երեքշաբթի">
+                                <nz-descriptions-item nzTitle="Սկիզբ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="tuesday_start"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                                <nz-descriptions-item nzTitle="Վերջ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="tuesday_end"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                            </nz-descriptions>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <nz-descriptions [nzColumn]="1" class="order-details" nzTitle="Չորեքշաբթի" nz-col>
+                                <nz-descriptions-item nzTitle="Սկիզբ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="wednesday_start"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                                <nz-descriptions-item nzTitle="Վերջ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="wednesday_end"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                            </nz-descriptions>
+                        </div>
+                    </div>
+                    <div nz-row [nzGutter]="24">
+
+                        <div nz-col [nzSpan]="8">
+                            <nz-descriptions [nzColumn]="1" class="order-details" nzTitle="Հինգշաբթի">
+                                <nz-descriptions-item nzTitle="Սկիզբ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="friday_start"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                                <nz-descriptions-item nzTitle="Վերջ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="friday_end"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                            </nz-descriptions>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <nz-descriptions [nzColumn]="1" class="order-details" nzTitle="Ուրբաթ">
+                                <nz-descriptions-item nzTitle="Սկիզբ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="friday_start"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                                <nz-descriptions-item nzTitle="Վերջ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="friday_end"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                            </nz-descriptions>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <nz-descriptions [nzColumn]="1" class="order-details" nzTitle="Շաբաթ">
+                                <nz-descriptions-item nzTitle="Սկիզբ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="saturday_start"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                                <nz-descriptions-item nzTitle="Վերջ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="saturday_end"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                            </nz-descriptions>
+                        </div>
+                    </div>
+                    <div nz-row [nzGutter]="24">
+
+                        
+                        <div nz-col [nzSpan]="8">
+                            <nz-descriptions [nzColumn]="1" class="order-details" nzTitle="Կիրակի">
+                                <nz-descriptions-item nzTitle="Սկիզբ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="sunday_start"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                                <nz-descriptions-item nzTitle="Վերջ">
+                                    <nz-form-control>
+                                        <nz-time-picker [nzSecondStep]="'30'" formControlName="sunday_end"
+                                            nzFormat="HH">
+                                        </nz-time-picker>
+                                    </nz-form-control>
+                                </nz-descriptions-item>
+                            </nz-descriptions>
+                        </div>
+                    </div>
+                    <!-- <div class="d-flex align-items-center">
                         <nz-form-item class="w-45">
                             <nz-form-label class="inline-labels">Սկիզբ</nz-form-label>
 
                             <nz-form-control>
                                 <nz-time-picker [nzSecondStep]="'30'"  formControlName="work_start_time" nzFormat="HH"></nz-time-picker>
-                                <!-- <input nz-input formControlName="start_time" placeholder="" /> -->
                             </nz-form-control>
                         </nz-form-item>
                         <nz-form-item class="w-45">
@@ -91,10 +225,9 @@
 
                             <nz-form-control>
                                 <nz-time-picker [nzDisabledMinutes]="disabledMinutes" formControlName="work_end_time" nzFormat="HH"></nz-time-picker>
-                                <!-- <input nz-input formControlName="end_time" placeholder="" /> -->
                             </nz-form-control>
                         </nz-form-item>
-                    </div>
+                    </div> -->
                     <div class="d-flex justify-content-between align-items-baseline ">
                         <div class="w-45">
                             <nz-select nzPlaceHolder="Start point" formControlName="start_point">

@@ -225,7 +225,10 @@ export class MainRoutesComponent {
             this.mainRoutes = data.results
         }))
     }
-
+    public getWeekDays() {
+        return ['monday',
+            'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    }
     getRouteInfo(id, subrouteId?, time?) {
         return this._mainRoutesService.getSubRoute(id).pipe(
             map((data: ServerResponce<any>) => {
@@ -240,17 +243,26 @@ export class MainRoutesComponent {
                     })
                 }
                 this.subRouteInfos = data.results;
-                for (let route of this.subRouteInfos) {
-                    this._createTimesArray(route.work_start_time, route.work_end_time, route)
-                }
+                this.getWorkTimes()
                 this.isGetItem = true
                 // return this.getHourlyOrdersByDate(id)
             }))
     }
+    getWorkTimes() {
+        let date = this.selectedDate.value;
+        if (date) {
+            let day = date.getDay();
+            let index = day ? day - 1 : 6
+            let weekDayKey = this.getWeekDays()[index]
+            for (let route of this.subRouteInfos) {
+                this._createTimesArray(route.work_times[weekDayKey + '_start'], route.work_times[weekDayKey + '_end'], route)
+            }
+        }
+    }
     getHour(time: string) {
         if (time) {
             let hourLastIndex = time.indexOf(':')
-            let hour = time.substr(0, hourLastIndex);    
+            let hour = time.substr(0, hourLastIndex);
             return +hour
         } else {
             return null
@@ -758,6 +770,7 @@ export class MainRoutesComponent {
             this.subRouteInfos = this.subRouteInfos.map((el) => {
                 return Object.assign({}, el, { selectTime: null })
             })
+            this.getWorkTimes()
             // this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
         }
     }
@@ -775,6 +788,7 @@ export class MainRoutesComponent {
         this.subRouteInfos = this.subRouteInfos.map((el) => {
             return Object.assign({}, el, { selectTime: null })
         })
+        this.getWorkTimes()
         // this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     ngOnDestroy() {

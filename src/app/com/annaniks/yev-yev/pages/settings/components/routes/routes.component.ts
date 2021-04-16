@@ -95,7 +95,21 @@ export class RoutesComponent {
             end_point_is_static: [false],
             price: [null],
             work_start_time: [null],
-            work_end_time: [null]
+            work_end_time: [null],
+            monday_start: [null],
+            monday_end: [null],
+            tuesday_start: [null],
+            tuesday_end: [null],
+            wednesday_start: [null],
+            wednesday_end: [null],
+            thursday_start: [null],
+            thursday_end: [null],
+            friday_start: [null],
+            friday_end: [null],
+            saturday_start: [null],
+            saturday_end: [null],
+            sunday_start: [null],
+            sunday_end: [null]
         })
         value.push(item);
 
@@ -146,9 +160,9 @@ export class RoutesComponent {
     getHourAndTime(time) {
         if (time) {
             let hourLastIndex = time.indexOf(':')
-            let hour = time.substr(0, hourLastIndex);            
+            let hour = time.substr(0, hourLastIndex);
             let date = new Date();
-            date.setHours(+hour);            
+            date.setHours(+hour);
             // date.setMinutes(+minutes);
             return date
         } else {
@@ -162,6 +176,7 @@ export class RoutesComponent {
                 let subList = data.results;
                 if (subList && subList.length) {
                     ((this.validateForm.get('routes')) as FormArray).controls = subList.map((el) => {
+                        console.log(el.work_times.monday_start);
 
                         return this._fb.group({
                             end_point: el.end_point,
@@ -172,8 +187,24 @@ export class RoutesComponent {
                             start_point: el.start_point,
                             id: el.id,
                             price: el.price,
-                            work_start_time: this.getHourAndTime(el.work_start_time),
-                            work_end_time: this.getHourAndTime(el.work_end_time),
+                            // work_start_time: this.getHourAndTime(el.work_start_time),
+                            // work_end_time: this.getHourAndTime(el.work_end_time),
+                            // "work_times": {
+                            monday_start: this.getHourAndTime(el.work_times.monday_start),
+                            monday_end: this.getHourAndTime(el.work_times.monday_end),
+                            tuesday_start: this.getHourAndTime(el.work_times.tuesday_start),
+                            tuesday_end: this.getHourAndTime(el.work_times.tuesday_end),
+                            wednesday_start: this.getHourAndTime(el.work_times.wednesday_start),
+                            wednesday_end: this.getHourAndTime(el.work_times.wednesday_end),
+                            thursday_start: this.getHourAndTime(el.work_times.thursday_start),
+                            thursday_end: this.getHourAndTime(el.work_times.thursday_end),
+                            friday_start: this.getHourAndTime(el.work_times.friday_start),
+                            friday_end: this.getHourAndTime(el.work_times.friday_end),
+                            saturday_start: this.getHourAndTime(el.work_times.saturday_start),
+                            saturday_end: this.getHourAndTime(el.work_times.saturday_end),
+                            sunday_start: this.getHourAndTime(el.work_times.sunday_start),
+                            sunday_end: this.getHourAndTime(el.work_times.sunday_end),
+                            // }
                             start_point_address_en: el.start_point_address_en,
                             start_point_address_hy: el.start_point_address_hy,
                             start_point_address_ru: el.start_point_address_ru,
@@ -244,17 +275,66 @@ export class RoutesComponent {
                     })
         }
     }
+    private _addMinutesInRoute(hour) {
+        return hour ? this._datePipe.transform(hour, 'HH') + ':00' : null
+
+    }
+    private _getWeekKeys() {
+        return ["monday_start",
+            "monday_end",
+            "tuesday_start",
+            "tuesday_end",
+            "wednesday_start",
+            "wednesday_end",
+            "thursday_start",
+            "thursday_end",
+            "friday_start",
+            "friday_end",
+            "saturday_start",
+            "saturday_end",
+            "sunday_start",
+            "sunday_end",]
+    }
+
     public saveSubList(index: number) {
         let formArray = (this.validateForm.get('routes') as FormArray).controls;
         if (formArray[index].value) {
             let value = formArray[index].value;
-            console.log(value.work_start_time);
+            let workTimes = {
+                monday_start: this._addMinutesInRoute(value.monday_start),
+                monday_end: this._addMinutesInRoute(value.monday_end),
+                tuesday_start: this._addMinutesInRoute(value.tuesday_start),
+                tuesday_end: this._addMinutesInRoute(value.tuesday_end),
+                wednesday_start: this._addMinutesInRoute(value.wednesday_start),
+                wednesday_end: this._addMinutesInRoute(value.wednesday_end),
+                thursday_start: this._addMinutesInRoute(value.thursday_start),
+                thursday_end: this._addMinutesInRoute(value.thursday_end),
+                friday_start: this._addMinutesInRoute(value.friday_start),
+                friday_end: this._addMinutesInRoute(value.friday_end),
+                saturday_start: this._addMinutesInRoute(value.saturday_start),
+                saturday_end: this._addMinutesInRoute(value.saturday_end),
+                sunday_start: this._addMinutesInRoute(value.sunday_start),
+                sunday_end: this._addMinutesInRoute(value.sunday_end),
+            }
 
-            value.work_start_time = value.work_start_time ? this._datePipe.transform(value.work_start_time, 'HH') + ':00' : null;
+            // console.log(value.work_start_time);
 
-            value.work_end_time = value.work_end_time ? this._datePipe.transform(value.work_end_time, 'HH') + ':00' : null
-            let sendObject = Object.assign({}, value, { main_route: this.routeTable[this.editIndex].id })
+            // value.work_start_time = value.work_start_time ? this._datePipe.transform(value.work_start_time, 'HH') + ':00' : null;
+
+            // value.work_end_time = value.work_end_time ? this._datePipe.transform(value.work_end_time, 'HH') + ':00' : null
+            let formatedValue: any = {};
+            for (let val in value) {
+                let index = this._getWeekKeys().indexOf(val)
+                if (index == -1) {
+                    formatedValue[val] = value[val]
+                }
+            }
+
+            let sendObject = Object.assign({}, formatedValue, { main_route: this.routeTable[this.editIndex].id }, { work_times: workTimes })
+
             if (formArray[index].value.id) {
+                console.log(formArray[index].value.id);
+                
                 delete sendObject.id
                 this._settingsService.editSubRoute(formArray[index].value.id, sendObject).pipe(takeUntil((this.unsubscribe$))).subscribe(() => {
                     this.nzMessages.success(Messages.success)
