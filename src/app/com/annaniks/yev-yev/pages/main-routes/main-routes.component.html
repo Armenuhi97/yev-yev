@@ -1,6 +1,8 @@
 <nz-tabset class="main-routes" [nzSelectedIndex]="selectIndex" (nzSelectedIndexChange)="onChangeTab($event)">
+    
     <nz-tab *ngFor="let item of mainRoutes" [nzTitle]="item.route_name">
         <div class="d-flex align-items-center justify-content-center">
+            {{getDay()}}
             <div class="cursor-pointer d-flex" (click)="changeDate(-1)"><svg xmlns="http://www.w3.org/2000/svg"
                     width="16" height="16" fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"

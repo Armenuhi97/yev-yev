@@ -94,7 +94,10 @@ export class MainRoutesComponent {
                         let index = this.mainRoutes.indexOf(item[0]);
                         this.selectIndex = index;
                     }
-                    this.selectedDate.setValue(param.date)
+
+
+
+                    this.selectedDate.setValue(new Date(param.date))
                     this.currentId = +param.mainRoute;
                     this.isGetFunction = false;
                     let time = this._datePipe.transform(param.date, 'HH:mm');
@@ -226,8 +229,7 @@ export class MainRoutesComponent {
         }))
     }
     public getWeekDays() {
-        return ['monday',
-            'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        return ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     }
     getRouteInfo(id, subrouteId?, time?) {
         return this._mainRoutesService.getSubRoute(id).pipe(
@@ -790,6 +792,43 @@ export class MainRoutesComponent {
         })
         this.getWorkTimes()
         // this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
+    }
+    getDay() {
+        if (this.selectedDate && this.selectedDate.value) {
+            let dayIndex = this.selectedDate.value.getDay()
+
+            switch (dayIndex) {
+                case (0): {
+                    return 'Կիրակի'
+
+                }
+                case (1): {
+                    return 'Երկուշաբթի'
+
+                }
+                case (2): {
+                    return 'Երեքշաբթի'
+
+                }
+                case (3): {
+                    return 'Չորեքշաբթի'
+
+                }
+                case (4): {
+                    return 'Հինգշաբթի'
+
+                }
+                case (5): {
+                    return 'Ուրբաթ'
+
+                }
+                case (6): {
+                    return 'Շաբաթ'
+
+                }
+            }
+        }
+
     }
     ngOnDestroy() {
         this.unsubscribe$.next();

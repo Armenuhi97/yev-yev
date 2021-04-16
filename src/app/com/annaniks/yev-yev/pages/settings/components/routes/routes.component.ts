@@ -176,8 +176,6 @@ export class RoutesComponent {
                 let subList = data.results;
                 if (subList && subList.length) {
                     ((this.validateForm.get('routes')) as FormArray).controls = subList.map((el) => {
-                        console.log(el.work_times.monday_start);
-
                         return this._fb.group({
                             end_point: el.end_point,
                             end_point_address_en: el.end_point_address_en,
@@ -187,33 +185,27 @@ export class RoutesComponent {
                             start_point: el.start_point,
                             id: el.id,
                             price: el.price,
-                            // work_start_time: this.getHourAndTime(el.work_start_time),
-                            // work_end_time: this.getHourAndTime(el.work_end_time),
-                            // "work_times": {
-                            monday_start: this.getHourAndTime(el.work_times.monday_start),
-                            monday_end: this.getHourAndTime(el.work_times.monday_end),
-                            tuesday_start: this.getHourAndTime(el.work_times.tuesday_start),
-                            tuesday_end: this.getHourAndTime(el.work_times.tuesday_end),
-                            wednesday_start: this.getHourAndTime(el.work_times.wednesday_start),
-                            wednesday_end: this.getHourAndTime(el.work_times.wednesday_end),
-                            thursday_start: this.getHourAndTime(el.work_times.thursday_start),
-                            thursday_end: this.getHourAndTime(el.work_times.thursday_end),
-                            friday_start: this.getHourAndTime(el.work_times.friday_start),
-                            friday_end: this.getHourAndTime(el.work_times.friday_end),
-                            saturday_start: this.getHourAndTime(el.work_times.saturday_start),
-                            saturday_end: this.getHourAndTime(el.work_times.saturday_end),
-                            sunday_start: this.getHourAndTime(el.work_times.sunday_start),
-                            sunday_end: this.getHourAndTime(el.work_times.sunday_end),
-                            // }
+                            monday_start: el.work_times && el.work_times.monday_start ? this.getHourAndTime(el.work_times.monday_start) : null,
+                            monday_end: el.work_times && el.work_times.monday_end ? this.getHourAndTime(el.work_times.monday_end) : null,
+                            tuesday_start: el.work_times && el.work_times.tuesday_start ? this.getHourAndTime(el.work_times.tuesday_start) : null,
+                            tuesday_end: el.work_times && el.work_times.tuesday_end ? this.getHourAndTime(el.work_times.tuesday_end) : null,
+                            wednesday_start: el.work_times && el.work_times.wednesday_start ? this.getHourAndTime(el.work_times.wednesday_start) : null,
+                            wednesday_end: el.work_times && el.work_times.wednesday_end ? this.getHourAndTime(el.work_times.wednesday_end) : null,
+                            thursday_start: el.work_times && el.work_times.thursday_start ? this.getHourAndTime(el.work_times.thursday_start) : null,
+                            thursday_end: el.work_times && el.work_times.thursday_end ? this.getHourAndTime(el.work_times.thursday_end) : null,
+                            friday_start: el.work_times && el.work_times.friday_start ? this.getHourAndTime(el.work_times.friday_start) : null,
+                            friday_end: el.work_times && el.work_times.friday_end ? this.getHourAndTime(el.work_times.friday_end) : null,
+                            saturday_start: el.work_times && el.work_times.saturday_start ? this.getHourAndTime(el.work_times.saturday_start) : null,
+                            saturday_end: el.work_times && el.work_times.saturday_end ? this.getHourAndTime(el.work_times.saturday_end) : null,
+                            sunday_start: el.work_times && el.work_times.sunday_start ? this.getHourAndTime(el.work_times.sunday_start) : null,
+                            sunday_end: el.work_times && el.work_times.sunday_end ? this.getHourAndTime(el.work_times.sunday_end) : null,
                             start_point_address_en: el.start_point_address_en,
                             start_point_address_hy: el.start_point_address_hy,
                             start_point_address_ru: el.start_point_address_ru,
                             start_point_is_static: el.start_point_is_static,
                         })
                     })
-
                 }
-
 
                 return data
             })
@@ -300,41 +292,23 @@ export class RoutesComponent {
         let formArray = (this.validateForm.get('routes') as FormArray).controls;
         if (formArray[index].value) {
             let value = formArray[index].value;
-            let workTimes = {
-                monday_start: this._addMinutesInRoute(value.monday_start),
-                monday_end: this._addMinutesInRoute(value.monday_end),
-                tuesday_start: this._addMinutesInRoute(value.tuesday_start),
-                tuesday_end: this._addMinutesInRoute(value.tuesday_end),
-                wednesday_start: this._addMinutesInRoute(value.wednesday_start),
-                wednesday_end: this._addMinutesInRoute(value.wednesday_end),
-                thursday_start: this._addMinutesInRoute(value.thursday_start),
-                thursday_end: this._addMinutesInRoute(value.thursday_end),
-                friday_start: this._addMinutesInRoute(value.friday_start),
-                friday_end: this._addMinutesInRoute(value.friday_end),
-                saturday_start: this._addMinutesInRoute(value.saturday_start),
-                saturday_end: this._addMinutesInRoute(value.saturday_end),
-                sunday_start: this._addMinutesInRoute(value.sunday_start),
-                sunday_end: this._addMinutesInRoute(value.sunday_end),
-            }
+            value.monday_start = this._addMinutesInRoute(value.monday_start);
+            value.monday_end = this._addMinutesInRoute(value.monday_end);
+            value.tuesday_start = this._addMinutesInRoute(value.tuesday_start);
+            value.tuesday_end = this._addMinutesInRoute(value.tuesday_end);
+            value.wednesday_start = this._addMinutesInRoute(value.wednesday_start);
+            value.wednesday_end = this._addMinutesInRoute(value.wednesday_end);
+            value.thursday_start = this._addMinutesInRoute(value.thursday_start);
+            value.thursday_end = this._addMinutesInRoute(value.thursday_end);
+            value.friday_start = this._addMinutesInRoute(value.friday_start);
+            value.friday_end = this._addMinutesInRoute(value.friday_end);
+            value.saturday_start = this._addMinutesInRoute(value.saturday_start);
+            value.saturday_end = this._addMinutesInRoute(value.saturday_end);
+            value.sunday_start = this._addMinutesInRoute(value.sunday_start);
+            value.sunday_end = this._addMinutesInRoute(value.sunday_end);
 
-            // console.log(value.work_start_time);
-
-            // value.work_start_time = value.work_start_time ? this._datePipe.transform(value.work_start_time, 'HH') + ':00' : null;
-
-            // value.work_end_time = value.work_end_time ? this._datePipe.transform(value.work_end_time, 'HH') + ':00' : null
-            let formatedValue: any = {};
-            for (let val in value) {
-                let index = this._getWeekKeys().indexOf(val)
-                if (index == -1) {
-                    formatedValue[val] = value[val]
-                }
-            }
-
-            let sendObject = Object.assign({}, formatedValue, { main_route: this.routeTable[this.editIndex].id }, { work_times: workTimes })
-
+            let sendObject = Object.assign({}, value, { main_route: this.routeTable[this.editIndex].id })
             if (formArray[index].value.id) {
-                console.log(formArray[index].value.id);
-                
                 delete sendObject.id
                 this._settingsService.editSubRoute(formArray[index].value.id, sendObject).pipe(takeUntil((this.unsubscribe$))).subscribe(() => {
                     this.nzMessages.success(Messages.success)
