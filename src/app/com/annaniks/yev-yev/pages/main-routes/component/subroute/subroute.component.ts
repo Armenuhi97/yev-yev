@@ -207,16 +207,7 @@ export class SubrouteComponent {
         return this._mainRouteService.getBlockedHours(id, date).pipe(takeUntil(this.unsubscribe$), map((data: ServerResponce<ClosedHours[]>) => {
             this.subrouteInfo.openTimes.map((val) => { return Object.assign(val, { isBlocked: true }) })
             let items = data.results
-            // for (let item of items) {
-            //     let date = this._datePipe.transform(new Date(item.time), 'HH:mm');
-            //     for (let time of this.subrouteInfo.openTimes) {
-            //         if (time.time.startsWith(date)) {
-            //             time.isBlocked = false;
-            //             time.blockId = item.id
-            //         }
-            //         this.checkCloseTimes(time)
-            //     }
-            // }
+          
             this.setBlockOrCloseHours(items, 'isBlocked', 'blockId')
             if (!items.length) {
                 for (let time of this.subrouteInfo.openTimes) {
@@ -232,25 +223,8 @@ export class SubrouteComponent {
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
         return this._mainRouteService.getCloseHours(id, date).pipe(takeUntil(this.unsubscribe$), map((data: ServerResponce<ClosedHours[]>) => {
             this.subrouteInfo.openTimes.map((val) => { return Object.assign(val, { isActive: false }) })
-            let items = data.results
-            // for (let item of items) {
-            //     let date = this._datePipe.transform(new Date(item.time), 'HH:mm');
-            //     for (let time of this.subrouteInfo.openTimes) {
-            //         if (time.time.startsWith(date)) {
-            //             time.isActive = false;
-            //             time.closeId = item.id
-            //         }
-            //         // this.checkCloseTimes(time)
-            //     }
-            // }
+            let items = data.results          
             this.setBlockOrCloseHours(items, 'isActive', 'closeId')
-
-            // if (!items.length) {
-            //     for (let time of this.subrouteInfo.openTimes) {
-            //         this.checkCloseTimes(time)
-            //     }
-            // }
-
         }))
     }
     openOrCloseHour($event, data) {

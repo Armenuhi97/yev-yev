@@ -1,3 +1,5 @@
+import { CityItem } from "./city.model";
+
 export interface SalaryRespone {
     "first_name": string
     "last_name": string
@@ -13,6 +15,8 @@ export interface SalaryRespone {
 export interface User {
     viber_id: number
     "id": number,
+    main_city?:CityItem,
+    located_city?:CityItem
     "user": {
         "id": number,
         "first_name": string

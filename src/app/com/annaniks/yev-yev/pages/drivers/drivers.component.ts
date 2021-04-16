@@ -3,11 +3,13 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { NzMessageService } from "ng-zorro-antd/message";
 import { forkJoin, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
+import { CityItem } from "../../core/models/city.model";
 import { Messages } from "../../core/models/mesages";
 import { RouteItem } from "../../core/models/routes.model";
 import { SalaryRespone, User } from "../../core/models/salary";
 import { ServerResponce } from "../../core/models/server-reponce";
 import { ViberInfo } from "../../core/models/viber";
+import { AppService } from "../../core/services/app.service";
 import { MainService } from "../main/main.service";
 import { DriverService } from "./drivers.service";
 @Component({
@@ -16,8 +18,10 @@ import { DriverService } from "./drivers.service";
     styleUrls: ['drivers.component.scss']
 })
 export class DriversComponent {
+    locatedCityControl = new FormControl('', Validators.required)
+    public isVisibleCityModal: boolean = false
     public activeTab: number = 0;
-
+    cities: CityItem[] = []
     salaryTable: User[] = []
     pageSize: number = 10;
     unsubscribe$ = new Subject();
@@ -31,11 +35,12 @@ export class DriversComponent {
     routes: RouteItem[] = [];
     item: User;
     addedRoutes = [];
-    mainRouteFiler:number;
+    mainRouteFiler: number;
     viberInfo: ViberInfo[] = []
-    constructor(private _driavesService: DriverService,
+    constructor(private _driverService: DriverService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
+        private _appService: AppService,
         private _fb: FormBuilder) {
     }
 
@@ -56,17 +61,26 @@ export class DriversComponent {
             car_color_name_hy: [null, Validators.required],
             car_color_name_en: [null, Validators.required],
             car_color_name_ru: [null, Validators.required],
-            viber_id: [null]
+            viber_id: [null],
+            main_city_id: [null, Validators.required],
+            located_city_id: [null]
         })
     }
-    public changeFilter($event){
-        this.pageIndex=1;
+    handleCancelCity() {
+        this.isVisibleCityModal = false;
+        this.locatedCityControl.reset();
+        this.editIndex = null;
+        this.editId = null
+    }
+
+    public changeFilter($event) {
+        this.pageIndex = 1;
         this.getUsers($event).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     public getAllRoutes() {
-        return this._driavesService.getAllRoutes().pipe(map((data: ServerResponce<RouteItem[]>) => {
+        return this._driverService.getAllRoutes().pipe(map((data: ServerResponce<RouteItem[]>) => {
             this.total = data.count;
-            this.routes = data.results;            
+            this.routes = data.results;
             return data
         }))
     }
@@ -75,25 +89,33 @@ export class DriversComponent {
             this.addedRoutes.push({ "main_route": $event })
         }
     }
-    public onChangeTab($event) {        
-        this.activeTab = $event;       
+    public onChangeTab($event) {
+        this.activeTab = $event;
     }
     private _combineObsevable() {
         const combine = forkJoin(
             this.getAllRoutes(),
             this.getUsers(),
-            this.getDriversViberInfo()
+            this.getDriversViberInfo(),
+            this.getCitites()
         )
         return combine.pipe(takeUntil(this.unsubscribe$))
     }
+    getCitites() {
+        return this._driverService.getAllCities().pipe(
+            map((data: ServerResponce<CityItem[]>) => {
+                this.cities = data.results;
+
+            }))
+    }
     getDriversViberInfo() {
-        return this._driavesService.getDriverViberInfo().pipe(
+        return this._driverService.getDriverViberInfo().pipe(
             map((data: ViberInfo[]) => {
                 this.viberInfo = data;
             }))
     }
     public getUsers(mainRouteFiler?) {
-        return this._driavesService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10,mainRouteFiler).pipe(
+        return this._driverService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, mainRouteFiler).pipe(
             map((data: ServerResponce<User[]>) => {
                 this.total = data.count;
                 this.salaryTable = data.results;
@@ -110,7 +132,7 @@ export class DriversComponent {
         this.showModal()
     }
     public getsalaryById(id: number) {
-        this._driavesService.getUserById(id).pipe(takeUntil(this.unsubscribe$),
+        this._driverService.getUserById(id).pipe(takeUntil(this.unsubscribe$),
             map((data: ServerResponce<User>) => {
                 if (data.results && data.results[0]) {
                     this.item = data.results[0]
@@ -125,11 +147,19 @@ export class DriversComponent {
                         car_color_name_hy: this.item.car_color_name_hy,
                         car_color_name_en: this.item.car_color_name_en,
                         car_color_name_ru: this.item.car_color_name_ru,
-                        viber_id: this.item.viber_id
+                        viber_id: this.item.viber_id,
+                        main_city_id: this._appService.checkPropertyValue(this.item.main_city, 'id'),
+                        located_city_id: this._appService.checkPropertyValue(this.item.located_city, 'id')
                     })
                 }
             })).subscribe()
 
+    }
+    changeRouteCity(driver: User, index: number) {
+        this.isVisibleCityModal = true;
+        this.locatedCityControl.setValue(this._appService.checkPropertyValue(driver.located_city, 'id'));
+        this.editIndex = index;
+        this.editId = driver.id
     }
     public showModal(): void {
         this.isVisible = true;
@@ -142,13 +172,16 @@ export class DriversComponent {
         this.addedRoutes = []
         this.editIndex = null
         this.activeTab = 0;
-        this.editId = 0
+        this.editId = 0;
+        this.isVisibleCityModal=false;
+        this.locatedCityControl.reset()
     }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
         this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     public onsalarySave() {
+        
         if (this.validateForm.invalid) {
             this.nzMessages.error(Messages.fail);
             return;
@@ -157,35 +190,43 @@ export class DriversComponent {
         this.sendRequest(sendObject);
 
     }
+    onSaveCity() {
+        if (this.locatedCityControl.valid) {
+            let object = { located_city_id: this.locatedCityControl.value }
+            this.sendRequest(object)
+        }
+    }
     sendRequest(sendObject) {
+        if (!sendObject.located_city_id && sendObject.main_city_id) {
+            sendObject.located_city_id = sendObject.main_city_id
+        }
         if (this.editIndex == null) {
-            this._driavesService.addUser(sendObject).pipe(takeUntil(this.unsubscribe$),
+
+            this._driverService.addUser(sendObject).pipe(takeUntil(this.unsubscribe$),
                 map((data: { driver_id: number }) => {
                     let routeRequests = []
                     this.addedRoutes.forEach((item) => {
                         item['user'] = data.driver_id;
-                        routeRequests.push(this._driavesService.addMainRouteToDriver(item))
+                        routeRequests.push(this._driverService.addMainRouteToDriver(item))
 
                     })
                     forkJoin(routeRequests).subscribe();
 
                 })).subscribe(() => {
-                    this.closeModal();
+                    this.handleCancel();
                     this.pageIndex = 1
                     this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
                     this.nzMessages.success(Messages.success)
                 },
                     (error) => {
-                        console.log(error);
-
                         this.nzMessages.error(Messages.fail)
                     })
         } else {
-            this._driavesService.editUser(this.salaryTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: SalaryRespone) => {
+            this._driverService.editUser(this.salaryTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: SalaryRespone) => {
                 this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
 
                 this.nzMessages.success(Messages.success)
-                this.closeModal()
+                this.handleCancel()
             },
                 (error) => {
                     let failMessage = Messages.fail
@@ -197,21 +238,13 @@ export class DriversComponent {
         }
     }
     public changeUserStatus($event, id: number) {
-        this._driavesService.editUser(id, { is_active: $event }).pipe(takeUntil(this.unsubscribe$)).subscribe()
+        this._driverService.editUser(id, { is_active: $event }).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     public removeRoute($event) {
         this.addedRoutes.splice($event, 1)
     }
 
-    closeModal(): void {
-        this.isVisible = false;
-        this.validateForm.reset();
-        this.addedRoutes = []
-        this.item = null
-        this.editIndex = null
-        this.editId = 0
-        this.activeTab = 0;
-    }
+    
 
     ngOnDestroy(): void {
         this.unsubscribe$.next();

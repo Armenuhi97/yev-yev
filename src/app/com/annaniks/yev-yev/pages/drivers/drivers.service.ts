@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
 import { Observable } from "rxjs";
+import { CityItem } from "../../core/models/city.model";
 import { RouteItem } from "../../core/models/routes.model";
 import { User } from "../../core/models/salary";
 import { ServerResponce } from "../../core/models/server-reponce";
@@ -53,5 +54,8 @@ export class DriverService {
     public getOrders(driverId: number,page:number) {
         let offset=(page-1)*10;
         return this._httpClient.get(`order/approved-order/?driver_id=${driverId}&limit=10&offset=${offset}`)
+    }
+    public getAllCities(): Observable<ServerResponce<CityItem[]>> {
+        return this._httpClient.get<ServerResponce<CityItem[]>>(`utils/city/?limit=100000`)
     }
 }

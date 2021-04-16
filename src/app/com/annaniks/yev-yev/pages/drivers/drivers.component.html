@@ -23,6 +23,7 @@
             <th>Ուղղություն</th>
             <th></th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -37,7 +38,10 @@
             <td>{{data.phone_number}}</td>
             <td>{{data?.driving_routes[0]?.main_route_details?.route_name}}</td>
 
-            <td (click)="onEditsalary(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
+            <td  class="action-button edit" style="width:10px"><i (click)="onEditsalary(ind)" nz-icon nzType="edit"></i>
+            </td>
+            <td>
+                <button nz-button (click)="changeRouteCity(data,ind)" [nzType]="'primary'">Փոխել ուղևորման քաղաքը</button>
             </td>
             <td class="action-button delete" style="width:10px">
                 <nz-switch (ngModelChange)="changeUserStatus($event,data.id)" [(ngModel)]="data.user.is_active">
@@ -47,7 +51,19 @@
         </tr>
     </tbody>
 </nz-table>
-
+<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisibleCityModal" nzTitle="Ուղևորման քաղաքը"
+    (nzOnCancel)="handleCancelCity()" nzWidth="1000px" (nzOnOk)="onSaveCity()">
+    <nz-form-label class="inline-labels" nzRequired>Քաղաքը</nz-form-label>
+    <nz-form-item>
+        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+            <nz-select nzPlaceHolder="" [formControl]="locatedCityControl">
+                <nz-option *ngFor="let city of cities" [nzValue]="city.id" [nzLabel]="city.name_hy">
+                </nz-option>
+            </nz-select>
+            <!-- <input nz-input [formControl]="locatedCityControl" placeholder="" /> -->
+        </nz-form-control>
+    </nz-form-item>
+</nz-modal>
 
 <nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" nzTitle="Վարորդ"
     (nzOnCancel)="handleCancel()" nzWidth="1000px" (nzOnOk)="onsalarySave()">
@@ -159,14 +175,24 @@
                         <nz-form-item>
                             <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
                                 <nz-select nzPlaceHolder="" formControlName="viber_id">
-                                    <nz-option  *ngFor="let viber of viberInfo" [nzValue]="viber.id"
+                                    <nz-option *ngFor="let viber of viberInfo" [nzValue]="viber.id"
                                         [nzLabel]="viber.name">
                                     </nz-option>
                                 </nz-select>
                             </nz-form-control>
                         </nz-form-item>
                     </div>
-
+                    <div nz-col [nzSpan]="12">
+                        <nz-form-label class="inline-labels" nzRequired>Հիմնական քաղաք</nz-form-label>
+                        <nz-form-item>
+                            <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                <nz-select nzPlaceHolder="" formControlName="main_city_id">
+                                    <nz-option *ngFor="let city of cities" [nzValue]="city.id" [nzLabel]="city.name_hy">
+                                    </nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
                 </div>
 
                 <app-driver-routes (removeRoute)="removeRoute($event)" (addRoute)="addRoute($event)"
