@@ -285,6 +285,8 @@ export class RoutesComponent {
                     value[key] = this._addMinutesInRoute(value[key]);
    
                 }
+                console.log(value);
+                
                 // value.monday_start = this._addMinutesInRoute(value.monday_start);
                 // value.monday_end = this._addMinutesInRoute(value.monday_end);
                 // value.tuesday_start = this._addMinutesInRoute(value.tuesday_start);
