@@ -4,12 +4,13 @@ import { Observable } from "rxjs";
 import { CityItem } from "../../core/models/city.model";
 import { RouteItem } from "../../core/models/routes.model";
 import { ServerResponce } from "../../core/models/server-reponce";
+import { OtherRoutesTime } from "../../core/models/ther-routes-time";
 
 @Injectable()
 export class SettingsService {
     constructor(private _httpClient: HttpClient) { }
     public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
-        let offset=(page-1)*10;
+        let offset = (page - 1) * 10;
         return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?only_my=True&page=${page}&limit=10&offset=${offset}`)
     }
     public addRoutes(name: string) {
@@ -44,7 +45,7 @@ export class SettingsService {
     }
 
     public getAllCities(page: number): Observable<ServerResponce<CityItem[]>> {
-        let offset=(page-1)*10;
+        let offset = (page - 1) * 10;
         return this._httpClient.get<ServerResponce<CityItem[]>>(`utils/city/?page=${page}&limit=10&offset=${offset}`)
     }
     public addCity(body: CityItem) {
@@ -60,15 +61,15 @@ export class SettingsService {
         return this._httpClient.delete(`utils/city/${id}/`)
     }
 
-    
+
     public getAllphone(page: number) {
-        let offset=(page-1)*10;
+        let offset = (page - 1) * 10;
         return this._httpClient.get(`utils/contact-information/?page=${page}&limit=10&offset=${offset}`)
     }
     public addphone(body) {
         return this._httpClient.post(`utils/contact-information/`, body)
     }
-    public getphoneById(id: number){
+    public getphoneById(id: number) {
         return this._httpClient.get(`utils/contact-information/${id}/`)
     }
     public editphone(id: number, body) {
@@ -80,5 +81,13 @@ export class SettingsService {
     public getWorkingTimes() {
         return this._httpClient.get(`utils/general-settings/`)
     }
-
+    public getOtherRoutesTimeList() {
+        return this._httpClient.get('utils/general-settings/')
+    }
+    public editOtherRoutesTimeList(id: number, body:OtherRoutesTime) {
+        return this._httpClient.put(`utils/general-settings/${id}/`, body)
+    }
+    public addOtherRoutesTimeList(body:OtherRoutesTime){
+        return this._httpClient.post(`utils/general-settings/`,body)
+    }
 }

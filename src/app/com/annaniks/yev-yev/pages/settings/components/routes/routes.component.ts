@@ -281,26 +281,9 @@ export class RoutesComponent {
             let value = formArray[index].value;
 
             if (formArray[index].value.id) {
-                for(let key of this._getWeekKeys()){
+                for (let key of this._getWeekKeys()) {
                     value[key] = this._addMinutesInRoute(value[key]);
-   
                 }
-                console.log(value);
-                
-                // value.monday_start = this._addMinutesInRoute(value.monday_start);
-                // value.monday_end = this._addMinutesInRoute(value.monday_end);
-                // value.tuesday_start = this._addMinutesInRoute(value.tuesday_start);
-                // value.tuesday_end = this._addMinutesInRoute(value.tuesday_end);
-                // value.wednesday_start = this._addMinutesInRoute(value.wednesday_start);
-                // value.wednesday_end = this._addMinutesInRoute(value.wednesday_end);
-                // value.thursday_start = this._addMinutesInRoute(value.thursday_start);
-                // value.thursday_end = this._addMinutesInRoute(value.thursday_end);
-                // value.friday_start = this._addMinutesInRoute(value.friday_start);
-                // value.friday_end = this._addMinutesInRoute(value.friday_end);
-                // value.saturday_start = this._addMinutesInRoute(value.saturday_start);
-                // value.saturday_end = this._addMinutesInRoute(value.saturday_end);
-                // value.sunday_start = this._addMinutesInRoute(value.sunday_start);
-                // value.sunday_end = this._addMinutesInRoute(value.sunday_end);
 
                 let sendObject = Object.assign({}, value, { main_route: this.routeTable[this.editIndex].id })
                 delete sendObject.id
@@ -313,27 +296,10 @@ export class RoutesComponent {
                 )
             } else {
                 let workTimes = {}
-                for(let key of this._getWeekKeys()){
+                for (let key of this._getWeekKeys()) {
                     workTimes[key] = this._addMinutesInRoute(value[key]);
-   
-                }
-                // let workTimes = {
 
-                //     monday_start: this._addMinutesInRoute(value.monday_start),
-                //     monday_end: this._addMinutesInRoute(value.monday_end),
-                //     tuesday_start: this._addMinutesInRoute(value.tuesday_start),
-                //     tuesday_end: this._addMinutesInRoute(value.tuesday_end),
-                //     wednesday_start: this._addMinutesInRoute(value.wednesday_start),
-                //     wednesday_end: this._addMinutesInRoute(value.wednesday_end),
-                //     thursday_start: this._addMinutesInRoute(value.thursday_start),
-                //     thursday_end: this._addMinutesInRoute(value.thursday_end),
-                //     friday_start: this._addMinutesInRoute(value.friday_start),
-                //     friday_end: this._addMinutesInRoute(value.friday_end),
-                //     saturday_start: this._addMinutesInRoute(value.saturday_start),
-                //     saturday_end: this._addMinutesInRoute(value.saturday_end),
-                //     sunday_start: this._addMinutesInRoute(value.sunday_start),
-                //     sunday_end: this._addMinutesInRoute(value.sunday_end),
-                // }
+                }              
 
                 let formatedValue: any = {};
                 for (let val in value) {

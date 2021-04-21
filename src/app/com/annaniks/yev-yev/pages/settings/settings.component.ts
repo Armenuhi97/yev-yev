@@ -4,6 +4,7 @@ import { map, takeUntil } from "rxjs/operators";
 import { CityItem } from "../../core/models/city.model";
 import { RouteItem } from "../../core/models/routes.model";
 import { ServerResponce } from "../../core/models/server-reponce";
+import { OtherRoutesTime } from "../../core/models/ther-routes-time";
 import { SettingsService } from "./setting.service";
 
 @Component({
@@ -20,6 +21,7 @@ export class SettingsComponent {
     cityTable: CityItem[] = []
     cityTotal: number;
     workingTimes;
+    otherRoutesTime:OtherRoutesTime[]=[]
     constructor(private _settingsService: SettingsService) { }
 
     ngOnInit() {
@@ -30,9 +32,16 @@ export class SettingsComponent {
             this.getAllRoutes(),
             this.getAllcities(),
             this.getAllPhones(),
+            this.getOtherRoutesTimes()
         ).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
-  
+    getOtherRoutesTimes() {
+        return this._settingsService.getOtherRoutesTimeList().pipe(map((data: ServerResponce<OtherRoutesTime[]>) => {
+            console.log(data);
+            
+            this.otherRoutesTime = data.results;            
+        }))
+    }
     getAllRoutes() {
         return this._settingsService.getAllRoutes(1).pipe(map((data: ServerResponce<RouteItem[]>) => {
             this.routeTotal = data.count;

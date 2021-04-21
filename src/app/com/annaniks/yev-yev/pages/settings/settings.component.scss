@@ -7,8 +7,15 @@
     align-items: center;
     justify-content: space-between;
 }
-.w-45{
+.w-45, .w-80{
     width: 45%;
+}
+@media screen and(max-width:1400px){
+    .w-80{
+        width: 80% ;
+        
+    }
+
 }
 @media screen and(max-width:1191px){
     .w-45, .w-80{

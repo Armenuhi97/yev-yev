@@ -1,0 +1,61 @@
+<div class="title-container">
+    <h1>Այլ ուղղությունների ժամեր</h1>
+    <!-- <button class="add-essence" *ngIf="!timesList.length" nz-button nzType="primary" (click)="showModal()">
+        Ավելացնել ժամեր
+    </button> -->
+</div>
+<nz-table nzBordered [nzTotal]="total" [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="timesList">
+    <thead>
+        <tr>
+            <th>N</th>
+            <th>Սկիզբ</th>
+            <th>Վերջ</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of timesList; let ind = index">
+            <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10)  }}</td>
+            <td>
+                {{data.work_day_start}}
+            </td>
+            <td>
+                {{data.work_day_end}}
+            </td>            
+            <td (click)="onEditTimes(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i>
+            </td>
+            
+        </tr>
+    </tbody>
+</nz-table>
+
+<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" nzTitle="Այլ ուղղության ժամեր"
+    (nzOnCancel)="handleCancel()" nzWidth="500px" (nzOnOk)="onTimesSave()">
+    <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
+        <div nz-col >
+            <nz-descriptions [nzColumn]="2" class="order-details" >
+                <nz-descriptions-item nzTitle="Սկիզբ">
+                    <nz-form-control>
+                        <nz-time-picker nzPlaceHolder="Ընտրեք" [nzSecondStep]="'30'" formControlName="work_day_start"
+                            nzFormat="HH">
+                        </nz-time-picker>
+                    </nz-form-control>
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Վերջ">
+                    <nz-form-control>
+                        <nz-time-picker nzPlaceHolder="Ընտրեք" [nzSecondStep]="'30'" formControlName="work_day_end"
+                            nzFormat="HH">
+                        </nz-time-picker>
+                    </nz-form-control>
+                </nz-descriptions-item>
+            </nz-descriptions>
+        </div>
+    </form>
+</nz-modal>
+
+<ng-template #userErrorTpl let-control>
+    <ng-container *ngIf="control.hasError('required')">
+        Սա պարտադիր դաշտ է
+    </ng-container>
+</ng-template>
