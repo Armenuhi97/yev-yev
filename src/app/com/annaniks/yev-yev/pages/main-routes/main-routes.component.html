@@ -1,5 +1,5 @@
 <nz-tabset class="main-routes" [nzSelectedIndex]="selectIndex" (nzSelectedIndexChange)="onChangeTab($event)">
-    
+
     <nz-tab *ngFor="let item of mainRoutes" [nzTitle]="item.route_name">
         <div class="d-flex align-items-center justify-content-center">
             {{getDay()}}
@@ -44,6 +44,10 @@
                         <button [disabled]="timeItem.isDisabled" class="add-essence" nz-button nzType="primary"
                             (click)="showModal()">
                             Ավելացնել ուղևոր
+                        </button>
+                        <button [disabled]="timeItem.isDisabled" class="add-essence" nz-button nzType="primary"
+                            (click)="showDriverRoutesModal()">
+                            Տեսնել երթերը
                         </button>
                     </div>
                     <div class="scroll">
@@ -340,20 +344,23 @@
                                 <td>
                                     <!-- <img src="assets/viber.png" *ngIf="!timeItem.isDisabled" (click)="send(data)"
                                         style="height: 25px; width: 25px;" alt=""> -->
-                                    <div class="d-flex align-items-center flex-wrap">                                      
-                                        <svg  style="margin: 0 5px; color: #0088cc;" xmlns="http://www.w3.org/2000/svg" *ngIf="!timeItem.isDisabled"
-                                        (click)="send(data)" width="25" height="25" fill="currentColor" class="bi bi-telegram" viewBox="0 0 16 16">
-                                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z"/>
-                                          </svg>
-                                  
-                                    <span *ngIf="data.viber_message_sended">Ուղղարկված է </span>
-                                    <!-- <button *ngIf="!data.viber_message_sended" (click)="send(data)"
+                                    <div class="d-flex align-items-center flex-wrap">
+                                        <svg style="margin: 0 5px; color: #0088cc;" xmlns="http://www.w3.org/2000/svg"
+                                            *ngIf="!timeItem.isDisabled" (click)="send(data)" width="25" height="25"
+                                            fill="currentColor" class="bi bi-telegram" viewBox="0 0 16 16">
+                                            <path
+                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z" />
+                                        </svg>
+
+                                        <span *ngIf="data.viber_message_sended">Ուղղարկված է </span>
+                                        <!-- <button *ngIf="!data.viber_message_sended" (click)="send(data)"
                                         [disabled]="timeItem.isDisabled" nz-button nzType="text" nz-button
                                         nzType="primary">Ուղարկել</button> -->
                                     </div>
                                 </td>
                                 <td>
-                                    <button  nz-button nzType="primary" (click)="finishOrder(data)">{{data.status == 'done'?'Ավարտված':'Ավարտել'}}</button>
+                                    <button nz-button nzType="primary" (click)="finishOrder(data)">{{data.status ==
+                                        'done'?'Ավարտված':'Ավարտել'}}</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -433,6 +440,40 @@
                             <button nz-button nzType="default" (click)="handleCancel()">Փակել</button>
                             <button *ngIf="!timeItem.isDisabled" nz-button nzType="primary"
                                 (click)="onOrderSave()">Հաստատել</button>
+                        </div>
+                    </nz-modal>
+
+
+                    <nz-modal nzWidth="880px" (nzOnCancel)="handleCancelDoneOrders()"
+                        [(nzVisible)]="isShowDriverRoutes">
+                        <div *nzModalContent>
+                            <nz-table nzBordered [nzFrontPagination]="false" [nzData]="doneRoutes" 
+                            (nzPageIndexChange)="nzDoneOrderPageIndexChange($event)" [nzTotal]="totalDoneRoutes" [nzPageSize]="pageSize"
+                            [nzPageIndex]="doneRoutesPageIndex" [nzFrontPagination]="false">
+                                <thead>
+                                    <tr>
+                                        <th>N</th>
+                                        <th>Ամսաթիվ</th>
+                                        <th>Վարորդ</th>
+                                        <th>Մոդել</th>
+                                        <th>Տեղ.</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let order of doneRoutes;let ind=index">
+                                        <td>{{ind+1}}</td>
+                                        <td>{{order.date | date:'dd-MM-yyyy'}}</td>
+                                        <td>{{order.driver_details.user.first_name}}
+                                            {{order.driver_details.user.last_name}}</td>
+                                        <td>{{order.driver_details.car_model}}</td>
+                                        <td>{{order.seat_count}}</td>
+                                    </tr>
+                                </tbody>
+                            </nz-table>
+                        </div>
+                        <div *nzModalFooter>
+
                         </div>
                     </nz-modal>
                 </div>

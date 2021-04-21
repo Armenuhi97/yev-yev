@@ -24,6 +24,8 @@ import { MainRoutesService } from "./main-routes.service";
     providers: [DatePipe]
 })
 export class MainRoutesComponent {
+    doneRoutes = [];
+    pageSize=10;
     selectIndex: number;
     isGetItem: boolean = false;
     userInfo: OrdersByHours[] = []
@@ -63,6 +65,9 @@ export class MainRoutesComponent {
     // openTimes = []
     isGetFunction: boolean = true;
     isGet: boolean = true;
+    isShowDriverRoutes: boolean = false;
+    totalDoneRoutes = 0;
+    doneRoutesPageIndex = 1;
     driverControl = new FormControl('', Validators.required)
     constructor(private _mainRoutesService: MainRoutesService, private _datePipe: DatePipe,
         private _fb: FormBuilder,
@@ -80,6 +85,29 @@ export class MainRoutesComponent {
     ngOnInit() {
         this.combine();
         this._initForm();
+    }
+    handleCancelDoneOrders() {
+        this.doneRoutes = []
+        this.isShowDriverRoutes = false;
+        this.doneRoutesPageIndex = 1;
+    }
+    showDriverRoutesModal() {
+        this.isShowDriverRoutes = true;
+        this._getDoneRoutes()
+    }
+    nzDoneOrderPageIndexChange($event) {
+        this.doneRoutesPageIndex = $event;
+        this._getDoneRoutes()
+    }
+    private _getDoneRoutes() {
+        let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
+        let offset = (this.doneRoutesPageIndex - 1) * 10;
+
+        this._mainRouteService.getDoneRoutes(this.subRouteInfo.id, date,offset).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any>) => {
+            console.log(data);
+            this.totalDoneRoutes = data.count
+            this.doneRoutes = data.results
+        })
     }
     private _checkQueryParams() {
         return this._activatedRoute.queryParams.pipe(takeUntil(this.unsubscribe$), switchMap((param) => {
@@ -318,10 +346,9 @@ export class MainRoutesComponent {
 
     }
     getLabelOfDrivers(dr: User) {
-        return `${dr.user.first_name} ${dr.user.last_name} (${dr.car_model}) (${dr.car_capacity})`
+        return `${dr.user.first_name} ${dr.user.last_name} (${dr.car_model}) (${dr.car_capacity}) [${dr.main_city.name_hy}]`
     }
     onChangeTab($event) {
-
         this.userInfo = [];
         this.isOpenInfo = false;
         this.selectIndex = $event
@@ -670,13 +697,20 @@ export class MainRoutesComponent {
         })
         if (this.drivers)
             if (calculateCount) {
-                this.currentDriver = this.drivers.filter((val) => {
-                    return (+val.car_capacity >= calculateCount && val.user.is_active == true)
+                let arr = this.drivers.filter((val) => {
+
+                    return (+val.car_capacity >= calculateCount && val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
                 })
+                let arr1 = arr.filter((el) => { return el.located_city.id !== el.main_city.id });
+                let arr2 = arr.filter((el) => { return el.located_city.id == el.main_city.id })
+                this.currentDriver = [...arr1, ...arr2]
             } else {
-                this.currentDriver = this.drivers.filter((val) => {
-                    return (val.user.is_active == true)
+                let arr = this.drivers.filter((val) => {
+                    return (val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
                 })
+                let arr1 = arr.filter((el) => { return el.located_city.id !== el.main_city.id });
+                let arr2 = arr.filter((el) => { return el.located_city.id == el.main_city.id })
+                this.currentDriver = [...arr1, ...arr2]
             }
         return calculateCount
     }
