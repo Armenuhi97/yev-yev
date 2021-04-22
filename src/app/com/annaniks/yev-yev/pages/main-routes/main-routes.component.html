@@ -45,7 +45,7 @@
                             (click)="showModal()">
                             Ավելացնել ուղևոր
                         </button>
-                        <button [disabled]="timeItem.isDisabled" class="add-essence" nz-button nzType="primary"
+                        <button  class="add-essence" nz-button nzType="primary"
                             (click)="showDriverRoutesModal()">
                             Տեսնել երթերը
                         </button>
@@ -463,11 +463,11 @@
                                 <tbody>
                                     <tr *ngFor="let order of doneRoutes;let ind=index">
                                         <td>{{ind+1}}</td>
-                                        <td>{{order.date | date:'dd-MM-yyyy'}}</td>
+                                        <td>{{order.date | date:'HH:mm'}}</td>
                                         <td>{{order.driver_details.user.first_name}}
                                             {{order.driver_details.user.last_name}}</td>
                                         <td>{{order.driver_details.car_model}}</td>
-                                        <td>{{order.seat_count}}</td>
+                                        <td>{{order.driver_details.car_capacity}} / {{order.seat_count}}</td>
                                     </tr>
                                 </tbody>
                             </nz-table>

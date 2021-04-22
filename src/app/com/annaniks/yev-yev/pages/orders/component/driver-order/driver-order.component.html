@@ -18,7 +18,7 @@
         <h4>{{item?.driver?.name}} ({{item?.driver.car_model}} {{item?.driver.car_number}})</h4>
 
         <div *ngFor="let order of item.array">
-            {{order?.date | date:'HH:mm'}} - {{order?.routeName}} - {{order?.seat_count}}
+            {{order?.date | date:'HH:mm'}} - {{order?.routeName}} - {{order?.seat_count}} <span *ngIf="order.free_count">, որից անվճար է {{order.free_count}}</span>
         </div>
 
     </div>

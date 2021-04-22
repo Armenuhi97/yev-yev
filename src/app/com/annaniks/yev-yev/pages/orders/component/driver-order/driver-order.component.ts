@@ -28,8 +28,6 @@ export class DriverOrderComponent {
                     new Date(a.date).getTime() - new Date(b.date).getTime()
                 )
             }
-            console.log(this.order.result);
-
         }
     }
 }
