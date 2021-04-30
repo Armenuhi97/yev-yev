@@ -213,7 +213,7 @@
                                     <nz-form-label class="inline-labels" nzRequired>Ուղևորների քանակ</nz-form-label>
                                     <nz-form-item>
                                         <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                            <input
+                                            <input type="number"
                                                 *ngIf="!validateForm.get('orderType').value || validateForm.get('orderType').value !== 2"
                                                 nz-input formControlName="personCount" placeholder="" />
 
