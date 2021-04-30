@@ -72,7 +72,7 @@ export class MainRoutesService {
     }
 
     public getUserByPhonenumber(phoneNumber) {
-        return this._httpClient.get(`userdetails/user/?search=${phoneNumber}&user_role__code=CL`)
+        return this._httpClient.get(`userdetails/user/?search=${phoneNumber}`)
     }
     public addOrder(body: OrderResponse) {
         return this._httpClient.post(`order/add-order/`, body)
