@@ -1,13 +1,27 @@
 <div class="title-container">
     <h1>Վարորդներ</h1>
     <div class="d-flex align-items-center">
-        <nz-select class="d-flex align-items-center" nzPlaceHolder="Ընտեք ուղղությունը" [formControl]="mainRouteFilerControl"
-           >
+        <nz-select class="d-flex align-items-center" nzPlaceHolder="Ընտեք ուղղությունը"
+            [formControl]="mainRouteFilerControl">
             <nz-option nzValue="" [nzLabel]="'Բոլորը'"></nz-option>
             <nz-option *ngFor="let route of routes" [nzValue]="route.id" [nzLabel]="route.route_name">
             </nz-option>
         </nz-select>
     </div>
+    <div class="d-flex align-items-center" nz-col [nzSpan]="6">
+        <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+            <input type="text" [formControl]="search" nz-input placeholder="Հեռ․" />
+        </nz-input-group>
+        <ng-template #suffixIconButton>
+            <button (click)="searchDriver()" nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
+        </ng-template>
+    </div>
+    <!-- <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+        <input type="text" [formControl]="search" nz-input placeholder="Հեռ․" />
+    </nz-input-group>
+    <ng-template #suffixIconButton>
+        <button (click)="searchDriver()" nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
+    </ng-template> -->
     <button class="add-essence" nz-button nzType="primary" (click)="showModal()">
         Ավելացնել վարորդ
     </button>

@@ -10,6 +10,9 @@
         width: 100% !important;
         th {
             padding: 4px !important;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
     }
 }

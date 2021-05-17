@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
-import { forkJoin, Subject } from "rxjs";
+import { forkJoin, of, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { CityItem } from "../../core/models/city.model";
 import { Messages } from "../../core/models/mesages";
@@ -18,6 +18,7 @@ import { DriverService } from "./drivers.service";
     styleUrls: ['drivers.component.scss']
 })
 export class DriversComponent {
+    search = new FormControl('')
     locatedCityControl = new FormControl('', Validators.required)
     public isVisibleCityModal: boolean = false
     public activeTab: number = 0;
@@ -74,7 +75,25 @@ export class DriversComponent {
         this.editId = null
     }
 
-    public subscribeToFileterChange() {
+    public subscribeToSearch() {
+        return this.search.valueChanges.pipe(takeUntil(this.unsubscribe$),
+            switchMap((value) => {
+                if (!value) {
+                    return this.getUsers()
+                } else {
+                    return of()
+                }
+            }))
+    }
+
+    public searchDriver() {
+        // this.search.valueChanges.pipe(takeUntil(this.unsubscribe$),
+        // switchMap((value) => {
+        this.pageIndex = 1;
+        this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
+        // })).subscribe()
+    }
+    public subscribeToFilterChange() {
         return this.mainRouteFilerControl.valueChanges.pipe(takeUntil(this.unsubscribe$), switchMap((value) => {
             this.pageIndex = 1;
             return this.getUsers()
@@ -84,7 +103,7 @@ export class DriversComponent {
         return this._driverService.getAllRoutes().pipe(switchMap((data: ServerResponce<RouteItem[]>) => {
             this.total = data.count;
             this.routes = data.results;
-            return this.subscribeToFileterChange()
+            return this.subscribeToFilterChange()
         }))
     }
     public addRoute($event) {
@@ -117,11 +136,12 @@ export class DriversComponent {
                 this.viberInfo = data;
             }))
     }
-    public getUsers() {        
-        return this._driverService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, this.mainRouteFilerControl.value).pipe(
-            map((data: ServerResponce<User[]>) => {
+    public getUsers() {
+        return this._driverService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, this.search.value, this.mainRouteFilerControl.value).pipe(
+            switchMap((data: ServerResponce<User[]>) => {
                 this.total = data.count;
                 this.salaryTable = data.results;
+                return this.subscribeToSearch()
             }))
     }
     public changeColorPicker(controlName: string, event): void {
