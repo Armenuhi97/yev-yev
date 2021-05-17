@@ -1,7 +1,7 @@
 <nz-tabset class="main-routes" [nzSelectedIndex]="selectIndex" (nzSelectedIndexChange)="onChangeTab($event)">
 
     <nz-tab *ngFor="let item of mainRoutes" [nzTitle]="item.route_name">
-        <div class="d-flex align-items-center justify-content-center">
+        <div class="d-flex font-30 m-bottom-15 align-items-center justify-content-center">
             {{getDay()}}
             <div class="cursor-pointer d-flex" (click)="changeDate(-1)"><svg xmlns="http://www.w3.org/2000/svg"
                     width="16" height="16" fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 16 16">
@@ -28,14 +28,49 @@
         <div nz-row [nzGutter]="24">
             <!-- [class.active-route]="subRouteInfo?.id == item?.id" -->
             <div nz-col [nzSpan]="12" *ngFor="let item of subRouteInfos;let i=index">
-                <div class="title">{{getTableTitle(item)}}</div>
+                <div class="title d-flex align-items-center justify-content-between">{{getTableTitle(item)}} <button
+                        class="add-essence" nz-button nzType="primary" (click)="showDriverRoutesModal(item)">
+                        Տեսնել վարորդներին
+                    </button></div>
+
                 <app-subroute [selectInfo]="selectInfo" [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)"
                     [index]="i" [info]="item" (resetItem)="resetItem($event)" [date]="selectedDate.value">
                 </app-subroute>
             </div>
         </div>
+        <nz-modal nzWidth="880px" (nzOnCancel)="handleCancelDoneOrders()" [(nzVisible)]="isShowDriverRoutes">
+            <div *nzModalContent>
+                <nz-table nzBordered [nzFrontPagination]="false" [nzData]="doneRoutes"
+                    (nzPageIndexChange)="nzDoneOrderPageIndexChange($event)" [nzTotal]="totalDoneRoutes"
+                    [nzPageSize]="pageSize" [nzPageIndex]="doneRoutesPageIndex" [nzFrontPagination]="false">
+                    <thead>
+                        <tr>
+                            <th>N</th>
+                            <th>Ամսաթիվ</th>
+                            <th>Վարորդ</th>
+                            <th>Մոդել</th>
+                            <th>Տեղ.</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let order of doneRoutes;let ind=index">
+                            <td>{{ind+1}}</td>
+                            <td>{{order.date | date:'HH:mm'}}</td>
+                            <td>{{order.driver_details.user.first_name}}
+                                {{order.driver_details.user.last_name}}</td>
+                            <td>{{order.driver_details.car_model}}</td>
+                            <td>{{order.driver_details.car_capacity}} / {{order.seat_count}}</td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+            <div *nzModalFooter>
+
+            </div>
+        </nz-modal>
         <nz-modal [nzCancelText]="'Փակել'" [(nzVisible)]="isOpenInfo" [nzTitle]="modalTitle"
-            (nzOnCancel)="closeRouteModal()" nzWidth="1000px">
+            (nzOnCancel)="closeRouteModal()" nzWidth="1500px">
             <div *nzModalContent>
                 <div *ngIf="isOpenInfo" nz-col>
                     <nz-radio-group [(ngModel)]="radioValue" (ngModelChange)="changeStatus($event)">
@@ -48,9 +83,9 @@
                                 (click)="showModal()">
                                 Ավելացնել ուղևոր
                             </button>
-                            <button class="add-essence" nz-button nzType="primary" (click)="showDriverRoutesModal()">
+                            <!-- <button class="add-essence" nz-button nzType="primary" (click)="showDriverRoutesModal()">
                                 Տեսնել երթերը
-                            </button>
+                            </button> -->
                         </div>
                         <div class="scroll">
                             <nz-table nzBordered [nzFrontPagination]="false" [nzData]="userInfo">
@@ -114,8 +149,9 @@
                         <nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible"
                             [nzTitle]="userName" (nzOnCancel)="handleCancel()" nzWidth="870px"
                             (nzOnOk)="onclientSave()">
+                            <!-- *ngIf="!isEditing" -->
                             <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
-                                <div *ngIf="!isEditing" nz-row [nzGutter]="24">
+                                <div nz-row [nzGutter]="24">
                                     <div nz-col [nzSpan]="12">
                                         <nz-form-label class="inline-labels">Անուն</nz-form-label>
                                         <nz-form-item>
@@ -133,7 +169,8 @@
                                         </nz-form-item>
                                     </div>
                                 </div>
-                                <div *ngIf="!isEditing" nz-row [nzGutter]="24">
+                                <!-- *ngIf="!isEditing" -->
+                                <div nz-row [nzGutter]="24">
                                     <div nz-col [nzSpan]="12">
                                         <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար</nz-form-label>
                                         <nz-form-item>
@@ -223,7 +260,7 @@
 
                                                 <nz-select *ngIf="validateForm.get('orderType').value == 2"
                                                     class="w-100" formControlName="personCount">
-                                                    <nz-option *ngFor="let seatCount of [4,5,6,7,8]"
+                                                    <nz-option *ngFor="let seatCount of [4,6,7,8]"
                                                         [nzValue]="seatCount" [nzLabel]="seatCount">
                                                     </nz-option>
                                                 </nz-select>
@@ -442,40 +479,6 @@
                             </div>
                         </nz-modal>
 
-
-                        <nz-modal nzWidth="880px" (nzOnCancel)="handleCancelDoneOrders()"
-                            [(nzVisible)]="isShowDriverRoutes">
-                            <div *nzModalContent>
-                                <nz-table nzBordered [nzFrontPagination]="false" [nzData]="doneRoutes"
-                                    (nzPageIndexChange)="nzDoneOrderPageIndexChange($event)" [nzTotal]="totalDoneRoutes"
-                                    [nzPageSize]="pageSize" [nzPageIndex]="doneRoutesPageIndex"
-                                    [nzFrontPagination]="false">
-                                    <thead>
-                                        <tr>
-                                            <th>N</th>
-                                            <th>Ամսաթիվ</th>
-                                            <th>Վարորդ</th>
-                                            <th>Մոդել</th>
-                                            <th>Տեղ.</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let order of doneRoutes;let ind=index">
-                                            <td>{{ind+1}}</td>
-                                            <td>{{order.date | date:'HH:mm'}}</td>
-                                            <td>{{order.driver_details.user.first_name}}
-                                                {{order.driver_details.user.last_name}}</td>
-                                            <td>{{order.driver_details.car_model}}</td>
-                                            <td>{{order.driver_details.car_capacity}} / {{order.seat_count}}</td>
-                                        </tr>
-                                    </tbody>
-                                </nz-table>
-                            </div>
-                            <div *nzModalFooter>
-
-                            </div>
-                        </nz-modal>
                     </div>
                 </div>
             </div>

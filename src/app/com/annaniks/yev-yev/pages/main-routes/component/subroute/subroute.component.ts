@@ -38,7 +38,7 @@ export class SubrouteComponent {
     isShowError: boolean = false;
     @HostListener('window:resize', ['$event'])
     private _onResize(): void {
-        this.windowHeight = (window.innerHeight - 400) 
+        this.windowHeight = (window.innerHeight - 370)
 
     }
     orderTypes: OrderType[] = [
@@ -78,7 +78,8 @@ export class SubrouteComponent {
                         time = Object.assign(time, {
                             approved_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'approved_seat_count', 0),
                             pending_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'pending_seat_count', 0),
-                            seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'seat_count', 0)
+                            seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'seat_count', 0),
+                            luggage_type_count:this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'luggage_type_count', 0)
                         })
 
                     }
@@ -164,7 +165,7 @@ export class SubrouteComponent {
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
         return this._mainRouteService.getHourlyOrdersByDate(this.subrouteInfo.main_route, date).pipe(
             map((data: any) => {
-                this.subrouteInfo.openTimes = this.subrouteInfo.openTimes.map((el) => { return Object.assign(el, { approved_seat_count: 0, pending_seat_count: 0, seat_count: 0 }) })
+                this.subrouteInfo.openTimes = this.subrouteInfo.openTimes.map((el) => { return Object.assign(el, { approved_seat_count: 0, pending_seat_count: 0, seat_count: 0,luggage_type_count:0 }) })
                 if (data[this.index] && data[this.index].orders)
                     for (let item of data[this.index].orders) {
                         let dateFormat = moment(item.hour).format('HH:mm')
@@ -177,7 +178,8 @@ export class SubrouteComponent {
                                 time = Object.assign(time, {
                                     approved_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'approved_seat_count', 0),
                                     pending_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'pending_seat_count', 0),
-                                    seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'seat_count', 0)
+                                    seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'seat_count', 0),
+                                    luggage_type_count:this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'luggage_type_count', 0),
                                 })
 
 
@@ -194,7 +196,7 @@ export class SubrouteComponent {
             let date = this._datePipe.transform(new Date(item.time), 'HH:mm');
             for (let time of this.subrouteInfo.openTimes) {
                 if (time.time.startsWith(date)) {
-                    time[key] = key == 'isBlocked'?false:true;
+                    time[key] = key == 'isBlocked' ? false : true;
                     time[idKey] = item.id
                 }
                 if (key == 'isBlocked')
@@ -207,7 +209,7 @@ export class SubrouteComponent {
         return this._mainRouteService.getBlockedHours(id, date).pipe(takeUntil(this.unsubscribe$), map((data: ServerResponce<ClosedHours[]>) => {
             this.subrouteInfo.openTimes.map((val) => { return Object.assign(val, { isBlocked: true }) })
             let items = data.results
-          
+
             this.setBlockOrCloseHours(items, 'isBlocked', 'blockId')
             if (!items.length) {
                 for (let time of this.subrouteInfo.openTimes) {
@@ -223,7 +225,7 @@ export class SubrouteComponent {
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
         return this._mainRouteService.getCloseHours(id, date).pipe(takeUntil(this.unsubscribe$), map((data: ServerResponce<ClosedHours[]>) => {
             this.subrouteInfo.openTimes.map((val) => { return Object.assign(val, { isActive: false }) })
-            let items = data.results          
+            let items = data.results
             this.setBlockOrCloseHours(items, 'isActive', 'closeId')
         }))
     }

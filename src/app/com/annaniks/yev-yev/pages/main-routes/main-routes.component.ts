@@ -24,6 +24,7 @@ import { MainRoutesService } from "./main-routes.service";
     providers: [DatePipe]
 })
 export class MainRoutesComponent {
+    driverSubroutes;
     public modalTitle: string;
     doneRoutes = [];
     pageSize = 10;
@@ -97,8 +98,9 @@ export class MainRoutesComponent {
         this.userInfo = [];
         this.approvedOrders = []
     }
-    showDriverRoutesModal() {
+    showDriverRoutesModal(item) {
         this.isShowDriverRoutes = true;
+        this.driverSubroutes=item;        
         this._getDoneRoutes()
     }
     nzDoneOrderPageIndexChange($event) {
@@ -109,8 +111,7 @@ export class MainRoutesComponent {
         let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
         let offset = (this.doneRoutesPageIndex - 1) * 10;
 
-        this._mainRouteService.getDoneRoutes(this.subRouteInfo.id, date, offset).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any>) => {
-            console.log(data);
+        this._mainRouteService.getDoneRoutes(this.driverSubroutes.id, date, offset).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any>) => {
             this.totalDoneRoutes = data.count
             this.doneRoutes = data.results
         })
@@ -214,13 +215,12 @@ export class MainRoutesComponent {
             }
         })
         this.validateForm.get('phone_number').valueChanges.pipe(takeUntil(this.unsubscribe$),
-            switchMap((value) => {
-                if (value) {
+            switchMap((value) => {                
+                if (value && !this.isEditing) {                    
                     if (value.toString().length == 8) {
                         this.validateForm.patchValue({
                             order_phone_number: value
                         })
-
                         return this._mainRouteService.getUserByPhonenumber('+374' + value).pipe(map(((data: ServerResponce<User[]>) => {
                             let result = data.results
                             if (result && result.length) {
@@ -721,23 +721,31 @@ export class MainRoutesComponent {
         return calculateCount
     }
     public onEditOrder(index) {
+        this.showModal()
         this.isEditing = true;
         this.editIndex = index;
-
-        let info = this.userInfo[this.editIndex]
+        let info = this.userInfo[this.editIndex]        
+   
+        this.validateForm.get('first_name').disable()
+        this.validateForm.get('last_name').disable();
+        this.validateForm.get('userComment').disable();
+        this.validateForm.get('phone_number').disable();
         this.validateForm.patchValue({
             startPointAddress: info.start_address,
             endPointAddress: info.end_address,
-            order_phone_number: info.order_phone_number,
+            order_phone_number: info.phone_number.substr(4),
+            first_name: info.client_details.user.first_name,
+            last_name: info.client_details.user.last_name,
+            userComment: info.client_details.comment,
+            phone_number: info.client_details.phone_number.substr(4),
             orderType: info.order_type,
             personCount: info.person_count,
             comment: info.comment,
             date: this.selectedDate.value,
             time: this.selectedTime,
             isFree: info.is_free
-        })
+        })        
         this.userId = info.user
-        this.showModal()
     }
     selectCheckbox($event, index) {
         let type = this.userInfo[index].order_type;
@@ -810,9 +818,9 @@ export class MainRoutesComponent {
             this.timeItem = $event.timeItem
             this.selectedTime = $event.time;
             this.subRouteInfo = this.subRouteInfos[index];
-            this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this.selectedTime}`
+            this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this._datePipe.transform(this.selectedDate.value, 'dd-MM-yyyy')} ${this.getDay()} ${this.selectedTime}`
             this.radioValue = 'approved'
-            this.getInfo($event.time).subscribe()
+            this.getInfo($event.time).pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
             this.modalTitle = ''
         }

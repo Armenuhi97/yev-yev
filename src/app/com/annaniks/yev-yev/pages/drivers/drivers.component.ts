@@ -35,7 +35,7 @@ export class DriversComponent {
     routes: RouteItem[] = [];
     item: User;
     addedRoutes = [];
-    mainRouteFiler: number;
+    mainRouteFilerControl = new FormControl();
     viberInfo: ViberInfo[] = []
     constructor(private _driverService: DriverService,
         private nzMessages: NzMessageService,
@@ -47,7 +47,8 @@ export class DriversComponent {
     ngOnInit() {
         this._initForm();
         // this.getUsers()
-        this._combineObsevable().subscribe()
+        this._combineObsevable().subscribe();
+
     }
     private _initForm() {
         this.validateForm = this._fb.group({
@@ -73,15 +74,17 @@ export class DriversComponent {
         this.editId = null
     }
 
-    public changeFilter($event) {
-        this.pageIndex = 1;
-        this.getUsers($event).pipe(takeUntil(this.unsubscribe$)).subscribe()
+    public subscribeToFileterChange() {
+        return this.mainRouteFilerControl.valueChanges.pipe(takeUntil(this.unsubscribe$), switchMap((value) => {
+            this.pageIndex = 1;
+            return this.getUsers()
+        }))
     }
     public getAllRoutes() {
-        return this._driverService.getAllRoutes().pipe(map((data: ServerResponce<RouteItem[]>) => {
+        return this._driverService.getAllRoutes().pipe(switchMap((data: ServerResponce<RouteItem[]>) => {
             this.total = data.count;
             this.routes = data.results;
-            return data
+            return this.subscribeToFileterChange()
         }))
     }
     public addRoute($event) {
@@ -114,8 +117,8 @@ export class DriversComponent {
                 this.viberInfo = data;
             }))
     }
-    public getUsers(mainRouteFiler?) {
-        return this._driverService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, mainRouteFiler).pipe(
+    public getUsers() {        
+        return this._driverService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, this.mainRouteFilerControl.value).pipe(
             map((data: ServerResponce<User[]>) => {
                 this.total = data.count;
                 this.salaryTable = data.results;
@@ -173,7 +176,7 @@ export class DriversComponent {
         this.editIndex = null
         this.activeTab = 0;
         this.editId = 0;
-        this.isVisibleCityModal=false;
+        this.isVisibleCityModal = false;
         this.locatedCityControl.reset()
     }
     nzPageIndexChange(page: number) {
@@ -181,7 +184,7 @@ export class DriversComponent {
         this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     public onsalarySave() {
-        
+
         if (this.validateForm.invalid) {
             this.nzMessages.error(Messages.fail);
             return;
@@ -244,7 +247,7 @@ export class DriversComponent {
         this.addedRoutes.splice($event, 1)
     }
 
-    
+
 
     ngOnDestroy(): void {
         this.unsubscribe$.next();

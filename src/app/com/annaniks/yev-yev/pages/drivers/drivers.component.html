@@ -1,8 +1,8 @@
 <div class="title-container">
     <h1>Վարորդներ</h1>
     <div class="d-flex align-items-center">
-        <nz-select class="d-flex align-items-center" nzPlaceHolder="Ընտեք ուղղությունը" [(ngModel)]="mainRouteFiler"
-            (ngModelChange)="changeFilter($event)">
+        <nz-select class="d-flex align-items-center" nzPlaceHolder="Ընտեք ուղղությունը" [formControl]="mainRouteFilerControl"
+           >
             <nz-option nzValue="" [nzLabel]="'Բոլորը'"></nz-option>
             <nz-option *ngFor="let route of routes" [nzValue]="route.id" [nzLabel]="route.route_name">
             </nz-option>

@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
-import { pipe, Subject } from "rxjs";
+import { of, pipe, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { Messages } from "../../core/models/mesages";
 import { Client } from "../../core/models/salary";
@@ -36,7 +36,10 @@ export class UsersComponent {
 
     ngOnInit() {
         this._initForm();
-        this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
+        this.getUsers().pipe(takeUntil(this.unsubscribe$),
+            switchMap(() => {
+                return this.subscribeToSearch()
+            })).subscribe();
     }
     private _initForm() {
         this.validateForm = this._fb.group({
@@ -46,6 +49,18 @@ export class UsersComponent {
             comment: [null]
         })
     }
+
+    public subscribeToSearch() {
+        return this.search.valueChanges.pipe(takeUntil(this.unsubscribe$),
+            switchMap((value) => {
+                if (!value) {
+                    return this.getUsers(this.search.value)
+                } else {
+                    return of()
+                }
+            }))
+    }
+
     public searchUser() {
         // this.search.valueChanges.pipe(takeUntil(this.unsubscribe$),
         // switchMap((value) => {
@@ -146,8 +161,8 @@ export class UsersComponent {
         this.activeTab = 0;
         this.userName = null
     }
-    public onChangeTab($event) {        
-        this.activeTab = $event;       
+    public onChangeTab($event) {
+        this.activeTab = $event;
     }
 
     ngOnDestroy(): void {

@@ -69,7 +69,7 @@ export class MainComponent {
     private _getUnseenNotifications() {
         return this._mainService.getUnseenNotifications().pipe(
             map((data: Notification[]) => {
-                if (this.notifications.length !== data.length) {                 
+                if (this.notifications.length !== data.length) {
                     // setTimeout(() => {
                     //    this.playAudio()
                     // }, 1000);                 
@@ -79,17 +79,17 @@ export class MainComponent {
             }))
     }
     playAudio() {
-        var audio =new Audio('../../../../assets/notification.mp3');
-        audio.play() 
+        var audio = new Audio('../../../../assets/notification.mp3');
+        audio.play()
     }
     public _getUnseenPendingNotifications() {
         return this._mainService.getUnseenPendingNotifications().pipe(
             map((data: Notification[]) => {
                 this.pendiningNotification = data
-                if (this.pendiningNotification.length !== data.length) {                 
+                if (this.pendiningNotification.length && this.pendiningNotification.length !== data.length) {
                     setTimeout(() => {
-                       this.playAudio()
-                    }, 1000);                 
+                        this.playAudio()
+                    }, 1000);
 
                 }
             }))
@@ -123,7 +123,7 @@ export class MainComponent {
     setSeenNotification(id: number) {
         this._mainService.setSeenNotification(id).pipe(takeUntil(this.unsubscribe$),
             switchMap(() => {
-                return forkJoin(this._getUnseenPendingNotifications(),this._getUnseenNotifications())
+                return forkJoin(this._getUnseenPendingNotifications(), this._getUnseenNotifications())
             })).subscribe()
     }
     ngOnDestroy(): void {
