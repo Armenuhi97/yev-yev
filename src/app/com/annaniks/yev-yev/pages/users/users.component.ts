@@ -15,6 +15,7 @@ import { UsersService } from "./users.service";
     styleUrls: ['users.component.scss']
 })
 export class UsersComponent {
+    sortItems = []
     userId: number;
     clientTable: Client[] = []
     pageSize: number = 10;
@@ -71,7 +72,9 @@ export class UsersComponent {
         this._userService.editUser(id, { is_active: $event }).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     public getUsers(search?) {
-        return this._userService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, search).pipe(
+        let ordering = this.sortItems && this.sortItems.length ? this.sortItems.join(',') : '';
+
+        return this._userService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, search,ordering).pipe(
             map((data: ServerResponce<Client[]>) => {
                 this.total = data.count;
                 this.clientTable = data.results;
@@ -136,7 +139,7 @@ export class UsersComponent {
             this._userService.addUser(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: Client) => {
                 this.nzMessages.success(Messages.success)
                 this.closeModal();
-                this.pageIndex = 1
+                this.pageIndex = 1;
                 this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
             },
                 () => {
@@ -159,7 +162,46 @@ export class UsersComponent {
         this.editIndex = null
         this.userId = null;
         this.activeTab = 0;
-        this.userName = null
+        this.userName = null;
+        this.sortItems = []
+    }
+    sort(sort, key: string): void {        
+        if (sort == 'ascend') {
+
+            this._deleteKeyFromSort(`-${key}`)
+            if (this._checkIsExist(key) == -1) {
+                this.sortItems.push(key);
+                // this.pageIndex = 1;
+                this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
+
+            }
+        } else {
+            if (sort == 'descend') {
+                this._deleteKeyFromSort(`${key}`)
+                if (this._checkIsExist(`-${key}`) == -1) {
+                    this.sortItems.push(`-${key}`)
+                    // this.pageIndex = 1;
+                    this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
+                }
+            } else {
+                this._deleteKeyFromSort(`${key}`);
+                this._deleteKeyFromSort(`-${key}`);
+                // this.pageIndex = 1;
+                this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
+
+            }
+        }
+    }
+    private _checkIsExist(key: string): number {
+        let index = this.sortItems.indexOf(key);
+        return index
+    }
+    private _deleteKeyFromSort(key: string) {
+        let index = this.sortItems.indexOf(key);
+        if (index > -1) {
+            this.sortItems.splice(index, 1)
+
+        }
     }
     public onChangeTab($event) {
         this.activeTab = $event;
@@ -169,15 +211,5 @@ export class UsersComponent {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
-    sort(sort, key: string): void {
-        if (sort == 'ascend') {
-            this.clientTable.sort((a, b) => { return b[key] - a[key] });
-        } else {
-            if (sort == 'descend') {
-                this.clientTable.sort((a, b) => { return a[key] - b[key] });
-            } else {
-                this.clientTable.sort((a, b) => { return b.id - a.id });
-            }
-        }
-    }
+
 }

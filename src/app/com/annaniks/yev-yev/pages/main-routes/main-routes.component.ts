@@ -8,7 +8,7 @@ import { catchError, map, switchMap, takeUntil } from "rxjs/operators";
 import { Messages } from "../../core/models/mesages";
 import { OrderResponse } from "../../core/models/order";
 import { OrderType } from "../../core/models/order-type";
-import { OrdersByHours, SubrouteDetails } from "../../core/models/orders-by-hours";
+import { OrdersByHours } from "../../core/models/orders-by-hours";
 import { RouteItem } from "../../core/models/routes.model";
 import { User } from "../../core/models/salary";
 import { ServerResponce } from "../../core/models/server-reponce";
@@ -100,7 +100,7 @@ export class MainRoutesComponent {
     }
     showDriverRoutesModal(item) {
         this.isShowDriverRoutes = true;
-        this.driverSubroutes=item;        
+        this.driverSubroutes = item;
         this._getDoneRoutes()
     }
     nzDoneOrderPageIndexChange($event) {
@@ -110,11 +110,20 @@ export class MainRoutesComponent {
     private _getDoneRoutes() {
         let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
         let offset = (this.doneRoutesPageIndex - 1) * 10;
-
         this._mainRouteService.getDoneRoutes(this.driverSubroutes.id, date, offset).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any>) => {
             this.totalDoneRoutes = data.count
-            this.doneRoutes = data.results
+            this.doneRoutes = data.results;
+            this.doneRoutes.sort((a: any, b: any) =>
+                new Date(a.date).getTime() - new Date(b.date).getTime()
+            );
         })
+    }
+    isInteger(event) {
+        if (this.validateForm.get('orderType').value == 0) {
+            if ( !this.validateForm.get('personCount').value &&  event.keyCode == 48 ) {
+                return false
+            }
+        }
     }
     private _checkQueryParams() {
         return this._activatedRoute.queryParams.pipe(takeUntil(this.unsubscribe$), switchMap((param) => {
@@ -215,8 +224,8 @@ export class MainRoutesComponent {
             }
         })
         this.validateForm.get('phone_number').valueChanges.pipe(takeUntil(this.unsubscribe$),
-            switchMap((value) => {                
-                if (value && !this.isEditing) {                    
+            switchMap((value) => {
+                if (value && !this.isEditing) {
                     if (value.toString().length == 8) {
                         this.validateForm.patchValue({
                             order_phone_number: value
@@ -695,7 +704,8 @@ export class MainRoutesComponent {
         }
     }
     get userCounts() {
-
+       
+        
         let item = this.userInfo.filter((data) => { return (data.is_in_approved_orders == false && data.isSelect == true) })
         let calculateCount = 0;
         item.forEach((data) => {
@@ -703,29 +713,34 @@ export class MainRoutesComponent {
         })
         if (this.drivers)
             if (calculateCount) {
-                let arr = this.drivers.filter((val) => {
-
+                let arr = this.drivers.filter((val) => {                    
                     return (+val.car_capacity >= calculateCount && val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
                 })
+                
                 let arr1 = arr.filter((el) => { return el.located_city.id !== el.main_city.id });
-                let arr2 = arr.filter((el) => { return el.located_city.id == el.main_city.id })
+                let arr2 = arr.filter((el) => { return el.located_city.id == el.main_city.id });
+                
                 this.currentDriver = [...arr1, ...arr2]
             } else {
                 let arr = this.drivers.filter((val) => {
                     return (val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
                 })
+
                 let arr1 = arr.filter((el) => { return el.located_city.id !== el.main_city.id });
                 let arr2 = arr.filter((el) => { return el.located_city.id == el.main_city.id })
                 this.currentDriver = [...arr1, ...arr2]
             }
+  
+            
+            
         return calculateCount
     }
     public onEditOrder(index) {
         this.showModal()
         this.isEditing = true;
         this.editIndex = index;
-        let info = this.userInfo[this.editIndex]        
-   
+        let info = this.userInfo[this.editIndex]
+
         this.validateForm.get('first_name').disable()
         this.validateForm.get('last_name').disable();
         this.validateForm.get('userComment').disable();
@@ -733,18 +748,18 @@ export class MainRoutesComponent {
         this.validateForm.patchValue({
             startPointAddress: info.start_address,
             endPointAddress: info.end_address,
-            order_phone_number: info.phone_number.substr(4),
+            order_phone_number: info.phone_number ? info.phone_number.substr(4) : '',
             first_name: info.client_details.user.first_name,
             last_name: info.client_details.user.last_name,
             userComment: info.client_details.comment,
-            phone_number: info.client_details.phone_number.substr(4),
+            phone_number: info.client_details.phone_number ? info.client_details.phone_number.substr(4) : '',
             orderType: info.order_type,
             personCount: info.person_count,
             comment: info.comment,
             date: this.selectedDate.value,
             time: this.selectedTime,
             isFree: info.is_free
-        })        
+        })
         this.userId = info.user
     }
     selectCheckbox($event, index) {
@@ -818,7 +833,8 @@ export class MainRoutesComponent {
             this.timeItem = $event.timeItem
             this.selectedTime = $event.time;
             this.subRouteInfo = this.subRouteInfos[index];
-            this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this._datePipe.transform(this.selectedDate.value, 'dd-MM-yyyy')} ${this.getDay()} ${this.selectedTime}`
+            let time = this.subRouteInfo.start_point_is_static ? this.timeItem.start : this.selectedTime;
+            this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this._datePipe.transform(this.selectedDate.value, 'dd-MM-yyyy')} ${this.getDay()} ${time}`
             this.radioValue = 'approved'
             this.getInfo($event.time).pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {

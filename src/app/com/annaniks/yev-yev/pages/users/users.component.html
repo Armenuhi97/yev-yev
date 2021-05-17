@@ -26,8 +26,8 @@
             <th>Անուն</th>
             <th>Ազգանուն</th>
             <th>Հեռ.</th>
-            <th nzSortFn="true" (nzSortOrderChange)="sort($event,'orders_count')">Հաստատված</th>
-            <th nzSortFn="true" (nzSortOrderChange)="sort($event,'canceled_orders')">Չեղարկված</th>
+            <th nzSortFn="true"  nzSortPriority="1" (nzSortOrderChange)="sort($event,'approved_count')">Հաստատված</th>
+            <th nzSortFn="true"  nzSortPriority="2" (nzSortOrderChange)="sort($event,'canceled_count')">Չեղարկված</th>
             <th></th>
             <th></th>
         </tr>

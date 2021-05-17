@@ -4,11 +4,11 @@ import { Injectable } from "@angular/core";
 @Injectable()
 export class UsersService { 
     constructor(private _httpClient:HttpClient){}
-    getUsers(page,offset:number,search?){
+    getUsers(page,offset:number,search,ordering?){
         if(!search){
             search=''
         }
-        return this._httpClient.get(`userdetails/user/?search=&user_role__code=CL&limit=10&offset=${offset}&page=${page}&search=${search}`)
+        return this._httpClient.get(`userdetails/user/?search=&user_role__code=CL&limit=10&offset=${offset}&page=${page}&search=${search}&ordering=${ordering}`)
     }
     public getUserById(userId:number){
         return this._httpClient.get(`userdetails/user/?search=&user_role__code=CL&id=${userId}`)
