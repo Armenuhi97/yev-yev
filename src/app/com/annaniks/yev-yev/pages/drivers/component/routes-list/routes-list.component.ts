@@ -18,9 +18,7 @@ export class RoutesListComponent {
     unsubscribe$ = new Subject();
     userId: number;
     @Input('userId')
-    set setOrders($event) {
-        console.log($event);
-        
+    set setOrders($event) {        
         this.userId = $event;
         if (this.userId)
             this.getOrders()
@@ -31,9 +29,7 @@ export class RoutesListComponent {
     public getOrders() {
         this._driverService.getOrders(this.userId, this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
             this.total = data.count;
-            this.orders = data.results;
-            console.log(this.orders);
-            
+            this.orders = data.results;            
         })
     }
     transformDate(date) {

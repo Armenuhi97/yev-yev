@@ -13,7 +13,7 @@
             </thead>
             <tbody>
                 <tr [id]="setId(data.start,index)"
-                    [ngClass]="{'disable':data.isDisabled,'active':data.time == selectedTime,'current-time':(currentInterval && currentInterval.start == data.start && !data.isDisabled && !selectedTime)}"
+                    [ngClass]="{'disable':data.isDisabled,'current-time':(currentInterval && currentInterval.start == data.start && !data.isDisabled)}"
                     class="cursor-pointer" *ngFor="let data of subrouteInfo?.openTimes; let ind = index">
                     <td  style="width:100px" (click)="getInformation(data)"><span class="time">{{data.start}}</span></td>
                     <td class="action-button delete" style="width:10px">

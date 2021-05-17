@@ -9,14 +9,10 @@
             <th>Ամսաթիվ</th>
             <th>Ուղղ․</th>
             <th>Նստ.</th>
-            <!-- <th>Հասցե</th>
-            <th>Վարորդ</th>
-            <th>Մեկ.</th>
-            <th>Տեսակ</th> -->
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let data of orders; let ind = index">
+        <tr *ngFor="let data of userTable.data; let ind = index">
             <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10) }}</td>
             <td>
                 {{transformDate(data.date)}}
@@ -25,10 +21,6 @@
                 {{data?.sub_route_details?.start_point_city?.name_hy}} - {{data?.sub_route_details?.end_point_city?.name_hy}}
             </td>
             <td>{{data?.seat_count}}</td>
-          
-            
-            <!-- <td>{{data.comment}}</td>
-            <td>{{ (data?.status == 'approved')? 'Հաստատված' : 'Չեղարկված' }}</td> -->
         </tr>
     </tbody>
 </nz-table>

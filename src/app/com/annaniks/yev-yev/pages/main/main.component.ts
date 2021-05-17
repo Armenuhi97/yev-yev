@@ -70,9 +70,9 @@ export class MainComponent {
         return this._mainService.getUnseenNotifications().pipe(
             map((data: Notification[]) => {
                 if (this.notifications.length !== data.length) {                 
-                    setTimeout(() => {
-                       this.playAudio()
-                    }, 1000);                 
+                    // setTimeout(() => {
+                    //    this.playAudio()
+                    // }, 1000);                 
 
                 }
                 this.notifications = data

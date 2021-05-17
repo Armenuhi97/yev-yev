@@ -21,7 +21,8 @@
             <th>Ազգանուն</th>
             <th>Հեռախոսահամար</th>
             <th>Ուղղություն</th>
-            <th></th>
+            <th>Հիմնական քաղաք</th>
+            <th>Ուղևորման քաղաք</th>
             <th></th>
             <th></th>
         </tr>
@@ -37,12 +38,16 @@
             </td>
             <td>{{data.phone_number}}</td>
             <td>{{data?.driving_routes[0]?.main_route_details?.route_name}}</td>
+            <td>{{data?.main_city?.name_hy}}</td>
+            <td>
+                <span> {{data?.located_city?.name_hy}}</span>
+                <span class="action-button edit m-left-5"> <i (click)="changeRouteCity(data,ind)" nz-icon
+                        nzType="edit"></i></span>
+                <!-- <button nz-button (click)="changeRouteCity(data,ind)" [nzType]="'primary'">Փոխել ուղևորման քաղաքը</button> -->
+            </td>
+            <td class="action-button edit" style="width:10px"><i (click)="onEditsalary(ind)" nz-icon nzType="edit"></i>
+            </td>
 
-            <td  class="action-button edit" style="width:10px"><i (click)="onEditsalary(ind)" nz-icon nzType="edit"></i>
-            </td>
-            <td style="width: 150px;">
-                <button nz-button (click)="changeRouteCity(data,ind)" [nzType]="'primary'">Փոխել ուղևորման քաղաքը</button>
-            </td>
             <td class="action-button delete" style="width:10px">
                 <nz-switch (ngModelChange)="changeUserStatus($event,data.id)" [(ngModel)]="data.user.is_active">
                 </nz-switch>

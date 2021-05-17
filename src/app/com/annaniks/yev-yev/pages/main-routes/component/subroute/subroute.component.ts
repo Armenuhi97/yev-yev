@@ -38,7 +38,7 @@ export class SubrouteComponent {
     isShowError: boolean = false;
     @HostListener('window:resize', ['$event'])
     private _onResize(): void {
-        this.windowHeight = window.innerHeight < 400 ? window.innerHeight / 2 : (window.innerHeight - 400) / 2
+        this.windowHeight = (window.innerHeight - 400) 
 
     }
     orderTypes: OrderType[] = [

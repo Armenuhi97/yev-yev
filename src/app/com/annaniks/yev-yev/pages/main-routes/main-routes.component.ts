@@ -24,8 +24,9 @@ import { MainRoutesService } from "./main-routes.service";
     providers: [DatePipe]
 })
 export class MainRoutesComponent {
+    public modalTitle: string;
     doneRoutes = [];
-    pageSize=10;
+    pageSize = 10;
     selectIndex: number;
     isGetItem: boolean = false;
     userInfo: OrdersByHours[] = []
@@ -91,6 +92,11 @@ export class MainRoutesComponent {
         this.isShowDriverRoutes = false;
         this.doneRoutesPageIndex = 1;
     }
+    closeRouteModal() {
+        this.isOpenInfo = false;
+        this.userInfo = [];
+        this.approvedOrders = []
+    }
     showDriverRoutesModal() {
         this.isShowDriverRoutes = true;
         this._getDoneRoutes()
@@ -103,7 +109,7 @@ export class MainRoutesComponent {
         let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
         let offset = (this.doneRoutesPageIndex - 1) * 10;
 
-        this._mainRouteService.getDoneRoutes(this.subRouteInfo.id, date,offset).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any>) => {
+        this._mainRouteService.getDoneRoutes(this.subRouteInfo.id, date, offset).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any>) => {
             console.log(data);
             this.totalDoneRoutes = data.count
             this.doneRoutes = data.results
@@ -801,13 +807,14 @@ export class MainRoutesComponent {
     }
     getInformation($event, index: number) {
         if ($event) {
-            console.log(this.radioValue);
-
             this.timeItem = $event.timeItem
             this.selectedTime = $event.time;
             this.subRouteInfo = this.subRouteInfos[index];
+            this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this.selectedTime}`
             this.radioValue = 'approved'
             this.getInfo($event.time).subscribe()
+        } else {
+            this.modalTitle = ''
         }
     }
 
