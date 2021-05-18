@@ -120,7 +120,7 @@ export class MainRoutesComponent {
     }
     isInteger(event) {
         if (this.validateForm.get('orderType').value == 0) {
-            if ( !this.validateForm.get('personCount').value &&  event.keyCode == 48 ) {
+            if (!this.validateForm.get('personCount').value && event.keyCode == 48) {
                 return false
             }
         }
@@ -350,14 +350,17 @@ export class MainRoutesComponent {
         if (data.status == 'done') {
             return
         }
-        this._mainRouteService.finishOrder(data.id).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
-            data.status = 'done';
-            this.nzMessages.success(Messages.success);
-        },
-            () => {
-                this.nzMessages.error(Messages.fail);
+        this._mainRouteService.finishOrder(data.id).pipe(takeUntil(this.unsubscribe$),
+            switchMap(() => {
+                data.status = 'done';
+                return this.getDrivers()
+            })).subscribe(() => {
+                this.nzMessages.success(Messages.success);
+            },
+                () => {
+                    this.nzMessages.error(Messages.fail);
 
-            })
+                })
 
     }
     getLabelOfDrivers(dr: User) {
@@ -704,8 +707,8 @@ export class MainRoutesComponent {
         }
     }
     get userCounts() {
-       
-        
+
+
         let item = this.userInfo.filter((data) => { return (data.is_in_approved_orders == false && data.isSelect == true) })
         let calculateCount = 0;
         item.forEach((data) => {
@@ -713,13 +716,13 @@ export class MainRoutesComponent {
         })
         if (this.drivers)
             if (calculateCount) {
-                let arr = this.drivers.filter((val) => {                    
+                let arr = this.drivers.filter((val) => {
                     return (+val.car_capacity >= calculateCount && val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
                 })
-                
+
                 let arr1 = arr.filter((el) => { return el.located_city.id !== el.main_city.id });
                 let arr2 = arr.filter((el) => { return el.located_city.id == el.main_city.id });
-                
+
                 this.currentDriver = [...arr1, ...arr2]
             } else {
                 let arr = this.drivers.filter((val) => {
@@ -730,9 +733,9 @@ export class MainRoutesComponent {
                 let arr2 = arr.filter((el) => { return el.located_city.id == el.main_city.id })
                 this.currentDriver = [...arr1, ...arr2]
             }
-  
-            
-            
+
+
+
         return calculateCount
     }
     public onEditOrder(index) {
