@@ -801,11 +801,21 @@ export class MainRoutesComponent {
     isVisibleDriverModal: boolean = false;
     selectOrderId;
     changeDriverName(data) {
+        console.log(data);
+        
         this.selectOrderId = data.id
         this.isVisibleDriverModal = true;
-        this.modalDrivers = this.drivers.filter((val) => {
-            return (+val.car_capacity >= data.seat_count)
+        let arr = this.drivers.filter((val) => {
+            return (+val.car_capacity >= data.seat_count && val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
         })
+       
+        // let arr = this.drivers.filter((val) => {
+        //     return (val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
+        // })
+        let arr1 = arr.filter((el) => { return el.located_city.id !== el.main_city.id });
+        let arr2 = arr.filter((el) => { return el.located_city.id == el.main_city.id })
+        this.modalDrivers = [...arr1, ...arr2]
+
         this.driverControl.setValue(data.driver)
     }
     handleCancelDriver() {
