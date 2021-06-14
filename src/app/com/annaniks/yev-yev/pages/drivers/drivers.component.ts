@@ -206,7 +206,7 @@ export class DriversComponent {
     public onsalarySave() {
 
         if (this.validateForm.invalid) {
-            this.nzMessages.error(Messages.fail);
+            this.nzMessages.error(Messages.fail,{nzDuration:500000});
             return;
         }
         let sendObject: SalaryRespone = Object.assign({}, this.validateForm.value, { image: '' })

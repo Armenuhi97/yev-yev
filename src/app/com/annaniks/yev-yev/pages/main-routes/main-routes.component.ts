@@ -201,9 +201,9 @@ export class MainRoutesComponent {
             userComment: [null],
             startPointAddress: [null],
             endPointAddress: [null],
-            order_phone_number: [null],
+            order_phone_number: [null,Validators.required],
             orderType: [0, Validators.required],
-            personCount: [null, Validators.required],
+            personCount: [1, Validators.required],
             comment: [null],
             date: [null],
             time: [null],
@@ -415,7 +415,8 @@ export class MainRoutesComponent {
     }
     public showModal(): void {
         this.isVisible = true;
-        this.validateForm.get('orderType').setValue(0)
+        this.validateForm.get('orderType').setValue(0);
+        this.validateForm.get('personCount').setValue(1);        
         if (this.subRouteInfo.start_point_is_static) {
             this.validateForm.get('startPointAddress').setValue(this.subRouteInfo.start_point_address_hy);
             this.validateForm.get('startPointAddress').disable()

@@ -35,6 +35,10 @@ td{
     cursor: pointer;
     }
 }
+
+.ant-message{
+    z-index: 99999999999999999999999999999999 !important;
+}
 .ant-picker-time-panel-column>li.ant-picker-time-panel-cell-disabled .ant-picker-time-panel-cell-inner {
     display: none !important;
 }

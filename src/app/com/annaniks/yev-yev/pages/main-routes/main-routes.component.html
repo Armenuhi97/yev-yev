@@ -221,7 +221,8 @@
                                 <div nz-row [nzGutter]="24">
 
                                     <div nz-col [nzSpan]="12">
-                                        <nz-form-label class="inline-labels">Հեռախոսահամար</nz-form-label>
+                                        <nz-form-label class="inline-labels" nzRequired>Ուղևորի հեռախոսահամար
+                                        </nz-form-label>
                                         <nz-form-item>
                                             <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
                                                 <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
@@ -254,7 +255,8 @@
                                         <nz-form-label class="inline-labels" nzRequired>Ուղևորների քանակ</nz-form-label>
                                         <nz-form-item>
                                             <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                <input id="myText" OnlyNumber="true" min="1" type="number" (keypress)="isInteger($event)"
+                                                <input id="myText" OnlyNumber="true" min="1" type="number"
+                                                    (keypress)="isInteger($event)"
                                                     *ngIf="!validateForm.get('orderType').value || validateForm.get('orderType').value !== 2"
                                                     nz-input formControlName="personCount" placeholder="" />
 
