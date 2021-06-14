@@ -29,6 +29,8 @@ export class RoutesListComponent {
     public getOrders() {
         this._driverService.getOrders(this.userId, this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
             this.total = data.count;
+            console.log(data);
+            
             this.orders = data.results;            
         })
     }

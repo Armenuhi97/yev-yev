@@ -158,7 +158,7 @@ export class DriversComponent {
         this._driverService.getUserById(id).pipe(takeUntil(this.unsubscribe$),
             map((data: ServerResponce<User>) => {
                 if (data.results && data.results[0]) {
-                    this.item = data.results[0]
+                    this.item = data.results[0];                 
                     this.validateForm.patchValue({
                         first_name: this.item.user.first_name,
                         last_name: this.item.user.last_name,
@@ -170,7 +170,7 @@ export class DriversComponent {
                         car_color_name_hy: this.item.car_color_name_hy,
                         car_color_name_en: this.item.car_color_name_en,
                         car_color_name_ru: this.item.car_color_name_ru,
-                        viber_id: this.item.viber_id,
+                        viber_id: +this.item.viber_id,
                         main_city_id: this._appService.checkPropertyValue(this.item.main_city, 'id'),
                         located_city_id: this._appService.checkPropertyValue(this.item.located_city, 'id')
                     })
