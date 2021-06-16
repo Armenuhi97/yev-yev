@@ -79,7 +79,7 @@ export class SubrouteComponent {
                             approved_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'approved_seat_count', 0),
                             pending_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'pending_seat_count', 0),
                             seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'seat_count', 0),
-                            luggage_type_count:this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'luggage_type_count', 0)
+                            luggage_type_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'luggage_type_count', 0)
                         })
 
                     }
@@ -165,7 +165,7 @@ export class SubrouteComponent {
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
         return this._mainRouteService.getHourlyOrdersByDate(this.subrouteInfo.main_route, date).pipe(
             map((data: any) => {
-                this.subrouteInfo.openTimes = this.subrouteInfo.openTimes.map((el) => { return Object.assign(el, { approved_seat_count: 0, pending_seat_count: 0, seat_count: 0,luggage_type_count:0 }) })
+                this.subrouteInfo.openTimes = this.subrouteInfo.openTimes.map((el) => { return Object.assign(el, { approved_seat_count: 0, pending_seat_count: 0, seat_count: 0, luggage_type_count: 0 }) })
                 if (data[this.index] && data[this.index].orders)
                     for (let item of data[this.index].orders) {
                         let dateFormat = moment(item.hour).format('HH:mm')
@@ -179,7 +179,7 @@ export class SubrouteComponent {
                                     approved_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'approved_seat_count', 0),
                                     pending_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'pending_seat_count', 0),
                                     seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'seat_count', 0),
-                                    luggage_type_count:this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'luggage_type_count', 0),
+                                    luggage_type_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'luggage_type_count', 0),
                                 })
 
 
@@ -242,7 +242,10 @@ export class SubrouteComponent {
             this._mainRouteService.openBlockedHours(data.blockId).pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
             let current = this._formatDate(data.time)
-            this._mainRouteService.blockHour(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe()
+            this._mainRouteService.blockHour(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe((val: { id: number }) => {
+                data.blockId = val.id
+
+            })
         }
     }
 
