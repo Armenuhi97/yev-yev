@@ -56,7 +56,6 @@ export class SalariesComponent {
             { validator: PasswordValidation.MatchPassword })
     }
     public changePassword() {
-        console.log(this.passwordForm);
         
         if (this.passwordForm.valid) {
             let sendRequest = {

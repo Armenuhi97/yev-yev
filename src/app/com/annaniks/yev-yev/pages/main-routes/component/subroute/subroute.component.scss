@@ -16,6 +16,10 @@
             overflow: hidden;
         }
     }
+    .ant-table-pagination.ant-pagination{
+        display: none !important;
+        margin: 0 !important;
+    }
 }
 :host:ng-deep {
     .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content {

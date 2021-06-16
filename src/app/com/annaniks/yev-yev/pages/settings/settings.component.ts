@@ -37,7 +37,6 @@ export class SettingsComponent {
     }
     getOtherRoutesTimes() {
         return this._settingsService.getOtherRoutesTimeList().pipe(map((data: ServerResponce<OtherRoutesTime[]>) => {
-            console.log(data);
             
             this.otherRoutesTime = data.results;            
         }))

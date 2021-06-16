@@ -227,6 +227,7 @@ export class MainRoutesComponent {
             switchMap((value) => {
                 if (value && !this.isEditing) {
                     if (value.toString().length == 8) {
+                        
                         this.validateForm.patchValue({
                             order_phone_number: value
                         })
@@ -245,6 +246,7 @@ export class MainRoutesComponent {
                                 this.validateForm.get('first_name').disable()
                                 this.validateForm.get('last_name').disable()
                             } else {
+                                this.userId = null
                                 this.validateForm.get('first_name').reset()
                                 this.validateForm.get('last_name').reset()
                                 this.validateForm.get('first_name').enable()
@@ -801,9 +803,7 @@ export class MainRoutesComponent {
     modalDrivers = [];
     isVisibleDriverModal: boolean = false;
     selectOrderId;
-    changeDriverName(data) {
-        console.log(data);
-        
+    changeDriverName(data) {        
         this.selectOrderId = data.id
         this.isVisibleDriverModal = true;
         let arr = this.drivers.filter((val) => {

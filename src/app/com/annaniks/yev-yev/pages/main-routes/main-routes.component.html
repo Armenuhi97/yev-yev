@@ -108,7 +108,7 @@
                                         <td>{{ind+1}}</td>
                                         <td>{{moderator?.client_details?.user?.first_name}}
                                             {{moderator?.client_details?.user?.last_name}}</td>
-                                        <td>{{moderator?.client_details?.phone_number}}</td>
+                                        <td>{{moderator?.phone_number}}</td>
                                         <td>
                                             <span [class.light]="checkAddress(moderator) == 'Հասցե չկա'">
                                                 {{checkAddress(moderator)}}</span>
@@ -232,7 +232,7 @@
                                                             <nz-option nzLabel="+374" nzValue="+374"></nz-option>
                                                         </nz-select>
                                                     </ng-template>
-                                                    <input nz-input formControlName="order_phone_number" type="number"
+                                                    <input maxLength="8" nz-input formControlName="order_phone_number" type="number"
                                                         placeholder="" />
                                                 </nz-input-group>
                                             </nz-form-control>

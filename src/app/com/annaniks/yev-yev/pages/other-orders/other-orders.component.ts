@@ -70,7 +70,6 @@ export class OtherOrdersComponent {
     getDrivers(mainRoute) {
         return this._otherOrdersService.getDrivers(mainRoute).pipe(
             map((data: ServerResponce<User[]>) => {
-                console.log(data);
 
                 this.allDrivers = data.results;
                 this.filterDriver()
@@ -222,7 +221,6 @@ export class OtherOrdersComponent {
         this.filteredDrivers = []
     }
     onOrderSave() {
-        console.log(this.validateForm);
 
         if (this.validateForm.valid) {
             if (this.editItem) {
