@@ -229,12 +229,14 @@ export class SubrouteComponent {
             this.setBlockOrCloseHours(items, 'isActive', 'closeId')
         }))
     }
-    openOrCloseHour($event, data) {
-        if (data.closeId && $event) {
+    openOrCloseHour($event, data) {        
+        if (data.closeId) {            
             this._mainRouteService.openHours(data.closeId).pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
             let current = this._formatDate(data.time)
-            this._mainRouteService.closeHours(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe()
+            this._mainRouteService.closeHours(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe((val:{id:number})=>{
+                data.closeId=val.id
+            })
         }
     }
     blockOrUnBlockHour($event, data) {
