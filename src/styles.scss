@@ -5,60 +5,81 @@
     margin: 10px;
     display: flex;
     align-items: center;
-    justify-content:space-between;
+    justify-content: space-between;
     flex-wrap: wrap;
-    h1{
+    h1 {
         margin-right: 5px;
     }
 }
-.cursor-pointer{
-    cursor:pointer
+.cursor-pointer {
+    cursor: pointer;
 }
-.delete{
-    svg{
+.delete {
+    svg {
         margin: auto;
         color: #ff4d4f;
-        font-size: 20px;   
+        font-size: 20px;
     }
 }
-td{
-    svg{
+td {
+    svg {
         display: flex;
     }
 }
-.trash{
+.trash {
     color: #ff4d4f;
     font-size: 20px;
 }
-.action-button{
-    i{
-    cursor: pointer;
+.action-button {
+    i {
+        cursor: pointer;
+    }
+}
+.ant-modal {
+    top: 50px !important;
+}
+// .add-order-modal {
+    .ant-modal-body {
+        padding: 9px 13px !important;
+    }
+// }
+.sm-ant {
+    .ant-form-item {
+        margin-bottom: 10px !important;
+    }
+}
+.main-route-tab {
+    .ant-tabs-bottom > .ant-tabs-nav,
+    .ant-tabs-bottom > div > .ant-tabs-nav,
+    .ant-tabs-top > .ant-tabs-nav,
+    .ant-tabs-top > div > .ant-tabs-nav {
+        margin: 0 !important;
     }
 }
 // .ant-modal-mask{
 //     z-index: 0 !important;
 // }
-.ant-message{
+.ant-message {
     z-index: 99999999999999999999999999999999 !important;
 }
-.ant-picker-time-panel-column>li.ant-picker-time-panel-cell-disabled .ant-picker-time-panel-cell-inner {
+.ant-picker-time-panel-column > li.ant-picker-time-panel-cell-disabled .ant-picker-time-panel-cell-inner {
     display: none !important;
 }
-.ant-table-tbody{
+.ant-table-tbody {
     background: white;
 }
-.ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content{
+.ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content {
     height: 16px !important;
 }
 
-.ant-form-item-label>label::after{
-    content: '' !important;
+.ant-form-item-label > label::after {
+    content: "" !important;
 }
-.required-field{
+.required-field {
     color: red;
     width: 100%;
 }
-.table-item{
+.table-item {
     // .ant-table-title{
     //     position: sticky;
     //     top: 0;

@@ -17,7 +17,7 @@
             <tr [id]="setId(data.start,index)"
                 [ngClass]="{'disable':data.isDisabled,'current-time':(currentInterval && currentInterval.start == data.start && !data.isDisabled)}"
                 class="cursor-pointer" *ngFor="let data of subrouteInfo?.openTimes; let ind = index">
-                <td style="width:100px" (click)="getInformation(data)"><span class="time">{{data.start}}</span></td>
+                <td style="width:100px" (click)="getInformation(data)"><b class="time">{{data.start}}</b></td>
                 <td class="action-button delete" style="width:10px">
                     <nz-switch [disabled]="data.isDisabled" [(ngModel)]="data.isBlocked"
                         (ngModelChange)="blockOrUnBlockHour($event,data)">

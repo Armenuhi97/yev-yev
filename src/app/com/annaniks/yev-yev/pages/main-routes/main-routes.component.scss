@@ -1,5 +1,4 @@
-
-.calendar{
+.calendar {
     width: 300px;
     border: 1px solid rgb(217, 217, 217);
     border-radius: 4px;
@@ -10,95 +9,93 @@
     left: -100px;
 }
 
-.ant-table tfoot>tr>td, .ant-table tfoot>tr>th, .ant-table-tbody>tr>td, .ant-table-thead>tr>th{
-    padding: 1px !important;
-}
 
-:host:ng-deep{
-    .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content{
+:host:ng-deep {
+    .ant-table tfoot>tr>td, .ant-table tfoot>tr>th, .ant-table-tbody>tr>td, .ant-table-thead>tr>th{
+        padding: 2px !important;
+    }
+    .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content {
         display: none !important;
     }
 }
-.list{    
-
+.list {
     padding-top: 10px;
     margin-top: 15px;
 }
-.current-time{
-    background-color: #2CAF2D;
+.current-time {
+    background-color: #2caf2d;
 }
-.active{
+.active {
     background-color: #e2e2e2 !important;
 }
-.disable{
+.disable {
     color: #c1c1c1;
 }
-.error{
+.error {
     color: red;
 }
-.title{
+.title {
     background: white;
     padding: 10px;
     font-size: 22px;
 }
-.light{
+.light {
     color: grey;
 }
-.margin-top-10{
-    margin-top:10px
+.margin-top-10 {
+    margin-top: 10px;
 }
-.font-30{
-    font-size:25px
+.font-30 {
+    font-size: 25px;
 }
-.m-bottom-15{
-    margin-bottom:15px
+.m-bottom-15 {
+    margin-bottom: 15px;
 }
-.active-route{
-    background:#84db84 !important;
+.active-route {
+    background: #84db84 !important;
 }
-.margin-10{
-    margin:10px 0;
+.margin-10 {
+    margin: 10px 0;
     border-top: 1px solid #cccc;
     padding-top: 10px;
 }
-.margin-left-auto{
-    margin-left:auto
+.margin-left-auto {
+    margin-left: auto;
 }
-.margin-bottom-10{
+.margin-bottom-10 {
     margin: 10px 0;
 }
-.mr-5{
-    margin-left:5px
+.mr-5 {
+    margin-left: 5px;
 }
-.scroll{
+.scroll {
     max-height: 360px;
     overflow: auto;
 }
-.disabled{
+.disabled {
     pointer-events: none !important;
-    color: rgba(0,0,0,.25) !important;
+    color: rgba(0, 0, 0, 0.25) !important;
 }
-.color-red{
+.color-red {
     background-color: #fb8f8f !important;
 }
 // .ant-modal-body{
 //     overflow-x: auto;
 // }
-.ant-table-row{
+.ant-table-row {
     background-color: white;
 }
-.color-green{
-    background-color: #2CAF2D;
+.color-green {
+    background-color: #2caf2d;
     color: white;
-    border-color: #2CAF2D;
+    border-color: #2caf2d;
 }
-.cancel-item{
-    border:1px solid red !important;
+.cancel-item {
+    border: 1px solid red !important;
 }
-.cancel-btns{
-    button{
-    margin: 3px ;
-    min-width: 47%;
+.cancel-btns {
+    button {
+        margin: 3px;
+        min-width: 47%;
     }
-
 }
