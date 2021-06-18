@@ -189,18 +189,7 @@
                     </div>
                 </div>
                 <div nz-row [nzGutter]="24">
-                    <div nz-col [nzSpan]="12">
-                        <nz-form-label class="inline-labels" nzRequired>Telegram</nz-form-label>
-                        <nz-form-item>
-                            <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                <nz-select nzPlaceHolder="" formControlName="viber_id">
-                                    <nz-option *ngFor="let viber of viberInfo" [nzValue]="viber.id"
-                                        [nzLabel]="viber.name">
-                                    </nz-option>
-                                </nz-select>
-                            </nz-form-control>
-                        </nz-form-item>
-                    </div>
+                
                     <div nz-col [nzSpan]="12">
                         <nz-form-label class="inline-labels" nzRequired>Հիմնական քաղաք</nz-form-label>
                         <nz-form-item>
@@ -209,6 +198,19 @@
                                     <nz-option *ngFor="let city of cities" [nzValue]="city.id" [nzLabel]="city.name_hy">
                                     </nz-option>
                                 </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+                    <div *ngIf="isEditing" nz-col [nzSpan]="12">
+                        <nz-form-label class="inline-labels" >Telegram</nz-form-label>
+                        <nz-form-item>
+                            <nz-form-control>
+                                {{item?.telegram_name}}
+                                <!-- <nz-select nzPlaceHolder="" formControlName="viber_id">
+                                    <nz-option *ngFor="let viber of viberInfo" [nzValue]="viber.id"
+                                        [nzLabel]="viber.name">
+                                    </nz-option>
+                                </nz-select> -->
                             </nz-form-control>
                         </nz-form-item>
                     </div>

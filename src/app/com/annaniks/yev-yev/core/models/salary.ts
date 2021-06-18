@@ -17,6 +17,7 @@ export interface User {
     "id": number,
     main_city?:CityItem,
     located_city?:CityItem
+    telegram_name:string
     "user": {
         "id": number,
         "first_name": string

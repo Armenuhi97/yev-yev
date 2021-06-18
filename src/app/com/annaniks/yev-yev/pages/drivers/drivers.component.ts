@@ -63,7 +63,6 @@ export class DriversComponent {
             car_color_name_hy: [null, Validators.required],
             car_color_name_en: [null, Validators.required],
             car_color_name_ru: [null, Validators.required],
-            viber_id: [null],
             main_city_id: [null, Validators.required],
             located_city_id: [null]
         })
@@ -118,7 +117,7 @@ export class DriversComponent {
         const combine = forkJoin(
             this.getAllRoutes(),
             this.getUsers(),
-            this.getDriversViberInfo(),
+            // this.getDriversViberInfo(),
             this.getCitites()
         )
         return combine.pipe(takeUntil(this.unsubscribe$))
@@ -170,7 +169,6 @@ export class DriversComponent {
                         car_color_name_hy: this.item.car_color_name_hy,
                         car_color_name_en: this.item.car_color_name_en,
                         car_color_name_ru: this.item.car_color_name_ru,
-                        viber_id: +this.item.viber_id,
                         main_city_id: this._appService.checkPropertyValue(this.item.main_city, 'id'),
                         located_city_id: this._appService.checkPropertyValue(this.item.located_city, 'id')
                     })
