@@ -13,7 +13,7 @@ export class MainRoutesService {
         return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?only_my=True&page=${page}&limit=10&offset=${offset}`)
     }
     public getDrivers(mainRouteId: number) {
-        return this._httpClient.get(`userdetails/user/?search=&driving_routes__main_route=${mainRouteId}&user_role__code=DR`)
+        return this._httpClient.get(`userdetails/user/?search=&driving_routes__main_route=${mainRouteId}&user_role__code=DR&limit=10000`)
     }
     public getRoutesById(id: number): Observable<RouteItem> {
         return this._httpClient.get<RouteItem>(`route/main-route/${id}/`)
