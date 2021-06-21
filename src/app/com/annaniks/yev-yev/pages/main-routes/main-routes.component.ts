@@ -201,14 +201,15 @@ export class MainRoutesComponent {
             userComment: [null],
             startPointAddress: [null],
             endPointAddress: [null],
-            order_phone_number: [null,Validators.required],
+            order_phone_number: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
             orderType: [0, Validators.required],
             personCount: [1, Validators.required],
             comment: [null],
             date: [null],
             time: [null],
             isChangeStatus: [false],
-            isFree: [false]
+            isFree: [false],
+            isExtra: [false]
         })
 
         this.validateForm.get('orderType').valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((value) => {
@@ -226,8 +227,7 @@ export class MainRoutesComponent {
         this.validateForm.get('phone_number').valueChanges.pipe(takeUntil(this.unsubscribe$),
             switchMap((value) => {
                 if (value && !this.isEditing) {
-                    if (value.toString().length == 8) {
-                        
+                    if (value.toString().length == 8) {                        
                         this.validateForm.patchValue({
                             order_phone_number: value
                         })
@@ -418,7 +418,7 @@ export class MainRoutesComponent {
     public showModal(): void {
         this.isVisible = true;
         this.validateForm.get('orderType').setValue(0);
-        this.validateForm.get('personCount').setValue(1);        
+        this.validateForm.get('personCount').setValue(1);
         if (this.subRouteInfo.start_point_is_static) {
             this.validateForm.get('startPointAddress').setValue(this.subRouteInfo.start_point_address_hy);
             this.validateForm.get('startPointAddress').disable()
@@ -559,6 +559,7 @@ export class MainRoutesComponent {
                 "end_langitude": '',
                 "end_latitude": '',
                 "is_free": this.validateForm.get('isFree').value,
+                "is_extra_order": this.validateForm.get('isExtra').value,
                 "user": this.userId ? this.userId : null,
                 "order_phone_number": this.validateForm.get('order_phone_number').value ? '+374' + this.validateForm.get('order_phone_number').value : null,
                 "order_type": this.validateForm.get('orderType').value,
@@ -577,6 +578,7 @@ export class MainRoutesComponent {
                 "last_name": this._appService.checkPropertyValue(this.validateForm.get('last_name'), 'value', ""),
                 "user_comment": this.validateForm.get('userComment').value,
                 "is_free": this.validateForm.get('isFree').value,
+                "is_extra_order": this.validateForm.get('isExtra').value,
                 "phone_number": '+374' + this.validateForm.get('phone_number').value,
                 "comment": this.validateForm.get('comment').value,
                 "sub_route": this.subRouteInfo.id,
@@ -751,6 +753,8 @@ export class MainRoutesComponent {
         this.validateForm.get('last_name').disable();
         this.validateForm.get('userComment').disable();
         this.validateForm.get('phone_number').disable();
+        console.log(info);
+        
         this.validateForm.patchValue({
             startPointAddress: info.start_address,
             endPointAddress: info.end_address,
@@ -764,7 +768,8 @@ export class MainRoutesComponent {
             comment: info.comment,
             date: this.selectedDate.value,
             time: this.selectedTime,
-            isFree: info.is_free
+            isFree: info.is_free,
+            isExtra:info.is_extra_order
         })
         this.userId = info.user
     }
@@ -803,13 +808,13 @@ export class MainRoutesComponent {
     modalDrivers = [];
     isVisibleDriverModal: boolean = false;
     selectOrderId;
-    changeDriverName(data) {        
+    changeDriverName(data) {
         this.selectOrderId = data.id
         this.isVisibleDriverModal = true;
         let arr = this.drivers.filter((val) => {
             return (+val.car_capacity >= data.seat_count && val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
         })
-       
+
         // let arr = this.drivers.filter((val) => {
         //     return (val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
         // })

@@ -15,6 +15,7 @@ export interface OrderResponse {
     "order_phone_number": string
     "order_type": number,
     "comment": string,
+    is_extra_order:boolean
     user_comment:string
     status:string
     is_free:boolean
