@@ -293,7 +293,7 @@
                                                 </nz-form-label>
                                                 <nz-form-item>
                                                     <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                        <input id="myText" OnlyNumber="true" min="1" type="number"
+                                                        <input  OnlyNumber="true" min="1" type="number"
                                                             (keypress)="isInteger($event)"
                                                             *ngIf="!validateForm.get('orderType').value || validateForm.get('orderType').value !== 2"
                                                             nz-input formControlName="personCount" placeholder="" />
