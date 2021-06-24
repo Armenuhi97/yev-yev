@@ -437,7 +437,7 @@ export class MainRoutesComponent {
         if (this.subRouteInfo.start_point_is_static) {
             return moderator.end_address ? moderator.end_address : 'Հասցե չկա'
         } else {
-            if (this.subRouteInfo.end_point_is_static) {
+            if (this.subRouteInfo.end_point_is_static) {                
                 return moderator.start_address ? moderator.start_address : 'Հասցե չկա'
             } else {
                 return (moderator.start_address || moderator.end_address) ? `${moderator.start_address} - ${moderator.end_address}` : 'Հասցե չկա'
@@ -839,8 +839,22 @@ export class MainRoutesComponent {
                     return this.getInfo(this.selectedTime)
                 })).subscribe()
     }
+    public checkAddress2(moderator) {
+        if (moderator.order && moderator.order.is_extra_order) {
+            return `${moderator.order.start_address} -> ${moderator.order.end_address}`
+        }
+        if (this.subRouteInfo.start_point_is_static) {
+            return moderator.order && moderator.order.end_address ? moderator.order.end_address : 'Հասցե չկա'
+        } else {
+            if (this.subRouteInfo.end_point_is_static) {                
+                return moderator.order && moderator.order.start_address ? moderator.order.start_address : 'Հասցե չկա'
+            } else {
+                return (moderator.order && (moderator.order.start_address || moderator.order.end_address)) ? `${moderator.order.start_address} - ${moderator.order.end_address}` : 'Հասցե չկա'
+            }
+        }
+    }
     removeAndCancelOrder(moderator, ind: number) {
-        // this.orderMembers.splice(ind, 1)
+        // this.orderMembers.splice(ind, 1)           
         this._mainRouteService.removeAndCancelOrder(moderator.order.approved_order_details[0].approved_order.id, moderator.order.id).pipe(takeUntil(this.unsubscribe$),
             switchMap(() => {
                 this.orderMembers.splice(ind, 1)

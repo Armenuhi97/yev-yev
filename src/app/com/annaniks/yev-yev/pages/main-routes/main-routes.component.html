@@ -400,14 +400,14 @@
                                             <td>{{data.driver_details.user.first_name}}
                                                 {{data.driver_details.user.last_name}}
                                                 {{data.driver_details.phone_number}}
-                                                <i (click)="changeDriverName(data)" nz-icon nzType="edit"></i>
+                                                <i *ngIf="data.status !== 'done'" (click)="changeDriverName(data)" nz-icon nzType="edit"></i>
                                             </td>
                                             <td> {{data.driver_details.car_model}}
                                                 {{data.driver_details.car_number}}
                                             </td>
                                             <td>{{data.driver_details.car_capacity}}/{{data.seat_count}}</td>
                                             <td class="action-button edit" style="width:10px">
-                                                <svg *ngIf="timeItem && !timeItem.isDisabled"
+                                                <svg *ngIf="timeItem && !timeItem.isDisabled && data.status !== 'done'"
                                                     (click)="addSelectedOrder(index)" xmlns="http://www.w3.org/2000/svg"
                                                     width="16" height="16" fill="green" class="bi bi-plus-circle-fill"
                                                     viewBox="0 0 16 16">
@@ -415,11 +415,11 @@
                                                         d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
                                                 </svg>
                                             </td>
-                                            <td class="action-button edit" style="width:10px"><i
+                                            <td  class="action-button edit" style="width:10px"><i *ngIf="data.status !== 'done'"
                                                     (click)="onEditOrderMembers(index)" nz-icon nzType="edit"></i>
                                             </td>
                                             <td class="action-button delete" style="width:10px">
-                                                <a [class.disabled]="timeItem.isDisabled" [nzCancelText]="'Ոչ'"
+                                                <a *ngIf="data.status !== 'done'" [class.disabled]="timeItem.isDisabled" [nzCancelText]="'Ոչ'"
                                                     [nzOkText]="'Այո'" nz-popconfirm
                                                     (nzOnConfirm)="onDeleteApprovedOrder(index)"
                                                     nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
@@ -436,8 +436,8 @@
                                             <td>
 
                                                 <div class="d-flex align-items-center flex-wrap">
-                                                    <svg style="margin: 0 5px; color: #0088cc;"
-                                                        xmlns="http://www.w3.org/2000/svg" *ngIf="!timeItem.isDisabled"
+                                                    <svg  style="margin: 0 5px; color: #0088cc;"
+                                                        xmlns="http://www.w3.org/2000/svg" *ngIf="data.status !== 'done' && !timeItem.isDisabled"
                                                         (click)="send(data)" width="25" height="25" fill="currentColor"
                                                         class="bi bi-telegram" viewBox="0 0 16 16">
                                                         <path
@@ -491,9 +491,9 @@
                                                     <td>{{ind+1}}</td>
                                                     <td>{{moderator?.order?.client_details?.user?.first_name}}
                                                         {{moderator?.order?.client_details?.user?.last_name}}</td>
-                                                    <td>{{moderator?.order?.client_details?.phone_number}}</td>
-                                                    <td><span [class.light]="checkAddress(moderator) == 'Հասցե չկա'">
-                                                            {{checkAddress(moderator)}}</span></td>
+                                                    <td>{{moderator?.order?.phone_number}}</td>
+                                                    <td><span [class.light]="checkAddress2(moderator) == 'Հասցե չկա'">
+                                                            {{checkAddress2(moderator)}}</span></td>
                                                     <td>{{getOrderType(moderator?.order?.order_type)}}</td>
                                                     <td>{{moderator?.order?.person_count}}</td>
                                                     <td> <label [disabled]="moderator.order.canceled_by_client"
