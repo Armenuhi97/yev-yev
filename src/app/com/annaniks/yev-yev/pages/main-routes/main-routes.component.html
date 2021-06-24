@@ -128,8 +128,7 @@
                                                         [(ngModel)]="moderator.is_extra_order"></label>
                                                 </td>
                                                 <td class="action-button edit" style="width:10px"><i
-                                                        *ngIf="!moderator.is_in_approved_orders && timeItem && !timeItem.isDisabled "
-                                                        (click)="onEditOrder(ind)" nz-icon nzType="edit"></i>
+                                                        (click)="onEditOrder(ind,moderator)" nz-icon nzType="edit"></i>
                                                 </td>
                                                 <td *ngIf="radioValue == 'approved'"> <label
                                                         *ngIf="timeItem && !timeItem.isDisabled"
@@ -254,7 +253,7 @@
                                                                 placeholder="" />
                                                         </nz-input-group>
                                                     </nz-form-control>
-                                                 
+
                                                 </nz-form-item>
                                                 <!-- <nz-form-item>
                                                     <nz-form-control  nzHasFeedback [nzErrorTip]="userErrorTpl">
@@ -293,7 +292,7 @@
                                                 </nz-form-label>
                                                 <nz-form-item>
                                                     <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                        <input  OnlyNumber="true" min="1" type="number"
+                                                        <input OnlyNumber="true" min="1" type="number"
                                                             (keypress)="isInteger($event)"
                                                             *ngIf="!validateForm.get('orderType').value || validateForm.get('orderType').value !== 2"
                                                             nz-input formControlName="personCount" placeholder="" />
@@ -326,7 +325,7 @@
                                             <div nz-col [nzSpan]="12">
                                                 <nz-select class="w-100" formControlName="time">
                                                     <nz-option *ngFor="let time of subRouteInfo?.openTimes"
-                                                        [nzValue]="time.time" [nzLabel]="time.time">
+                                                        [nzValue]="time.time" [nzLabel]="setTimeLabel(time)">
                                                     </nz-option>
                                                 </nz-select>
                                             </div>
@@ -400,7 +399,8 @@
                                             <td>{{data.driver_details.user.first_name}}
                                                 {{data.driver_details.user.last_name}}
                                                 {{data.driver_details.phone_number}}
-                                                <i *ngIf="data.status !== 'done'" (click)="changeDriverName(data)" nz-icon nzType="edit"></i>
+                                                <i *ngIf="data.status !== 'done'" (click)="changeDriverName(data)"
+                                                    nz-icon nzType="edit"></i>
                                             </td>
                                             <td> {{data.driver_details.car_model}}
                                                 {{data.driver_details.car_number}}
@@ -415,12 +415,13 @@
                                                         d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
                                                 </svg>
                                             </td>
-                                            <td  class="action-button edit" style="width:10px"><i *ngIf="data.status !== 'done'"
-                                                    (click)="onEditOrderMembers(index)" nz-icon nzType="edit"></i>
+                                            <td class="action-button edit" style="width:10px"><i
+                                                    (click)="onEditOrderMembers(index,data.status)" nz-icon
+                                                    nzType="edit"></i>
                                             </td>
                                             <td class="action-button delete" style="width:10px">
-                                                <a *ngIf="data.status !== 'done'" [class.disabled]="timeItem.isDisabled" [nzCancelText]="'Ոչ'"
-                                                    [nzOkText]="'Այո'" nz-popconfirm
+                                                <a *ngIf="data.status !== 'done'" [class.disabled]="timeItem.isDisabled"
+                                                    [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
                                                     (nzOnConfirm)="onDeleteApprovedOrder(index)"
                                                     nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
                                                     nzPopconfirmPlacement="bottom" class="d-flex">
@@ -436,8 +437,9 @@
                                             <td>
 
                                                 <div class="d-flex align-items-center flex-wrap">
-                                                    <svg  style="margin: 0 5px; color: #0088cc;"
-                                                        xmlns="http://www.w3.org/2000/svg" *ngIf="data.status !== 'done' && !timeItem.isDisabled"
+                                                    <svg style="margin: 0 5px; color: #0088cc;"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        *ngIf="data.status !== 'done' && !timeItem.isDisabled"
                                                         (click)="send(data)" width="25" height="25" fill="currentColor"
                                                         class="bi bi-telegram" viewBox="0 0 16 16">
                                                         <path
@@ -449,10 +451,16 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <button nz-button nzType="primary"
-                                                    (click)="finishOrder(data)">{{data.status
-                                                    ==
-                                                    'done'?'Ավարտված':'Ավարտել'}}</button>
+                                                <button *ngIf="data.status == 'done'" nz-button nzType="primary">
+                                                    Ավարտված</button>
+                                                <a *ngIf="data.status !== 'done'" [nzCancelText]="'Ոչ'"
+                                                    [nzOkText]="'Այո'" nz-popconfirm (nzOnConfirm)="finishOrder(data)"
+                                                    nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ավարտել"
+                                                    nzPopconfirmPlacement="bottom" class="d-flex">
+                                                    <button nz-button nzType="primary">{{data.status
+                                                        ==
+                                                        'done'?'Ավարտված':'Ավարտել'}}</button>
+                                                </a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -496,11 +504,13 @@
                                                             {{checkAddress2(moderator)}}</span></td>
                                                     <td>{{getOrderType(moderator?.order?.order_type)}}</td>
                                                     <td>{{moderator?.order?.person_count}}</td>
-                                                    <td> <label [disabled]="moderator.order.canceled_by_client"
+                                                    <td> <label
+                                                            [disabled]="moderator.order.canceled_by_client || orderStatus =='done'"
                                                             nz-checkbox [(ngModel)]="moderator.isSelect"></label>
                                                     </td>
                                                     <td class="delete action-button">
-                                                        <a [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
+                                                        <a *ngIf="orderStatus !== 'done'" [nzCancelText]="'Ոչ'"
+                                                            [nzOkText]="'Այո'" nz-popconfirm
                                                             nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
                                                             nzPopconfirmPlacement="bottom"
                                                             (nzOnConfirm)="removeAndCancelOrder(moderator,ind)">
@@ -532,7 +542,7 @@
                                     </div>
                                     <div *nzModalFooter>
                                         <button nz-button nzType="default" (click)="handleCancel()">Փակել</button>
-                                        <button *ngIf="!timeItem.isDisabled" nz-button nzType="primary"
+                                        <button *ngIf="!timeItem.isDisabled && orderStatus !== 'done'" nz-button nzType="primary"
                                             (click)="onOrderSave()">Հաստատել</button>
                                     </div>
                                 </nz-modal>

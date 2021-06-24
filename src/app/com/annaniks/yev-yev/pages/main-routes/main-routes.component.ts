@@ -437,7 +437,7 @@ export class MainRoutesComponent {
         if (this.subRouteInfo.start_point_is_static) {
             return moderator.end_address ? moderator.end_address : 'Հասցե չկա'
         } else {
-            if (this.subRouteInfo.end_point_is_static) {                
+            if (this.subRouteInfo.end_point_is_static) {
                 return moderator.start_address ? moderator.start_address : 'Հասցե չկա'
             } else {
                 return (moderator.start_address || moderator.end_address) ? `${moderator.start_address} - ${moderator.end_address}` : 'Հասցե չկա'
@@ -457,6 +457,7 @@ export class MainRoutesComponent {
         this.isEditing = false;
         this.editIndex = null;
         this.isOrderEditing = false;
+        this.orderStatus=''
         this.editOrderIndex = null;
         this.isVisibleOrderInfo = false;
         this.orderMembers = []
@@ -660,6 +661,7 @@ export class MainRoutesComponent {
         this.isEditing = false;
         this.editIndex = null;
         this.isOrderEditing = false;
+        this.orderStatus=''
         this.editOrderIndex = null;
         this.isVisibleOrderInfo = false;
         this.orderMembers = []
@@ -746,7 +748,8 @@ export class MainRoutesComponent {
 
         return calculateCount
     }
-    public onEditOrder(index) {
+    public onEditOrder(index, moderator) {
+
         this.showModal()
         this.isEditing = true;
         this.editIndex = index;
@@ -773,7 +776,12 @@ export class MainRoutesComponent {
             isFree: info.is_free,
             isExtra: info.is_extra_order
         })
-        this.userId = info.user
+
+        this.userId = info.user;
+        if (moderator.is_in_approved_orders || this.timeItem.isDisabled
+        ) {
+            this.validateForm.disable()
+        }
     }
     selectCheckbox($event, index) {
         let type = this.userInfo[index].order_type;
@@ -796,9 +804,9 @@ export class MainRoutesComponent {
             }
         }
     }
-
-    public onEditOrderMembers(index) {
-
+    public orderStatus:string;
+    public onEditOrderMembers(index, status: string) {
+        this.orderStatus = status;
         this.isOrderEditing = true;
         this.editOrderIndex = index;
         this.orderMembers = this.approvedOrders[this.editOrderIndex].approved_order_orders;
@@ -848,7 +856,7 @@ export class MainRoutesComponent {
         if (this.subRouteInfo.start_point_is_static) {
             return moderator.order && moderator.order.end_address ? moderator.order.end_address : 'Հասցե չկա'
         } else {
-            if (this.subRouteInfo.end_point_is_static) {                
+            if (this.subRouteInfo.end_point_is_static) {
                 return moderator.order && moderator.order.start_address ? moderator.order.start_address : 'Հասցե չկա'
             } else {
                 return (moderator.order && (moderator.order.start_address || moderator.order.end_address)) ? `${moderator.order.start_address} - ${moderator.order.end_address}` : 'Հասցե չկա'
@@ -876,7 +884,9 @@ export class MainRoutesComponent {
             this.modalTitle = ''
         }
     }
-
+    setTimeLabel(time): string {
+        return this.subRouteInfo.start_point_is_static ? time.start : time.time
+    }
     openCalendar($event) {
         this.isOpenCalendar = true;
         if ($event) {
