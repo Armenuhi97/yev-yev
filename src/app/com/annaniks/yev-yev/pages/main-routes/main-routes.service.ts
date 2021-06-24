@@ -34,7 +34,7 @@ export class MainRoutesService {
     }
     public getCloseHours(subRouteId: number, date: string) {
 
-        return this._httpClient.get(`route/closed-hour/?sub_route=${subRouteId}&date=${date}`)
+        return this._httpClient.get(`route/closed-hour/?sub_route=${subRouteId}&date=${date}&offset=0&limit=1000`)
     }
    
     public closeHours(subrouteId: number, date) {
@@ -49,7 +49,7 @@ export class MainRoutesService {
 
     public getBlockedHours(subRouteId: number, date: string) {
 
-        return this._httpClient.get(`route/blocked-hour/?sub_route=${subRouteId}&date=${date}`)
+        return this._httpClient.get(`route/blocked-hour/?sub_route=${subRouteId}&date=${date}&offset=0&limit=1000`)
     }
     public blockHour(subrouteId: number, date) {
         return this._httpClient.post(`route/blocked-hour/`, {

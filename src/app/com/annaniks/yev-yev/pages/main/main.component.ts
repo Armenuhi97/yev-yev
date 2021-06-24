@@ -6,7 +6,6 @@ import { forkJoin, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { Notification } from "../../core/models/notification";
 import { MainService } from "./main.service";
-import { Howl, Howler } from 'howler';
 
 @Component({
     selector: 'app-main',
