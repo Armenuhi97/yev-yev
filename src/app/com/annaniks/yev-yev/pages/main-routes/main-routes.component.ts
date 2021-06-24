@@ -108,14 +108,15 @@ export class MainRoutesComponent {
         this._getDoneRoutes()
     }
     private _getDoneRoutes() {
-        let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
-        let offset = (this.doneRoutesPageIndex - 1) * 10;
-        this._mainRouteService.getDoneRoutes(this.driverSubroutes.id, date, offset).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any>) => {
-            this.totalDoneRoutes = data.count
-            this.doneRoutes = data.results;
-            this.doneRoutes.sort((a: any, b: any) =>
-                new Date(a.date).getTime() - new Date(b.date).getTime()
-            );
+        // let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
+        // let offset = (this.doneRoutesPageIndex - 1) * 10;
+        this._mainRouteService.getDoneRoutes(this.driverSubroutes.id).pipe(takeUntil(this.unsubscribe$)).subscribe((data:any[]) => {
+           
+            // this.totalDoneRoutes = data.count
+            this.doneRoutes = data;
+            // this.doneRoutes.sort((a: any, b: any) =>
+            //     new Date(a.date).getTime() - new Date(b.date).getTime()
+            // );
         })
     }
     isInteger(event) {

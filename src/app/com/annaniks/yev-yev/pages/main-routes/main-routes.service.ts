@@ -124,7 +124,8 @@ export class MainRoutesService {
                 "order_id": orderId
             })
     }
-    public getDoneRoutes(subrouteId:number,date,offset){
-        return this._httpClient.get(`order/approved-order/?sub_route_id=${subrouteId}&date=${date}&status=done&limit=1000&offset=${offset}`)
+    public getDoneRoutes(subrouteId:number){
+        // return this._httpClient.get(`order/approved-order/?sub_route_id=${subrouteId}&date=${date}&status=done&limit=1000&offset=${offset}`)
+        return this._httpClient.get(`order/get-current-drivers/${subrouteId}/`)
     }
 }

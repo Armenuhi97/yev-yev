@@ -42,9 +42,7 @@
             </div>
             <nz-modal nzWidth="880px" (nzOnCancel)="handleCancelDoneOrders()" [(nzVisible)]="isShowDriverRoutes">
                 <div *nzModalContent>
-                    <nz-table nzBordered [nzFrontPagination]="false" [nzData]="doneRoutes"
-                        (nzPageIndexChange)="nzDoneOrderPageIndexChange($event)" [nzTotal]="totalDoneRoutes"
-                        [nzPageSize]="pageSize" [nzPageIndex]="doneRoutesPageIndex" [nzFrontPagination]="false">
+                    <nz-table nzBordered [nzFrontPagination]="false" [nzData]="doneRoutes">
                         <thead>
                             <tr>
                                 <th>N</th>
@@ -58,10 +56,10 @@
                         <tbody>
                             <tr *ngFor="let order of doneRoutes;let ind=index">
                                 <td>{{ind+1}}</td>
-                                <td>{{order.date | date:'HH:mm'}}</td>
-                                <td>{{order.driver_details.user.first_name}}
-                                    {{order.driver_details.user.last_name}}</td>
-                                <td>{{order.driver_details.car_model}} - {{order.driver_details.car_capacity}}</td>
+                                <td>{{order.last_order_date | date:'dd-MM-yyyy HH:mm'}}</td>
+                                <td>{{order.user.first_name}}
+                                    {{order.user.last_name}}</td>
+                                <td>{{order.car_model}} - {{order.car_capacity}}</td>
                                 <td>{{order.seat_count}}</td>
                             </tr>
                         </tbody>
@@ -542,8 +540,8 @@
                                     </div>
                                     <div *nzModalFooter>
                                         <button nz-button nzType="default" (click)="handleCancel()">Փակել</button>
-                                        <button *ngIf="!timeItem.isDisabled && orderStatus !== 'done'" nz-button nzType="primary"
-                                            (click)="onOrderSave()">Հաստատել</button>
+                                        <button *ngIf="!timeItem.isDisabled && orderStatus !== 'done'" nz-button
+                                            nzType="primary" (click)="onOrderSave()">Հաստատել</button>
                                     </div>
                                 </nz-modal>
 
