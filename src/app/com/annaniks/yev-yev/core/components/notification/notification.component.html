@@ -12,8 +12,10 @@
             (click)="setSeenNotification(item.id)" class="d-flex items" routerLink="/dashboard/main-routes"
             [queryParams]="sendQueryParams(item)" *ngFor="let item of notifications">
             <div class="item">{{item.order_details.date | date:'dd.MM.yyyy HH:mm'}}</div>
-            <div class="item">{{item.type == 'created' && item.order_details.status !== 'canceled'?"Նոր
-                պատվեր":"Չեղարկված պատվեր"}}</div>
+            <div class="item">({{item?.order_details?.person_count}})</div>
+            <div class="item">{{item?.order_details?.client_details?.phone_number}}</div>
+            <!-- <div class="item">{{item.type == 'created' && item.order_details.status !== 'canceled'?"Նոր
+                պատվեր":"Չեղարկված պատվեր"}}</div> -->
         </div>
     </div>
 

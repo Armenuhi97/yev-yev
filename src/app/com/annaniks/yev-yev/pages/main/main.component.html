@@ -37,54 +37,7 @@
             </div>
             <app-notification  (seenNotification)="setSeenNotification($event)" [notification]="notifications"></app-notification>
             <app-notification (seenNotification)="setSeenNotification($event)"  [type]="'pending'" [notification]="pendiningNotification"></app-notification>
-            <!-- <div (clickOutside)="closeNotificationItem()" (click)="openNotificationItem()"
-                class="notification d-flex align-items-center">
-                <nz-badge [nzCount]="notifications.length">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                        class="bi bi-bell-fill" viewBox="0 0 16 16">
-                        <path
-                            d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z" />
-                    </svg>
-                </nz-badge>
-                <div *ngIf="isOpenNotification" class="notification-item">
-                    <div [ngClass]="{'created':item.order_details.status == 'approved','canceled':item.order_details.status == 'canceled','pending':item.order_details.status == 'pending'}"
-                        (click)="setSeenNotification(item.id)" class="d-flex items" routerLink="/dashboard/main-routes"
-                        [queryParams]="sendQueryParams(item)" *ngFor="let item of notifications">
-                        <div class="item">{{item.order_details.date | date:'dd.MM.yyyy HH:mm'}}</div>
-                        <div class="item">{{item.type == 'created'?"Նոր պատվեր":"Չեղարկված պատվեր"}}</div>
-                    </div>
-                </div>
-                  
-            </div> -->
-
-            <!-- <div (clickOutside)="closePendingNotificationItem()" (click)="openPendingNotificationItem()"
-            class="notification pending-notification d-flex align-items-center">
-            <nz-badge [nzCount]="pendiningNotification.length">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                    class="bi bi-bell-fill" viewBox="0 0 16 16">
-                    <path
-                        d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z" />
-                </svg>
-            </nz-badge>
-            <div *ngIf="isOpenPendingNotification" class="notification-item">
-                <div [ngClass]="{'created':item.order_details.status == 'approved','canceled':item.order_details.status == 'canceled','pending':item.order_details.status == 'pending'}"
-                    (click)="setSeenNotification(item.id)" class="d-flex items" routerLink="/dashboard/main-routes"
-                    [queryParams]="sendQueryParams(item)" *ngFor="let item of pendiningNotification">
-                    <div class="item">{{item.order_details.date | date:'dd.MM.yyyy HH:mm'}}</div>
-                    <div class="item">Նոր պատվեր</div>
-                </div>
-            </div>
-              
-        </div> -->
-
-            <!-- <div *ngIf="isOpenPendingNotification" class="notification-item">
-                    <div [ngClass]="{'pending':item.order_details.status == 'pending'}"
-                        (click)="setSeenNotification(item.id)" class="d-flex items" routerLink="/dashboard/main-routes"
-                        [queryParams]="sendQueryParams(item)" *ngFor="let item of pendingNotifications">
-                        <div class="item">{{item.order_details.date | date:'dd.MM.yyyy HH:mm'}}</div>
-                        <div class="item">{{item.type == 'created'?"Նոր պատվեր":"Չեղարկված պատվեր"}}</div>
-                    </div>
-                </div> -->
+            
         </div>
     </mat-toolbar>
 

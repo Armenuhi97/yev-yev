@@ -16,9 +16,15 @@
             overflow: hidden;
         }
     }
-    .ant-table-pagination.ant-pagination{
+    .ant-table-pagination.ant-pagination {
         display: none !important;
         margin: 0 !important;
+    }
+    tr:nth-child(odd) td:first-child {
+        background-color: #e6af18;
+    }
+    tr:nth-child(even) td:first-child {
+        background-color: #2caf2d;
     }
 }
 :host:ng-deep {
@@ -39,6 +45,9 @@
 }
 .current-time {
     background-color: #2caf2d;
+    td {
+        color: white !important;
+    }
 }
 .active {
     background-color: #2caf2d !important;

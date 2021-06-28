@@ -24,13 +24,15 @@ import { MainRoutesService } from "./main-routes.service";
     providers: [DatePipe]
 })
 export class MainRoutesComponent {
+    public searchControl = new FormControl(null)
     driverSubroutes;
     public modalTitle: string;
     doneRoutes = [];
     pageSize = 10;
     selectIndex: number;
     isGetItem: boolean = false;
-    userInfo: OrdersByHours[] = []
+    userInfo: OrdersByHours[] = [];
+    fullUserInfo: OrdersByHours[] = [];
     currentDriver = []
     isVisibleOrderInfo: boolean = false;
     isOrderEditing: boolean = false;
@@ -88,6 +90,10 @@ export class MainRoutesComponent {
         this.combine();
         this._initForm();
     }
+    search() {
+        let value = this.searchControl.value ? this.searchControl.value.trim() : null
+        this.userInfo = this.fullUserInfo.filter((data) => { return data.phone_number.includes(value) == true })
+    }
     handleCancelDoneOrders() {
         this.doneRoutes = []
         this.isShowDriverRoutes = false;
@@ -110,8 +116,8 @@ export class MainRoutesComponent {
     private _getDoneRoutes() {
         // let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
         // let offset = (this.doneRoutesPageIndex - 1) * 10;
-        this._mainRouteService.getDoneRoutes(this.driverSubroutes.id).pipe(takeUntil(this.unsubscribe$)).subscribe((data:any[]) => {
-           
+        this._mainRouteService.getDoneRoutes(this.driverSubroutes.id).pipe(takeUntil(this.unsubscribe$)).subscribe((data: any[]) => {
+
             // this.totalDoneRoutes = data.count
             this.doneRoutes = data;
             // this.doneRoutes.sort((a: any, b: any) =>
@@ -458,7 +464,7 @@ export class MainRoutesComponent {
         this.isEditing = false;
         this.editIndex = null;
         this.isOrderEditing = false;
-        this.orderStatus=''
+        this.orderStatus = ''
         this.editOrderIndex = null;
         this.isVisibleOrderInfo = false;
         this.orderMembers = []
@@ -621,11 +627,13 @@ export class MainRoutesComponent {
 
             return this._mainRouteService.getOrdersByHour(this.subRouteInfo.id, current, status).pipe(takeUntil(this.unsubscribe$),
                 switchMap((data: OrdersByHours[]) => {
-                    this.userInfo = data;
-                    this.userInfo = this.userInfo.map((val) => {
+                    data = data.map((val) => {
                         let isSelect = val.is_in_approved_orders ? true : false
                         return Object.assign({}, val, { is_in_approved_orders: val.is_in_approved_orders, isSelect: isSelect, isDisabled: false })
                     })
+                    this.fullUserInfo = data
+                    this.userInfo = data;
+
                     this.isGetItem = true;
                     return this.getApprovedOrders()
                 }))
@@ -662,7 +670,7 @@ export class MainRoutesComponent {
         this.isEditing = false;
         this.editIndex = null;
         this.isOrderEditing = false;
-        this.orderStatus=''
+        this.orderStatus = ''
         this.editOrderIndex = null;
         this.isVisibleOrderInfo = false;
         this.orderMembers = []
@@ -792,7 +800,6 @@ export class MainRoutesComponent {
                 if ((item.order_type == 0 || item.order_type == 2) && (+id !== +item.id)) {
                     // item.isSelect = false;
                     item.isDisabled = $event ? true : false
-
                 }
             } else {
                 if (type == 0) {
@@ -805,7 +812,7 @@ export class MainRoutesComponent {
             }
         }
     }
-    public orderStatus:string;
+    public orderStatus: string;
     public onEditOrderMembers(index, status: string) {
         this.orderStatus = status;
         this.isOrderEditing = true;
@@ -893,6 +900,7 @@ export class MainRoutesComponent {
         if ($event) {
             this.radioValue = 'approved'
             this.userInfo = [];
+            this.fullUserInfo = []
             this.isOpenInfo = false;
             this.isGetItem = true
             this.subRouteInfos = this.subRouteInfos.map((el) => {

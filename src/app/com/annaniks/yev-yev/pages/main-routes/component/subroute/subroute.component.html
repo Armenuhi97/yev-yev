@@ -32,7 +32,7 @@
                 </td>
                 <td (click)="getInformation(data)">{{check(data.approved_seat_count)}}</td>
                 <td (click)="getInformation(data)"> {{check(data.pending_seat_count)}}</td>
-                <td (click)="getInformation(data)">{{check(data.seat_count) - check(data.approved_seat_count)}}</td>
+                <td (click)="getInformation(data)">{{calculateEmptyCount(data)}}</td>
                 <td (click)="getInformation(data)">{{check(data.luggage_type_count)}}</td>
             </tr>
         </tbody>

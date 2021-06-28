@@ -252,9 +252,12 @@ export class SubrouteComponent {
     }
 
     check(item) {
-        return item ? +item : 0
+        return item ? +item : ''
     }
-
+    calculateEmptyCount(data){
+        let emptyPlaces=(+this.check(data.seat_count) - +this.check(data.approved_seat_count))
+        return emptyPlaces?emptyPlaces:''
+    }
     getInformation(time) {
         this.selectedTime = time.time;
 
