@@ -191,7 +191,7 @@
                                                 </nz-form-item>
                                             </div>
                                             <div nz-col [nzSpan]="12">
-                                                <nz-form-label class="inline-labels" nzRequired>Ուղևորի հեռախոսահամար
+                                                <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար
                                                 </nz-form-label>
                                                 <nz-form-item>
                                                     <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
@@ -204,10 +204,13 @@
                                                                 </nz-select>
                                                             </ng-template>
                                                             <input maxLength="8" nz-input OnlyNumber
-                                                                formControlName="order_phone_number" type="text"
+                                                                formControlName="phone_number" type="text"
                                                                 placeholder="" />
                                                         </nz-input-group>
                                                     </nz-form-control>
+                                                    <span class="error" *ngIf="isShowError">Նշված հեռախոսահամարով ուղևոր
+                                                        չի
+                                                        գտնվել</span>
                                                 </nz-form-item>
                                             </div>
                                         </div>
@@ -247,8 +250,9 @@
                                                     </nz-form-control>
                                                 </nz-form-item>
                                             </div>
+
                                             <div nz-col [nzSpan]="12">
-                                                <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար
+                                                <nz-form-label class="inline-labels" nzRequired>Ուղևորի հեռախոսահամար
                                                 </nz-form-label>
                                                 <nz-form-item>
                                                     <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
@@ -261,13 +265,10 @@
                                                                 </nz-select>
                                                             </ng-template>
                                                             <input maxLength="8" nz-input OnlyNumber
-                                                                formControlName="phone_number" type="text"
+                                                                formControlName="order_phone_number" type="text"
                                                                 placeholder="" />
                                                         </nz-input-group>
                                                     </nz-form-control>
-                                                    <span class="error" *ngIf="isShowError">Նշված հեռախոսահամարով ուղևոր
-                                                        չի
-                                                        գտնվել</span>
                                                 </nz-form-item>
                                             </div>
                                         </div>
@@ -290,7 +291,7 @@
                                             </div>
                                         </div>
                                         <!-- *ngIf="!isEditing" -->
-                                        
+
                                         <!-- <div>Երթի տվյալներ</div> -->
                                         <div nz-row [nzGutter]="24">
                                             <div nz-col [nzSpan]="12">
