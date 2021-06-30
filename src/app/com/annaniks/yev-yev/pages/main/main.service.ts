@@ -5,7 +5,6 @@ import { Notification } from "../../core/models/notification";
 import { ServerResponce } from '../../core/models/server-reponce';
 import { RouteItem } from '../../core/models/routes.model';
 import { CookieService } from 'ngx-cookie-service';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +30,10 @@ export class MainService {
   }
   public setSeenNotification(id: number) {
     return this.httpClient.get(`notifications/set-seen/${id}/`)
+  }
+  public setSeenAllNotification(){
+    return this.httpClient.get(`notifications/set-all-seen/`)
+
   }
   public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
     let offset = (page - 1) * 10;

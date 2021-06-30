@@ -119,11 +119,18 @@ export class MainComponent {
         // notification.order_details.status
         return params
     }
-    setSeenNotification(id: number) {
-        this._mainService.setSeenNotification(id).pipe(takeUntil(this.unsubscribe$),
+    setSeenNotification(id: number | string) {
+        if (id == 'all') {
+            this._mainService.setSeenAllNotification().pipe(takeUntil(this.unsubscribe$),
             switchMap(() => {
                 return forkJoin(this._getUnseenPendingNotifications(), this._getUnseenNotifications())
             })).subscribe()
+        } else {
+            this._mainService.setSeenNotification(+id).pipe(takeUntil(this.unsubscribe$),
+                switchMap(() => {
+                    return forkJoin(this._getUnseenPendingNotifications(), this._getUnseenNotifications())
+                })).subscribe()
+        }
     }
     ngOnDestroy(): void {
         this.unsubscribe$.next();

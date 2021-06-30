@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { CookieService } from "ngx-cookie-service";
 import { Notification } from "../../models/notification";
 
 @Component({
@@ -18,8 +19,11 @@ export class NotificationComponent {
     set setType($event: string) {
         this.type = $event
     }
-    @Output('seenNotification') _seen = new EventEmitter()
-    constructor() { }
+    @Output('seenNotification') _seen = new EventEmitter();
+    role: string
+    constructor(private _cookieService: CookieService) {
+        this.role = this._cookieService.get('role')
+    }
     closeNotificationItem() {
         this.isOpenNotification = false
     }
@@ -28,6 +32,10 @@ export class NotificationComponent {
     }
     setSeenNotification(id: number) {
         this._seen.emit(id)
+    }
+    setSeenAllNotification() {
+        this._seen.emit('all')
+
     }
     sendQueryParams(notification: Notification) {
         let params = {
@@ -38,4 +46,5 @@ export class NotificationComponent {
         }
         return params
     }
+
 }
