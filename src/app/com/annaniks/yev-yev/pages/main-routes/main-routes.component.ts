@@ -559,21 +559,23 @@ export class MainRoutesComponent {
         if (this.isEditing) {
             let date = this._formatDate(this.validateForm.get('time').value, this.validateForm.get('date').value)
             let editResponse = {
-                "comment": this.validateForm.get('comment').value,
-                "sub_route": this.subRouteInfo.id,
-                "date": date,
-                "person_count": this.validateForm.get('personCount').value,
-                "start_address": this.validateForm.get('startPointAddress').value,
-                "start_langitude": '',
-                "start_latitude": '',
-                "end_address": this.validateForm.get('endPointAddress').value,
-                "end_langitude": '',
-                "end_latitude": '',
-                "is_free": this.checkIsNull(this.validateForm.get('isFree').value),
-                "is_extra_order": this.checkIsNull(this.validateForm.get('isExtra').value),
-                "user": this.userId ? this.userId : null,
-                "order_phone_number": this.validateForm.get('order_phone_number').value ? '+374' + this.validateForm.get('order_phone_number').value : null,
-                "order_type": this.validateForm.get('orderType').value,
+                comment: this.validateForm.get('comment').value,
+                sub_route: this.subRouteInfo.id,
+                date: date,
+                person_count: this.validateForm.get('personCount').value,
+                start_address: this.validateForm.get('startPointAddress').value,
+                start_langitude: '',
+                start_latitude: '',
+                end_address: this.validateForm.get('endPointAddress').value,
+                end_langitude: '',
+                end_latitude: '',
+                is_free: this.checkIsNull(this.validateForm.get('isFree').value),
+                is_extra_order: this.checkIsNull(this.validateForm.get('isExtra').value),
+                user: this.userId ? this.userId : null,
+                order_phone_number: this.validateForm.get('order_phone_number').value ? '+374' + this.validateForm.get('order_phone_number').value : null,
+                order_type: this.validateForm.get('orderType').value,
+                id_admin: true,
+                change_status: this._appService.checkPropertyValue(this.validateForm.get('isChangeStatus'), 'value', false)
             }
             this.sendEditRequest(this.userInfo[this.editIndex].id, editResponse);
 
