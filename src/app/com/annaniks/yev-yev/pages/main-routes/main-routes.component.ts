@@ -574,7 +574,7 @@ export class MainRoutesComponent {
                 user: this.userId ? this.userId : null,
                 order_phone_number: this.validateForm.get('order_phone_number').value ? '+374' + this.validateForm.get('order_phone_number').value : null,
                 order_type: this.validateForm.get('orderType').value,
-                id_admin: true,
+                is_admin: true,
                 change_status: this._appService.checkPropertyValue(this.validateForm.get('isChangeStatus'), 'value', false)
             }
             this.sendEditRequest(this.userInfo[this.editIndex].id, editResponse);
@@ -650,7 +650,7 @@ export class MainRoutesComponent {
         this._mainRouteService.changeOrder(id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
             this.nzMessages.success(Messages.success)
             this.closeModal();
-            if (this.radioValue == 'pending') {
+            if (this.radioValue == 'pending' && this.validateForm.get('isChangeStatus').value) {
                 this._mainRouteService.changeOrderStatus(id).subscribe(() => {
                     this.getInfo(this.selectedTime).subscribe()
                 })
