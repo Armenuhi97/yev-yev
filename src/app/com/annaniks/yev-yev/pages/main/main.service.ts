@@ -22,8 +22,23 @@ export class MainService {
     formData.append('file_url', file);
     return this.httpClient.post<{ url: string }>(`files/files/`, formData);
   }
-  public getUnseenNotifications(): Observable<Notification[]> {
-    return this.httpClient.get<Notification[]>(`notifications/get-unseen-notifications-without-pendings/`)
+
+  public getUnseenNotificationCount(): Observable<{ count: number }> {
+    return this.httpClient.get<{ count: number }>(`notifications/get-unseen-notifications-without-pendings-count/`)
+  }
+  public getUnseenPendingNotificationCount(): Observable<{ count: number }> {
+    return this.httpClient.get<{ count: number }>(`notifications/get-unseen-pending-notifications-count/`)
+  }
+
+  public getUnseenNotifications(type?: string, page?: number): Observable<ServerResponce<Notification[]>> {
+    let url: string;
+    if (type == 'pending') {
+      url = `notifications/get-unseen-pending-notifications/`
+    } else {
+      url = `notifications/get-unseen-notifications-without-pendings/`
+    }
+    url += `&limit=10&offset=${page}`
+    return this.httpClient.get<ServerResponce<Notification[]>>(url)
   }
   public getUnseenPendingNotifications(): Observable<Notification[]> {
     return this.httpClient.get<Notification[]>(`notifications/get-unseen-pending-notifications/`)
@@ -31,7 +46,7 @@ export class MainService {
   public setSeenNotification(id: number) {
     return this.httpClient.get(`notifications/set-seen/${id}/`)
   }
-  public setSeenAllNotification(){
+  public setSeenAllNotification() {
     return this.httpClient.get(`notifications/set-all-seen/`)
 
   }

@@ -6,9 +6,10 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ClickOutsideModule } from 'ng-click-outside';
 import { NotificationComponent } from "../../core/components/notification/notification.component";
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
     declarations: [MainComponent, NotificationComponent],
-    imports: [SharedModule, ClickOutsideModule, MainRoutingModule, MatToolbarModule, MatSidenavModule]
+    imports: [SharedModule,InfiniteScrollModule, ClickOutsideModule, MainRoutingModule, MatToolbarModule, MatSidenavModule]
 })
 export class MainModule { }

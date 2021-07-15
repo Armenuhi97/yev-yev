@@ -35,8 +35,8 @@
             <div class="item" (click)="logOut()" mat-button>
                 <span>Ելք</span>
             </div>
-            <app-notification  (seenNotification)="setSeenNotification($event)" [notification]="notifications"></app-notification>
-            <app-notification (seenNotification)="setSeenNotification($event)"  [type]="'pending'" [notification]="pendiningNotification"></app-notification>
+            <app-notification [count]="notificationCount"  (seenNotification)="setSeenNotification($event)" ></app-notification>
+            <app-notification [count]="pendingCount" (seenNotification)="setSeenNotification($event)"  [type]="'pending'" ></app-notification>
             
         </div>
     </mat-toolbar>

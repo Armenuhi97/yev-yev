@@ -30,6 +30,8 @@ export class MainComponent {
     isOpenNotification: boolean = false;
     notifications: Notification[] = [];
     extraOrderCount: number;
+    pendingCount: number;
+    notificationCount: number;
     isOpenPendingNotification: boolean = false;
     pendiningNotification: Notification[] = []
     constructor(private _router: Router, private _datePipe: DatePipe, private _mainService: MainService, private _cookieService: CookieService) {
@@ -50,11 +52,21 @@ export class MainComponent {
     }
     private _getCounts() {
         const combine = forkJoin(
-            this._getUnseenNotifications(),
-            this._getUnseenPendingNotifications(),
-            this._getExtrarderCount()
+            // this._getUnseenNotifications(),
+            // this._getUnseenPendingNotifications(),
+            this._getExtrarderCount(),
+            this._getUnseenNotificationCount(),
+            this._getPendingNotificationCount()
         )
         combine.pipe(takeUntil(this.unsubscribe$)).subscribe()
+    }
+    private _getUnseenNotificationCount() {
+        return this._mainService.getUnseenNotificationCount().pipe(
+            map((data: { count: number }) => {
+                this.notificationCount = data.count;
+                return data
+            })
+        )
     }
     private _getExtrarderCount() {
         return this._mainService.getExtraOrdersCount().pipe(
@@ -64,35 +76,49 @@ export class MainComponent {
             })
         )
     }
-
-    private _getUnseenNotifications() {
-        return this._mainService.getUnseenNotifications().pipe(
-            map((data: Notification[]) => {
-                if (this.notifications.length !== data.length) {
-                    // setTimeout(() => {
-                    //    this.playAudio()
-                    // }, 1000);                 
-
-                }
-                this.notifications = data
-            }))
-    }
-    playAudio() {
-        var audio = new Audio('../../../../assets/notification.mp3');
-        audio.play()
-    }
-    public _getUnseenPendingNotifications() {
-        return this._mainService.getUnseenPendingNotifications().pipe(
-            map((data: Notification[]) => {
-                this.pendiningNotification = data
-                if (this.pendiningNotification.length && this.pendiningNotification.length !== data.length) {
+    private _getPendingNotificationCount() {
+        return this._mainService.getUnseenPendingNotificationCount().pipe(
+            map((data: { count: number }) => {
+                if (this.pendingCount !== data.count) {
                     setTimeout(() => {
                         this.playAudio()
                     }, 1000);
 
                 }
-            }))
+                this.pendingCount = data.count;
+                return data
+            })
+        )
     }
+
+    // private _getUnseenNotifications() {
+    //     return this._mainService.getUnseenNotifications().pipe(
+    //         map((data: Notification[]) => {
+    //             if (this.notifications.length !== data.length) {
+    //                 // setTimeout(() => {
+    //                 //    this.playAudio()
+    //                 // }, 1000);                 
+
+    //             }
+    //             this.notifications = data
+    //         }))
+    // }
+    playAudio() {
+        var audio = new Audio('../../../../assets/notification.mp3');
+        audio.play()
+    }
+    // public _getUnseenPendingNotifications() {
+    //     return this._mainService.getUnseenPendingNotifications().pipe(
+    //         map((data: Notification[]) => {
+    //             this.pendiningNotification = data
+    //             if (this.pendiningNotification.length && this.pendiningNotification.length !== data.length) {
+    //                 setTimeout(() => {
+    //                     this.playAudio()
+    //                 }, 1000);
+
+    //             }
+    //         }))
+    // }
     formatDate(date) {
         let selectDate = new Date(date);
         this._datePipe.transform(selectDate, 'dd.MM.yyyy HH:mm')
@@ -122,13 +148,15 @@ export class MainComponent {
     setSeenNotification(id: number | string) {
         if (id == 'all') {
             this._mainService.setSeenAllNotification().pipe(takeUntil(this.unsubscribe$),
-            switchMap(() => {
-                return forkJoin(this._getUnseenPendingNotifications(), this._getUnseenNotifications())
-            })).subscribe()
+                switchMap(() => {
+                    return forkJoin(this._getUnseenNotificationCount(),
+                        this._getPendingNotificationCount())
+                })).subscribe()
         } else {
             this._mainService.setSeenNotification(+id).pipe(takeUntil(this.unsubscribe$),
                 switchMap(() => {
-                    return forkJoin(this._getUnseenPendingNotifications(), this._getUnseenNotifications())
+                    return forkJoin(this._getUnseenNotificationCount(),
+                        this._getPendingNotificationCount())
                 })).subscribe()
         }
     }
