@@ -1,9 +1,9 @@
 <!-- <div class="title-container"> -->
-<div class="w-98" nz-row [nzGutter]="24">
-    <div nz-col [nzSpan]="12">
+<div class="title-container">
+    <div>
         <h1>Ուղևորներ</h1>
     </div>
-    <div class="d-flex align-items-center" nz-col [nzSpan]="6">
+    <div class="d-flex align-items-center">
         <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
             <input type="text" [formControl]="search" nz-input placeholder="Հեռ․" />
         </nz-input-group>
@@ -11,23 +11,23 @@
             <button (click)="searchUser()" nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
         </ng-template>
     </div>
-    <div class="d-flex align-items-center" nz-col [nzSpan]="6">
+    <div class="d-flex align-items-center">
         <button class="add-essence" nz-button nzType="primary" (click)="showModal()">
             Ավելացնել ուղևոր
         </button>
     </div>
 </div>
 <!-- </div> -->
-<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" nzTableLayout="fixed" [nzTotal]="total"
+<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)"  [nzTotal]="total"
     [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="clientTable">
     <thead>
         <tr>
-            <th style="width:80px">N</th>
+            <th style="width:10px">N</th>
             <th>Անուն</th>
             <th>Ազգանուն</th>
             <th>Հեռ.</th>
-            <th nzSortFn="true"  nzSortPriority="1" (nzSortOrderChange)="sort($event,'approved_count')">Հաստատված</th>
-            <th nzSortFn="true"  nzSortPriority="2" (nzSortOrderChange)="sort($event,'canceled_count')">Չեղարկված</th>
+            <th nzSortFn="true" nzSortPriority="1" (nzSortOrderChange)="sort($event,'approved_count')">Հաստատված</th>
+            <th nzSortFn="true" nzSortPriority="2" (nzSortOrderChange)="sort($event,'canceled_count')">Չեղարկված</th>
             <th></th>
             <th></th>
         </tr>
