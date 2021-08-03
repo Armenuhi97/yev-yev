@@ -1,9 +1,9 @@
 import { DatePipe } from "@angular/common";
-import { Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NzMessageService } from "ng-zorro-antd/message";
-import { forkJoin, of, Subject, throwError } from "rxjs";
+import { forkJoin, Observable, of, Subject, throwError } from "rxjs";
 import { catchError, map, switchMap, takeUntil } from "rxjs/operators";
 import { Messages } from "../../core/models/mesages";
 import { OrderResponse } from "../../core/models/order";
@@ -299,7 +299,6 @@ export class MainRoutesComponent {
                 this.subRouteInfos = data.results;
                 this.getWorkTimes()
                 this.isGetItem = true
-                // return this.getHourlyOrdersByDate(id)
             }))
     }
     getWorkTimes() {
@@ -532,16 +531,14 @@ export class MainRoutesComponent {
                 map(() => {
                     this.driver = null
                     this.getInfo(this.selectedTime).subscribe()
-                    // return forkJoin([this.getApprovedOrders(),
-                    //     this.getHourlyOrdersByDate()])
+                    
                 })).subscribe()
         }
     }
     public onDeleteApprovedOrder(index) {
         this._mainRouteService.deleteApprovedOrder(this.approvedOrders[index].id).pipe(takeUntil((this.unsubscribe$)),
             map(() => {
-                // return forkJoin([this.getApprovedOrders(),
-                //     this.getHourlyOrdersByDate()])
+            
                 this.getInfo(this.selectedTime).subscribe()
             })).subscribe()
     }
@@ -643,8 +640,12 @@ export class MainRoutesComponent {
             return of()
         }
     }
+
     resetItem($event) {
         this.isGetItem = $event
+    }
+    formatItem(value){
+        return new Observable(value)
     }
     sendEditRequest(id, sendObject) {
         this._mainRouteService.changeOrder(id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
@@ -909,7 +910,6 @@ export class MainRoutesComponent {
                 return Object.assign({}, el, { selectTime: null })
             })
             this.getWorkTimes()
-            // this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
         }
     }
 
@@ -927,7 +927,6 @@ export class MainRoutesComponent {
             return Object.assign({}, el, { selectTime: null })
         })
         this.getWorkTimes()
-        // this.getHourlyOrdersByDate(this.currentId).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     getDay(): string {
         if (this.selectedDate && this.selectedDate.value) {

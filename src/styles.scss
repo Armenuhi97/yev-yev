@@ -38,13 +38,22 @@ td {
 .ant-modal {
     top: 50px !important;
 }
-*{
+.ant-pagination {
+    flex-wrap: wrap;
+    li{
+        margin-top: 2px;
+    }
+}
+.ant-table-content{
+    overflow: auto;
+}
+* {
     outline: none !important;
 }
 // .add-order-modal {
-    .ant-modal-body {
-        padding: 9px 13px !important;
-    }
+.ant-modal-body {
+    padding: 9px 13px !important;
+}
 // }
 .sm-ant {
     .ant-form-item {

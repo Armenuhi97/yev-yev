@@ -8,9 +8,7 @@
         </svg>
     </nz-badge>
     <div *ngIf="isOpenNotification && count > 0" class="notification-item">
-
-
-        <div  infiniteScroll infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
+        <div  infiniteScroll  [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
             [fromRoot]="true"
             infiniteScrollContainer=".notification-item" (scrolled)="onScroll()" [scrollWindow]="false">
             <ng-container *ngIf="notifications.length > 0">

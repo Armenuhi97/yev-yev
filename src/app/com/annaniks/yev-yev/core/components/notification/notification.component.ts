@@ -4,6 +4,7 @@ import { Subject } from "rxjs";
 import { finalize, takeUntil } from "rxjs/operators";
 import { MainService } from "../../../pages/main/main.service";
 import { Notification } from "../../models/notification";
+import { LoaderService } from "../../services/loaders.service";
 
 @Component({
     selector: 'app-notification',
@@ -20,8 +21,8 @@ export class NotificationComponent {
     public scrollUpDistance = 2
     isOpenNotification: boolean = false;
     notifications: Notification[] = [];
-    @Input('count')  count: number;
-    
+    @Input('count') count: number;
+
     public type: string
     @Input('type')
     set setType($event: string) {
@@ -30,7 +31,8 @@ export class NotificationComponent {
     @Output('seenNotification') _seen = new EventEmitter();
     role: string
     constructor(private _cookieService: CookieService,
-        private _mainService: MainService
+        private _mainService: MainService,
+        private _loaderService: LoaderService
     ) {
         this.role = this._cookieService.get('role')
     }
@@ -39,11 +41,26 @@ export class NotificationComponent {
         this.pageIndex = 1;
         this.notifications = []
     }
-    async openNotificationItem(isHide?: boolean) {
+
+    public openNotificationItem() {
+        this.isOpenNotification = !this.isOpenNotification;
+        if (this.isOpenNotification) {
+            this.pageIndex = 1;
+            this.notifications = [];
+            this._loaderService.setHttpProgressStatus(true)
+            this.getNotifications(true)
+        }
+    }
+
+    async getNotifications(isHide?: boolean) {
+
         this.infiniteScrollDisabled = true;
         const data = await this._mainService.getUnseenNotifications(this.type, (this.pageIndex - 1) * 10)
             .pipe(takeUntil(this.unsubscribe$),
                 finalize(() => {
+                    if (isHide) {
+                        this._loaderService.setHttpProgressStatus(false)
+                    }
                 })
             ).toPromise()
 
@@ -51,15 +68,13 @@ export class NotificationComponent {
 
         this.pageIndex++;
         this.infiniteScrollDisabled = false;
-        if (!isHide) {
-            this.isOpenNotification = !this.isOpenNotification
-        }
+
     }
     public async onScroll() {
-        if (this.pageIndex > this.count) {
+        if (this.notifications.length >= this.count) {
             return;
         }
-        this.openNotificationItem(true);
+        this.getNotifications();
     }
     setSeenNotification(id: number) {
         this._seen.emit(id)
