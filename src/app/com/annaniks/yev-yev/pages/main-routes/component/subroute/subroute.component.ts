@@ -130,20 +130,7 @@ export class SubrouteComponent {
             ]).pipe(switchMap(() => {
                 return this.getHourlyOrdersByDate()
             })).subscribe()
-
-            //     this.getClosedHours(this.subrouteInfo.id).pipe(
-            //     switchMap(() => {
-            //         //     if (this.isOpenInfo && this.selectedTime) {
-            //         //         return this.getInfo(this.selectedTime)
-            //         //     } else {
-            //         //         return of()
-            //         //     }
-            //         return this.getHourlyOrdersByDate()
-            //     })
-
-            // ).subscribe()
         }
-
 
 
     }
@@ -158,7 +145,10 @@ export class SubrouteComponent {
         this._onResize()
     }
 
-    ngOnInit() { }
+    ngOnInit() { 
+        console.log(11111);
+        
+    }
 
 
     getHourlyOrdersByDate() {
@@ -181,8 +171,6 @@ export class SubrouteComponent {
                                     seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'seat_count', 0),
                                     luggage_type_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'luggage_type_count', 0),
                                 })
-
-
                             }
                         }
                     }
@@ -261,7 +249,7 @@ export class SubrouteComponent {
     getInformation(time) {
         this.selectedTime = time.time;
 
-        this._info.emit({ timeItem: time, time: time.time })
+        this._info.emit({ timeItem: time, time: time.time,isUnChange:true })
         // this.getInfo(time, status).subscribe()
     }
 

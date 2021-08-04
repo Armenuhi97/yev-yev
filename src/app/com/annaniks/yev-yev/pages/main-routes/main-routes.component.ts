@@ -146,8 +146,6 @@ export class MainRoutesComponent {
                         this.selectIndex = index;
                     }
 
-
-
                     this.selectedDate.setValue(new Date(param.date))
                     this.currentId = +param.mainRoute;
                     this.isGetFunction = false;
@@ -531,14 +529,14 @@ export class MainRoutesComponent {
                 map(() => {
                     this.driver = null
                     this.getInfo(this.selectedTime).subscribe()
-                    
+
                 })).subscribe()
         }
     }
     public onDeleteApprovedOrder(index) {
         this._mainRouteService.deleteApprovedOrder(this.approvedOrders[index].id).pipe(takeUntil((this.unsubscribe$)),
             map(() => {
-            
+
                 this.getInfo(this.selectedTime).subscribe()
             })).subscribe()
     }
@@ -619,7 +617,9 @@ export class MainRoutesComponent {
             })
 
     }
-    getInfo(time, status = this.radioValue) {
+    getInfo(time, status = this.radioValue, isChange = true) {
+        console.log(this.radioValue);
+        
         if (time) {
             this.isOpenInfo = true;
             let current = this._formatDate(time);
@@ -632,8 +632,9 @@ export class MainRoutesComponent {
                     })
                     this.fullUserInfo = data
                     this.userInfo = data;
-
-                    this.isGetItem = true;
+                    if (isChange) {
+                        this.isGetItem = true;
+                    }
                     return this.getApprovedOrders()
                 }))
         } else {
@@ -644,7 +645,7 @@ export class MainRoutesComponent {
     resetItem($event) {
         this.isGetItem = $event
     }
-    formatItem(value){
+    formatItem(value) {
         return new Observable(value)
     }
     sendEditRequest(id, sendObject) {
@@ -890,7 +891,8 @@ export class MainRoutesComponent {
             let time = this.subRouteInfo.start_point_is_static ? this.timeItem.start : this.selectedTime;
             this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this._datePipe.transform(this.selectedDate.value, 'dd-MM-yyyy')} ${this.getDay()} ${time}`
             this.radioValue = 'approved'
-            this.getInfo($event.time).pipe(takeUntil(this.unsubscribe$)).subscribe()
+            let isUnChange = $event.isUnChange ? false : true;
+            this.getInfo($event.time, null, isUnChange).pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
             this.modalTitle = ''
         }
@@ -898,7 +900,7 @@ export class MainRoutesComponent {
     setTimeLabel(time): string {
         return this.subRouteInfo.start_point_is_static ? time.start : time.time
     }
-    openCalendar($event) {
+    openCalendar($event?) {
         this.isOpenCalendar = true;
         if ($event) {
             this.radioValue = 'approved'

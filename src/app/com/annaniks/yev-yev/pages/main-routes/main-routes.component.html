@@ -1,7 +1,7 @@
 <div class="main-route-tab">
     <nz-tabset class="main-routes" [nzSelectedIndex]="selectIndex" (nzSelectedIndexChange)="onChangeTab($event)">
 
-        <nz-tab *ngFor="let item of mainRoutes" [nzTitle]="item.route_name">
+        <nz-tab *ngFor="let route of mainRoutes;let ind=index" [nzTitle]="route.route_name">
             <div class="d-flex font-30 m-bottom-15 align-items-center justify-content-center">
                 {{getDay()}}
                 <div class="cursor-pointer d-flex" (click)="changeDate(-1)"><svg xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +35,7 @@
                             Տեսնել վարորդներին
                         </button></div>
 
-                    <app-subroute [selectInfo]="selectInfo"  [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)"
+                    <app-subroute *ngIf="selectIndex == ind" [selectInfo]="selectInfo"  [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)"
                         [index]="i" [info]="item" (resetItem)="resetItem($event)" [date]="selectedDate.value">
                     </app-subroute>
                 </div>
