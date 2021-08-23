@@ -146,7 +146,6 @@ export class SubrouteComponent {
     }
 
     ngOnInit() { 
-        console.log(11111);
         
     }
 

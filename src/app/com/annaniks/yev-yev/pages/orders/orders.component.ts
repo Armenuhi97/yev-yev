@@ -13,18 +13,18 @@ import { OrdersService } from "./orders.service";
     selector: 'app-orders',
     templateUrl: 'orders.component.html',
     styleUrls: ['orders.component.scss'],
-    providers:[DatePipe]
+    providers: [DatePipe]
 })
 export class OrdersComponent {
     unsubscribe$ = new Subject();
     filterForm: FormGroup;
     mainRoutes: RouteItem[] = [];
-    public person:string;
-    public clientRoutes:DailyUserOrderType[];
-    public driverRoutes:DailyDriverOrderType;
+    public person: string;
+    public clientRoutes: DailyUserOrderType[];
+    public driverRoutes: DailyDriverOrderType;
     persons = [{ key: 'driver', name: 'Վարորդ' }, { key: 'client', name: 'Ուղևոր' }]
-    constructor(private _fb: FormBuilder, private _mainService: MainService, 
-        private _datePipe:DatePipe,
+    constructor(private _fb: FormBuilder, private _mainService: MainService,
+        private _datePipe: DatePipe,
         private _ordersService: OrdersService) { }
 
     ngOnInit() {
@@ -34,8 +34,8 @@ export class OrdersComponent {
 
     initFilterForm() {
         this.filterForm = this._fb.group({
-            date: [null, Validators.required],
-            person: [null, Validators.required],
+            date: [new Date(), Validators.required],
+            person: ['driver', Validators.required],
             mainRoute: [null, Validators.required]
         })
     }
@@ -44,26 +44,29 @@ export class OrdersComponent {
         this._mainService.getAllRoutes(1).pipe(
             takeUntil(this.unsubscribe$),
             map((data: ServerResponce<RouteItem[]>) => {
-                this.mainRoutes = data.results
+                this.mainRoutes = data.results;
+                if (this.mainRoutes && this.mainRoutes.length) {
+                    this.filterForm.get('mainRoute').setValue(this.mainRoutes[0].id)
+                }
             })
         ).subscribe()
     }
     getDailyOrders() {
-        let date=this._datePipe.transform(this.filterForm.get('date').value,'yyyy-MM-dd');
-        let mainRoute=this.filterForm.get('mainRoute').value;
-        this.person=this.filterForm.get('person').value;
+        let date = this._datePipe.transform(this.filterForm.get('date').value, 'yyyy-MM-dd');
+        let mainRoute = this.filterForm.get('mainRoute').value;
+        this.person = this.filterForm.get('person').value;
         if (this.filterForm.get('person').value == 'driver') {
-            this._ordersService.getDriverMainRouteDailyOrders(mainRoute,date).pipe(takeUntil(this.unsubscribe$)).subscribe((data:DailyDriverOrderType)=>{
-                this.driverRoutes=data
+            this._ordersService.getDriverMainRouteDailyOrders(mainRoute, date).pipe(takeUntil(this.unsubscribe$)).subscribe((data: DailyDriverOrderType) => {
+                this.driverRoutes = data
             })
-        }else{
-            this._ordersService.getMainRouteDailyOrders(mainRoute,date).pipe(takeUntil(this.unsubscribe$)).subscribe((data:DailyUserOrderType[])=>{
-                this.clientRoutes=data;
-                
+        } else {
+            this._ordersService.getMainRouteDailyOrders(mainRoute, date).pipe(takeUntil(this.unsubscribe$)).subscribe((data: DailyUserOrderType[]) => {
+                this.clientRoutes = data;
+
             })
         }
     }
-  
+
     ngOnDestroy() {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();

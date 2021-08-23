@@ -42,7 +42,6 @@ export class LoaderInterceptor implements HttpInterceptor {
   private isValidRequestForInterceptor(requestUrl: string): boolean {    
     // const positionIndicator = environment.API_URL;
     // const position = requestUrl.indexOf(positionIndicator);
-    // console.log(requestUrl);
     
     // if (position > 0) {
       const destination = requestUrl

@@ -1,5 +1,5 @@
 import { DatePipe } from "@angular/common";
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NzMessageService } from "ng-zorro-antd/message";
@@ -618,8 +618,7 @@ export class MainRoutesComponent {
 
     }
     getInfo(time, status = this.radioValue, isChange = true) {
-        console.log(this.radioValue);
-        
+
         if (time) {
             this.isOpenInfo = true;
             let current = this._formatDate(time);
@@ -892,7 +891,7 @@ export class MainRoutesComponent {
             this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this._datePipe.transform(this.selectedDate.value, 'dd-MM-yyyy')} ${this.getDay()} ${time}`
             this.radioValue = 'approved'
             let isUnChange = $event.isUnChange ? false : true;
-            this.getInfo($event.time, null, isUnChange).pipe(takeUntil(this.unsubscribe$)).subscribe()
+            this.getInfo($event.time, this.radioValue, isUnChange).pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
             this.modalTitle = ''
         }
