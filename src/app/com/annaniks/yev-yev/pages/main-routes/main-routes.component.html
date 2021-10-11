@@ -35,8 +35,9 @@
                             Տեսնել վարորդներին
                         </button></div>
 
-                    <app-subroute *ngIf="selectIndex == ind" [selectInfo]="selectInfo"  [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)"
-                        [index]="i" [info]="item" (resetItem)="resetItem($event)" [date]="selectedDate.value">
+                    <app-subroute *ngIf="selectIndex == ind" [selectInfo]="selectInfo" [isGetItem]="isGetItem"
+                        (getInfo)="getInformation($event,i)" [index]="i" [info]="item" (resetItem)="resetItem($event)"
+                        [date]="selectedDate.value">
                     </app-subroute>
                 </div>
             </div>
@@ -160,8 +161,7 @@
                                                         </svg>
                                                     </a>
                                                 </td>
-                                                <td><span class="error"> {{data?.date_has_changed?'Փոփոխված է':''}}</span></td>
-
+                                                <td><span *ngIf="data?.date_has_changed" class="error"> Փոփոխված է` {{ formatDate(data?.last_date)}}</span></td>
                                             </tr>
                                         </tbody>
                                     </nz-table>

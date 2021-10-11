@@ -679,6 +679,13 @@ export class MainRoutesComponent {
         this.orderMembers = []
 
     }
+    public formatDate(date:string){
+        if(date){
+            let formatDate=this._datePipe.transform(new Date(date),'YYYY-MM-dd HH:mm');
+            return formatDate
+        }
+        return
+    }
     addSelectedOrder(index) {
         let item = this.userInfo.filter((data) => { return (data.is_in_approved_orders == false && data.isSelect == true) });
         let orderIds = item.map((data) => {
