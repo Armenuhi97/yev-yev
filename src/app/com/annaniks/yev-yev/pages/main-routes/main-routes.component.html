@@ -113,6 +113,7 @@
                                                 <th></th>
                                                 <th *ngIf="radioValue == 'approved'"></th>
                                                 <th></th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -159,6 +160,8 @@
                                                         </svg>
                                                     </a>
                                                 </td>
+                                                <td><span class="error"> {{data?.date_has_changed?'Փոփոխված է':''}}</span></td>
+
                                             </tr>
                                         </tbody>
                                     </nz-table>
