@@ -149,7 +149,7 @@ export class MainRoutesComponent {
                     this.selectedDate.setValue(new Date(param.date))
                     this.currentId = +param.mainRoute;
                     this.isGetFunction = false;
-                    let time = this._datePipe.transform(param.date, 'HH:mm');
+                    let time = this._datePipe.transform(param.date, 'HH:mm');                    
                     return this.combineObservable(param.subRoute, time).pipe(
                         map(() => {
                             this.radioValue = param.status ? param.status : 'approved';
@@ -162,8 +162,7 @@ export class MainRoutesComponent {
                         })
                     )
                 } else {
-                    if (!this._param || (this._param && +this._param.mainRoute !== +this.currentId) || (+this._lastMainRouteId !== +this.currentId)) {
-
+                    if (!this._param || (this._param && +this._param.mainRoute !== +this.currentId) || (+this._lastMainRouteId !== +this.currentId)) {                        
                         this._lastMainRouteId = this.currentId;
                         return this.combineObservable()
                     } else {
@@ -284,7 +283,6 @@ export class MainRoutesComponent {
     getRouteInfo(id, subrouteId?, time?) {
         return this._mainRoutesService.getSubRoute(id).pipe(
             map((data: ServerResponce<any>) => {
-
                 if (subrouteId && time) {
                     data.results = data.results.map((data) => {
                         let selectTime;
@@ -376,15 +374,15 @@ export class MainRoutesComponent {
         this.userInfo = [];
         this.isOpenInfo = false;
         this.selectIndex = $event
-        this.currentId = this.mainRoutes[this.selectIndex].id;
+        this.subRouteInfos=[]
+        this.currentId = this.mainRoutes[this.selectIndex].id;        
         if (this.isGetFunction) {
             this._checkQueryParams().pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
             this.isGetFunction = true
         }
-
     }
-    combineObservable(subrouteId?: number, time?: string) {
+    combineObservable(subrouteId?: number, time?: string) {                
         const combine = forkJoin(
             this.getRouteInfo(this.currentId, subrouteId, time),
             this.getDrivers()

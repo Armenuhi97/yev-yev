@@ -1,8 +1,8 @@
 import { DatePipe } from "@angular/common";
 import { Component, EventEmitter, HostListener, Input, Output } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
-import { forkJoin, Observable, of, Subject } from "rxjs";
+import { forkJoin, Observable, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { ClosedHours } from "../../../../core/models/closed-hours";
 import { OrderType } from "../../../../core/models/order-type";
@@ -103,8 +103,6 @@ export class SubrouteComponent {
         }
     }
 
-
-
     isGetOrderCounts: boolean;
     @Input('isGetItem')
     set isGetItem($event) {
@@ -115,14 +113,14 @@ export class SubrouteComponent {
     }
     private _date;
     @Input('date')
-    set setDate($event) {
+    set setDate($event) {       
         this._date = $event;
         if (this._date) {
             this.currentInterval = null;
             if (!this.subrouteInfo.selectTime)
                 this.selectedTime = null;
         }
-        if (this.subrouteInfo && this._date) {
+        if (this.subrouteInfo && this._date) {            
             forkJoin([
                 this.getBlockedHours(this.subrouteInfo.id),
                 this.getClosedHours(this.subrouteInfo.id)
