@@ -401,7 +401,7 @@ export class MainRoutesComponent {
         )
     }
     changeStatus($event) {
-        this.getInfo(this.selectedTime, $event).subscribe()
+        this.getInfo(this.selectedTime, $event,false).subscribe()
     }
     public getApprovedOrders() {
         return this._mainRouteService.getAllAprovedOrders(this.subRouteInfo.id, this._formatDate(this.selectedTime)).pipe(
