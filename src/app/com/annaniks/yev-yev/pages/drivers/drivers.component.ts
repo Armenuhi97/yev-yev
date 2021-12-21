@@ -1,29 +1,29 @@
-import { Component } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { NzMessageService } from "ng-zorro-antd/message";
-import { forkJoin, of, Subject } from "rxjs";
-import { map, switchMap, takeUntil } from "rxjs/operators";
-import { CityItem } from "../../core/models/city.model";
-import { Messages } from "../../core/models/mesages";
-import { RouteItem } from "../../core/models/routes.model";
-import { SalaryRespone, User } from "../../core/models/salary";
-import { ServerResponce } from "../../core/models/server-reponce";
-import { ViberInfo } from "../../core/models/viber";
-import { AppService } from "../../core/services/app.service";
-import { MainService } from "../main/main.service";
-import { DriverService } from "./drivers.service";
+import { Component } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { forkJoin, of, Subject } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { CityItem } from '../../core/models/city.model';
+import { Messages } from '../../core/models/mesages';
+import { RouteItem } from '../../core/models/routes.model';
+import { SalaryRespone, User } from '../../core/models/salary';
+import { ServerResponce } from '../../core/models/server-reponce';
+import { ViberInfo } from '../../core/models/viber';
+import { AppService } from '../../core/services/app.service';
+import { MainService } from '../main/main.service';
+import { DriverService } from './drivers.service';
 @Component({
     selector: 'app-drivers',
     templateUrl: 'drivers.component.html',
     styleUrls: ['drivers.component.scss']
 })
 export class DriversComponent {
-    search = new FormControl('')
-    locatedCityControl = new FormControl('', Validators.required)
-    public isVisibleCityModal: boolean = false
+    search = new FormControl('');
+    locatedCityControl = new FormControl('', Validators.required);
+    public isVisibleCityModal: boolean = false;
     public activeTab: number = 0;
-    cities: CityItem[] = []
-    salaryTable: User[] = []
+    cities: CityItem[] = [];
+    salaryTable: User[] = [];
     pageSize: number = 10;
     unsubscribe$ = new Subject();
     total: number;
@@ -37,7 +37,7 @@ export class DriversComponent {
     item: User;
     addedRoutes = [];
     mainRouteFilerControl = new FormControl();
-    viberInfo: ViberInfo[] = []
+    viberInfo: ViberInfo[] = [];
     constructor(private _driverService: DriverService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
@@ -157,7 +157,7 @@ export class DriversComponent {
         this._driverService.getUserById(id).pipe(takeUntil(this.unsubscribe$),
             map((data: ServerResponce<User>) => {
                 if (data.results && data.results[0]) {
-                    this.item = data.results[0];                 
+                    this.item = data.results[0];
                     this.validateForm.patchValue({
                         first_name: this.item.user.first_name,
                         last_name: this.item.user.last_name,
@@ -197,9 +197,10 @@ export class DriversComponent {
         this.isVisibleCityModal = false;
         this.locatedCityControl.reset()
     }
+    
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
-        this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
+        this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
     }
     public onsalarySave() {
 

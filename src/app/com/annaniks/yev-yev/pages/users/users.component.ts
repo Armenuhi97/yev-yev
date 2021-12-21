@@ -165,6 +165,7 @@ export class UsersComponent {
         this.userName = null;
         this.sortItems = []
     }
+    
     sort(sort, key: string): void {        
         if (sort == 'ascend') {
 

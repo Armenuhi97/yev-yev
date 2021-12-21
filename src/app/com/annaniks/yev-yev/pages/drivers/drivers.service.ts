@@ -12,26 +12,26 @@ import { ViberInfo } from "../../core/models/viber";
 export class DriverService {
     constructor(private _httpClient: HttpClient) { }
 
-    getUsers(page: number, offset: number,search, mainRouteId?: number) {
-        if(!search){
-            search=''
+    getUsers(page: number, offset: number, search, mainRouteId?: number) {
+        if (!search) {
+            search = ''
         }
         let url = `userdetails/user/?search=&user_role__code=DR&page=${page}&limit=10&offset=${offset}&search=${search}`;
         if (mainRouteId) {
-            url += `&driving_routes__main_route=${mainRouteId}`
+            url += `&driving_routes__main_route=${mainRouteId}`;
         }
-        
-        return this._httpClient.get<ServerResponce<User[]>>(url)
+
+        return this._httpClient.get<ServerResponce<User[]>>(url);
     }
     public getUserById(userId: number) {
-        return this._httpClient.get(`userdetails/user/?search=&user_role__code=DR&id=${userId}`)
+        return this._httpClient.get(`userdetails/user/?search=&user_role__code=DR&id=${userId}`);
     }
     public getAllRoutes() {
 
-        return this._httpClient.get<ServerResponce<RouteItem[]>>('route/main-route/?only_my=True')
+        return this._httpClient.get<ServerResponce<RouteItem[]>>('route/main-route/?only_my=True');
     }
     public getDriverOfMainRoute(page: number, offset: number) {
-        return this._httpClient.get(`route/main-route-driver/?page=${page}&limit=10&offset=${offset}`)
+        return this._httpClient.get(`route/main-route-driver/?page=${page}&limit=10&offset=${offset}`);
     }
     public editUser(userId: number, body) {
         return this._httpClient.put(`userdetails/edit-user-details/${userId}/`, body)
@@ -55,8 +55,8 @@ export class DriverService {
     public getDriverViberInfo(): Observable<ViberInfo[]> {
         return this._httpClient.get<ViberInfo[]>(`userdetails/get-drivers-viber-info/`)
     }
-    public getOrders(driverId: number,page:number) {
-        let offset=(page-1)*10;
+    public getOrders(driverId: number, page: number) {
+        let offset = (page - 1) * 10;
         return this._httpClient.get(`order/approved-order/?driver_id=${driverId}&limit=10&offset=${offset}`)
     }
     public getAllCities(): Observable<ServerResponce<CityItem[]>> {

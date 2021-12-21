@@ -6,6 +6,9 @@ const mainRoutes: Routes = [{
     children: [
         { path: "", redirectTo: "driver", pathMatch: "full" },
         { path: 'settings', loadChildren: () => import('../settings/settings.module').then((m) => m.SettingsModule) },
+
+        { path: 'rating', loadChildren: () => import('../review/review.module').then((m) => m.ReviewngModule) },
+
         { path: 'moderator', loadChildren: () => import("../salaries/salaries.module").then((m => m.SalariesModule)) },
         { path: 'driver', loadChildren: () => import("../drivers/drivers.module").then((m => m.DriverModule)) },
         { path: 'user', loadChildren: () => import("../users/users.module").then((m => m.UsersModule)) },
