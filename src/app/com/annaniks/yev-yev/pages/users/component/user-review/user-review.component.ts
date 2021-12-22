@@ -2,16 +2,22 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { ReviewService } from '../../../review/review.service';
 
-@Component({
-  selector: 'app-rating',
-  templateUrl: './rating.component.html',
-  styleUrls: ['./rating.component.css']
-})
-export class RatingComponent implements OnInit {
 
-  @Input('userRating') userRating;
+@Component({
+  selector: 'app-user-review',
+  templateUrl: './user-review.component.html',
+  styleUrls: ['./user-review.component.css']
+})
+export class UserReviewComponent implements OnInit {
+
+  @Input('clientRating') clientRating;
   @Input('count') count;
-  @Input('editId') editId;
+  @Input('userId') userId;
+
+  ngOnInit(): void {
+  }
+
+
   public pageSize: number = 10;
   public pageIndex: number = 1;
   public limit: number = 10;
@@ -26,9 +32,6 @@ export class RatingComponent implements OnInit {
 
   constructor(private reviewService: ReviewService, private _httpClient: HttpClient) { }
 
-  ngOnInit(): void {
-  }
-
   nzPageIndexChange(page: number, ordered?): void {
     this.pageIndex = page;
     if (this.pageIndex === 1) {
@@ -36,16 +39,16 @@ export class RatingComponent implements OnInit {
     } else {
       this.offset = this.limit * this.pageIndex - this.limit;
     }
-
     this.getRatingResults();
   }
 
-  private getRatingResults(): void {
-    this._httpClient.get(`order/rating/?driver=${this.editId}&order__sub_route=&client=&ordering=&start_date=&end_date=&limit=${this.limit}&offset=${this.offset}&type=`)
-      .subscribe((res: any) => {
-        this.userRating = res.results;
-      });
-  }
+
+  public getRatingResults(): void {
+    this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=${this.userId}&ordering=&start_date=&end_date=&limit=${this.limit}&offset=${this.offset}&type=`)
+        .subscribe((res: any) => {
+             this.clientRating = res.results;
+        });
+}
 
   public sort($event): void {
     this.reate = $event;
@@ -59,4 +62,3 @@ export class RatingComponent implements OnInit {
   }
 
 }
-

@@ -1,9 +1,9 @@
 <nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" [nzTotal]="count" [nzPageSize]="pageSize"
-[nzPageIndex]="pageIndex" [nzFrontPagination]="false" #driverStar [nzData]="userRating">
+[nzPageIndex]="pageIndex" [nzFrontPagination]="false"  #driverStar [nzData]="clientRating">
     <thead>
         <tr>
             <th>N</th>
-            <th class="center">Ուղևոր</th>
+            <th class="center">Վարորդ</th>
             <th class="center">Վարկանիշ</th>
             <th class="center">Մեքենա</th>
             <th class="center">Սերվիս</th>
@@ -15,19 +15,19 @@
         </tr>
     </thead>
     <tbody >
-        <tr *ngFor = 'let user of userRating, let i = index'
-        [style.background-color]='user.rate_driver < 3 || user.rate_car < 3 || user.rate_service < 3 ? "#ff4d4f":"transparent"' >
+        <tr *ngFor = 'let client of clientRating, let i = index'
+        [style.background-color]='client.rate_driver < 3 || client.rate_car < 3 || client.rate_service < 3 ? "#ff4d4f":"transparent"'>
             <td >{{ (i + 1)+((pageIndex-1)*10) }}</td> 
             <td>
-                {{user.client.full_name}}
-                {{user.client.phone_number}}
+                {{client.driver.full_name}}
+                {{client.driver.phone_number}}   
             </td>
-            <td>{{user.rate_driver}}</td>
-            <td class="center">{{user.rate_car}}</td>
-            <td class="center">{{user.rate_service}}</td>
-            <td class="center">{{user.rate_avg}}</td>
-            <td class="center">{{user.comment}}</td>
-            <td>{{user.created_at|date:'short'}}</td>
+            <td>{{client.rate_driver}}</td>
+            <td class="center">{{client.rate_car}}</td>
+            <td class="center">{{client.rate_service}}</td>
+            <td class="center">{{client.rate_avg}}</td>
+            <td class="center">{{client.comment}}</td>
+            <td>{{client.created_at|date:'short'}}</td>
         </tr>
     </tbody>
 </nz-table>

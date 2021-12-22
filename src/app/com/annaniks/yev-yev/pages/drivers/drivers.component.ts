@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -38,11 +39,14 @@ export class DriversComponent {
     addedRoutes = [];
     mainRouteFilerControl = new FormControl();
     viberInfo: ViberInfo[] = [];
+    userRating: any = [];
+    count: number = 0;
     constructor(private _driverService: DriverService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
         private _appService: AppService,
-        private _fb: FormBuilder) {
+        private _fb: FormBuilder,
+        private _httpClient: HttpClient) {
     }
 
     ngOnInit() {
@@ -112,6 +116,9 @@ export class DriversComponent {
     }
     public onChangeTab($event) {
         this.activeTab = $event;
+        if (this.activeTab === 2) {
+            this.getRatingResults();
+        }
     }
     private _combineObsevable() {
         const combine = forkJoin(
@@ -149,7 +156,7 @@ export class DriversComponent {
     onEditsalary(index: number) {
         this.isEditing = true;
         this.editIndex = index;
-        this.editId = this.salaryTable[this.editIndex].id
+        this.editId = this.salaryTable[this.editIndex].id;
         this.getsalaryById(this.salaryTable[this.editIndex].id);
         this.showModal()
     }
@@ -197,7 +204,7 @@ export class DriversComponent {
         this.isVisibleCityModal = false;
         this.locatedCityControl.reset()
     }
-    
+
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
         this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
@@ -262,12 +269,18 @@ export class DriversComponent {
     public changeUserStatus($event, id: number) {
         this._driverService.editUser(id, { is_active: $event }).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
+
     public removeRoute($event) {
         this.addedRoutes.splice($event, 1)
     }
 
-
-
+    public getRatingResults(): void {
+        this._httpClient.get(`order/rating/?driver=${this.editId}&order__sub_route=&client=&ordering=&start_date=&end_date=&limit=&offset=&type=`)
+            .subscribe((res: any) => {
+                this.userRating = res.results;
+                this.count = res.count;
+            });
+    }
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();

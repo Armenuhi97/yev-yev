@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReviewService } from './review.service';
+import { differenceInCalendarDays } from 'date-fns';
 
 @Component({
   selector: 'app-review',
@@ -18,6 +19,7 @@ export class ReviewComponent implements OnInit {
   public offset: number = 0;
   public driversStar: any[] = [];
 
+  public today = new Date();
   private reate: string = '';
   private startDate: string = '';
   private endDate: string = '';
@@ -28,6 +30,9 @@ export class ReviewComponent implements OnInit {
     this.initFilterForm();
     this.nzPageIndexChange(this.pageIndex);
   }
+
+  disabledDate = (current: Date): boolean =>
+    differenceInCalendarDays(current, this.today) > 0
 
   private initFilterForm(): void {
     this.validateForm = this.fb.group({

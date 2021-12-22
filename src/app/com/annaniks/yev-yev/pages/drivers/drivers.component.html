@@ -225,8 +225,10 @@
         <nz-tab *ngIf="editId" [nzTitle]="'Ուղղություններ'">
             <app-routes-list [userId]="editId"></app-routes-list>
         </nz-tab>
+
+        <!--  -->
         <nz-tab [nzTitle]="'Վարկանիշ'">
-            <app-rating></app-rating>
+            <app-rating [userRating]="userRating" [count]='count' [editId]='editId'></app-rating>
         </nz-tab>
     </nz-tabset>
 </nz-modal>

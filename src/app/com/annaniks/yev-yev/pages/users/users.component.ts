@@ -1,3 +1,4 @@
+import { HttpClient } from "@angular/common/http";
 import { Component } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
@@ -29,10 +30,13 @@ export class UsersComponent {
     editIndex: number = null;
     public activeTab: number = 0;
     userName: string;
+    count: number = 0;
+    clientRating: any = [];
     constructor(private _userService: UsersService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
-        private _fb: FormBuilder) {
+        private _fb: FormBuilder,
+        private _httpClient: HttpClient) {
     }
 
     ngOnInit() {
@@ -74,7 +78,7 @@ export class UsersComponent {
     public getUsers(search?) {
         let ordering = this.sortItems && this.sortItems.length ? this.sortItems.join(',') : '';
 
-        return this._userService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, search,ordering).pipe(
+        return this._userService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, search, ordering).pipe(
             map((data: ServerResponce<Client[]>) => {
                 this.total = data.count;
                 this.clientTable = data.results;
@@ -165,8 +169,8 @@ export class UsersComponent {
         this.userName = null;
         this.sortItems = []
     }
-    
-    sort(sort, key: string): void {        
+
+    sort(sort, key: string): void {
         if (sort == 'ascend') {
 
             this._deleteKeyFromSort(`-${key}`)
@@ -206,11 +210,26 @@ export class UsersComponent {
     }
     public onChangeTab($event) {
         this.activeTab = $event;
+        if (this.activeTab === 2) {
+            this.getRatingResults();
+        }
+    }
+
+   
+    public getRatingResults(): void {
+        this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=${this.userId}&ordering=&start_date=&end_date=&limit=&offset=&type=`)
+            .subscribe((res: any) => {
+                this.clientRating = res.results;
+                this.count = res.count;
+            });
     }
 
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
+
+
+
 
 }
