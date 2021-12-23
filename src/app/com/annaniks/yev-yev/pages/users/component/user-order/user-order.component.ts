@@ -1,9 +1,11 @@
 import { DatePipe } from "@angular/common";
 import { Component, Input } from "@angular/core";
+import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { ServerResponce } from "../../../../core/models/server-reponce";
 import { UsersService } from "../../users.service";
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-user-order',
@@ -18,6 +20,7 @@ export class UserOrderComponent {
     pageSize: number = 10;
     unsubscribe$ = new Subject();
     userId: number;
+    index: number = 0;
     @Input('userId')
     set setOrders($event) {
         this.userId = $event;
@@ -25,20 +28,22 @@ export class UserOrderComponent {
             this.getOrders()
     }
     constructor(private _userService: UsersService,
-        private _datePipe: DatePipe) { }
+        private _datePipe: DatePipe, private router: Router,
+        private _httpClient: HttpClient) { }
 
     public getOrders() {
         this._userService.getOrders(this.userId, this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
             this.total = data.count;
             this.orders = data.results;
+
         })
     }
     transformDate(date) {
         return this._datePipe.transform(date, 'dd-MM-YYYY HH:mm')
     }
-  
+
     public checkAddress(data) {
-        if (data && data.sub_route_details) {            
+        if (data && data.sub_route_details) {
             if (data.sub_route_details.start_point_is_static) {
 
                 return data.end_address ? data.end_address : 'Հասցե չկա'
@@ -57,6 +62,12 @@ export class UserOrderComponent {
         this.pageIndex = page;
         this.getOrders()
     }
+
+    getAppovedOrder(index: number) {
+        this.index = this.orders[index].approved_order_details[0].approved_order.id;
+        this.router.navigate([`/dashboard/raiting-order/${this.index}`]);
+    }
+    
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();

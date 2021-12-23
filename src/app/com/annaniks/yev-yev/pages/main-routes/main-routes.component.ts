@@ -72,8 +72,10 @@ export class MainRoutesComponent {
     isShowDriverRoutes: boolean = false;
     totalDoneRoutes = 0;
     doneRoutesPageIndex = 1;
-    driverControl = new FormControl('', Validators.required)
-    constructor(private _mainRoutesService: MainRoutesService, private _datePipe: DatePipe,
+    index: number = 0;
+    driverControl = new FormControl('', Validators.required);
+    constructor(private _mainRoutesService: MainRoutesService,
+        private router: Router, private _datePipe: DatePipe,
         private _fb: FormBuilder,
         private _activatedRoute: ActivatedRoute,
         private _mainRouteService: MainRoutesService,
@@ -149,7 +151,7 @@ export class MainRoutesComponent {
                     this.selectedDate.setValue(new Date(param.date))
                     this.currentId = +param.mainRoute;
                     this.isGetFunction = false;
-                    let time = this._datePipe.transform(param.date, 'HH:mm');                    
+                    let time = this._datePipe.transform(param.date, 'HH:mm');
                     return this.combineObservable(param.subRoute, time).pipe(
                         map(() => {
                             this.radioValue = param.status ? param.status : 'approved';
@@ -162,7 +164,7 @@ export class MainRoutesComponent {
                         })
                     )
                 } else {
-                    if (!this._param || (this._param && +this._param.mainRoute !== +this.currentId) || (+this._lastMainRouteId !== +this.currentId)) {                        
+                    if (!this._param || (this._param && +this._param.mainRoute !== +this.currentId) || (+this._lastMainRouteId !== +this.currentId)) {
                         this._lastMainRouteId = this.currentId;
                         return this.combineObservable()
                     } else {
@@ -374,15 +376,15 @@ export class MainRoutesComponent {
         this.userInfo = [];
         this.isOpenInfo = false;
         this.selectIndex = $event
-        this.subRouteInfos=[]
-        this.currentId = this.mainRoutes[this.selectIndex].id;        
+        this.subRouteInfos = []
+        this.currentId = this.mainRoutes[this.selectIndex].id;
         if (this.isGetFunction) {
             this._checkQueryParams().pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
             this.isGetFunction = true
         }
     }
-    combineObservable(subrouteId?: number, time?: string) {                
+    combineObservable(subrouteId?: number, time?: string) {
         const combine = forkJoin(
             this.getRouteInfo(this.currentId, subrouteId, time),
             this.getDrivers()
@@ -401,7 +403,7 @@ export class MainRoutesComponent {
         )
     }
     changeStatus($event) {
-        this.getInfo(this.selectedTime, $event,false).subscribe()
+        this.getInfo(this.selectedTime, $event, false).subscribe()
     }
     public getApprovedOrders() {
         return this._mainRouteService.getAllAprovedOrders(this.subRouteInfo.id, this._formatDate(this.selectedTime)).pipe(
@@ -677,9 +679,9 @@ export class MainRoutesComponent {
         this.orderMembers = []
 
     }
-    public formatDate(date:string){
-        if(date){
-            let formatDate=this._datePipe.transform(new Date(date),'YYYY-MM-dd HH:mm');
+    public formatDate(date: string) {
+        if (date) {
+            let formatDate = this._datePipe.transform(new Date(date), 'YYYY-MM-dd HH:mm');
             return formatDate
         }
         return
@@ -947,6 +949,10 @@ export class MainRoutesComponent {
                 case (6): { return 'Շաբաթ' }
             }
         }
+    }
+    getApprovedId(index: number) {
+        this.index = this.approvedOrders[index].id;
+        this.router.navigate([`/dashboard/raiting-order/${this.index}`]);
     }
     ngOnDestroy() {
         this.unsubscribe$.next();

@@ -1,9 +1,11 @@
 import { DatePipe } from "@angular/common";
 import { Component, Input } from "@angular/core";
+import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { ServerResponce } from "../../../../core/models/server-reponce";
 import { DriverService } from "../../drivers.service";
+
 
 @Component({
     selector: 'app-routes-list',
@@ -18,26 +20,26 @@ export class RoutesListComponent {
     unsubscribe$ = new Subject();
     userId: number;
     @Input('userId')
-    set setOrders($event) {        
+    set setOrders($event) {
         this.userId = $event;
         if (this.userId)
             this.getOrders()
     }
     constructor(private _driverService: DriverService,
-        private _datePipe: DatePipe) { }
+        private _datePipe: DatePipe, private router: Router) { }
 
     public getOrders() {
         this._driverService.getOrders(this.userId, this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
             this.total = data.count;
-            
-            this.orders = data.results;            
+
+            this.orders = data.results;
         })
     }
     transformDate(date) {
         return this._datePipe.transform(date, 'dd-MM-YYYY HH:mm')
     }
     public checkAddress(data) {
-        if (data && data.sub_route_details) {            
+        if (data && data.sub_route_details) {
             if (data.sub_route_details.start_point_is_static) {
 
                 return data.end_address ? data.end_address : 'Հասցե չկա'
@@ -56,8 +58,14 @@ export class RoutesListComponent {
         this.pageIndex = page;
         this.getOrders()
     }
+
+
+    public getAppovedOrder(id: number): void {
+        this.router.navigate([`/dashboard/raiting-order/${id}`]);
+    }
+    
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
- }
+}
