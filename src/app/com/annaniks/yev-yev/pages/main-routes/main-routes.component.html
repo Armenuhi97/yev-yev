@@ -385,6 +385,8 @@
                                             <th>Վարորդ</th>
                                             <th>Մեքենայի մոդելը</th>
                                             <th>Տեղ․</th>
+                                            <th>
+                                            </th>
                                             <th></th>
                                             <th></th>
                                             <th></th>
@@ -393,9 +395,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr [ngClass]="{'color-red':isCanceledByClient(data)}" class="cursor-pointer"
+                                        <tr [ngClass]="{'color-red':isCanceledByClient(data)}"
                                             *ngFor="let data of approvedOrders; let index = index"
-                                            (click)='getApprovedId(index)'>
+                                            >
                                             <td>{{index+1}}</td>
                                             <td>{{data.driver_details.user.first_name}}
                                                 {{data.driver_details.user.last_name}}
@@ -407,6 +409,11 @@
                                                 {{data.driver_details.car_number}}
                                             </td>
                                             <td>{{data.driver_details.car_capacity}}/{{data.seat_count}}</td>
+                                            
+                                            <td 
+                                            class="cursor-pointer" (click)='getApprovedId(index)'>
+                                                <i nz-icon nzType="eye" nzTheme="outline"></i>
+                                            </td>
                                             <td class="action-button edit" style="width:10px">
                                                 <svg *ngIf="timeItem && !timeItem.isDisabled && data.status !== 'done'"
                                                     (click)="addSelectedOrder(index)" xmlns="http://www.w3.org/2000/svg"

@@ -18,13 +18,12 @@ export class MainComponent {
     public tabs = [
         { title: 'Վարորդներ', path: '/dashboard/driver' },
         { title: 'Ուղևորներ', path: '/dashboard/user' },
-
         { title: 'Վարկանիշ', path: '/dashboard/rating' },
-
         { title: 'Երթեր', path: '/dashboard/main-routes' },
         { title: 'Պատվերներ', path: '/dashboard/orders' },
         { title: 'Աշխատակիցներ', path: '/dashboard/moderator' },
         { title: 'Այլ', path: '/dashboard/other-orders' },
+        { title: '', path: '/dashboard/star' },
         { title: 'Տվյալներ', path: '/dashboard/moderator-settings' },
         { title: 'Կարգավորումներ', path: '/dashboard/settings' }
     ];

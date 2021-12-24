@@ -4,7 +4,7 @@
         <tr>
             <th>N</th>
             <th class="center">Ուղևոր</th>
-            <th class="center">Վարկանիշ</th>
+            <th class="center">Վարորդ</th>
             <th class="center">Մեքենա</th>
             <th class="center">Սերվիս</th>
             <th nzSortFn="true" (nzSortOrderChange)="sort($event)">
@@ -16,7 +16,7 @@
     </thead>
     <tbody >
         <tr *ngFor = 'let user of userRating, let i = index'
-        [style.background-color]='user.rate_driver < 3 || user.rate_car < 3 || user.rate_service < 3 ? "#ff4d4f":"transparent"' >
+        [style.background-color]='user.rate_driver < 4 || user.rate_car < 4 || user.rate_service < 4 ? "#ff4d4f":"transparent"' >
             <td >{{ (i + 1)+((pageIndex-1)*10) }}</td> 
             <td>
                 {{user.client.full_name}}
