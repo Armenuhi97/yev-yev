@@ -8,6 +8,7 @@ import { ServerResponce } from "../../core/models/server-reponce";
 import { DailyDriverOrderType, DailyUserOrderType } from "../../core/models/daily-order.model";
 import { differenceInCalendarDays } from 'date-fns';
 import { StarServiceService } from "./star-service.service";
+import { ReviewService } from "../review/review.service";
 
 @Component({
   selector: 'app-star',
@@ -33,14 +34,15 @@ export class StarComponent implements OnInit {
   public today = new Date();
 
   public optionRating: any[] = [
-    { value: 'rate_avg', title: 'Ընդհանուր' },
+    { value: 'rate_avg', title: 'Միջին' },
     { value: 'rate_car', title: 'Մեքենա' },
     { value: 'rate_service', title: 'Սերվիս' },
     { value: 'rate_driver', title: 'Վարորդ' }
   ];
   constructor(private _fb: FormBuilder,
     private _mainService: MainService,
-    private starService: StarServiceService
+    private starService: StarServiceService,
+    private reviewService: ReviewService
   ) { }
 
   ngOnInit() {
@@ -73,26 +75,10 @@ export class StarComponent implements OnInit {
     ).subscribe();
   }
 
-  private createDate(craiteDate: string): string {
-    if (this.filterForm.get(craiteDate)?.value !== null) {
-      const date = new Date(this.filterForm.get(craiteDate)?.value);
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      const hours = date.getHours();
-      const minut = date.getMinutes();
-      return `${year}-${month}-${day}%20${hours}:${minut}`;
-      //  return `${year}-${month}-${day}`;
-    }
-
-  }
-
-
-  keys: any[] = [];
   public submitForm() {
     if (this.filterForm.valid) {
-      const start = this.createDate('startDate');
-      const end = this.createDate('endDate');
+      const start = this.reviewService.createDate(this.filterForm.get('startDate').value);
+      const end = this.reviewService.createDate(this.filterForm.get('endDate').value);
       const id = this.filterForm.get('mainRoute').value;
       const limit = this.filterForm.get('size').value;
       this.rating = this.filterForm.get('rating').value;
@@ -103,10 +89,7 @@ export class StarComponent implements OnInit {
           if (!this.starRating.length) {
             this.isTable = true;
           }
-         this.keys =  this.optionRating.filter((item: any) =>  item.value !== this.rating);
-
         });
-
     }
   }
 

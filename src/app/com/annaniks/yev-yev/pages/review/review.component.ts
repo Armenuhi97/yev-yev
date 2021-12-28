@@ -43,23 +43,9 @@ export class ReviewComponent implements OnInit {
 
   }
 
-  private createDate(raiteDate: string): string {
-    if (this.validateForm.get(raiteDate)?.value !== null) {
-      const date = new Date(this.validateForm.get(raiteDate)?.value);
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      const hours = date.getHours();
-      const minut = date.getMinutes();
-      return `${year}-${month}-${day}%20${hours}:${minut}`;
-    }
-    return '';
-
-  }
-
   public submitForm(): void {
-    this.startDate = this.createDate('startDate');
-    this.endDate = this.createDate('endDate');
+    this.startDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
+    this.endDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
     this.type = this.validateForm.get('type')?.value;
     this.nzPageIndexChange(this.pageIndex, this.reate);
   }
@@ -72,10 +58,9 @@ export class ReviewComponent implements OnInit {
       this.offset = this.limit * this.pageIndex - this.limit;
     }
 
-    this.startDate = this.createDate('startDate');
-    this.endDate = this.createDate('endDate');
+    this.startDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
+    this.endDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
     this.type = this.validateForm.get('type')?.value;
-
     this.reviewgService.getDriversRatings(this.limit, this.offset, ordered, this.startDate, this.endDate, this.type).subscribe((rating: any) => {
       this.total = rating.count;
       this.driversStar = rating.results;

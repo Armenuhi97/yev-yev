@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,17 @@ export class ReviewService {
     );
   }
 
-
+  public createDate(validateForm: any): string {
+    if (validateForm !== null) {
+      const date = new Date(validateForm);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const hours = date.getHours();
+      const minut = date.getMinutes();
+      return `${year}-${month}-${day}%20${hours}:${minut}`;
+    }
+    return '';
+  }
 
 }
