@@ -77,8 +77,14 @@ export class StarComponent implements OnInit {
 
   public submitForm() {
     if (this.filterForm.valid) {
-      const start = this.reviewService.createDate(this.filterForm.get('startDate').value);
-      const end = this.reviewService.createDate(this.filterForm.get('endDate').value);
+      let start = this.reviewService.createDate(this.filterForm.get('startDate').value) + '%2000:00';
+      // let a = start.split('%');
+      // start = a[0] + '%2000:00';
+
+      let end = this.reviewService.createDate(this.filterForm.get('endDate').value) + '%2023:59';
+      // let b = end.split('%');
+      // end = b[0] + '%2023:59';
+
       const id = this.filterForm.get('mainRoute').value;
       const limit = this.filterForm.get('size').value;
       this.rating = this.filterForm.get('rating').value;

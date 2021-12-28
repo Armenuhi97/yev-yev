@@ -18,7 +18,7 @@ export class ReviewComponent implements OnInit {
   public limit: number = 10;
   public offset: number = 0;
   public driversStar: any[] = [];
-  public isTable: boolean = false;
+  // public isTable: boolean = false;
   public today = new Date();
   private reate: string = '';
   private startDate: string = '';
@@ -38,21 +38,16 @@ export class ReviewComponent implements OnInit {
     this.validateForm = this.fb.group({
       startDate: [null, [Validators.required]],
       endDate: [null, [Validators.required]],
-      type: [null]
+      type: ['']
     });
 
   }
 
   public submitForm(): void {
-    this.startDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
-    this.endDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
-    let a = this.startDate.split('%');
-    this.startDate = a[0]+'%2000:00';
-    let b = this.endDate.split('%');
-    this.endDate = b[0]+'%2023:59';
+    this.startDate = this.reviewgService.createDate(this.validateForm.get('startDate').value) + '%2000:00';
+    this.endDate = this.reviewgService.createDate(this.validateForm.get('startDate').value) + '%2023:59';
     this.type = this.validateForm.get('type')?.value;
     this.nzPageIndexChange(this.pageIndex, this.reate);
- 
   }
 
   nzPageIndexChange(page: number, ordered?): void {
@@ -65,17 +60,17 @@ export class ReviewComponent implements OnInit {
 
     this.startDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
     let a = this.startDate.split('%');
-    this.startDate = a[0]+'%2000:00';
-    this.endDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
+    this.startDate = a[0] + '%2000:00';
+    this.endDate = this.reviewgService.createDate(this.validateForm.get('endDate').value);
     let b = this.endDate.split('%');
-    this.endDate = b[0]+'%2023:59';
+    this.endDate = b[0] + '%2023:59';
     this.type = this.validateForm.get('type')?.value;
     this.reviewgService.getDriversRatings(this.limit, this.offset, ordered, this.startDate, this.endDate, this.type).subscribe((rating: any) => {
       this.total = rating.count;
       this.driversStar = rating.results;
-      if (!this.driversStar.length) {
-        this.isTable = true;
-      }
+      // if (!this.driversStar.length) {
+      //   this.isTable = true;
+      // }
 
     });
   }

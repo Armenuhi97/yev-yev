@@ -22,9 +22,10 @@ export class ReviewService {
       const year = date.getFullYear();
       const month = date.getMonth() + 1;
       const day = date.getDate();
-      const hours = date.getHours();
-      const minut = date.getMinutes();
-      return `${year}-${month}-${day}%20${hours}:${minut}`;
+      // const hours = date.getHours();
+      // const minut = date.getMinutes();
+      // return `${year}-${month}-${day}%20${hours}:${minut}`;
+      return `${year}-${month}-${day}`;
     }
     return '';
   }
