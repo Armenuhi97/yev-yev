@@ -1,5 +1,3 @@
-import { DatePipe } from "@angular/common";
-// import { ServerResponce } from "../../core/models/server-reponce";
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Subject } from "rxjs";
@@ -25,6 +23,7 @@ export class StarComponent implements OnInit {
   public offset: number = 0;
   public starRating: any[] = [];
   public rating: string = '';
+  public isTable: boolean = false;
   unsubscribe$ = new Subject();
   filterForm: FormGroup;
   mainRoutes: RouteItem[] = [];
@@ -32,6 +31,13 @@ export class StarComponent implements OnInit {
   public clientRoutes: DailyUserOrderType[];
   public driverRoutes: DailyDriverOrderType;
   public today = new Date();
+
+  public optionRating: any[] = [
+    { value: 'rate_avg', title: 'Ընդհանուր' },
+    { value: 'rate_car', title: 'Մեքենա' },
+    { value: 'rate_service', title: 'Սերվիս' },
+    { value: 'rate_driver', title: 'Վարորդ' }
+  ];
   constructor(private _fb: FormBuilder,
     private _mainService: MainService,
     private starService: StarServiceService
@@ -75,10 +81,14 @@ export class StarComponent implements OnInit {
       const day = date.getDate();
       const hours = date.getHours();
       const minut = date.getMinutes();
-      return `${year}-${month}-${day}`;
+      return `${year}-${month}-${day}%20${hours}:${minut}`;
+      //  return `${year}-${month}-${day}`;
     }
 
   }
+
+
+  keys: any[] = [];
   public submitForm() {
     if (this.filterForm.valid) {
       const start = this.createDate('startDate');
@@ -89,6 +99,12 @@ export class StarComponent implements OnInit {
       this.starService.getRatedDrivers(start, end, id, limit, this.rating)
         .subscribe((res: any) => {
           this.starRating = res;
+
+          if (!this.starRating.length) {
+            this.isTable = true;
+          }
+         this.keys =  this.optionRating.filter((item: any) =>  item.value !== this.rating);
+
         });
 
     }

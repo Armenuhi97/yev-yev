@@ -18,7 +18,7 @@ export class ReviewComponent implements OnInit {
   public limit: number = 10;
   public offset: number = 0;
   public driversStar: any[] = [];
-
+  public isTable: boolean = false;
   public today = new Date();
   private reate: string = '';
   private startDate: string = '';
@@ -79,6 +79,10 @@ export class ReviewComponent implements OnInit {
     this.reviewgService.getDriversRatings(this.limit, this.offset, ordered, this.startDate, this.endDate, this.type).subscribe((rating: any) => {
       this.total = rating.count;
       this.driversStar = rating.results;
+      if (!this.driversStar.length) {
+        this.isTable = true;
+      }
+
     });
   }
 
