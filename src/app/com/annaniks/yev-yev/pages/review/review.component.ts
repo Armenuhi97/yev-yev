@@ -58,12 +58,12 @@ export class ReviewComponent implements OnInit {
       this.offset = this.limit * this.pageIndex - this.limit;
     }
 
-    this.startDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
-    let a = this.startDate.split('%');
-    this.startDate = a[0] + '%2000:00';
-    this.endDate = this.reviewgService.createDate(this.validateForm.get('endDate').value);
-    let b = this.endDate.split('%');
-    this.endDate = b[0] + '%2023:59';
+    this.startDate = this.reviewgService.createDate(this.validateForm.get('startDate').value)  + '%2000:00';
+    // let a = this.startDate.split('%');
+    // this.startDate = a[0] + '%2000:00';
+    this.endDate = this.reviewgService.createDate(this.validateForm.get('endDate').value)  + '%2023:59';
+    // let b = this.endDate.split('%');
+    // this.endDate = b[0] + '%2023:59';
     this.type = this.validateForm.get('type')?.value;
     this.reviewgService.getDriversRatings(this.limit, this.offset, ordered, this.startDate, this.endDate, this.type).subscribe((rating: any) => {
       this.total = rating.count;
