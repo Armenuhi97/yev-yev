@@ -1,7 +1,9 @@
 <div class="driver">
     <p class="city">
+      
         {{appovedItems?.sub_route?.start_point_city?.name_hy}} -
         {{appovedItems?.sub_route?.end_point_city?.name_hy}}
+        
          <span>{{appovedItems?.date|date:'short'}}</span>
     </p>
     <p class="fullName">
@@ -31,9 +33,19 @@
         <tr *ngFor = 'let order of appovedItems?.approved_order_orders,let i = index'>
             <td class="center">{{ (i + 1)+((pageIndex-1)*10) }}</td>
             <td class="center">
-                {{order?.order?.user?.user?.first_name}}
-                {{order?.order?.user?.user?.last_name}} - 
-                {{order?.order?.person_count}}
+                <span 
+                *ngIf = 'order?.order?.user?.user?.first_name && order?.order?.user?.user?.last_name'>
+                    {{order?.order?.user?.user?.first_name}}
+                    {{order?.order?.user?.user?.last_name}} - 
+                </span>
+                <span
+                 *ngIf = '!order?.order?.user?.user?.first_name && !order?.order?.user?.user?.last_name' >
+                    մարդկանց քանակը -
+                </span>
+                <span>
+                    {{order?.order?.person_count}}
+                </span>
+               
                 
                 <p  [style.margin]='"0px"'>{{order?.order?.user?.phone_number}}</p>
             </td>

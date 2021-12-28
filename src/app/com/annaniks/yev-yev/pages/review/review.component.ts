@@ -46,8 +46,13 @@ export class ReviewComponent implements OnInit {
   public submitForm(): void {
     this.startDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
     this.endDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
+    let a = this.startDate.split('%');
+    this.startDate = a[0]+'%2000:00';
+    let b = this.endDate.split('%');
+    this.endDate = b[0]+'%2023:59';
     this.type = this.validateForm.get('type')?.value;
     this.nzPageIndexChange(this.pageIndex, this.reate);
+ 
   }
 
   nzPageIndexChange(page: number, ordered?): void {
@@ -59,7 +64,11 @@ export class ReviewComponent implements OnInit {
     }
 
     this.startDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
+    let a = this.startDate.split('%');
+    this.startDate = a[0]+'%2000:00';
     this.endDate = this.reviewgService.createDate(this.validateForm.get('startDate').value);
+    let b = this.endDate.split('%');
+    this.endDate = b[0]+'%2023:59';
     this.type = this.validateForm.get('type')?.value;
     this.reviewgService.getDriversRatings(this.limit, this.offset, ordered, this.startDate, this.endDate, this.type).subscribe((rating: any) => {
       this.total = rating.count;

@@ -64,8 +64,10 @@ export class UserOrderComponent {
     }
 
     getAppovedOrder(index: number) {
-        this.index = this.orders[index].approved_order_details[0].approved_order.id;
-        this.router.navigate([`/dashboard/raiting-order/${this.index}`]);
+       if(this.orders[index].approved_order_details.length){
+           this.index = this.orders[index]?.approved_order_details[0]?.approved_order?.id;
+           this.router.navigate([`/dashboard/raiting-order/${this.index}`]);
+        }
     }
     
     ngOnDestroy(): void {
