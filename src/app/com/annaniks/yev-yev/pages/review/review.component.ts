@@ -29,6 +29,7 @@ export class ReviewComponent implements OnInit {
   ngOnInit(): void {
     this.initFilterForm();
     this.nzPageIndexChange(this.pageIndex);
+
   }
 
   disabledDate = (current: Date): boolean =>
@@ -44,10 +45,28 @@ export class ReviewComponent implements OnInit {
   }
 
   public submitForm(): void {
-    this.startDate = this.reviewgService.createDate(this.validateForm.get('startDate').value) + '%2000:00';
-    this.endDate = this.reviewgService.createDate(this.validateForm.get('startDate').value) + '%2023:59';
+    this.startDate = this.reviewDate('startDate');
+    this.endDate = this.reviewDate('endDate');
     this.type = this.validateForm.get('type')?.value;
     this.nzPageIndexChange(this.pageIndex, this.reate);
+  }
+
+  private reviewDate(date: string): string {
+    let key = '';
+    if (date === 'startDate') {
+      if (this.validateForm.get(date).value) {
+        key = this.reviewgService.createDate(this.validateForm.get(date).value) + '%2000:00';
+      } else {
+        key = '';
+      }
+    } else {
+      if (this.validateForm.get(date).value) {
+        key = this.reviewgService.createDate(this.validateForm.get(date).value) + '%2023:59';
+      } else {
+        key = '';
+      }
+    }
+    return key;
   }
 
   nzPageIndexChange(page: number, ordered?): void {
@@ -58,16 +77,12 @@ export class ReviewComponent implements OnInit {
       this.offset = this.limit * this.pageIndex - this.limit;
     }
 
-    this.startDate = this.reviewgService.createDate(this.validateForm.get('startDate').value)  + '%2000:00';
-    this.endDate = this.reviewgService.createDate(this.validateForm.get('endDate').value)  + '%2023:59';
+    this.startDate = this.reviewDate('startDate');
+    this.endDate = this.reviewDate('endDate');
     this.type = this.validateForm.get('type')?.value;
     this.reviewgService.getDriversRatings(this.limit, this.offset, ordered, this.startDate, this.endDate, this.type).subscribe((rating: any) => {
       this.total = rating.count;
       this.driversStar = rating.results;
-      // if (!this.driversStar.length) {
-      //   this.isTable = true;
-      // }
-
     });
   }
 

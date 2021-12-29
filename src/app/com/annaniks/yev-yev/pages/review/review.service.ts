@@ -11,9 +11,16 @@ export class ReviewService {
 
 
 
-  public getDriversRatings(limit: number, offset: number, ordering: string = '', startDate: string = '', endDate: string = '', type = '') {
-    return this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=&ordering=${ordering}&start_date=${startDate}&end_date=${endDate}&limit=${limit}&offset=${offset}&type=${type}`//-rate
-    );
+  public getDriversRatings(limit: number, offset: number, ordering: string = '', startDate: string = ' ', endDate: string = ' ', type = '') {
+    if (startDate === ' ' || endDate === ' ') {
+      return this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=&ordering=${ordering}&start_date=&end_date=&limit=${limit}&offset=${offset}&type=${type}`//-rate
+      );
+    } else {
+      return this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=&ordering=${ordering}&start_date=${startDate}&end_date=${endDate}&limit=${limit}&offset=${offset}&type=${type}`//-rate
+      );
+    }
+
+
   }
 
   public createDate(validateForm: any): string {
