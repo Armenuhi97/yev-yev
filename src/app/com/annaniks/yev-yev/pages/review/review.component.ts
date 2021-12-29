@@ -80,19 +80,23 @@ export class ReviewComponent implements OnInit {
     this.startDate = this.reviewDate('startDate');
     this.endDate = this.reviewDate('endDate');
     this.type = this.validateForm.get('type')?.value;
-    this.reviewgService.getDriversRatings(this.limit, this.offset, ordered, this.startDate, this.endDate, this.type).subscribe((rating: any) => {
+    this.reviewgService.getDriversRatings(this.limit, this.offset, this.ordered, this.startDate, this.endDate, this.type).subscribe((rating: any) => {
       this.total = rating.count;
       this.driversStar = rating.results;
     });
   }
 
+  ordered:string = '';
   public sort($event): void {
     this.reate = $event;
     if (this.reate === 'ascend') {
-      this.nzPageIndexChange(this.pageIndex, '-rate_avg');
+      this.ordered = '-rate_avg';
+      this.nzPageIndexChange(this.pageIndex, this.ordered);
     } else if (this.reate === 'descend') {
-      this.nzPageIndexChange(this.pageIndex, 'rate_avg');
+      this.ordered = 'rate_avg';
+      this.nzPageIndexChange(this.pageIndex, this.ordered);
     } else if (this.reate === null) {
+      this.ordered = '';
       this.nzPageIndexChange(this.pageIndex, '');
     }
   }
