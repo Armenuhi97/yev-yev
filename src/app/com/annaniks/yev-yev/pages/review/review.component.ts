@@ -89,9 +89,9 @@ export class ReviewComponent implements OnInit {
   public sort($event): void {
     this.reate = $event;
     if (this.reate === 'ascend') {
-      this.nzPageIndexChange(this.pageIndex, '-rate');
+      this.nzPageIndexChange(this.pageIndex, '-rate_avg');
     } else if (this.reate === 'descend') {
-      this.nzPageIndexChange(this.pageIndex, 'rate');
+      this.nzPageIndexChange(this.pageIndex, 'rate_avg');
     } else if (this.reate === null) {
       this.nzPageIndexChange(this.pageIndex, '');
     }
