@@ -47,12 +47,13 @@
               <th  class="center">Ամսաթիվ</th>
           </tr>
       </thead>
-      <tbody >
+      <tbody>
           <tr *ngFor = 'let driver of driversStar,let i = index'
           [style.background-color]='driver.rate_driver < 4 || driver.rate_car < 4 || driver.rate_service < 4 ? "#ff4d4f":"transparent"'>
               <td  class="center">{{ (i + 1)+((pageIndex-1)*10) }}</td> 
-              <td  class="center">{{driver.driver.full_name}}</td>
-              <td  class="center">
+              <td  class="center"  (click)='goToDriver(driver.driver.id)' [style.cursor]="'pointer'"
+              >{{driver.driver.full_name}}</td>
+              <td  class="center" (click)='goToUser()'  [style.cursor]="'pointer'">
                   {{driver.client.full_name}}
                 <p [style.margin]='"0px"'> {{driver.client.phone_number}}</p>
               </td>

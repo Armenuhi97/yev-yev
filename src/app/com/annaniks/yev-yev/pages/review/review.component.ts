@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReviewService } from './review.service';
 import { differenceInCalendarDays } from 'date-fns';
+import { Router } from '@angular/router';
+
+
 
 @Component({
   selector: 'app-review',
@@ -24,7 +27,8 @@ export class ReviewComponent implements OnInit {
   private startDate: string = '';
   private endDate: string = '';
   private type: string = '';
-  constructor(public reviewgService: ReviewService, private fb: FormBuilder) { }
+  constructor(public reviewgService: ReviewService, private fb: FormBuilder,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.initFilterForm();
@@ -86,7 +90,7 @@ export class ReviewComponent implements OnInit {
     });
   }
 
-  ordered:string = '';
+  ordered: string = '';
   public sort($event): void {
     this.reate = $event;
     if (this.reate === 'ascend') {
@@ -101,6 +105,26 @@ export class ReviewComponent implements OnInit {
     }
   }
 
+  public goToUser(): void {
+    console.log('user');
+    // this.router.navigate([''])
+  }
+
+  public goToDriver(id: number) {
+    console.log('driver', id);
+    this.router.navigate([`/dashboard/driver-info/${id}`]);
+
+    // this.driverService.getUserById(id)
+    //   .subscribe((res: any) => {
+    //     console.log(res)
+    //   })
+
+    //  public getUserById(userId: number) {
+    //     return this._httpClient.get(`userdetails/user/?search=&user_role__code=DR&id=${userId}`);
+    // }
+
+    
+  }
 }
 
 

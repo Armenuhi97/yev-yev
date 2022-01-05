@@ -36,10 +36,11 @@ import { IconsProviderModule } from "src/app/icons.provider.module";
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzCalendarModule } from 'ng-zorro-antd/calendar';
 import { OnlyNumberDirective } from "../directives/onlyNumber.directive";
+import { DriverRoutesComponent } from "../../pages/drivers/component";
 
 @NgModule({
     declarations: [OnlyNumberDirective],
-    imports: [CommonModule,NzModalModule,NzIconModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, NzModalModule, NzIconModule, FormsModule, ReactiveFormsModule],
     exports: [CommonModule, FormsModule, ReactiveFormsModule,
         OnlyNumberDirective,
         NzCalendarModule,

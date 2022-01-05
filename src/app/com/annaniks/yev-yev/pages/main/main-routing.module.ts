@@ -9,8 +9,9 @@ const mainRoutes: Routes = [{
         { path: 'rating', loadChildren: () => import('../review/review.module').then((m) => m.ReviewngModule) },
         { path: 'raiting-order/:id', loadChildren: () => import('../rating-order/rating-order.module').then((m) => m.RatingOrderModule) },
 
-        { path: 'star', loadChildren: () => import('../star/star.module').then((m) => m.StarModule) },
+        {path: 'driver-info/:id', loadChildren: () => import('../drivers/component/driver-info/driver-info-routing.module').then((m) => m.DriverInfoRoutingModule)},
 
+        { path: 'star', loadChildren: () => import('../star/star.module').then((m) => m.StarModule) },
         { path: 'moderator', loadChildren: () => import("../salaries/salaries.module").then((m => m.SalariesModule)) },
         { path: 'driver', loadChildren: () => import("../drivers/drivers.module").then((m => m.DriverModule)) },
         { path: 'user', loadChildren: () => import("../users/users.module").then((m => m.UsersModule)) },

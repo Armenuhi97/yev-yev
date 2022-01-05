@@ -62,4 +62,7 @@ export class DriverService {
     public getAllCities(): Observable<ServerResponce<CityItem[]>> {
         return this._httpClient.get<ServerResponce<CityItem[]>>(`utils/city/?limit=100000`)
     }
+
+
+
 }

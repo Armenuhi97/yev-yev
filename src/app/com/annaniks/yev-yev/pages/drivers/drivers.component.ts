@@ -165,7 +165,7 @@ export class DriversComponent {
             map((data: ServerResponce<User>) => {
                 if (data.results && data.results[0]) {
                     this.item = data.results[0];
-                  
+
                     this.validateForm.patchValue({
                         first_name: this.item.user.first_name,
                         last_name: this.item.user.last_name,
@@ -180,7 +180,7 @@ export class DriversComponent {
                         main_city_id: this._appService.checkPropertyValue(this.item.main_city, 'id'),
                         located_city_id: this._appService.checkPropertyValue(this.item.located_city, 'id')
                     })
-                   
+
                 }
             })).subscribe()
 
@@ -273,6 +273,7 @@ export class DriversComponent {
     }
 
     public removeRoute($event) {
+        console.log('addedRoutes', this.addedRoutes);
         this.addedRoutes.splice($event, 1)
     }
 
