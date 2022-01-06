@@ -53,8 +53,8 @@ export class DriversComponent {
         this._initForm();
         // this.getUsers()
         this._combineObsevable().subscribe();
-
     }
+
     private _initForm() {
         this.validateForm = this._fb.group({
             first_name: [null, Validators.required],
@@ -111,6 +111,7 @@ export class DriversComponent {
     }
     public addRoute($event) {
         if ($event) {
+            console.log(this.addedRoutes);
             this.addedRoutes.push({ "main_route": $event })
         }
     }
@@ -273,12 +274,12 @@ export class DriversComponent {
     }
 
     public removeRoute($event) {
-        console.log('addedRoutes', this.addedRoutes);
+
         this.addedRoutes.splice($event, 1)
     }
 
     public getRatingResults(): void {
-        this._httpClient.get(`order/rating/?driver=${this.editId}&order__sub_route=&client=&ordering=&start_date=&end_date=&limit=&offset=&type=`)
+        this._driverService.getRating(this.editId)
             .subscribe((res: any) => {
                 this.userRating = res.results;
                 this.count = res.count;

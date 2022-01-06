@@ -7,8 +7,9 @@ import { UsersService } from "./users.service";
 import { UserReviewComponent } from './component/user-review/user-review.component';
 
 @NgModule({
-    declarations: [UsersComponent,UserOrderComponent, UserReviewComponent],
+    declarations: [UsersComponent, UserOrderComponent, UserReviewComponent],
     imports: [UersRoutingModule, SharedModule],
-    providers:[UsersService ]
+    providers: [UsersService],
+    exports: [UserOrderComponent, UserReviewComponent]
 })
 export class UsersModule { }

@@ -27,6 +27,7 @@ export class ReviewComponent implements OnInit {
   private startDate: string = '';
   private endDate: string = '';
   private type: string = '';
+  ordered: string = '';
   constructor(public reviewgService: ReviewService, private fb: FormBuilder,
     private router: Router) { }
 
@@ -90,40 +91,25 @@ export class ReviewComponent implements OnInit {
     });
   }
 
-  ordered: string = '';
+  
   public sort($event): void {
     this.reate = $event;
     if (this.reate === 'ascend') {
       this.ordered = '-rate_avg';
-      this.nzPageIndexChange(this.pageIndex, this.ordered);
     } else if (this.reate === 'descend') {
       this.ordered = 'rate_avg';
-      this.nzPageIndexChange(this.pageIndex, this.ordered);
     } else if (this.reate === null) {
       this.ordered = '';
-      this.nzPageIndexChange(this.pageIndex, '');
     }
+    this.nzPageIndexChange(this.pageIndex, this.ordered);
   }
 
-  public goToUser(): void {
-    console.log('user');
-    // this.router.navigate([''])
+  public goToUser(clientId: number): void {
+    this.router.navigate([`/dashboard/client-info/${clientId}`]);
   }
 
-  public goToDriver(id: number) {
-    console.log('driver', id);
+  public goToDriver(id: number): void {
     this.router.navigate([`/dashboard/driver-info/${id}`]);
-
-    // this.driverService.getUserById(id)
-    //   .subscribe((res: any) => {
-    //     console.log(res)
-    //   })
-
-    //  public getUserById(userId: number) {
-    //     return this._httpClient.get(`userdetails/user/?search=&user_role__code=DR&id=${userId}`);
-    // }
-
-    
   }
 }
 

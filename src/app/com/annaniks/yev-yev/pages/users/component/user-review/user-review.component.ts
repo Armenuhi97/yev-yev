@@ -15,6 +15,7 @@ export class UserReviewComponent implements OnInit {
   @Input('userId') userId;
 
   ngOnInit(): void {
+    this.getRatingResults();
   }
 
 
@@ -23,7 +24,7 @@ export class UserReviewComponent implements OnInit {
   public limit: number = 10;
   public offset: number = 0;
   public driverStar: any = [];
-
+  ordered: string = '';
   private reate: string = '';
   private startDate: string = '';
   private endDate: string = '';
@@ -44,7 +45,7 @@ export class UserReviewComponent implements OnInit {
 
 
   public getRatingResults(): void {
-    this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=${this.userId}&ordering=&start_date=&end_date=&limit=${this.limit}&offset=${this.offset}&type=`)
+    this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=${this.userId}&ordering=${this.ordered}&start_date=&end_date=&limit=${this.limit}&offset=${this.offset}&type=`)
         .subscribe((res: any) => {
              this.clientRating = res.results;
         });
@@ -53,12 +54,14 @@ export class UserReviewComponent implements OnInit {
   public sort($event): void {
     this.reate = $event;
     if (this.reate === 'ascend') {
-      this.nzPageIndexChange(this.pageIndex, '-rate');
+      this.ordered = '-rate_avg';
     } else if (this.reate === 'descend') {
-      this.nzPageIndexChange(this.pageIndex, 'rate');
+      this.ordered = 'rate_avg';
     } else if (this.reate === null) {
-      this.nzPageIndexChange(this.pageIndex, '');
+      this.ordered = '';
     }
+
+    this.nzPageIndexChange(this.pageIndex, this.ordered);
   }
 
 }

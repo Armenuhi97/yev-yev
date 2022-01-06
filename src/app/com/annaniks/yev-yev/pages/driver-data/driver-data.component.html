@@ -1,0 +1,150 @@
+<nz-tabset (nzSelectedIndexChange)="onChangeTab($event)" 
+ [nzSelectedIndex]="activeTab">
+    <nz-tab [nzTitle]="'Տվյալներ'">
+        <form nz-form [formGroup]="validateForm" class="form"
+        [nzLayout]="'vertical'" (ngSubmit)="submitForm()">
+            <div nz-row [nzGutter]="24">
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Անուն</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input formControlName="first_name" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Ազգանուն</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input formControlName="last_name" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+            </div>
+           
+            <div nz-row [nzGutter]="24">
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input formControlName="phone_number" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Մեքենայի մոդելը</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input formControlName="car_model" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="24">
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Մեքենայի գույնը</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input class="w-100" type="color" 
+                            [value]="validateForm.get('car_color').value"
+                            (change)="changeColorPicker('car_color',$event)">
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Մեքենայի գույնի անունը հայերեն</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input formControlName="car_color_name_hy" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="24">
+
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Մեքենայի գույնի անունը ռուսերեն</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input formControlName="car_color_name_ru" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Մեքենայի գույնի անունը անգլերեն</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input formControlName="car_color_name_en" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="24">
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Մեքենայի նստատեղերի քանակը</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input type="number" formControlName="car_capacity" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Մեքենայի համարանիշը</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input formControlName="car_number" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="24">
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Հիմնական քաղաք</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <nz-select nzPlaceHolder="" formControlName="main_city_id">
+                                <nz-option *ngFor="let city of cities" [nzValue]="city.id" [nzLabel]="city.name_hy">
+                                </nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div  nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" >Telegram</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control>
+                            {{driverDate?.telegram_name}}
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+           
+                    <nz-form-item>
+                        <nz-form-control>
+                        <button nz-button nzType="primary">Հաստատել</button>
+                        </nz-form-control>
+                    </nz-form-item>
+              
+
+            <app-driver-routes  [editIndex]="id" [routes]="routes" [selectedRoutes]="driverDate">
+            </app-driver-routes>
+        </form>
+    </nz-tab>
+    <nz-tab *ngIf="id" [nzTitle]="'Ուղղություններ'">
+        <app-routes-list [userId]="id"></app-routes-list>
+    </nz-tab>
+
+    <nz-tab [nzTitle]="'Գնահատումներ'">
+        <app-rating [userRating]="userRating" [count]='count' [editId]='id'>
+
+        </app-rating>
+    </nz-tab>
+
+</nz-tabset>
+
+<ng-template #userErrorTpl let-control>
+    <ng-container *ngIf="control.hasError('required')">
+        Սա պարտադիր դաշտ է
+    </ng-container>
+</ng-template>

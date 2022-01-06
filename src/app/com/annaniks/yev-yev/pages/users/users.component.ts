@@ -215,9 +215,9 @@ export class UsersComponent {
         }
     }
 
-   
+
     public getRatingResults(): void {
-        this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=${this.userId}&ordering=&start_date=&end_date=&limit=&offset=&type=`)
+        this._userService.getRating(this.userId)
             .subscribe((res: any) => {
                 this.clientRating = res.results;
                 this.count = res.count;

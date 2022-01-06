@@ -1,0 +1,63 @@
+<nz-tabset >
+    <nz-tab [nzTitle]="'Տվյալներ'">
+        <form nz-form class="form" [formGroup]="validateForm"
+         [nzLayout]="'vertical'" (ngSubmit)="submitForm()">
+            <div nz-row [nzGutter]="24">
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Անուն</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input formControlName="first_name" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Ազգանուն</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input formControlName="last_name" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="24">
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input formControlName="phone_number" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels">Մեկնաբանություն</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback>
+                            <input nz-input formControlName="comment" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+
+            <nz-form-item>
+                <nz-form-control>
+                <button nz-button nzType="primary">Հաստատել</button>
+                </nz-form-control>
+            </nz-form-item>
+          
+        </form>
+    </nz-tab>
+    <nz-tab *ngIf="clientId" [nzTitle]="'Ուղղություններ'">
+        <app-user-order [userId]="clientId"></app-user-order>
+    </nz-tab>
+    <nz-tab [nzTitle]="'Գնահատումներ'">
+        <app-user-review [clientRating]='clientRating' [count]='count' [userId]='clientId'>
+        </app-user-review>
+    </nz-tab>
+  </nz-tabset>
+
+  <ng-template #userErrorTpl let-control>
+    <ng-container *ngIf="control.hasError('required')">
+        Սա պարտադիր դաշտ է
+    </ng-container>
+</ng-template>

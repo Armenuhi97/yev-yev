@@ -63,6 +63,8 @@ export class DriverService {
         return this._httpClient.get<ServerResponce<CityItem[]>>(`utils/city/?limit=100000`)
     }
 
-
+    public getRating(id: number) {
+        return this._httpClient.get(`order/rating/?driver=${id}&order__sub_route=&client=&ordering=&start_date=&end_date=&limit=&offset=&type=`)
+    }
 
 }

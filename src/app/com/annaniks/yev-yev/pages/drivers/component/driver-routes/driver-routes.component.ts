@@ -57,6 +57,7 @@ export class DriverRoutesComponent {
     }
 
     ngOnInit() {
+      
     }
 
     private _sendRoutes(mainRouteId) {
