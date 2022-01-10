@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
-import { of, pipe, Subject } from "rxjs";
+import { of, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { Messages } from "../../core/models/mesages";
 import { Client } from "../../core/models/salary";

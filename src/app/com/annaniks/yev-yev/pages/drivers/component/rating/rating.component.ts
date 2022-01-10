@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReviewService } from '../../../review/review.service';
 
 @Component({
@@ -24,7 +25,11 @@ export class RatingComponent implements OnInit {
   private type: string = '';
 
 
-  constructor(private reviewService: ReviewService, private _httpClient: HttpClient) { }
+  constructor(
+    private reviewService: ReviewService,
+    private httpClient: HttpClient,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
   }
@@ -41,9 +46,10 @@ export class RatingComponent implements OnInit {
   }
 
   private getRatingResults(): void {
-    this._httpClient.get(`order/rating/?driver=${this.editId}&order__sub_route=&client=&ordering=&start_date=&end_date=&limit=${this.limit}&offset=${this.offset}&type=`)
+    this.httpClient.get(`order/rating/?driver=${this.editId}&order__sub_route=&client=&ordering=&start_date=&end_date=&limit=${this.limit}&offset=${this.offset}&type=`)
       .subscribe((res: any) => {
         this.userRating = res.results;
+
       });
   }
 
@@ -56,6 +62,11 @@ export class RatingComponent implements OnInit {
     } else if (this.reate === null) {
       this.nzPageIndexChange(this.pageIndex, '');
     }
+  }
+
+  public goToRating(index: number): void {
+    const id = this.userRating[index].client.id;
+    this.router.navigate([`/dashboard/client-info/${id}`]);
   }
 
 }

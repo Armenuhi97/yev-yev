@@ -23,7 +23,7 @@ export class MainComponent {
         { title: 'Պատվերներ', path: '/dashboard/orders' },
         { title: 'Աշխատակիցներ', path: '/dashboard/moderator' },
         { title: 'Այլ', path: '/dashboard/other-orders' },
-        { title: '', path: '/dashboard/star' },
+        { title: 'star', path: '/dashboard/star' },
         { title: 'Տվյալներ', path: '/dashboard/moderator-settings' },
         { title: 'Կարգավորումներ', path: '/dashboard/settings' }
     ];

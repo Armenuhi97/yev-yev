@@ -11,12 +11,12 @@ export class ReviewService {
 
 
 
-  public getDriversRatings(limit: number, offset: number, ordering: string = '', startDate: string = ' ', endDate: string = ' ', type = '') {
+  public getDriversRatings(limit: number, offset: number, ordering: string, startDate: string = ' ', endDate: string = ' ', type = '') {
     if (startDate === ' ' || endDate === ' ') {
-      return this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=&ordering=${ordering}&start_date=&end_date=&limit=${limit}&offset=${offset}&type=${type}`//-rate
+      return this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=&ordering=${ordering}&start_date=&end_date=&limit=${limit}&offset=${offset}&type=${type}`
       );
     } else {
-      return this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=&ordering=${ordering}&start_date=${startDate}&end_date=${endDate}&limit=${limit}&offset=${offset}&type=${type}`//-rate
+      return this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=&ordering=${ordering}&start_date=${startDate}&end_date=${endDate}&limit=${limit}&offset=${offset}&type=${type}`
       );
     }
 

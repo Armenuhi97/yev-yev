@@ -5,7 +5,6 @@ import { differenceInCalendarDays } from 'date-fns';
 import { Router } from '@angular/router';
 
 
-
 @Component({
   selector: 'app-review',
   templateUrl: './review.component.html',
@@ -21,15 +20,17 @@ export class ReviewComponent implements OnInit {
   public limit: number = 10;
   public offset: number = 0;
   public driversStar: any[] = [];
-  // public isTable: boolean = false;
   public today = new Date();
   private reate: string = '';
   private startDate: string = '';
   private endDate: string = '';
   private type: string = '';
-  ordered: string = '';
-  constructor(public reviewgService: ReviewService, private fb: FormBuilder,
-    private router: Router) { }
+  private ordered: string = '';
+  constructor(
+    public reviewgService: ReviewService,
+    private fb: FormBuilder,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.initFilterForm();
@@ -54,6 +55,7 @@ export class ReviewComponent implements OnInit {
     this.endDate = this.reviewDate('endDate');
     this.type = this.validateForm.get('type')?.value;
     this.nzPageIndexChange(this.pageIndex, this.reate);
+
   }
 
   private reviewDate(date: string): string {
@@ -74,24 +76,36 @@ export class ReviewComponent implements OnInit {
     return key;
   }
 
-  nzPageIndexChange(page: number, ordered?): void {
+  private addOffset(page: number): void {
     this.pageIndex = page;
     if (this.pageIndex === 1) {
       this.offset = 0;
     } else {
       this.offset = this.limit * this.pageIndex - this.limit;
     }
+  }
 
+  nzPageIndexChange(page: number, ordered?): void {
+    this.addOffset(page);
     this.startDate = this.reviewDate('startDate');
     this.endDate = this.reviewDate('endDate');
     this.type = this.validateForm.get('type')?.value;
-    this.reviewgService.getDriversRatings(this.limit, this.offset, this.ordered, this.startDate, this.endDate, this.type).subscribe((rating: any) => {
-      this.total = rating.count;
-      this.driversStar = rating.results;
-    });
+    if (this.type === 'bad' || this.type === 'good') {
+      this.offset = 0;
+    }
+
+    this.reviewgService.getDriversRatings(this.limit, this.offset, this.ordered, this.startDate, this.endDate, this.type)
+      .subscribe((rating: any) => {
+        this.total = rating.count;
+        this.driversStar = rating.results;
+        if (this.type === 'bad' || this.type === 'good' && this.total > 10) {
+          this.addOffset(page);
+        }
+
+      });
   }
 
-  
+
   public sort($event): void {
     this.reate = $event;
     if (this.reate === 'ascend') {
@@ -101,6 +115,7 @@ export class ReviewComponent implements OnInit {
     } else if (this.reate === null) {
       this.ordered = '';
     }
+
     this.nzPageIndexChange(this.pageIndex, this.ordered);
   }
 
