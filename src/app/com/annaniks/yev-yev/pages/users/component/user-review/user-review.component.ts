@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ReviewService } from '../../../review/review.service';
 
 
@@ -31,7 +32,11 @@ export class UserReviewComponent implements OnInit {
   private type: string = '';
 
 
-  constructor(private reviewService: ReviewService, private _httpClient: HttpClient) { }
+  constructor(
+    private reviewService: ReviewService,
+    private _httpClient: HttpClient,
+    private router:Router
+  ) { }
 
   nzPageIndexChange(page: number, ordered?): void {
     this.pageIndex = page;
@@ -46,10 +51,10 @@ export class UserReviewComponent implements OnInit {
 
   public getRatingResults(): void {
     this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=${this.userId}&ordering=${this.ordered}&start_date=&end_date=&limit=${this.limit}&offset=${this.offset}&type=`)
-        .subscribe((res: any) => {
-             this.clientRating = res.results;
-        });
-}
+      .subscribe((res: any) => {
+        this.clientRating = res.results;
+      });
+  }
 
   public sort($event): void {
     this.reate = $event;
@@ -64,4 +69,8 @@ export class UserReviewComponent implements OnInit {
     this.nzPageIndexChange(this.pageIndex, this.ordered);
   }
 
+  public getToDriver(index: number): void {
+    const id = this.clientRating[index].driver.id;
+    this.router.navigate([`/dashboard/driver-info/${id}`]);
+  }
 }
