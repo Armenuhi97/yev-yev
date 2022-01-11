@@ -15,8 +15,9 @@ import { HttpClient } from '@angular/common/http';
 })
 export class UserOrderComponent {
     @Input() orders: any[] = [];
+    @Input() total: number = 0;
     public pageIndex = 1;
-    total: number;
+    // total: number;
     pageSize: number = 10;
     unsubscribe$ = new Subject();
     userId: number;

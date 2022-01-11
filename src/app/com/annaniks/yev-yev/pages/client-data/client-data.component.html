@@ -48,7 +48,7 @@
         </form>
     </nz-tab>
     <nz-tab *ngIf="clientId" [nzTitle]="'Ուղղություններ'">
-        <app-user-order [userId]="clientId" [orders]="orders"></app-user-order>
+        <app-user-order [userId]="clientId" [orders]="orders" [total]="total"></app-user-order>
     </nz-tab>
     <nz-tab [nzTitle]="'Գնահատումներ'">
         <app-user-review [clientRating]='clientRating' [count]='count' [userId]='clientId'>

@@ -75,11 +75,11 @@ export class UsersComponent {
     }
     public changeUserStatus($event, id: number) {
         this._userService.editUser(id, { is_active: $event })
-        .pipe(takeUntil(this.unsubscribe$)).subscribe();
+            .pipe(takeUntil(this.unsubscribe$)).subscribe();
     }
     public getUsers(search?) {
         let ordering = this.sortItems && this.sortItems.length ? this.sortItems.join(',') : '';
-
+       
         return this._userService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, search, ordering).pipe(
             map((data: ServerResponce<Client[]>) => {
                 this.total = data.count;
@@ -97,18 +97,19 @@ export class UsersComponent {
     }
     public getclientById(id: number) {
         this._userService.getUserById(id)
-        .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<Client>) => {
-            if (data.results && data.results[0]) {
-                let item = data.results[0];
-                this.userName = `${item.user.first_name} ${item.user.last_name}`
-                this.validateForm.patchValue({
-                    first_name: item.user.first_name,
-                    last_name: item.user.last_name,
-                    phone_number: item.phone_number,
-                    comment: item.comment
-                })
-            }
-        })
+            .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<Client>) => {
+
+                if (data.results && data.results[0]) {
+                    let item = data.results[0];
+                    this.userName = `${item.user.first_name} ${item.user.last_name}`
+                    this.validateForm.patchValue({
+                        first_name: item.user.first_name,
+                        last_name: item.user.last_name,
+                        phone_number: item.phone_number,
+                        comment: item.comment
+                    })
+                }
+            })
 
     }
     public showModal(): void {
@@ -155,7 +156,7 @@ export class UsersComponent {
         } else {
             this._userService.editUser(this.clientTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: any) => {
                 this.getUsers().
-                pipe(takeUntil(this.unsubscribe$)).subscribe();
+                    pipe(takeUntil(this.unsubscribe$)).subscribe();
                 this.nzMessages.success(Messages.success);
                 this.closeModal();
             },
@@ -214,6 +215,7 @@ export class UsersComponent {
     }
 
     private getOrdrs(): void {
+      
         this._userService.getOrders(this.userId, this.pageIndex)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((data: ServerResponce<any[]>) => {
@@ -225,6 +227,7 @@ export class UsersComponent {
     public onChangeTab($event) {
         this.activeTab = $event;
         if (this.activeTab === 1) {
+            console.log(this.pageIndex)
             this.getOrdrs();
         }
 
@@ -235,7 +238,7 @@ export class UsersComponent {
 
 
     public getRatingResults(): void {
-        
+
         this._userService.getRating(this.userId)
             .subscribe((res: any) => {
                 this.clientRating = res.results;

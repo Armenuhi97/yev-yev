@@ -8,9 +8,12 @@ export class UsersService {
         if (!search) {
             search = ''
         }
+
+          //                           userdetails/user/?search=&user_role__code=CL&limit=10&offset=0&page=1&search=&ordering=
         return this._httpClient.get(`userdetails/user/?search=&user_role__code=CL&limit=10&offset=${offset}&page=${page}&search=${search}&ordering=${ordering}`)
     }
     public getUserById(userId: number) {
+      
         return this._httpClient.get(`userdetails/user/?search=&user_role__code=CL&id=${userId}`)
     }
     public editUser(userId: number, body) {
@@ -26,8 +29,6 @@ export class UsersService {
     }
 
     public getRating(id: number | string) {
-
-        //                           order/rating/?driver=&order__sub_route=&client=undefined&ordering=&start_date=&end_date=&limit=10&offset=0&type=
         return this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=${id}&ordering=&start_date=&end_date=&limit=&offset=&type=`);
     }
 }

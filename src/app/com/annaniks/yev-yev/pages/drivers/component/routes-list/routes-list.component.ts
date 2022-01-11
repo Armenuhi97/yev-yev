@@ -14,8 +14,9 @@ import { DriverService } from "../../drivers.service";
 })
 export class RoutesListComponent implements OnInit {
     @Input() orders: any[] = [];
+    @Input() total: number = 0;
     public pageIndex = 1;
-    total: number;
+    // total: number;
     pageSize: number = 10;
     unsubscribe$ = new Subject();
     userId: number;
@@ -23,22 +24,22 @@ export class RoutesListComponent implements OnInit {
     set setOrders($event) {
         this.userId = $event;
     }
-    
+
     constructor(
         private _driverService: DriverService,
         private _datePipe: DatePipe,
         private router: Router) { }
 
-    ngOnInit(): void {}
- 
-    
+    ngOnInit(): void { }
+
+
 
     public getOrders() {
         this._driverService.getOrders(this.userId, this.pageIndex)
-        .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
-            this.total = data.count;
-            this.orders = data.results;
-        });
+            .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
+                this.total = data.count;
+                this.orders = data.results;
+            });
     }
     transformDate(date) {
         return this._datePipe.transform(date, 'dd-MM-YYYY HH:mm')
