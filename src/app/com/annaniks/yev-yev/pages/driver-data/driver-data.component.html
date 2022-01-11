@@ -132,7 +132,7 @@
         </form>
     </nz-tab>
     <nz-tab *ngIf="id" [nzTitle]="'Ուղղություններ'">
-        <app-routes-list [userId]="id"></app-routes-list>
+        <app-routes-list [userId]="id" [orders]="orders"></app-routes-list>
     </nz-tab>
 
     <nz-tab [nzTitle]="'Գնահատումներ'">

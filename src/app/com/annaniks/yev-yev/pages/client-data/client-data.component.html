@@ -1,5 +1,5 @@
-<nz-tabset >
-    <nz-tab [nzTitle]="'Տվյալներ'">
+<nz-tabset  (nzSelectedIndexChange)="onChangeTab($event)">
+    <nz-tab [nzTitle]="'Տվյալներ'"  >
         <form nz-form class="form" [formGroup]="validateForm"
          [nzLayout]="'vertical'" (ngSubmit)="submitForm()">
             <div nz-row [nzGutter]="24">
@@ -48,7 +48,7 @@
         </form>
     </nz-tab>
     <nz-tab *ngIf="clientId" [nzTitle]="'Ուղղություններ'">
-        <app-user-order [userId]="clientId"></app-user-order>
+        <app-user-order [userId]="clientId" [orders]="orders"></app-user-order>
     </nz-tab>
     <nz-tab [nzTitle]="'Գնահատումներ'">
         <app-user-review [clientRating]='clientRating' [count]='count' [userId]='clientId'>

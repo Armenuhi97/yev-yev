@@ -122,7 +122,6 @@ export class DriversComponent {
             .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
                 this.total = data.count;
                 this.orders = data.results;
-                console.log(this.orders);
             });
     }
     public onChangeTab($event): void {

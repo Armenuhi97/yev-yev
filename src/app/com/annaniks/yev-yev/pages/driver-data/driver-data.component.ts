@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { CityItem } from '../../core/models/city.model';
 import { AppService } from '../../core/services/app.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Messages } from '../../core/models/mesages';
 import { SalaryRespone } from '../../core/models/salary';
 import { DriverService } from '../drivers/drivers.service';
+import { Subject } from 'rxjs';
+import { ServerResponce } from '../../core/models/server-reponce';
 
 
 
@@ -28,6 +30,10 @@ export class DriverDataComponent implements OnInit {
   public userRating: any[] = [];
   public count: number = 0;
 
+  pageIndex: number = 1;
+  unsubscribe$ = new Subject();
+  total: number = 0;
+  orders: any[] = [];
   constructor(
     private fb: FormBuilder,
     private nzMessages: NzMessageService,
@@ -102,8 +108,19 @@ export class DriverDataComponent implements OnInit {
     })
   }
 
+  public getOrders() {
+    this.driverService.getOrders(this.id, this.pageIndex)
+      .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
+        this.total = data.count;
+        this.orders = data.results;
+      });
+  }
+
   public onChangeTab($event) {
     this.activeTab = $event;
+    if (this.activeTab === 1) {
+        this.getOrders();
+    }
     if (this.activeTab === 2) {
       this.getRatingResults();
     }
@@ -114,7 +131,7 @@ export class DriverDataComponent implements OnInit {
       .subscribe((res: any) => {
         this.userRating = res.results;
         this.count = res.count;
-      })
+      });
   }
 
 

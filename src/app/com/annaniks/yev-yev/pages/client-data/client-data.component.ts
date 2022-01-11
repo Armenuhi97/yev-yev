@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { NzMessageService } from "ng-zorro-antd/message";
 import { Messages } from '../../core/models/mesages';
 import { UsersService } from '../users/users.service';
+import { Subject } from 'rxjs';
+import { ServerResponce } from '../../core/models/server-reponce';
 
 @Component({
   selector: 'app-client-data',
@@ -17,7 +19,12 @@ export class ClientDataComponent implements OnInit {
   public clientRating: any = [];
   public count: number = 0;
   userName: string = '';
+  activeTab: number = 0;
 
+  orders: any[] = [];
+  total: number = 0;
+  unsubscribe$ = new Subject();
+  pageIndex: number = 1;
   constructor(
     private fb: FormBuilder,
     private activeRoute: ActivatedRoute,
@@ -80,4 +87,28 @@ export class ClientDataComponent implements OnInit {
         this.count = res.count;
       });
   }
+
+
+  private getOrdrs(): void {
+    this.userService.getOrders(this.clientId, this.pageIndex)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((data: ServerResponce<any[]>) => {
+        this.total = data.count;
+        this.orders = data.results;
+      });
+  }
+
+  public onChangeTab($event): void {
+    this.activeTab = $event;
+    if (this.activeTab === 1) {
+       this.getOrdrs();
+    }
+
+    if (this.activeTab === 2) {
+
+      this.getRatingResults();
+    }
+  }
+
+
 }
