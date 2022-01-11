@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ServerResponce } from '../../../../core/models/server-reponce';
 import { ReviewService } from '../../../review/review.service';
+import { DriverService } from '../../drivers.service';
 
 @Component({
   selector: 'app-rating',
@@ -18,21 +22,24 @@ export class RatingComponent implements OnInit {
   public limit: number = 10;
   public offset: number = 0;
   public driverStar: any = [];
-
+  unsubscribe$ = new Subject();
   private reate: string = '';
   private startDate: string = '';
   private endDate: string = '';
   private type: string = '';
-
-
+  public userId: number = 0;
+  total: number;
+  orders = [];
   constructor(
     private reviewService: ReviewService,
     private httpClient: HttpClient,
-    private router: Router
+    private router: Router,
+    private driverService: DriverService
   ) { }
 
-  ngOnInit(): void {
-  }
+
+
+  ngOnInit(): void {}
 
   nzPageIndexChange(page: number, ordered?): void {
     this.pageIndex = page;

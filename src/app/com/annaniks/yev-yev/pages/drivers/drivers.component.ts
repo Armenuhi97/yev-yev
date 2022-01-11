@@ -41,7 +41,9 @@ export class DriversComponent {
     viberInfo: ViberInfo[] = [];
     userRating: any = [];
     count: number = 0;
-    constructor(private _driverService: DriverService,
+    orders: any[] = [];
+    constructor(
+        private _driverService: DriverService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
         private _appService: AppService,
@@ -93,7 +95,7 @@ export class DriversComponent {
         // this.search.valueChanges.pipe(takeUntil(this.unsubscribe$),
         // switchMap((value) => {
         this.pageIndex = 1;
-        this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
+        this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
         // })).subscribe()
     }
     public subscribeToFilterChange() {
@@ -111,12 +113,24 @@ export class DriversComponent {
     }
     public addRoute($event) {
         if ($event) {
-            console.log(this.addedRoutes);
             this.addedRoutes.push({ "main_route": $event })
         }
     }
-    public onChangeTab($event) {
+
+    public getOrders() {
+        this._driverService.getOrders(this.editId, this.pageIndex)
+            .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
+                this.total = data.count;
+                this.orders = data.results;
+                console.log(this.orders);
+            });
+    }
+    public onChangeTab($event): void {
         this.activeTab = $event;
+        if (this.activeTab === 1) {
+            this.getOrders();
+        }
+
         if (this.activeTab === 2) {
             this.getRatingResults();
         }
@@ -285,6 +299,7 @@ export class DriversComponent {
                 this.count = res.count;
             });
     }
+
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();

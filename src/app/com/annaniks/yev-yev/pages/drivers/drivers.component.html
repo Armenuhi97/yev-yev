@@ -10,10 +10,13 @@
     </div>
     <div class="d-flex align-items-center" nz-col [nzSpan]="6">
         <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-            <input type="text" [formControl]="search" nz-input placeholder="Փնտրել" />
+            <input type="text" [formControl]="search" nz-input placeholder="Փնտրել" (keyup.enter)="searchDriver()"/>
+            
+             
         </nz-input-group>
         <ng-template #suffixIconButton>
-            <button (click)="searchDriver()" nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
+            <button (click)="searchDriver()"
+             nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
         </ng-template>
     </div>
     <!-- <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
@@ -23,6 +26,7 @@
         <button (click)="searchDriver()" nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
     </ng-template> -->
     <button class="add-essence" nz-button nzType="primary" (click)="showModal()">
+    
         Ավելացնել վարորդ
     </button>
 </div>
@@ -232,11 +236,11 @@
             </form>
         </nz-tab>
         <nz-tab *ngIf="editId" [nzTitle]="'Ուղղություններ'">
-            <app-routes-list [userId]="editId"></app-routes-list>
+            <app-routes-list [userId]="editId" [orders]="orders"></app-routes-list>
         </nz-tab>
 
         <nz-tab [nzTitle]="'Գնահատումներ'">
-            <app-rating [userRating]="userRating" [count]='count' [editId]='editId'>
+            <app-rating [userRating]="userRating" [count]='count' [editId]='editId' >
             </app-rating>
         </nz-tab>
     </nz-tabset>

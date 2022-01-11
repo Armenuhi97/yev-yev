@@ -106,7 +106,7 @@ export class MainComponent {
     // }
     playAudio() {
         var audio = new Audio('../../../../assets/notification.mp3');
-        audio.play()
+        audio.play();
     }
     // public _getUnseenPendingNotifications() {
     //     return this._mainService.getUnseenPendingNotifications().pipe(

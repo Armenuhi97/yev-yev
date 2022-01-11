@@ -15,10 +15,7 @@ export class UserReviewComponent implements OnInit {
   @Input('count') count;
   @Input('userId') userId;
 
-  ngOnInit(): void {
-    this.getRatingResults();
-  }
-
+  ngOnInit(): void {}
 
   public pageSize: number = 10;
   public pageIndex: number = 1;

@@ -1,5 +1,5 @@
 import { DatePipe } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -12,28 +12,33 @@ import { DriverService } from "../../drivers.service";
     templateUrl: 'routes-list.component.html',
     styleUrls: ['routes-list.component.scss']
 })
-export class RoutesListComponent {
+export class RoutesListComponent implements OnInit {
+    @Input() orders: any[] = [];
     public pageIndex = 1;
     total: number;
-    orders = [];
     pageSize: number = 10;
     unsubscribe$ = new Subject();
     userId: number;
     @Input('userId')
     set setOrders($event) {
         this.userId = $event;
-        if (this.userId)
-            this.getOrders()
     }
-    constructor(private _driverService: DriverService,
-        private _datePipe: DatePipe, private router: Router) { }
+    
+    constructor(
+        private _driverService: DriverService,
+        private _datePipe: DatePipe,
+        private router: Router) { }
+
+    ngOnInit(): void {}
+ 
+    
 
     public getOrders() {
-        this._driverService.getOrders(this.userId, this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
+        this._driverService.getOrders(this.userId, this.pageIndex)
+        .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
             this.total = data.count;
-
             this.orders = data.results;
-        })
+        });
     }
     transformDate(date) {
         return this._datePipe.transform(date, 'dd-MM-YYYY HH:mm')
@@ -56,14 +61,14 @@ export class RoutesListComponent {
     }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
-        this.getOrders()
+        this.getOrders();
     }
 
 
     public getAppovedOrder(id: number): void {
         this.router.navigate([`/dashboard/raiting-order/${id}`]);
     }
-    
+
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();

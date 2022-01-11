@@ -16,7 +16,8 @@ import { UsersService } from "./users.service";
     styleUrls: ['users.component.scss']
 })
 export class UsersComponent {
-    sortItems = []
+    sortItems = [];
+    orders = [];
     userId: number;
     clientTable: Client[] = []
     pageSize: number = 10;
@@ -73,7 +74,8 @@ export class UsersComponent {
         // })).subscribe()
     }
     public changeUserStatus($event, id: number) {
-        this._userService.editUser(id, { is_active: $event }).pipe(takeUntil(this.unsubscribe$)).subscribe()
+        this._userService.editUser(id, { is_active: $event })
+        .pipe(takeUntil(this.unsubscribe$)).subscribe();
     }
     public getUsers(search?) {
         let ordering = this.sortItems && this.sortItems.length ? this.sortItems.join(',') : '';
@@ -89,12 +91,13 @@ export class UsersComponent {
     onEditclient(index: number) {
         this.isEditing = true;
         this.editIndex = index;
-        this.userId = this.clientTable[this.editIndex].id
+        this.userId = this.clientTable[this.editIndex].id;
         this.getclientById(this.clientTable[this.editIndex].id);
-        this.showModal()
+        this.showModal();
     }
     public getclientById(id: number) {
-        this._userService.getUserById(id).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<Client>) => {
+        this._userService.getUserById(id)
+        .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<Client>) => {
             if (data.results && data.results[0]) {
                 let item = data.results[0];
                 this.userName = `${item.user.first_name} ${item.user.last_name}`
@@ -122,7 +125,7 @@ export class UsersComponent {
     }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
-        this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
+        this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
     }
     public onclientSave() {
         if (this.validateForm.invalid) {
@@ -151,12 +154,13 @@ export class UsersComponent {
                 })
         } else {
             this._userService.editUser(this.clientTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: any) => {
-                this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
-                this.nzMessages.success(Messages.success)
-                this.closeModal()
+                this.getUsers().
+                pipe(takeUntil(this.unsubscribe$)).subscribe();
+                this.nzMessages.success(Messages.success);
+                this.closeModal();
             },
                 () => {
-                    this.nzMessages.error(Messages.fail)
+                    this.nzMessages.error(Messages.fail);
                 })
         }
     }
@@ -182,9 +186,9 @@ export class UsersComponent {
             }
         } else {
             if (sort == 'descend') {
-                this._deleteKeyFromSort(`${key}`)
+                this._deleteKeyFromSort(`${key}`);
                 if (this._checkIsExist(`-${key}`) == -1) {
-                    this.sortItems.push(`-${key}`)
+                    this.sortItems.push(`-${key}`);
                     // this.pageIndex = 1;
                     this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
                 }
@@ -204,12 +208,26 @@ export class UsersComponent {
     private _deleteKeyFromSort(key: string) {
         let index = this.sortItems.indexOf(key);
         if (index > -1) {
-            this.sortItems.splice(index, 1)
+            this.sortItems.splice(index, 1);
 
         }
     }
+
+    private getOrdrs(): void {
+        this._userService.getOrders(this.userId, this.pageIndex)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((data: ServerResponce<any[]>) => {
+                this.total = data.count;
+                this.orders = data.results;
+            });
+    }
+
     public onChangeTab($event) {
         this.activeTab = $event;
+        if (this.activeTab === 1) {
+            this.getOrdrs();
+        }
+
         if (this.activeTab === 2) {
             this.getRatingResults();
         }
@@ -217,6 +235,7 @@ export class UsersComponent {
 
 
     public getRatingResults(): void {
+        
         this._userService.getRating(this.userId)
             .subscribe((res: any) => {
                 this.clientRating = res.results;

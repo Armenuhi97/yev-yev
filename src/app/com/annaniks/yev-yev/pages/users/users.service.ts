@@ -19,12 +19,15 @@ export class UsersService {
     public addUser(body) {
         return this._httpClient.post(`userdetails/add-client/`, body)
     }
-    public getOrders(userId: number, page: number) {
+    public getOrders(userId: number | string, page: number) {
         let offset = (page - 1) * 10;
+
         return this._httpClient.get(`order/order/?user_id=${userId}&page=${page}&limit=10&offset=${offset}`)
     }
 
-    public getRating(id: number){
+    public getRating(id: number | string) {
+
+        //                           order/rating/?driver=&order__sub_route=&client=undefined&ordering=&start_date=&end_date=&limit=10&offset=0&type=
         return this._httpClient.get(`order/rating/?driver=&order__sub_route=&client=${id}&ordering=&start_date=&end_date=&limit=&offset=&type=`);
     }
 }

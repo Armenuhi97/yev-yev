@@ -33,9 +33,10 @@ export class ReviewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.initFilterForm();
-    this.nzPageIndexChange(this.pageIndex);
 
+    this.initFilterForm();
+    this.showDefolteDate();
+    this.nzPageIndexChange(this.pageIndex);
   }
 
   disabledDate = (current: Date): boolean =>
@@ -50,12 +51,19 @@ export class ReviewComponent implements OnInit {
 
   }
 
+  private showDefolteDate(): void {
+    this.validateForm.patchValue({
+      startDate: new Date('2021-12-19'),
+      endDate: new Date()
+    });
+  }
+
   public submitForm(): void {
     this.startDate = this.reviewDate('startDate');
     this.endDate = this.reviewDate('endDate');
     this.type = this.validateForm.get('type')?.value;
     this.nzPageIndexChange(this.pageIndex, this.reate);
-
+    console.log('start ', this.validateForm.get('startDate').value);
   }
 
   private reviewDate(date: string): string {

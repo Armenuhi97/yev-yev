@@ -14,9 +14,9 @@ import { HttpClient } from '@angular/common/http';
     providers: [DatePipe]
 })
 export class UserOrderComponent {
+    @Input() orders: any[] = [];
     public pageIndex = 1;
     total: number;
-    orders = [];
     pageSize: number = 10;
     unsubscribe$ = new Subject();
     userId: number;
@@ -24,8 +24,6 @@ export class UserOrderComponent {
     @Input('userId')
     set setOrders($event) {
         this.userId = $event;
-        if (this.userId)
-            this.getOrders()
     }
     constructor(private _userService: UsersService,
         private _datePipe: DatePipe, private router: Router,
@@ -64,12 +62,12 @@ export class UserOrderComponent {
     }
 
     getAppovedOrder(index: number) {
-       if(this.orders[index].approved_order_details.length){
-           this.index = this.orders[index]?.approved_order_details[0]?.approved_order?.id;
-           this.router.navigate([`/dashboard/raiting-order/${this.index}`]);
+        if (this.orders[index].approved_order_details.length) {
+            this.index = this.orders[index]?.approved_order_details[0]?.approved_order?.id;
+            this.router.navigate([`/dashboard/raiting-order/${this.index}`]);
         }
     }
-    
+
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();

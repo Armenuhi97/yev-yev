@@ -47,6 +47,7 @@ export class StarComponent implements OnInit {
 
   ngOnInit() {
     this.initFilterForm();
+    this.showFormDate();
     this.getOrders();
   }
 
@@ -60,6 +61,13 @@ export class StarComponent implements OnInit {
     });
   }
 
+  private showFormDate(): void {
+    this.filterForm.patchValue({
+      startDate: new Date('2021-12-19'),
+      endDate: new Date(),
+      rating: this.optionRating[0].value
+    });
+  }
   disabledDate = (current: Date): boolean =>
     differenceInCalendarDays(current, this.today) > 0
 
@@ -78,13 +86,7 @@ export class StarComponent implements OnInit {
   public submitForm() {
     if (this.filterForm.valid) {
       let start = this.reviewService.createDate(this.filterForm.get('startDate').value) + '%2000:00';
-      // let a = start.split('%');
-      // start = a[0] + '%2000:00';
-
       let end = this.reviewService.createDate(this.filterForm.get('endDate').value) + '%2023:59';
-      // let b = end.split('%');
-      // end = b[0] + '%2023:59';
-
       const id = this.filterForm.get('mainRoute').value;
       const limit = this.filterForm.get('size').value;
       this.rating = this.filterForm.get('rating').value;
