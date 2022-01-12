@@ -127,22 +127,26 @@ export class UsersComponent {
         this.isVisible = false;
         this.isEditing = false;
         this.validateForm.reset();
-        this.editIndex = null
+        this.editIndex = null;
         this.activeTab = 0;
-        this.userId = null
-        this.userName = null
+        this.userId = null;
+        this.userName = null;
+        this.size = null;
+        this.orders = null;
+        this.count = 0;
+        this.clientRating = null;
     }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
         if (this.search.value !== undefined) {
             this.count = this.length;
             this.getUsers(this.search.value)
-            .pipe(takeUntil(this.unsubscribe$)).subscribe();
-        }else{
-           
-            this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe( );
+                .pipe(takeUntil(this.unsubscribe$)).subscribe();
+        } else {
+
+            this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
         }
-     
+
 
     }
     public onclientSave() {
@@ -265,6 +269,7 @@ export class UsersComponent {
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
+
     }
 
 

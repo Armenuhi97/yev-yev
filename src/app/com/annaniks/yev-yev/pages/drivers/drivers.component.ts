@@ -219,7 +219,11 @@ export class DriversComponent {
         this.activeTab = 0;
         this.editId = 0;
         this.isVisibleCityModal = false;
-        this.locatedCityControl.reset()
+        this.userRating = null;
+        this.count = 0;
+        this.size = 0;
+        this.orders = null;
+        this.locatedCityControl.reset();
     }
 
     nzPageIndexChange(page: number) {

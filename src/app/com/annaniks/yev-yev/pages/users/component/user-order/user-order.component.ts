@@ -1,5 +1,5 @@
 import { DatePipe } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
     styleUrls: ['user-order.component.scss'],
     providers: [DatePipe]
 })
-export class UserOrderComponent {
+export class UserOrderComponent implements OnDestroy {
     @Input() orders: any[] = [];
     @Input() total: number = 0;
     public pageIndex = 1;
@@ -34,9 +34,9 @@ export class UserOrderComponent {
         this._userService.getOrders(this.userId, this.pageIndex).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
             this.total = data.count;
             this.orders = data.results;
-
         })
     }
+
     transformDate(date) {
         return this._datePipe.transform(date, 'dd-MM-YYYY HH:mm')
     }
