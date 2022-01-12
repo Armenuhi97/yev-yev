@@ -4,7 +4,8 @@
     </div>
     <div class="d-flex align-items-center">
         <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-            <input type="text" [formControl]="search" nz-input placeholder="Հեռ․" />
+            <input type="text" [formControl]="search"
+            (keyup.enter)="searchUser()" nz-input placeholder="Հեռ․" />
         </nz-input-group>
         <ng-template #suffixIconButton>
             <button (click)="searchUser()" nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
@@ -98,7 +99,7 @@
             </form>
         </nz-tab>
         <nz-tab *ngIf="userId" [nzTitle]="'Ուղղություններ'">
-            <app-user-order [userId]="userId" [orders]="orders" [total]='total'></app-user-order>
+            <app-user-order [userId]="userId" [orders]="orders" [total]='size'></app-user-order>
         </nz-tab>
         <nz-tab [nzTitle]="'Գնահատումներ'">
            <app-user-review [clientRating]='clientRating' [count]='count' [userId]='userId'></app-user-review>

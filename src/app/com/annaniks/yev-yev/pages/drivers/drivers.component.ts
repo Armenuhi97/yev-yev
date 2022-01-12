@@ -42,6 +42,7 @@ export class DriversComponent {
     userRating: any = [];
     count: number = 0;
     orders: any[] = [];
+    public size: number = 0;
     constructor(
         private _driverService: DriverService,
         private nzMessages: NzMessageService,
@@ -120,7 +121,7 @@ export class DriversComponent {
     public getOrders() {
         this._driverService.getOrders(this.editId, this.pageIndex)
             .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
-                this.total = data.count;
+                this.size = data.count;
                 this.orders = data.results;
             });
     }

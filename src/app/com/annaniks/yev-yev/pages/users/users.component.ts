@@ -23,7 +23,8 @@ export class UsersComponent {
     pageSize: number = 10;
     unsubscribe$ = new Subject();
     total: number;
-    search = new FormControl('')
+    search = new FormControl('');
+    public size: number = 0;
     pageIndex: number = 1;
     isEditing: boolean = false;
     isVisible: boolean = false;
@@ -33,6 +34,8 @@ export class UsersComponent {
     userName: string;
     count: number = 0;
     clientRating: any = [];
+
+    length: number = 0;
     constructor(private _userService: UsersService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
@@ -70,8 +73,13 @@ export class UsersComponent {
     public searchUser() {
         // this.search.valueChanges.pipe(takeUntil(this.unsubscribe$),
         // switchMap((value) => {
-        this.getUsers(this.search.value).pipe(takeUntil(this.unsubscribe$)).subscribe()
+
+        this.getUsers(this.search.value)
+            .pipe(takeUntil(this.unsubscribe$)).subscribe();
         // })).subscribe()
+
+
+        console.log('event ', this.search.value);
     }
     public changeUserStatus($event, id: number) {
         this._userService.editUser(id, { is_active: $event })
@@ -79,7 +87,7 @@ export class UsersComponent {
     }
     public getUsers(search?) {
         let ordering = this.sortItems && this.sortItems.length ? this.sortItems.join(',') : '';
-       
+
         return this._userService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, search, ordering).pipe(
             map((data: ServerResponce<Client[]>) => {
                 this.total = data.count;
@@ -126,7 +134,16 @@ export class UsersComponent {
     }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
-        this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe();
+        if (this.search.value !== undefined) {
+            this.count = this.length;
+            this.getUsers(this.search.value)
+            .pipe(takeUntil(this.unsubscribe$)).subscribe();
+        }else{
+           
+            this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe( );
+        }
+     
+
     }
     public onclientSave() {
         if (this.validateForm.invalid) {
@@ -215,11 +232,11 @@ export class UsersComponent {
     }
 
     private getOrdrs(): void {
-      
+
         this._userService.getOrders(this.userId, this.pageIndex)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((data: ServerResponce<any[]>) => {
-                this.total = data.count;
+                this.size = data.count;
                 this.orders = data.results;
             });
     }
@@ -227,7 +244,6 @@ export class UsersComponent {
     public onChangeTab($event) {
         this.activeTab = $event;
         if (this.activeTab === 1) {
-            console.log(this.pageIndex)
             this.getOrdrs();
         }
 
