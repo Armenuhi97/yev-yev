@@ -62,8 +62,9 @@ export class ReviewComponent implements OnInit {
     this.startDate = this.reviewDate('startDate');
     this.endDate = this.reviewDate('endDate');
     this.type = this.validateForm.get('type')?.value;
+    this.pageIndex = 1;
+
     this.nzPageIndexChange(this.pageIndex, this.reate);
-    console.log('start ', this.validateForm.get('startDate').value);
   }
 
   private reviewDate(date: string): string {
@@ -95,19 +96,23 @@ export class ReviewComponent implements OnInit {
 
   nzPageIndexChange(page: number, ordered?): void {
     this.addOffset(page);
+
     this.startDate = this.reviewDate('startDate');
     this.endDate = this.reviewDate('endDate');
     this.type = this.validateForm.get('type')?.value;
-    if (this.type === 'bad' || this.type === 'good') {
-      this.offset = 0;
-    }
+    // if (this.type === 'bad' || this.type === 'good') {
+    //   this.offset = 0;
+    // }
 
     this.reviewgService.getDriversRatings(this.limit, this.offset, this.ordered, this.startDate, this.endDate, this.type)
       .subscribe((rating: any) => {
         this.total = rating.count;
         this.driversStar = rating.results;
-        if (this.type === 'bad' || this.type === 'good' && this.total > 10) {
+        if (this.type === 'bad' || this.type === 'good') {
           this.addOffset(page);
+          // this.total = rating.count;
+          // this.driversStar = rating.results;
+          console.log(this.offset);
         }
 
       });

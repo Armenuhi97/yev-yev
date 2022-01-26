@@ -48,11 +48,11 @@ export class RatingComponent implements OnInit {
     } else {
       this.offset = this.limit * this.pageIndex - this.limit;
     }
-
     this.getRatingResults();
   }
 
   private getRatingResults(): void {
+ 
     this.httpClient.get(`order/rating/?driver=${this.editId}&order__sub_route=&client=&ordering=&start_date=&end_date=&limit=${this.limit}&offset=${this.offset}&type=`)
       .subscribe((res: any) => {
         this.userRating = res.results;

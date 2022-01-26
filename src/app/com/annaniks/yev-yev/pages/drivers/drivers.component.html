@@ -10,9 +10,7 @@
     </div>
     <div class="d-flex align-items-center" nz-col [nzSpan]="6">
         <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-            <input type="text" [formControl]="search" nz-input placeholder="Փնտրել" (keyup.enter)="searchDriver()"/>
-            
-             
+            <input type="text" [formControl]="search" nz-input placeholder="Փնտրել" (keyup.enter)="searchDriver()"/>  
         </nz-input-group>
         <ng-template #suffixIconButton>
             <button (click)="searchDriver()"

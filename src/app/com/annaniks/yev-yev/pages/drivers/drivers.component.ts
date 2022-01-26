@@ -78,7 +78,7 @@ export class DriversComponent {
         this.isVisibleCityModal = false;
         this.locatedCityControl.reset();
         this.editIndex = null;
-        this.editId = null
+        this.editId = null;
     }
 
     public subscribeToSearch() {
