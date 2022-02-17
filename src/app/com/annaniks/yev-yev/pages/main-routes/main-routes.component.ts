@@ -1,21 +1,21 @@
-import { DatePipe } from "@angular/common";
-import { Component } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { NzMessageService } from "ng-zorro-antd/message";
-import { forkJoin, Observable, of, Subject, throwError } from "rxjs";
-import { catchError, map, switchMap, takeUntil } from "rxjs/operators";
-import { Messages } from "../../core/models/mesages";
-import { OrderResponse } from "../../core/models/order";
-import { OrderType } from "../../core/models/order-type";
-import { OrdersByHours } from "../../core/models/orders-by-hours";
-import { RouteItem } from "../../core/models/routes.model";
-import { User } from "../../core/models/salary";
-import { ServerResponce } from "../../core/models/server-reponce";
-import { AppService } from "../../core/services/app.service";
-import { OpenTimesService } from "../../core/services/open-times.service";
-import { OrderTypeService } from "../../core/services/order-type";
-import { MainRoutesService } from "./main-routes.service";
+import { DatePipe } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { forkJoin, Observable, of, Subject, throwError } from 'rxjs';
+import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
+import { Messages } from '../../core/models/mesages';
+import { OrderResponse } from '../../core/models/order';
+import { OrderType } from '../../core/models/order-type';
+import { OrdersByHours } from '../../core/models/orders-by-hours';
+import { RouteItem } from '../../core/models/routes.model';
+import { User } from '../../core/models/salary';
+import { ServerResponce } from '../../core/models/server-reponce';
+import { AppService } from '../../core/services/app.service';
+import { OpenTimesService } from '../../core/services/open-times.service';
+import { OrderTypeService } from '../../core/services/order-type';
+import { MainRoutesService } from './main-routes.service';
 
 @Component({
     selector: 'app-main-routes',
@@ -24,39 +24,39 @@ import { MainRoutesService } from "./main-routes.service";
     providers: [DatePipe]
 })
 export class MainRoutesComponent {
-    public searchControl = new FormControl(null)
+    public searchControl = new FormControl(null);
     driverSubroutes;
     public modalTitle: string;
     doneRoutes = [];
     pageSize = 10;
     selectIndex: number;
-    isGetItem: boolean = false;
+    isGetItem = false;
     userInfo: OrdersByHours[] = [];
     fullUserInfo: OrdersByHours[] = [];
-    currentDriver = []
-    isVisibleOrderInfo: boolean = false;
-    isOrderEditing: boolean = false;
-    orderMembers = []
-    editOrderIndex: number
-    approvedOrders = []
+    currentDriver = [];
+    isVisibleOrderInfo = false;
+    isOrderEditing = false;
+    orderMembers = [];
+    editOrderIndex: number;
+    approvedOrders = [];
     public subRouteInfos = [];
     selectedTime;
     public driver: User;
-    isVisible: boolean = false;
+    isVisible = false;
     unsubscribe$ = new Subject();
     validateForm: FormGroup;
-    phoneNumberPrefix = new FormControl('+374')
+    phoneNumberPrefix = new FormControl('+374');
     userId: number;
     currentInterval;
-    isShowError: boolean = false;
-    isOpenInfo: boolean = false;
-    radioValue: string = "approved";
+    isShowError = false;
+    isOpenInfo = false;
+    radioValue = 'approved';
     isEditing: boolean;
     editIndex;
     selectedDate = new FormControl(new Date());
     subRouteInfo: any;
     public mainRoutes: RouteItem[] = [];
-    isOpenCalendar: boolean = false;
+    isOpenCalendar = false;
     countsList = [];
     currentId: number;
     drivers: User[];
@@ -67,14 +67,15 @@ export class MainRoutesComponent {
     private _lastMainRouteId: number;
     orderTypes: OrderType[] = [];
     // openTimes = []
-    isGetFunction: boolean = true;
-    isGet: boolean = true;
-    isShowDriverRoutes: boolean = false;
+    isGetFunction = true;
+    isGet = true;
+    isShowDriverRoutes = false;
     totalDoneRoutes = 0;
     doneRoutesPageIndex = 1;
-    index: number = 0;
+    index = 0;
     driverControl = new FormControl('', Validators.required);
-    constructor(private _mainRoutesService: MainRoutesService,
+    constructor(
+        private _mainRoutesService: MainRoutesService,
         private router: Router, private _datePipe: DatePipe,
         private _fb: FormBuilder,
         private _activatedRoute: ActivatedRoute,
@@ -91,6 +92,7 @@ export class MainRoutesComponent {
     ngOnInit() {
         this.combine();
         this._initForm();
+
     }
     search() {
         let value = this.searchControl.value ? this.searchControl.value.trim() : null
@@ -109,11 +111,11 @@ export class MainRoutesComponent {
     showDriverRoutesModal(item) {
         this.isShowDriverRoutes = true;
         this.driverSubroutes = item;
-        this._getDoneRoutes()
+        this._getDoneRoutes();
     }
     nzDoneOrderPageIndexChange($event) {
         this.doneRoutesPageIndex = $event;
-        this._getDoneRoutes()
+        this._getDoneRoutes();
     }
     private _getDoneRoutes() {
         // let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
@@ -289,12 +291,15 @@ export class MainRoutesComponent {
                     data.results = data.results.map((data) => {
                         let selectTime;
                         if (+data.id == +subrouteId) {
-                            selectTime = time
+                            selectTime = time;
                         }
                         return Object.assign(data, { selectTime: selectTime })
                     })
                 }
                 this.subRouteInfos = data.results;
+                // this.subRouteInfo.forEach(element => {
+                //     console.log('element', element);
+                // });
                 this.getWorkTimes()
                 this.isGetItem = true
             }))
@@ -369,7 +374,9 @@ export class MainRoutesComponent {
                 })
 
     }
+
     getLabelOfDrivers(dr: User) {
+        console.log('dr', dr);
         return `${dr.user.first_name} ${dr.user.last_name} (${dr.car_model}) (${dr.car_capacity}) [${dr.main_city.name_hy}]`
     }
     onChangeTab($event) {
@@ -394,7 +401,7 @@ export class MainRoutesComponent {
     getDrivers() {
         return this._mainRoutesService.getDrivers(this.currentId).pipe(
             map((data: ServerResponce<User[]>) => {
-                this.drivers = data.results
+                this.drivers = data.results;
             },
                 catchError(() => {
                     this.drivers = []
@@ -623,19 +630,21 @@ export class MainRoutesComponent {
             this.isOpenInfo = true;
             let current = this._formatDate(time);
 
-            return this._mainRouteService.getOrdersByHour(this.subRouteInfo.id, current, status).pipe(takeUntil(this.unsubscribe$),
-                switchMap((data: OrdersByHours[]) => {
-                    data = data.map((val) => {
-                        let isSelect = val.is_in_approved_orders ? true : false
-                        return Object.assign({}, val, { is_in_approved_orders: val.is_in_approved_orders, isSelect: isSelect, isDisabled: false })
-                    })
-                    this.fullUserInfo = data
-                    this.userInfo = data;
-                    if (isChange) {
-                        this.isGetItem = true;
-                    }
-                    return this.getApprovedOrders()
-                }))
+            console.log('this.subRouteInfo.id', time);
+            return this._mainRouteService.getOrdersByHour(this.subRouteInfo.id, current, status)
+                .pipe(takeUntil(this.unsubscribe$),
+                    switchMap((data: OrdersByHours[]) => {
+                        data = data.map((val) => {
+                            let isSelect = val.is_in_approved_orders ? true : false
+                            return Object.assign({}, val, { is_in_approved_orders: val.is_in_approved_orders, isSelect: isSelect, isDisabled: false })
+                        })
+                        this.fullUserInfo = data
+                        this.userInfo = data;
+                        if (isChange) {
+                            this.isGetItem = true;
+                        }
+                        return this.getApprovedOrders()
+                    }))
         } else {
             return of()
         }
@@ -736,22 +745,26 @@ export class MainRoutesComponent {
         }
     }
     get userCounts() {
+        let item = this.userInfo.filter((data) => {
+            return (data.is_in_approved_orders == false && data.isSelect == true)
+        })
 
-
-        let item = this.userInfo.filter((data) => { return (data.is_in_approved_orders == false && data.isSelect == true) })
         let calculateCount = 0;
         item.forEach((data) => {
             calculateCount += data.person_count
         })
         if (this.drivers)
+
             if (calculateCount) {
+                console.log('driver ')
+
                 let arr = this.drivers.filter((val) => {
                     return (+val.car_capacity >= calculateCount && val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
                 })
 
+
                 let arr1 = arr.filter((el) => { return el.located_city.id !== el.main_city.id });
                 let arr2 = arr.filter((el) => { return el.located_city.id == el.main_city.id });
-
                 this.currentDriver = [...arr1, ...arr2]
             } else {
                 let arr = this.drivers.filter((val) => {
@@ -890,6 +903,7 @@ export class MainRoutesComponent {
             })).subscribe()
     }
     getInformation($event, index: number) {
+
         if ($event) {
             this.timeItem = $event.timeItem
             this.selectedTime = $event.time;
@@ -898,7 +912,8 @@ export class MainRoutesComponent {
             this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this._datePipe.transform(this.selectedDate.value, 'dd-MM-yyyy')} ${this.getDay()} ${time}`
             this.radioValue = 'approved'
             let isUnChange = $event.isUnChange ? false : true;
-            this.getInfo($event.time, this.radioValue, isUnChange).pipe(takeUntil(this.unsubscribe$)).subscribe()
+            this.getInfo($event.time, this.radioValue, isUnChange)
+                .pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
             this.modalTitle = ''
         }

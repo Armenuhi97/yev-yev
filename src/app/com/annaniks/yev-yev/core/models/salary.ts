@@ -47,7 +47,6 @@ export interface User {
     car_color_name_en: string
     car_color_name_ru: string
     "user_role": number
-
 }
 export interface Client {
     canceled_orders: 1

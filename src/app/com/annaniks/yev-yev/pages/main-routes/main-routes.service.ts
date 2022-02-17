@@ -13,7 +13,7 @@ export class MainRoutesService {
         return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?only_my=True&page=${page}&limit=10&offset=${offset}`)
     }
     public getDrivers(mainRouteId: number) {
-        return this._httpClient.get(`userdetails/user/?search=&driving_routes__main_route=${mainRouteId}&user_role__code=DR&limit=10000`)
+        return this._httpClient.get(`userdetails/user/?search=&driving_routes__main_route=${mainRouteId}&user_role__code=DR&limit=10000&small=true`)
     }
     public getRoutesById(id: number): Observable<RouteItem> {
         return this._httpClient.get<RouteItem>(`route/main-route/${id}/`)
@@ -64,11 +64,14 @@ export class MainRoutesService {
         return this._httpClient.get(`order/finish-approved-order/${id}/`)
     }
 
+    // http://yev.annaniks.com/order/get-subroute-hourly-orders-by-date/   POST
+    // {"sub_route_id":24,"date":"2022-02-14"}
+
     public getHourlyOrdersByDate(routeId: number, date: string) {
-        return this._httpClient.post(`order/get-hourly-orders-by-date/`, {
-            "route_id": routeId,
+        return this._httpClient.post(`order/get-subroute-hourly-orders-by-date/`, {
+            "sub_route_id": routeId,
             "date": date
-        })
+        });
     }
 
     public getUserByPhonenumber(phoneNumber) {

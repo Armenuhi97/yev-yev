@@ -68,8 +68,11 @@ export class SubrouteComponent {
     @Input('info')
     set setInfo($event) {
         this.subrouteInfo = $event;
+
+
         // if (this.subrouteInfo)
         // this._createTimesArray(this.subrouteInfo.work_start_time, this.subrouteInfo.work_end_time)
+
         if (this.subrouteInfo && this.subrouteInfo.countList) {
             for (let item of this.subrouteInfo.countList.orders) {
                 let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
@@ -113,21 +116,23 @@ export class SubrouteComponent {
     }
     private _date;
     @Input('date')
-    set setDate($event) {       
+    set setDate($event) {
         this._date = $event;
         if (this._date) {
             this.currentInterval = null;
             if (!this.subrouteInfo.selectTime)
                 this.selectedTime = null;
         }
-        if (this.subrouteInfo && this._date) {            
+        if (this.subrouteInfo && this._date) {
             forkJoin([
                 this.getBlockedHours(this.subrouteInfo.id),
                 this.getClosedHours(this.subrouteInfo.id)
 
-            ]).pipe(switchMap(() => {
-                return this.getHourlyOrdersByDate()
-            })).subscribe()
+            ]).pipe(
+                switchMap(() => {
+                    return this.getHourlyOrdersByDate();
+                })
+            ).subscribe();
         }
 
 
@@ -143,21 +148,28 @@ export class SubrouteComponent {
         this._onResize()
     }
 
-    ngOnInit() { 
-        
+    ngOnInit() {
+        this.getHourlyOrdersByDate();
     }
 
 
-    getHourlyOrdersByDate() {
+    getHourlyOrdersByDate(): Observable<any> {
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
-        return this._mainRouteService.getHourlyOrdersByDate(this.subrouteInfo.main_route, date).pipe(
-            map((data: any) => {
-                this.subrouteInfo.openTimes = this.subrouteInfo.openTimes.map((el) => { return Object.assign(el, { approved_seat_count: 0, pending_seat_count: 0, seat_count: 0, luggage_type_count: 0 }) })
-                if (data[this.index] && data[this.index].orders)
-                    for (let item of data[this.index].orders) {
-                        let dateFormat = moment(item.hour).format('HH:mm')
+        return this._mainRouteService.getHourlyOrdersByDate(this.subrouteInfo.id, date)
+            .pipe(map((data: any) => {
+                this.subrouteInfo.openTimes = this.subrouteInfo.openTimes.map(
+                    (el) => {
+                        return Object.assign(el, {
+                            approved_seat_count: 0,
+                            pending_seat_count: 0,
+                            seat_count: 0,
+                            luggage_type_count: 0
+                        });
+                    });
+                if (data[this.index].order) {
+                    for (let item of data) {
+                        let dateFormat = moment(item.hour).format('HH:mm');
                         let date = moment(dateFormat, "HH:mm");
-                        // let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
                         for (let time of this.subrouteInfo.openTimes) {
                             let start = moment(time.start, "HH:mm");
                             let end = moment(time.end, "HH:mm");
@@ -167,15 +179,17 @@ export class SubrouteComponent {
                                     pending_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'pending_seat_count', 0),
                                     seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'seat_count', 0),
                                     luggage_type_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'luggage_type_count', 0),
-                                })
+                                });
                             }
+
                         }
                     }
-                this._reset.emit(false)
-            })
-        )
+                }
+                this._reset.emit(false);
+            }));
 
     }
+
     setBlockOrCloseHours(items, key, idKey) {
         for (let item of items) {
             let date = this._datePipe.transform(new Date(item.time), 'HH:mm');
@@ -214,13 +228,13 @@ export class SubrouteComponent {
             this.setBlockOrCloseHours(items, 'isActive', 'closeId')
         }))
     }
-    openOrCloseHour($event, data) {        
-        if (data.closeId) {            
+    openOrCloseHour($event, data) {
+        if (data.closeId) {
             this._mainRouteService.openHours(data.closeId).pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
             let current = this._formatDate(data.time)
-            this._mainRouteService.closeHours(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe((val:{id:number})=>{
-                data.closeId=val.id
+            this._mainRouteService.closeHours(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe((val: { id: number }) => {
+                data.closeId = val.id
             })
         }
     }
@@ -239,14 +253,14 @@ export class SubrouteComponent {
     check(item) {
         return item ? +item : ''
     }
-    calculateEmptyCount(data){
-        let emptyPlaces=(+this.check(data.seat_count) - +this.check(data.approved_seat_count))
-        return emptyPlaces?emptyPlaces:''
+    calculateEmptyCount(data) {
+        let emptyPlaces = (+this.check(data.seat_count) - +this.check(data.approved_seat_count))
+        return emptyPlaces ? emptyPlaces : ''
     }
     getInformation(time) {
         this.selectedTime = time.time;
 
-        this._info.emit({ timeItem: time, time: time.time,isUnChange:true })
+        this._info.emit({ timeItem: time, time: time.time, isUnChange: true })
         // this.getInfo(time, status).subscribe()
     }
 
