@@ -146,21 +146,7 @@
                         </nz-form-control>
                     </nz-form-item>
                 </div>
-                <div nz-col [nzSpan]="12">
-                    <nz-form-label class="inline-labels" nzRequired>Վարորդ</nz-form-label>
-                    <nz-form-item>
-                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                            <nz-select class="w-100" formControlName="driver">
-                                <nz-option *ngFor="let dr of filteredDrivers" [nzValue]="dr.id"
-                                    [nzLabel]="getLabelOfDrivers(dr)">
-                                </nz-option>
-                            </nz-select>
 
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
-            </div>
-            <div nz-row [nzGutter]="24">
                 <div nz-col [nzSpan]="12">
                     <nz-form-label class="inline-labels" nzRequired>Ուղևորների քանակ</nz-form-label>
                     <nz-form-item>
@@ -174,15 +160,24 @@
                         </nz-form-control>
                     </nz-form-item>
                 </div>
-                <div nz-col [nzSpan]="12">
-                    <nz-form-label class="inline-labels">Մեկնաբանություն</nz-form-label>
+
+                <!-- <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels" nzRequired>Վարորդ</nz-form-label>
                     <nz-form-item>
                         <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                            <input nz-input formControlName="comment" placeholder="" />
+                            <nz-select class="w-100" formControlName="driver">
+                                <nz-option *ngFor="let dr of filteredDrivers" [nzValue]="dr.id"
+                                    [nzLabel]="getLabelOfDrivers(dr)">
+                                </nz-option>
+                            </nz-select>
+
                         </nz-form-control>
                     </nz-form-item>
-                </div>
+                </div> -->
+
+
             </div>
+   
             <div nz-row [nzGutter]="24" class="d-flex align-items-center justify-content-between" *ngIf="isEditing">
                 <div nz-col [nzSpan]="12">
                     <nz-date-picker class="w-100" formControlName="date"></nz-date-picker>
@@ -193,6 +188,18 @@
                         </nz-option>
                     </nz-select>
                 </div>
+            </div>
+            <div nz-row [nzGutter]="24">
+             
+                <div nz-col [nzSpan]="12">
+                    <nz-form-label class="inline-labels">Մեկնաբանություն</nz-form-label>
+                    <nz-form-item>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                            <input nz-input formControlName="comment" placeholder="" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                
             </div>
         </form>
     </div>

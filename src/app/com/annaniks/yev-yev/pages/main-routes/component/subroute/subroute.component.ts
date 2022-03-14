@@ -59,7 +59,8 @@ export class SubrouteComponent {
     isEditing: boolean;
     editIndex;
     @Output('getInfo') private _info = new EventEmitter();
-    @Output('resetItem') private _reset = new EventEmitter()
+    @Output('resetItem') private _reset = new EventEmitter();
+    @Output('subrout') subrout = new EventEmitter();
     index: number;
     @Input('index')
     set setIndex($event) {
@@ -69,11 +70,10 @@ export class SubrouteComponent {
     set setInfo($event) {
         this.subrouteInfo = $event;
 
-
         // if (this.subrouteInfo)
         // this._createTimesArray(this.subrouteInfo.work_start_time, this.subrouteInfo.work_end_time)
 
-        if (this.subrouteInfo && this.subrouteInfo.countList) {
+        if (this.subrouteInfo ) {
             for (let item of this.subrouteInfo.countList.orders) {
                 let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
                 for (let time of this.subrouteInfo.openTimes) {
@@ -110,6 +110,7 @@ export class SubrouteComponent {
     @Input('isGetItem')
     set isGetItem($event) {
         this.isGetOrderCounts = $event;
+        this.isGetOrderCounts = true;
         if ($event && this.selectedTime) {
             this.getHourlyOrdersByDate().pipe(takeUntil(this.unsubscribe$)).subscribe()
         }
@@ -151,7 +152,6 @@ export class SubrouteComponent {
     ngOnInit() {
         this.getHourlyOrdersByDate();
     }
-
 
     getHourlyOrdersByDate(): Observable<any> {
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
@@ -259,8 +259,8 @@ export class SubrouteComponent {
     }
     getInformation(time) {
         this.selectedTime = time.time;
-
-        this._info.emit({ timeItem: time, time: time.time, isUnChange: true })
+        let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
+        this._info.emit({ timeItem: time, time: time.time, isUnChange: true, date:date })
         // this.getInfo(time, status).subscribe()
     }
 

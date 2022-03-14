@@ -78,8 +78,6 @@ export class UsersComponent {
             .pipe(takeUntil(this.unsubscribe$)).subscribe();
         // })).subscribe()
 
-
-        console.log('event ', this.search.value);
     }
     public changeUserStatus($event, id: number) {
         this._userService.editUser(id, { is_active: $event })

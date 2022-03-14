@@ -37,7 +37,8 @@
 
                     <app-subroute *ngIf="selectIndex == ind" [selectInfo]="selectInfo" [isGetItem]="isGetItem"
                         (getInfo)="getInformation($event,i)" [index]="i" [info]="item" (resetItem)="resetItem($event)"
-                        [date]="selectedDate.value">
+                        [date]="selectedDate.value" >
+                        <!-- (subrout)="getSubroueteInfo($event)" -->
                     </app-subroute>
                     
                 </div>
@@ -78,7 +79,7 @@
                         <div *ngIf="isOpenInfo" nz-col>
                             <div class="d-flex align-items-center">
                                 <nz-radio-group [(ngModel)]="radioValue" (ngModelChange)="changeStatus($event)">
-                                    <label nz-radio nzValue="approved">Ընդունված</label>
+                                    <label nz-radio nzValue="approved,canceled">Ընդունված</label>
                                     <label nz-radio nzValue="pending">Սպասման մեջ</label>
                                 </nz-radio-group>
                                 <div class="title-container">
@@ -113,13 +114,17 @@
                                                 <th>Մեկնաբանություն</th>
                                                 <th>Այլ</th>
                                                 <th></th>
-                                                <th *ngIf="radioValue == 'approved'"></th>
+                                                <th *ngIf="radioValue == 'approved,canceled'"></th>
                                                 <th></th>
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr *ngFor="let moderator of userInfo;let ind=index">
+                                            <tr *ngFor="let moderator of userInfo;let ind=index" 
+                                            [ngClass]="{red:moderator.status==='canceled'}">
+                                                <!-- <div *ngIf = 'moderator?.status==="canceled"' class="red"> -->
+
+                                                
                                                 <td>{{ind+1}}</td>
                                                 <td>{{moderator?.client_details?.user?.first_name}}
                                                     {{moderator?.client_details?.user?.last_name}}</td>
@@ -129,25 +134,32 @@
                                                         {{checkAddress(moderator)}}</span>
                                                 <td>{{getOrderType(moderator?.order_type)}}</td>
                                                 <td>{{moderator?.person_count}}</td>
-                                                <td>
+                                                <td >
                                                     {{moderator?.comment}}
                                                     <!-- <label [disabled]="true" nz-checkbox
                                                         [(ngModel)]="moderator.is_free"></label> -->
                                                 </td>
-                                                <td>
+
+
+                                                <td *ngIf = "moderator.status!=='canceled'">
                                                     <label [disabled]="true" nz-checkbox
                                                         [(ngModel)]="moderator.is_extra_order"></label>
                                                 </td>
-                                                <td class="action-button edit" style="width:10px"><i
+                                                <td class="action-button edit" style="width:10px"
+                                                *ngIf = "moderator.status!=='canceled'"><i
                                                         (click)="onEditOrder(ind,moderator)" nz-icon nzType="edit"></i>
                                                 </td>
-                                                <td *ngIf="radioValue == 'approved'"> <label
+                                                <!-- *ngIf="radioValue == 'approved,canceled'" -->
+                                                <td  *ngIf = "moderator.status!=='canceled'">
+                                                    <label
                                                         *ngIf="timeItem && !timeItem.isDisabled"
                                                         [disabled]="moderator.is_in_approved_orders || moderator?.isDisabled"
                                                         nz-checkbox [(ngModel)]="moderator.isSelect"
-                                                        (ngModelChange)="selectCheckbox($event,ind)"></label>
+                                                        (ngModelChange)="selectCheckbox($event,ind)">
+                                                    </label>
                                                 </td>
-                                                <td class="action-button delete" style="width:10px">
+                                                <td class="action-button delete" style="width:10px"
+                                                *ngIf = "moderator.status!=='canceled'">
                                                     <a *ngIf="(timeItem && !timeItem.isDisabled) && !moderator.is_in_approved_orders"
                                                         [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
                                                         nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
@@ -162,13 +174,15 @@
                                                         </svg>
                                                     </a>
                                                 </td>
-                                                <td><span *ngIf="data?.date_has_changed" class="error"> Փոփոխված է` {{ formatDate(data?.last_date)}}</span></td>
+                                                <td *ngIf = "moderator.status!=='canceled'"><span *ngIf="data?.date_has_changed" class="error"> Փոփոխված է` {{ formatDate(data?.last_date)}}</span></td>
+                                                <!-- </div> -->
                                             </tr>
+
                                         </tbody>
                                     </nz-table>
                                 </div>
                                 <nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible"
-                                    [nzTitle]="userName" (nzOnCancel)="handleCancel()" nzWidth="870px"
+                                    [nzTitle]="modalTitle" (nzOnCancel)="handleCancel()" nzWidth="870px"
                                     (nzOnOk)="onclientSave()">
                                     <!-- *ngIf="!isEditing" -->
                                     <form class="sm-ant" nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
@@ -321,7 +335,8 @@
                                         <div nz-row [nzGutter]="24"
                                             class="d-flex align-items-center justify-content-between" *ngIf="isEditing">
                                             <div nz-col [nzSpan]="12">
-                                                <nz-date-picker class="w-100" formControlName="date"></nz-date-picker>
+                                                
+                                                <nz-date-picker class="w-100" formControlName="date" [nzDisabledDate]="disabledDate"></nz-date-picker>
                                             </div>
                                             <div nz-col [nzSpan]="12">
                                                 <nz-select class="w-100" formControlName="time">

@@ -23,9 +23,9 @@ export class OtherOrdersComponent {
     subRoutes: SubrouteDetails[] = []
     total: number;
     pageIndex: number = 1;
-    phoneNumberPrefix = new FormControl('+374')
+    phoneNumberPrefix = new FormControl('+374');
     allDrivers: User[] = [];
-    filteredDrivers: User[] = []
+    filteredDrivers: User[] = [];
     extraOrders: ExtraOrders[] = [];
     pageSize: number = 10;
     unsubscribe$ = new Subject();
@@ -48,9 +48,12 @@ export class OtherOrdersComponent {
         this._initForm();
         this.combineObservable()
     }
+
+    // ?
     getLabelOfDrivers(dr: User) {
         return `${dr.user.first_name} ${dr.user.last_name} (${dr.car_model}) (${dr.car_capacity})`
     }
+
     combineObservable() {
         const combine = forkJoin(
             this.getSubrouteList(),
@@ -67,6 +70,7 @@ export class OtherOrdersComponent {
                 this.subRoutes = data.results
             }))
     }
+    // ?
     getDrivers(mainRoute) {
         return this._otherOrdersService.getDrivers(mainRoute).pipe(
             map((data: ServerResponce<User[]>) => {
@@ -84,20 +88,25 @@ export class OtherOrdersComponent {
     filterDriver() {
         let personCount = this.validateForm.get('personCount').value;
         if (personCount) {
-            let driver = this.validateForm.get('driver').value
+            // ?
+           // let driver = this.validateForm.get('driver').value
+
             this.filteredDrivers = this.allDrivers.filter((val) => {
-                return (+val.car_capacity >= personCount)
-            })
-            if (driver) {
-                let findDriver = this.filteredDrivers.filter((val) => {
-                    return (val.id == driver)
-                })
-                if (!findDriver || (findDriver && !findDriver.length)) {
-                    this.validateForm.get('driver').reset()
-                }
-            }
+                return (+val.car_capacity >= personCount);
+            });
+
+            // ?
+            // if (driver) {
+            //     let findDriver = this.filteredDrivers.filter((val) => {
+            //         return (val.id == driver)
+            //     })
+            //     if (!findDriver || (findDriver && !findDriver.length)) {
+            //         this.validateForm.get('driver').reset()
+            //     }
+            // }
+
         } else {
-            this.filteredDrivers = []
+            this.filteredDrivers = [];
         }
     }
     public getExtraOrders(): Observable<ServerResponce<ExtraOrders[]>> {
@@ -109,7 +118,7 @@ export class OtherOrdersComponent {
             }))
     }
     compareTwoDates(orderDate) {
-        let dateFormat = moment(orderDate).format('HH:mm')
+        let dateFormat = moment(orderDate).format('HH:mm');
         let date = moment(dateFormat, "HH:mm");
         // let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
         for (let time of this.openTimes) {
@@ -117,8 +126,6 @@ export class OtherOrdersComponent {
             let end = moment(time.end, "HH:mm");
             if ((moment(date).isSameOrAfter(start) && moment(date).isBefore(end))) {
                 return time.time
-
-
             }
         }
         return
@@ -141,7 +148,9 @@ export class OtherOrdersComponent {
                     startPointAddress: this.editItem.connected_order_details.start_address,
                     endPointAddress: this.editItem.connected_order_details.end_address,
                     order_phone_number: phoneNumber ? phoneNumber.slice(4) : null,
-                    driver: this.editItem.connected_order_details.client_details.id,
+                  // ?
+                  //  driver: this.editItem.connected_order_details.client_details.id,
+
                     comment: this.editItem.connected_order_details.comment,
                     date: date,
                     time: this.compareTwoDates(date),
@@ -155,7 +164,9 @@ export class OtherOrdersComponent {
                 startPointAddress: this.editItem.connected_order_details.start_address,
                 endPointAddress: this.editItem.connected_order_details.end_address,
                 order_phone_number: phoneNumber ? phoneNumber.slice(4) : null,
-                driver: this.editItem.connected_order_details.client_details.id,
+               // ?
+              //  driver: this.editItem.connected_order_details.client_details.id,
+               
                 comment: this.editItem.connected_order_details.comment,
                 date: date,
                 time: this.compareTwoDates(date),
@@ -184,25 +195,29 @@ export class OtherOrdersComponent {
             order_phone_number: [null],
             personCount: [null, Validators.required],
             subroute: [null, Validators.required],
-            driver: [null, Validators.required],
+           // ?
+           // driver: [null, Validators.required],
+           
             comment: [null],
             date: [null],
             time: [null]
-        })
+        });
+
         this.validateForm.get('subroute').valueChanges.pipe(takeUntil(this.unsubscribe$),
             switchMap((value: SubrouteDetails) => {
                 if (value && value.id) {
-                    return this.getDrivers(value.main_route)
+                    return this.getDrivers(value.main_route);
                 } else {
-                    return of()
+                    return of();
                 }
             })
-        ).subscribe()
+        ).subscribe();
+
         this.validateForm.get('personCount').valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((value) => {
             if (value) {
-                this.filterDriver()
+                this.filterDriver();
             }
-        })
+        });
     }
     public showModal(): void {
         this.isVisible = true;
@@ -230,7 +245,9 @@ export class OtherOrdersComponent {
                 let sendResponse = {
                     "date": dateTime,
                     "extra_order_id": this.editItem.id,
-                    "driver_id": this.validateForm.get('driver').value,
+                    // ?
+                   // "driver_id": this.validateForm.get('driver').value,
+
                     "sub_route_id": this.validateForm.get('subroute').value ? this.validateForm.get('subroute').value.id : null,
                     "comment": this.validateForm.get('comment').value,
                     "phone_number": this.validateForm.get('order_phone_number').value ? '+374' + this.validateForm.get('order_phone_number').value : null,
@@ -241,7 +258,7 @@ export class OtherOrdersComponent {
                 this._otherOrdersService.editExtraOrder(sendResponse).pipe(
                     takeUntil(this.unsubscribe$),
                     map(() => {
-                        let mainRoute = this.validateForm.get('subroute').value.main_route
+                        let mainRoute = this.validateForm.get('subroute').value.main_route;
                         this.handleCancel();
                         let params = {
                             date: sendResponse.date,
@@ -251,7 +268,7 @@ export class OtherOrdersComponent {
                         this._router.navigate(['/dashboard/main-routes',], { queryParams: params })
 
                         // return this.getExtraOrders()
-                    })).subscribe()
+                    })).subscribe();
             }
         }
     }

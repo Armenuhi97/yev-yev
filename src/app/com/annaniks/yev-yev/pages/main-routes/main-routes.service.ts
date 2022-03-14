@@ -7,6 +7,7 @@ import { ServerResponce } from "../../core/models/server-reponce";
 
 @Injectable()
 export class MainRoutesService {
+    _date = '';
     constructor(private _httpClient: HttpClient) { }
     public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
         let offset = (page - 1) * 10;
@@ -25,13 +26,7 @@ export class MainRoutesService {
     public addUser(body) {
         return this._httpClient.post(`userdetails/add-moderator/`, body)
     }
-    public getOrdersByHour(subrouteid: number, date: string, status: string) {
-        return this._httpClient.post('order/get-orders-by-hour/', {
-            "sub_route_id": subrouteid,
-            "date": date,
-            status: status
-        })
-    }
+ 
     public getCloseHours(subRouteId: number, date: string) {
 
         return this._httpClient.get(`route/closed-hour/?sub_route=${subRouteId}&date=${date}&offset=0&limit=1000`)
@@ -74,6 +69,13 @@ export class MainRoutesService {
         });
     }
 
+    public getOrdersByHour(subrouteid: number, date: string, status: string) {
+        return this._httpClient.post('order/get-orders-by-hour/', {
+            "sub_route_id": subrouteid,
+            "date": date,
+            status: status
+        })
+    }
     public getUserByPhonenumber(phoneNumber) {
         return this._httpClient.get(`userdetails/user/?search=${phoneNumber}`)
     }

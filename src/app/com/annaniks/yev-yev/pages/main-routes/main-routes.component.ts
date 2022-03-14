@@ -17,6 +17,8 @@ import { OpenTimesService } from '../../core/services/open-times.service';
 import { OrderTypeService } from '../../core/services/order-type';
 import { MainRoutesService } from './main-routes.service';
 
+import { differenceInCalendarDays, setHours } from 'date-fns';
+
 @Component({
     selector: 'app-main-routes',
     templateUrl: 'main-routes.component.html',
@@ -50,7 +52,7 @@ export class MainRoutesComponent {
     currentInterval;
     isShowError = false;
     isOpenInfo = false;
-    radioValue = 'approved';
+    radioValue = 'approved,canceled';
     isEditing: boolean;
     editIndex;
     selectedDate = new FormControl(new Date());
@@ -92,6 +94,13 @@ export class MainRoutesComponent {
     ngOnInit() {
         this.combine();
         this._initForm();
+        let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
+
+
+        // this._mainRouteService.getHourlyOrdersByDate()
+        // .subscribe((res:any)=>{
+
+        // })
 
     }
     search() {
@@ -156,7 +165,7 @@ export class MainRoutesComponent {
                     let time = this._datePipe.transform(param.date, 'HH:mm');
                     return this.combineObservable(param.subRoute, time).pipe(
                         map(() => {
-                            this.radioValue = param.status ? param.status : 'approved';
+                            this.radioValue = param.status ? param.status : 'approved,canceled';
                             if (this.radioValue == 'pending')
                                 this.changeStatus(this.radioValue)
                             this.isGet = false;
@@ -294,11 +303,12 @@ export class MainRoutesComponent {
                             selectTime = time;
                         }
                         return Object.assign(data, { selectTime: selectTime })
-                    })
+                    });
                 }
+  
                 this.subRouteInfos = data.results;
                 // this.subRouteInfo.forEach(element => {
-                //     console.log('element', element);
+
                 // });
                 this.getWorkTimes()
                 this.isGetItem = true
@@ -376,19 +386,18 @@ export class MainRoutesComponent {
     }
 
     getLabelOfDrivers(dr: User) {
-        console.log('dr', dr);
         return `${dr.user.first_name} ${dr.user.last_name} (${dr.car_model}) (${dr.car_capacity}) [${dr.main_city.name_hy}]`
     }
     onChangeTab($event) {
         this.userInfo = [];
         this.isOpenInfo = false;
-        this.selectIndex = $event
-        this.subRouteInfos = []
+        this.selectIndex = $event;
+        this.subRouteInfos = [];
         this.currentId = this.mainRoutes[this.selectIndex].id;
         if (this.isGetFunction) {
             this._checkQueryParams().pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
-            this.isGetFunction = true
+            this.isGetFunction = true;
         }
     }
     combineObservable(subrouteId?: number, time?: string) {
@@ -410,12 +419,12 @@ export class MainRoutesComponent {
         )
     }
     changeStatus($event) {
-        this.getInfo(this.selectedTime, $event, false).subscribe()
+        this.getInfo(this.selectedTime, $event, false).subscribe();
     }
     public getApprovedOrders() {
         return this._mainRouteService.getAllAprovedOrders(this.subRouteInfo.id, this._formatDate(this.selectedTime)).pipe(
             map((orders: ServerResponce<any>) => {
-                this.approvedOrders = orders.results
+                this.approvedOrders = orders.results;
             })
         )
     }
@@ -501,22 +510,21 @@ export class MainRoutesComponent {
     cancelCancelation(moderator) {
         this._mainRouteService.cancelCancelation(moderator.order.id).pipe(takeUntil(this.unsubscribe$),
             map(() => {
-                // this.closeModal();
                 this.nzMessages.success(Messages.success);
                 moderator.order.canceled_by_client = false;
-                // this.getInfo(this.selectedTime).subscribe();
-            })).subscribe()
+            })).subscribe();
     }
     approveCancelation(id: number, index) {
-        this._mainRouteService.approveCancelation(id).pipe(takeUntil(this.unsubscribe$),
-            map(() => {
-                // this.closeModal();
-                this.orderMembers.splice(index, 1);
-                this.nzMessages.success(Messages.success)
 
-                this.getInfo(this.selectedTime).subscribe();
+        this._mainRouteService.approveCancelation(id)
+            .pipe(takeUntil(this.unsubscribe$),
+                map(() => {
+                    // this.closeModal();
+                    this.orderMembers.splice(index, 1);
+                    this.nzMessages.success(Messages.success)
 
-            })).subscribe()
+                    this.getInfo(this.selectedTime).subscribe();
+                })).subscribe()
     }
     nzPageIndexChange(page: number) { }
 
@@ -614,31 +622,41 @@ export class MainRoutesComponent {
         }
     }
     sendRequest(sendObject) {
-        this._mainRouteService.addOrder(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
-            this.nzMessages.success(Messages.success);
-            this.closeModal();
-            this.getInfo(this.selectedTime).subscribe()
-        },
-            () => {
-                this.nzMessages.error(Messages.fail)
-            })
+        this._mainRouteService.addOrder(sendObject)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((res: any) => {
+                this.nzMessages.success(Messages.success);
+                this.closeModal();
+                this.getInfo(this.selectedTime).subscribe();
+            },
+                () => {
+                    this.nzMessages.error(Messages.fail)
+                })
 
     }
+
+    subroutDate!: string;
+    // getSubroueteInfo(event: string) {
+    //     this.subroutDate = event;
+
+    // }
+
     getInfo(time, status = this.radioValue, isChange = true) {
 
         if (time) {
             this.isOpenInfo = true;
             let current = this._formatDate(time);
 
-            console.log('this.subRouteInfo.id', time);
+
+
             return this._mainRouteService.getOrdersByHour(this.subRouteInfo.id, current, status)
                 .pipe(takeUntil(this.unsubscribe$),
                     switchMap((data: OrdersByHours[]) => {
                         data = data.map((val) => {
                             let isSelect = val.is_in_approved_orders ? true : false
                             return Object.assign({}, val, { is_in_approved_orders: val.is_in_approved_orders, isSelect: isSelect, isDisabled: false })
-                        })
-                        this.fullUserInfo = data
+                        });
+                        this.fullUserInfo = data;
                         this.userInfo = data;
                         if (isChange) {
                             this.isGetItem = true;
@@ -756,7 +774,6 @@ export class MainRoutesComponent {
         if (this.drivers)
 
             if (calculateCount) {
-                console.log('driver ')
 
                 let arr = this.drivers.filter((val) => {
                     return (+val.car_capacity >= calculateCount && val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
@@ -835,6 +852,13 @@ export class MainRoutesComponent {
             }
         }
     }
+
+    today = new Date();
+
+    disabledDate = (current: Date): boolean =>
+        // Can not select days before today and today
+        differenceInCalendarDays(this.today, current) > 0;
+
     public orderStatus: string;
     public onEditOrderMembers(index, status: string) {
         this.orderStatus = status;
@@ -903,15 +927,17 @@ export class MainRoutesComponent {
             })).subscribe()
     }
     getInformation($event, index: number) {
-
         if ($event) {
             this.timeItem = $event.timeItem
             this.selectedTime = $event.time;
             this.subRouteInfo = this.subRouteInfos[index];
+            this.subroutDate = $event.date;
             let time = this.subRouteInfo.start_point_is_static ? this.timeItem.start : this.selectedTime;
             this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this._datePipe.transform(this.selectedDate.value, 'dd-MM-yyyy')} ${this.getDay()} ${time}`
-            this.radioValue = 'approved'
+            this.radioValue = 'approved,canceled';
             let isUnChange = $event.isUnChange ? false : true;
+
+
             this.getInfo($event.time, this.radioValue, isUnChange)
                 .pipe(takeUntil(this.unsubscribe$)).subscribe()
         } else {
@@ -924,7 +950,7 @@ export class MainRoutesComponent {
     openCalendar($event?) {
         this.isOpenCalendar = true;
         if ($event) {
-            this.radioValue = 'approved'
+            this.radioValue = 'approved,canceled';
             this.userInfo = [];
             this.fullUserInfo = []
             this.isOpenInfo = false;
@@ -945,7 +971,7 @@ export class MainRoutesComponent {
         date.setDate(date.getDate() + type);
         this.selectedDate.setValue(new Date(date));
         this.isGetItem = true;
-        this.radioValue = 'approved';
+        this.radioValue = 'approved,canceled';
         this.subRouteInfos = this.subRouteInfos.map((el) => {
             return Object.assign({}, el, { selectTime: null })
         })

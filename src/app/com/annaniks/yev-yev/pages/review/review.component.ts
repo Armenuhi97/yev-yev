@@ -112,7 +112,7 @@ export class ReviewComponent implements OnInit {
           this.addOffset(page);
           // this.total = rating.count;
           // this.driversStar = rating.results;
-          console.log(this.offset);
+
         }
 
       });
