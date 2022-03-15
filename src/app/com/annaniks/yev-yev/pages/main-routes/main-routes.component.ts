@@ -302,17 +302,13 @@ export class MainRoutesComponent {
                         if (+data.id == +subrouteId) {
                             selectTime = time;
                         }
-                        return Object.assign(data, { selectTime: selectTime })
+                        return Object.assign(data, { selectTime: selectTime });
                     });
                 }
-  
                 this.subRouteInfos = data.results;
-                // this.subRouteInfo.forEach(element => {
-
-                // });
-                this.getWorkTimes()
-                this.isGetItem = true
-            }))
+                this.getWorkTimes();
+                this.isGetItem = true;
+            }));
     }
     getWorkTimes() {
         let date = this.selectedDate.value;

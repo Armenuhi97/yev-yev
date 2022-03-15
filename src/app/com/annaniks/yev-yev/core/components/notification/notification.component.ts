@@ -79,9 +79,9 @@ export class NotificationComponent {
     setSeenNotification(id: number) {
         this._seen.emit(id)
     }
-    setSeenAllNotification() {
-        this._seen.emit('all')
 
+    setSeenAllNotification() {
+        this._seen.emit('all');
     }
 
     sendQueryParams(notification: Notification) {

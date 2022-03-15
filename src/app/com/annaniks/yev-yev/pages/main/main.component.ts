@@ -143,7 +143,6 @@ export class MainComponent {
             mainRoute: notification.order_details.sub_route_details.main_route,
             status: notification.order_details.status
         }
-        // notification.order_details.status
         return params
     }
     setSeenNotification(id: number | string) {
@@ -156,7 +155,8 @@ export class MainComponent {
         } else {
             this._mainService.setSeenNotification(+id).pipe(takeUntil(this.unsubscribe$),
                 switchMap(() => {
-                    return forkJoin(this._getUnseenNotificationCount(),
+                    return forkJoin(
+                        this._getUnseenNotificationCount(),
                         this._getPendingNotificationCount())
                 })).subscribe()
         }

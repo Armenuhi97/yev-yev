@@ -70,10 +70,7 @@ export class SubrouteComponent {
     set setInfo($event) {
         this.subrouteInfo = $event;
 
-        // if (this.subrouteInfo)
-        // this._createTimesArray(this.subrouteInfo.work_start_time, this.subrouteInfo.work_end_time)
-
-        if (this.subrouteInfo ) {
+        if (this.subrouteInfo && this.subrouteInfo.countList?.orders) {
             for (let item of this.subrouteInfo.countList.orders) {
                 let date = this._datePipe.transform(new Date(item.hour), 'HH:mm');
                 for (let time of this.subrouteInfo.openTimes) {
@@ -154,6 +151,7 @@ export class SubrouteComponent {
     }
 
     getHourlyOrdersByDate(): Observable<any> {
+
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
         return this._mainRouteService.getHourlyOrdersByDate(this.subrouteInfo.id, date)
             .pipe(map((data: any) => {
@@ -166,28 +164,25 @@ export class SubrouteComponent {
                             luggage_type_count: 0
                         });
                     });
-                if (data[this.index].order) {
-                    for (let item of data) {
-                        let dateFormat = moment(item.hour).format('HH:mm');
-                        let date = moment(dateFormat, "HH:mm");
-                        for (let time of this.subrouteInfo.openTimes) {
-                            let start = moment(time.start, "HH:mm");
-                            let end = moment(time.end, "HH:mm");
-                            if ((moment(date).isSameOrAfter(start) && moment(date).isBefore(end))) {
-                                time = Object.assign(time, {
-                                    approved_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'approved_seat_count', 0),
-                                    pending_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'pending_seat_count', 0),
-                                    seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'seat_count', 0),
-                                    luggage_type_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'luggage_type_count', 0),
-                                });
-                            }
-
+                for (let item of data) {
+                    let dateFormat = moment(item.hour).format('HH:mm');
+                    let date = moment(dateFormat, "HH:mm");
+                    for (let time of this.subrouteInfo.openTimes) {
+                        let start = moment(time.start, "HH:mm");
+                        let end = moment(time.end, "HH:mm");
+                        if ((moment(date).isSameOrAfter(start) && moment(date).isBefore(end))) {
+                            time = Object.assign(time, {
+                                approved_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'approved_seat_count', 0),
+                                pending_seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'pending_seat_count', 0),
+                                seat_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'seat_count', 0),
+                                luggage_type_count: this._appService.checkPropertyValue(this._appService.checkPropertyValue(item, 'order'), 'luggage_type_count', 0),
+                            });
                         }
+
                     }
                 }
                 this._reset.emit(false);
             }));
-
     }
 
     setBlockOrCloseHours(items, key, idKey) {
@@ -260,7 +255,7 @@ export class SubrouteComponent {
     getInformation(time) {
         this.selectedTime = time.time;
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
-        this._info.emit({ timeItem: time, time: time.time, isUnChange: true, date:date })
+        this._info.emit({ timeItem: time, time: time.time, isUnChange: true, date: date })
         // this.getInfo(time, status).subscribe()
     }
 
