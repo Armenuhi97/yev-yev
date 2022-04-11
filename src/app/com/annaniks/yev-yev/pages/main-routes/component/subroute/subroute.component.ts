@@ -225,10 +225,12 @@ export class SubrouteComponent {
         const date = this.formatSelectedDate();
         this._mainRouteService.removeAllCloseHour(date, this.subrouteInfo.id).pipe(takeUntil(this.unsubscribe$),
             switchMap(() => {
+                this.subrouteInfo.openTimes = this.subrouteInfo.openTimes.map((el) => { return Object.assign({}, el, { closeId: null }) });
                 return forkJoin([
                     this.getBlockedHours(this.subrouteInfo.id),
                     this.getClosedHours(this.subrouteInfo.id)
                 ])
+
                 // return this.getRouteInfo(item.main_route);
             })).subscribe();
     }
@@ -236,20 +238,17 @@ export class SubrouteComponent {
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
         return this._mainRouteService.getBlockedHours(id, date).pipe(takeUntil(this.unsubscribe$), map((data: ServerResponce<ClosedHours[]>) => {
             this.subrouteInfo.openTimes.map((val) => { return Object.assign(val, { isBlocked: true }) })
-            let items = data.results
-
+            let items = data.results;
             this.setBlockOrCloseHours(items, 'isBlocked', 'blockId')
             if (!items.length) {
                 for (let time of this.subrouteInfo.openTimes) {
                     this.checkCloseTimes(time)
                 }
             }
-
         }))
     }
 
     public getClosedHours(id: number): Observable<any> {
-
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
         return this._mainRouteService.getCloseHours(id, date).pipe(takeUntil(this.unsubscribe$), map((data: ServerResponce<ClosedHours[]>) => {
             this.subrouteInfo.openTimes.map((val) => { return Object.assign(val, { isActive: false }) })
@@ -259,7 +258,7 @@ export class SubrouteComponent {
     }
     openOrCloseHour($event, data) {
         if (data.closeId) {
-            this._mainRouteService.openHours(data.closeId).pipe(takeUntil(this.unsubscribe$)).subscribe()
+            this._mainRouteService.openHours(data.closeId).pipe(takeUntil(this.unsubscribe$)).subscribe(() => { data.closeId = null })
         } else {
             let current = this._formatDate(data.time)
             this._mainRouteService.closeHours(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe((val: { id: number }) => {
