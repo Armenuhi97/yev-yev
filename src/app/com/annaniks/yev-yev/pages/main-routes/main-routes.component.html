@@ -30,17 +30,12 @@
             <div nz-row [nzGutter]="24">
                 <!-- [class.active-route]="subRouteInfo?.id == item?.id" -->
                 <div nz-col [nzSpan]="12" *ngFor="let item of subRouteInfos;let i=index">
-                    <div class="title d-flex align-items-center justify-content-between">{{getTableTitle(item)}} <button
-                            class="add-essence" nz-button nzType="primary" (click)="showDriverRoutesModal(item)">
-                            Տեսնել վարորդներին
-                        </button></div>
-
-                    <app-subroute *ngIf="selectIndex == ind" [selectInfo]="selectInfo" [isGetItem]="isGetItem"
-                        (getInfo)="getInformation($event,i)" [index]="i" [info]="item" (resetItem)="resetItem($event)"
-                        [date]="selectedDate.value" >
+                    <app-subroute (openDriverModal)="showDriverRoutesModal(item)" *ngIf="selectIndex == ind"
+                        [selectInfo]="selectInfo" [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)"
+                        [index]="i" [info]="item" (resetItem)="resetItem($event)" [date]="selectedDate.value">
                         <!-- (subrout)="getSubroueteInfo($event)" -->
                     </app-subroute>
-                    
+
                 </div>
             </div>
             <nz-modal nzWidth="880px" (nzOnCancel)="handleCancelDoneOrders()" [(nzVisible)]="isShowDriverRoutes">
@@ -120,11 +115,11 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr *ngFor="let moderator of userInfo;let ind=index" 
-                                            [ngClass]="{red:moderator.status==='canceled'}">
+                                            <tr *ngFor="let moderator of userInfo;let ind=index"
+                                                [ngClass]="{red:moderator.status==='canceled'}">
                                                 <!-- <div *ngIf = 'moderator?.status==="canceled"' class="red"> -->
 
-                                                
+
                                                 <td>{{ind+1}}</td>
                                                 <td>{{moderator?.client_details?.user?.first_name}}
                                                     {{moderator?.client_details?.user?.last_name}}</td>
@@ -134,32 +129,31 @@
                                                         {{checkAddress(moderator)}}</span>
                                                 <td>{{getOrderType(moderator?.order_type)}}</td>
                                                 <td>{{moderator?.person_count}}</td>
-                                                <td >
+                                                <td>
                                                     {{moderator?.comment}}
                                                     <!-- <label [disabled]="true" nz-checkbox
                                                         [(ngModel)]="moderator.is_free"></label> -->
                                                 </td>
 
 
-                                                <td *ngIf = "moderator.status!=='canceled'">
+                                                <td *ngIf="moderator.status!=='canceled'">
                                                     <label [disabled]="true" nz-checkbox
                                                         [(ngModel)]="moderator.is_extra_order"></label>
                                                 </td>
                                                 <td class="action-button edit" style="width:10px"
-                                                *ngIf = "moderator.status!=='canceled'"><i
+                                                    *ngIf="moderator.status!=='canceled'"><i
                                                         (click)="onEditOrder(ind,moderator)" nz-icon nzType="edit"></i>
                                                 </td>
                                                 <!-- *ngIf="radioValue == 'approved,canceled'" -->
-                                                <td  *ngIf = "moderator.status!=='canceled'">
-                                                    <label
-                                                        *ngIf="timeItem && !timeItem.isDisabled"
+                                                <td *ngIf="moderator.status!=='canceled'">
+                                                    <label *ngIf="timeItem && !timeItem.isDisabled"
                                                         [disabled]="moderator.is_in_approved_orders || moderator?.isDisabled"
                                                         nz-checkbox [(ngModel)]="moderator.isSelect"
                                                         (ngModelChange)="selectCheckbox($event,ind)">
                                                     </label>
                                                 </td>
                                                 <td class="action-button delete" style="width:10px"
-                                                *ngIf = "moderator.status!=='canceled'">
+                                                    *ngIf="moderator.status!=='canceled'">
                                                     <a *ngIf="(timeItem && !timeItem.isDisabled) && !moderator.is_in_approved_orders"
                                                         [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
                                                         nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
@@ -174,7 +168,9 @@
                                                         </svg>
                                                     </a>
                                                 </td>
-                                                <td *ngIf = "moderator.status!=='canceled'"><span *ngIf="data?.date_has_changed" class="error"> Փոփոխված է` {{ formatDate(data?.last_date)}}</span></td>
+                                                <td *ngIf="moderator.status!=='canceled'"><span
+                                                        *ngIf="data?.date_has_changed" class="error"> Փոփոխված է` {{
+                                                        formatDate(data?.last_date)}}</span></td>
                                                 <!-- </div> -->
                                             </tr>
 
@@ -335,8 +331,9 @@
                                         <div nz-row [nzGutter]="24"
                                             class="d-flex align-items-center justify-content-between" *ngIf="isEditing">
                                             <div nz-col [nzSpan]="12">
-                                                
-                                                <nz-date-picker class="w-100" formControlName="date" [nzDisabledDate]="disabledDate"></nz-date-picker>
+
+                                                <nz-date-picker class="w-100" formControlName="date"
+                                                    [nzDisabledDate]="disabledDate"></nz-date-picker>
                                             </div>
                                             <div nz-col [nzSpan]="12">
                                                 <nz-select class="w-100" formControlName="time">
@@ -412,8 +409,7 @@
                                     </thead>
                                     <tbody>
                                         <tr [ngClass]="{'color-red':isCanceledByClient(data)}"
-                                            *ngFor="let data of approvedOrders; let index = index"
-                                            >
+                                            *ngFor="let data of approvedOrders; let index = index">
                                             <td>{{index+1}}</td>
                                             <td>{{data.driver_details.user.first_name}}
                                                 {{data.driver_details.user.last_name}}
@@ -425,9 +421,8 @@
                                                 {{data.driver_details.car_number}}
                                             </td>
                                             <td>{{data.driver_details.car_capacity}}/{{data.seat_count}}</td>
-                                            
-                                            <td 
-                                            class="cursor-pointer" (click)='getApprovedId(index)'>
+
+                                            <td class="cursor-pointer" (click)='getApprovedId(index)'>
                                                 <i nz-icon nzType="eye" nzTheme="outline"></i>
                                             </td>
                                             <td class="action-button edit" style="width:10px">

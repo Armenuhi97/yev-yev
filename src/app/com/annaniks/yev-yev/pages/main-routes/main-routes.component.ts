@@ -503,6 +503,7 @@ export class MainRoutesComponent {
             // }
         }
     }
+
     cancelCancelation(moderator) {
         this._mainRouteService.cancelCancelation(moderator.order.id).pipe(takeUntil(this.unsubscribe$),
             map(() => {
@@ -551,13 +552,7 @@ export class MainRoutesComponent {
                 this.getInfo(this.selectedTime).subscribe()
             })).subscribe()
     }
-    getTableTitle(subrouteInfo) {
-        if (subrouteInfo && subrouteInfo.start_point_city) {
-            return `${subrouteInfo.start_point_city.name_hy} - ${subrouteInfo?.end_point_city.name_hy}`
-        } else {
-            return
-        }
-    }
+
     public checkIsNull(value) {
         return value ? value : false
     }

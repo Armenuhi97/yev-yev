@@ -58,6 +58,7 @@ export class SubrouteComponent {
     radioValue: string = "approved";
     isEditing: boolean;
     editIndex;
+    @Output('openDriverModal') _openDriverModal = new EventEmitter<void>();
     @Output('getInfo') private _info = new EventEmitter();
     @Output('resetItem') private _reset = new EventEmitter();
     @Output('subrout') subrout = new EventEmitter();
@@ -137,6 +138,7 @@ export class SubrouteComponent {
     }
 
     windowHeight: number;
+    public title: string = '';
     userInfo: OrdersByHours[] = []
     constructor(
         private _datePipe: DatePipe,
@@ -148,6 +150,9 @@ export class SubrouteComponent {
 
     ngOnInit() {
         this.getHourlyOrdersByDate();
+        if (this.subrouteInfo && this.subrouteInfo.start_point_city) {
+            this.title = `${this.subrouteInfo.start_point_city.name_hy} - ${this.subrouteInfo?.end_point_city.name_hy}`
+        }
     }
 
     getHourlyOrdersByDate(): Observable<any> {
@@ -197,6 +202,35 @@ export class SubrouteComponent {
                     this.checkCloseTimes(time)
             }
         }
+    }
+    showDriverRoutesModal(): void {
+        this._openDriverModal.emit()
+    }
+    private formatSelectedDate(): string {
+        const date = this._datePipe.transform(this._date, 'YYYY-MM-dd');
+        return date
+    }
+    openAll(): void {
+        const date = this.formatSelectedDate();
+        this._mainRouteService.closeAllHours(date, this.subrouteInfo.id).pipe(takeUntil(this.unsubscribe$),
+            switchMap((data) => {
+                return forkJoin([
+                    this.getBlockedHours(this.subrouteInfo.id),
+                    this.getClosedHours(this.subrouteInfo.id)
+                ])
+                // return this.getRouteInfo(this.subrouteInfo.main_route);
+            })).subscribe();
+    }
+    closeAll(): void {
+        const date = this.formatSelectedDate();
+        this._mainRouteService.removeAllCloseHour(date, this.subrouteInfo.id).pipe(takeUntil(this.unsubscribe$),
+            switchMap(() => {
+                return forkJoin([
+                    this.getBlockedHours(this.subrouteInfo.id),
+                    this.getClosedHours(this.subrouteInfo.id)
+                ])
+                // return this.getRouteInfo(item.main_route);
+            })).subscribe();
     }
     public getBlockedHours(id: number) {
         let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
@@ -313,6 +347,7 @@ export class SubrouteComponent {
     setId(id: string, index: number): string {
         return `${id}-${index}`
     }
+
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();

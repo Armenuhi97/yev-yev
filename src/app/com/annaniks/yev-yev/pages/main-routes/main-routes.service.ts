@@ -26,12 +26,12 @@ export class MainRoutesService {
     public addUser(body) {
         return this._httpClient.post(`userdetails/add-moderator/`, body)
     }
- 
+
     public getCloseHours(subRouteId: number, date: string) {
 
         return this._httpClient.get(`route/closed-hour/?sub_route=${subRouteId}&date=${date}&offset=0&limit=1000`)
     }
-   
+
     public closeHours(subrouteId: number, date) {
         return this._httpClient.post(`route/closed-hour/`, {
             "sub_route": subrouteId,
@@ -55,7 +55,7 @@ export class MainRoutesService {
     public openBlockedHours(id: number) {
         return this._httpClient.delete(`route/blocked-hour/${id}/`)
     }
-    public finishOrder(id:number){
+    public finishOrder(id: number) {
         return this._httpClient.get(`order/finish-approved-order/${id}/`)
     }
 
@@ -129,8 +129,15 @@ export class MainRoutesService {
                 "order_id": orderId
             })
     }
-    public getDoneRoutes(subrouteId:number){
+    public getDoneRoutes(subrouteId: number) {
         // return this._httpClient.get(`order/approved-order/?sub_route_id=${subrouteId}&date=${date}&status=done&limit=1000&offset=${offset}`)
         return this._httpClient.get(`order/get-current-drivers/${subrouteId}/`)
+    }
+    public closeAllHours(date: string, id: number): Observable<void> {
+        return this._httpClient.get<void>(`/route/closed-hour/close-by-subroute/?date=${date}&subroute_id=${id}`)
+    }
+    public removeAllCloseHour(date: string, id: number): Observable<void> {
+        return this._httpClient.get<void>(`/route/closed-hour/close-by-subroute/?date=${date}&subroute_id=${id}&to_remove=true`)
+
     }
 }
