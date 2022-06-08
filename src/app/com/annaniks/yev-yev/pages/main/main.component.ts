@@ -1,5 +1,5 @@
 import { DatePipe } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, ElementRef, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
 import { forkJoin, Subject } from "rxjs";
@@ -14,6 +14,7 @@ import { MainService } from "./main.service";
     providers: [DatePipe]
 })
 export class MainComponent {
+    @ViewChild('audioOption') audio: ElementRef;
     unsubscribe$ = new Subject();
     public tabs = [
         { title: 'Վարորդներ', path: '/dashboard/driver' },
@@ -104,9 +105,38 @@ export class MainComponent {
     //             this.notifications = data
     //         }))
     // }
-    playAudio() {
-        var audio = new Audio('../../../../assets/notification.mp3');
-        audio.play();
+    async playAudio() {
+        // console.log('play');
+
+        // var audio = new Audio('../../../../assets/notification.mp3');
+        // audio.play();
+        // let audio = new Audio('../../../../assets/notification.mp3');
+        // audio.src = '../../../../assets/notification.mp3';
+        // audio.load();
+        // audio.play();
+        // var audio = new Audio('../../../../assets/notification.mp3');
+        // audio.play();
+        // console.log(this.audio);
+        // const media =   this.audio.nativeElement;
+        // media.muted = true; // without this line it's not working although I have "muted" in HTML
+        // media.play();
+        // this.audio.nativeElement.play();
+        // try {
+        //     console.log('try');
+            
+        //     await this.audio.nativeElement.play();
+        //     this.audio.nativeElement.classList.add("playing");
+        // } catch (err) {
+        //     console.log(err);
+            
+        //     this.audio.nativeElement.classList.remove("playing");
+        // }
+        // let audio = new Audio();
+        // audio.src = "../../../../assets/notification.mp3";
+        // audio.load();
+        // audio.play();
+      
+        this.audio.nativeElement.play();
     }
     // public _getUnseenPendingNotifications() {
     //     return this._mainService.getUnseenPendingNotifications().pipe(

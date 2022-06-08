@@ -1,5 +1,5 @@
 import { HttpInterceptor, HttpRequest, HttpEvent, HttpHandler, HttpParams, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { Inject, Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { catchError } from 'rxjs/operators';
@@ -28,7 +28,7 @@ export class ApiInterceptor implements HttpInterceptor {
 
         if (req.url !== 'login/login/')
             headers = headers.append('Authorization', 'Token ' + this.cookieService.get('access'));
-  
+
         if (params.has('authorization')) {
             params = params.delete('authorization');
         }
@@ -38,6 +38,21 @@ export class ApiInterceptor implements HttpInterceptor {
             params
         });
         return next.handle(clonedReq)
+            // .pipe(
+            //     catchError((error: any) => {
+            //         if (error instanceof HttpErrorResponse) {
+            //             // 401 error
+            //             if (error.status === 401) {
+            //                 this._appService.logOut();
+            //             }
+            //             // 403 error
+            //             if (error.status === 403) {
+            //                 this._appService.logOut();
+            //             }
+            //         }
+            //         return throwError(() => error);
+            //     }),
+            // );
             .pipe(
                 catchError((error: any) => {
                     if (error instanceof HttpErrorResponse) {

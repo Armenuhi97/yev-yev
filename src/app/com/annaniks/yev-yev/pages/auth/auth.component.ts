@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Subject } from "rxjs";
+import { EMPTY, Subject, throwError } from "rxjs";
 import { LoginSendResponse } from "../../core/models/login.model";
 import { AuthService } from "./auth.service";
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, takeUntil } from 'rxjs/operators';
 import { CookieService } from "ngx-cookie-service";
 import { Router } from "@angular/router";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
     selector: 'app-auth',
@@ -35,22 +36,25 @@ export class AuthComponent implements OnInit, OnDestroy {
         })
     }
     public submitForm(): void {
-        this.errorMessage = ''
-        let sendObject: LoginSendResponse = {
+        this.errorMessage = '';
+        const sendObject: LoginSendResponse = {
             username: this.loginForm.get('username').value,
             password: this.loginForm.get('password').value
-        }
-        this._authService.loginAdmin(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: any) => {
-            this._cookieService.set('access', data.token);
-            this._cookieService.set('role', data.role_code);
-            localStorage.setItem('user', JSON.stringify(data.user.user))
-            this._router.navigate(['/dashboard']);
+        };
+        this._authService.loginAdmin(sendObject).pipe(takeUntil(this.unsubscribe$),
+            catchError((err: any) => {
+                const error = err();
+                if (error && error.error && error.error.message) {
+                    this.errorMessage = 'Սխալ մուտքանուն կամ գաղտնաբառ';
+                }
+                return throwError(() => err);
+            })).subscribe((data: any) => {
+                this._cookieService.set('access', data.token);
+                this._cookieService.set('role', data.role_code);
+                localStorage.setItem('user', JSON.stringify(data.user.user));
+                this._router.navigate(['/dashboard']);
 
-        },
-            (err) => {
-                if (err && err.error && err.error.message)
-                    this.errorMessage = err.error.message
-            })
+            });
     }
     ngOnDestroy() {
         this.unsubscribe$.next();

@@ -49,25 +49,26 @@ export class OrdersComponent {
                     this.filterForm.get('mainRoute').setValue(this.mainRoutes[0].id)
                 }
             })
-        ).subscribe()
+        ).subscribe();
     }
-    getDailyOrders() {
-        let date = this._datePipe.transform(this.filterForm.get('date').value, 'yyyy-MM-dd');
-        let mainRoute = this.filterForm.get('mainRoute').value;
+    getDailyOrders(): void {
+        const date = this._datePipe.transform(this.filterForm.get('date').value, 'yyyy-MM-dd');
+        const mainRoute = this.filterForm.get('mainRoute').value;
         this.person = this.filterForm.get('person').value;
-        if (this.filterForm.get('person').value == 'driver') {
-            this._ordersService.getDriverMainRouteDailyOrders(mainRoute, date).pipe(takeUntil(this.unsubscribe$)).subscribe((data: DailyDriverOrderType) => {
-                this.driverRoutes = data
-            })
+        if (this.filterForm.get('person').value === 'driver') {
+            this._ordersService.getDriverMainRouteDailyOrders(mainRoute, date)
+                .pipe(takeUntil(this.unsubscribe$)).subscribe((data: DailyDriverOrderType) => {
+                    this.driverRoutes = data;
+                });
         } else {
-            this._ordersService.getMainRouteDailyOrders(mainRoute, date).pipe(takeUntil(this.unsubscribe$)).subscribe((data: DailyUserOrderType[]) => {
-                this.clientRoutes = data;
-
-            })
+            this._ordersService.getMainRouteDailyOrders(mainRoute, date)
+                .pipe(takeUntil(this.unsubscribe$)).subscribe((data: DailyUserOrderType[]) => {
+                    this.clientRoutes = data;
+                });
         }
     }
 
-    ngOnDestroy() {
+    ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
