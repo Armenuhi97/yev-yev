@@ -40,8 +40,6 @@ export class AddressComponent implements OnInit, OnDestroy {
     this.getOrders();
   }
   getNextPage($event: number) {
-    console.log($event);
-
     this.pageIndex = $event;
     this.searchOrderByAddress();
   }
@@ -88,8 +86,6 @@ export class AddressComponent implements OnInit, OnDestroy {
     this.addressService.searchAddress(params).pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<AddressModel[]>) => {
       this.total = data.count;
       this.orders = data.results;
-      console.log(this.orders, params);
-
       this.isGet = true;
     });
   }

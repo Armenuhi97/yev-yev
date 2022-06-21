@@ -21,8 +21,7 @@ export class AddressListComponent {
   constructor() { }
 
   nzPageIndexChange(evt): void {
-    console.log(evt);
-    
+    this.pageIndex = evt;
     this.getNextPage.emit(evt);
   }
 }
