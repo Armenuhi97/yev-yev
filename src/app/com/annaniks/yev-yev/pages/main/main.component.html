@@ -8,7 +8,7 @@
                 <img src="assets/CarAnm_002_00001.png" alt="">
             </div>
             <!-- The following menu items will be hidden on both SM and XS screen sizes -->
-            <a [class.d-none]="role == 'MDR' && (tab.title == 'Կարգավորումներ' || tab.title == 'Աշխատակիցներ')"
+            <a [class.d-none]="role == 'MDR' && (tab.title === 'Կարգավորումներ' || tab.title === 'Աշխատակիցներ')"
                 routerLinkActive="active" class="item" *ngFor="let tab of tabs" [routerLink]="tab.path" mat-button>
                 <div class="d-flex align-items-center" *ngIf="tab.title == 'Կարգավորումներ'">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
@@ -33,6 +33,11 @@
                             d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
                     </svg>
                 </div>
+
+                <div class="d-flex align-items-center" *ngIf="tab.title == 'address'">
+                    <img class="map-img" src="assets/map.png" alt="">
+                </div>
+
                 <nz-badge class="extra-order-count" *ngIf="tab.title == 'Այլ'" [nzCount]="extraOrderCount">
                     <span>{{tab.title}}</span>
                 </nz-badge>
@@ -46,7 +51,7 @@
                 </div>
 
                 <span
-                    *ngIf="tab.title !== 'star' && tab.title !== 'Կարգավորումներ' && tab.title !== 'Տվյալներ' && tab.title !== 'Այլ'">{{tab.title}}</span>
+                    *ngIf="tab.title !== 'star' && tab.title !== 'Կարգավորումներ'&& tab.title !== 'address' && tab.title !== 'Տվյալներ' && tab.title !== 'Այլ'">{{tab.title}}</span>
             </a>
             <div class="item" (click)="logOut()" mat-button>
                 <span>Ելք</span>

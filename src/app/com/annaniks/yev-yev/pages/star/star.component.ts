@@ -17,14 +17,14 @@ import { ReviewService } from "../review/review.service";
 })
 export class StarComponent implements OnInit {
 
-  public total: number = 10;
-  public pageSize: number = 10;
-  public pageIndex: number = 1;
-  public limit: number = 10;
-  public offset: number = 0;
+  public total = 10;
+  public pageSize = 10;
+  public pageIndex = 1;
+  public limit = 10;
+  public offset = 0;
   public starRating: any[] = [];
-  public rating: string = '';
-  public isTable: boolean = false;
+  public rating = '';
+  public isTable = false;
   unsubscribe$ = new Subject();
   filterForm: FormGroup;
   mainRoutes: RouteItem[] = [];

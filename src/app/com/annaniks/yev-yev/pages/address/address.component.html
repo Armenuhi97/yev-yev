@@ -1,0 +1,52 @@
+<form nz-form [nzLayout]="'inline'" [formGroup]="filterForm" (ngSubmit)="submitForm()">
+
+    <nz-form-item>
+        <nz-form-control>
+            <nz-form-label class="inline-labels">Ուղղություն</nz-form-label>
+            <nz-select nzPlaceHolder="Ընտեք ուղղությունը" formControlName="mainRoute">
+                <nz-option *ngFor="let route of mainRoutes" [nzValue]="route.id" [nzLabel]="route.route_name">
+                </nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-control>
+            <div>
+                <nz-form-label>Սկիզբ</nz-form-label>
+            </div>
+            <nz-date-picker formControlName="startDate" [nzDisabledDate]="disabledDate"></nz-date-picker>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-control>
+            <div>
+                <nz-form-label>Ավարտ</nz-form-label>
+            </div>
+            <nz-date-picker formControlName="endDate" [nzDisabledDate]="disabledDate"></nz-date-picker>
+        </nz-form-control>
+    </nz-form-item>
+
+
+    <nz-form-item [style.width]="'200px'">
+        <nz-form-control>
+            <nz-form-label class="inline-labels">Հասցե</nz-form-label>
+
+            <nz-input-group>
+                <input nz-input formControlName="address" placeholder="Հասցե" />
+            </nz-input-group>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-control>
+            <div>
+                <nz-form-label class="inline-labels"></nz-form-label>
+            </div>
+            <button [disabled]="filterForm.invalid" nz-button nzType="primary">Փնտրել</button>
+        </nz-form-control>
+    </nz-form-item>
+</form>
+<div *ngIf="isGet">
+    <app-address-list (getNextPage)="getNextPage($event)" [orders]="orders" [total]="total"></app-address-list>
+</div>

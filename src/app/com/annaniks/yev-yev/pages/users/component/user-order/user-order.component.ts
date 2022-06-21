@@ -32,10 +32,10 @@ export class UserOrderComponent implements OnDestroy {
 
     public getOrders() {
         this._userService.getOrders(this.userId, this.pageIndex)
-        .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
-            this.total = data.count;
-            this.orders = data.results;
-        });
+            .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
+                this.total = data.count;
+                this.orders = data.results;
+            });
     }
 
     transformDate(date) {

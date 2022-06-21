@@ -26,55 +26,55 @@ export class MainComponent {
         { title: 'Այլ', path: '/dashboard/other-orders' },
         { title: 'star', path: '/dashboard/star' },
         { title: 'Տվյալներ', path: '/dashboard/moderator-settings' },
-        { title: 'Կարգավորումներ', path: '/dashboard/settings' }
+        { title: 'Կարգավորումներ', path: '/dashboard/settings' },
+        { title: 'address', path: '/dashboard/address' }
+
     ];
     role: string;
-    isOpenNotification: boolean = false;
+    isOpenNotification = false;
     notifications: Notification[] = [];
     extraOrderCount: number;
     pendingCount: number;
     notificationCount: number;
-    isOpenPendingNotification: boolean = false;
+    isOpenPendingNotification = false;
     pendiningNotification: Notification[] = []
     constructor(private _router: Router, private _datePipe: DatePipe, private _mainService: MainService, private _cookieService: CookieService) {
-        this.role = this._cookieService.get('role')
+        this.role = this._cookieService.get('role');
     }
     ngOnInit() {
-        this._getCounts()
+        this._getCounts();
 
         setInterval(() => {
-            this._getCounts()
-        }, 10000)
+            this._getCounts();
+        }, 10000);
     }
     public logOut() {
         this._cookieService.delete('role');
         this._cookieService.delete('access');
-        localStorage.removeItem('user')
-        this._router.navigate(['/auth'])
+        localStorage.removeItem('user');
+        this._router.navigate(['/auth']);
     }
     private _getCounts() {
         const combine = forkJoin(
-            // this._getUnseenNotifications(),
-            // this._getUnseenPendingNotifications(),
             this._getExtrarderCount(),
             this._getUnseenNotificationCount(),
             this._getPendingNotificationCount()
-        )
+        );
         combine.pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     private _getUnseenNotificationCount() {
         return this._mainService.getUnseenNotificationCount().pipe(
             map((data: { count: number }) => {
                 this.notificationCount = data.count;
-                return data
+                return data;
             })
-        )
+        );
     }
     private _getExtrarderCount() {
         return this._mainService.getExtraOrdersCount().pipe(
             map((data: { count: number }) => {
                 this.extraOrderCount = data.count;
-                return data
+                return data;
             })
         )
     }
@@ -88,68 +88,16 @@ export class MainComponent {
 
                 }
                 this.pendingCount = data.count;
-                return data
+                return data;
             })
-        )
+        );
+    }
+    playAudio(): void {
+        if (this.audio?.nativeElement) {
+            this.audio.nativeElement.play();
+        }
     }
 
-    // private _getUnseenNotifications() {
-    //     return this._mainService.getUnseenNotifications().pipe(
-    //         map((data: Notification[]) => {
-    //             if (this.notifications.length !== data.length) {
-    //                 // setTimeout(() => {
-    //                 //    this.playAudio()
-    //                 // }, 1000);                 
-
-    //             }
-    //             this.notifications = data
-    //         }))
-    // }
-    async playAudio() {
-        // console.log('play');
-
-        // var audio = new Audio('../../../../assets/notification.mp3');
-        // audio.play();
-        // let audio = new Audio('../../../../assets/notification.mp3');
-        // audio.src = '../../../../assets/notification.mp3';
-        // audio.load();
-        // audio.play();
-        // var audio = new Audio('../../../../assets/notification.mp3');
-        // audio.play();
-        // console.log(this.audio);
-        // const media =   this.audio.nativeElement;
-        // media.muted = true; // without this line it's not working although I have "muted" in HTML
-        // media.play();
-        // this.audio.nativeElement.play();
-        // try {
-        //     console.log('try');
-            
-        //     await this.audio.nativeElement.play();
-        //     this.audio.nativeElement.classList.add("playing");
-        // } catch (err) {
-        //     console.log(err);
-            
-        //     this.audio.nativeElement.classList.remove("playing");
-        // }
-        // let audio = new Audio();
-        // audio.src = "../../../../assets/notification.mp3";
-        // audio.load();
-        // audio.play();
-      
-        this.audio.nativeElement.play();
-    }
-    // public _getUnseenPendingNotifications() {
-    //     return this._mainService.getUnseenPendingNotifications().pipe(
-    //         map((data: Notification[]) => {
-    //             this.pendiningNotification = data
-    //             if (this.pendiningNotification.length && this.pendiningNotification.length !== data.length) {
-    //                 setTimeout(() => {
-    //                     this.playAudio()
-    //                 }, 1000);
-
-    //             }
-    //         }))
-    // }
     formatDate(date) {
         let selectDate = new Date(date);
         this._datePipe.transform(selectDate, 'dd.MM.yyyy HH:mm')
