@@ -83,7 +83,7 @@ export class MainComponent {
             map((data: { count: number }) => {
                 if (this.pendingCount !== data.count) {
                     setTimeout(() => {
-                        this.playAudio()
+                        this.playAudio();
                     }, 1000);
 
                 }
@@ -93,9 +93,13 @@ export class MainComponent {
         );
     }
     playAudio(): void {
-        if (this.audio?.nativeElement) {
-            this.audio.nativeElement.play();
-        }
+        // if (this.audio?.nativeElement) {
+        //     this.audio.nativeElement.play();
+        // }
+        let audio: any = document.createElement("AUDIO")
+        document.body.appendChild(audio);
+        audio.src = "../../../../../../assets/notification.mp3"
+        audio.play()
     }
 
     formatDate(date) {

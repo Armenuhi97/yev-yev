@@ -42,12 +42,11 @@ export class AuthComponent implements OnInit, OnDestroy {
             password: this.loginForm.get('password').value
         };
         this._authService.loginAdmin(sendObject).pipe(takeUntil(this.unsubscribe$),
-            catchError((err: any) => {
-                const error = err();
+            catchError((error: HttpErrorResponse) => {
                 if (error && error.error && error.error.message) {
                     this.errorMessage = 'Սխալ մուտքանուն կամ գաղտնաբառ';
                 }
-                return throwError(() => err);
+                return throwError(error);
             })).subscribe((data: any) => {
                 this._cookieService.set('access', data.token);
                 this._cookieService.set('role', data.role_code);

@@ -65,7 +65,7 @@ export class ApiInterceptor implements HttpInterceptor {
                             this._appService.logOut();
                         }
                     }
-                    return throwError(() => error);
+                    return throwError(error);
                 }),
             );
     }

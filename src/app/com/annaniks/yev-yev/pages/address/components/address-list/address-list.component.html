@@ -22,7 +22,7 @@
             </td>
 
             <td>{{data?.person_count}}</td>
-            <td> {{data?.start_address}} -> {{data?.end_address}}</td>
+            <td> {{data?.start_address}} <span *ngIf="data?.end_address"> --> {{data?.end_address}}</span></td>
             <td>{{data.comment}}</td>
             <td>{{ (data?.status == 'approved')? 'Հաստատված' : 'Չեղարկված' }}</td>
         </tr>
