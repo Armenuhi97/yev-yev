@@ -5,6 +5,7 @@ import { CookieService } from "ngx-cookie-service";
 import { forkJoin, Subject } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { Notification } from "../../core/models/notification";
+import { NotificationService } from "../../core/services/notification.service";
 import { MainService } from "./main.service";
 
 @Component({
@@ -38,7 +39,12 @@ export class MainComponent {
     notificationCount: number;
     isOpenPendingNotification = false;
     pendiningNotification: Notification[] = []
-    constructor(private _router: Router, private _datePipe: DatePipe, private _mainService: MainService, private _cookieService: CookieService) {
+    constructor(
+        private _router: Router,
+        private _datePipe: DatePipe,
+        private _mainService: MainService,
+        private _cookieService: CookieService,
+        private notificationService: NotificationService) {
         this.role = this._cookieService.get('role');
     }
     ngOnInit() {
@@ -64,8 +70,9 @@ export class MainComponent {
     }
     private _getUnseenNotificationCount() {
         return this._mainService.getUnseenNotificationCount().pipe(
-            map((data: { count: number }) => {
+            map((data: { count: number, notifications: Notification[] }) => {
                 this.notificationCount = data.count;
+                this.notificationService.setNotificationState(data.notifications);
                 return data;
             })
         );

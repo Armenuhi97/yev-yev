@@ -38,7 +38,7 @@ export class NotificationComponent {
     closeNotificationItem() {
         this.isOpenNotification = false;
         this.pageIndex = 1;
-        this.notifications = []
+        this.notifications = [];
     }
 
     public openNotificationItem() {

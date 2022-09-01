@@ -11,6 +11,8 @@ import { ServerResponce } from "../../../../core/models/server-reponce";
 import { AppService } from "../../../../core/services/app.service";
 import { MainRoutesService } from "../../main-routes.service";
 import * as moment from 'moment-timezone';
+import { Notification } from "../../../../core/models/notification";
+import { NotificationService } from "../../../../core/services/notification.service";
 
 @Component({
     selector: 'app-subroute',
@@ -35,6 +37,7 @@ export class SubrouteComponent {
     userId: number;
     currentInterval;
     lastDate;
+    notifications: Notification[] = [];
     isShowError: boolean = false;
     @HostListener('window:resize', ['$event'])
     private _onResize(): void {
@@ -144,6 +147,7 @@ export class SubrouteComponent {
         private _datePipe: DatePipe,
         private _mainRouteService: MainRoutesService,
         private _appService: AppService,
+        private notificationService: NotificationService,
         private nzMessages: NzMessageService,) {
         this._onResize()
     }
@@ -154,6 +158,7 @@ export class SubrouteComponent {
             this.title = `${this.subrouteInfo.start_point_city.name_hy} - ${this.subrouteInfo?.end_point_city.name_hy}`
         }
     }
+  
 
     getHourlyOrdersByDate(): Observable<any> {
 

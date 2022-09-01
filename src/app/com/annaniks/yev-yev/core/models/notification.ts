@@ -1,10 +1,10 @@
 import { SubrouteDetails } from "./orders-by-hours";
 
 export interface Notification {
-    created_at: string
-    id: number
-    is_seen: boolean
-    order: number
+    created_at: string;
+    id: number;
+    is_seen: boolean;
+    order: number;
     order_details: {
         comment: null
         date: string
@@ -24,6 +24,8 @@ export interface Notification {
         sub_route_details: SubrouteDetails,
         user: number
     }
-    type: string
-    user: number
+    main_route: number;
+    main_route_name: string;
+    type: string;
+    user: number;
 }

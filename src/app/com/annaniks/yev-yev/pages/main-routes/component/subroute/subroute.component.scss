@@ -45,14 +45,22 @@
 }
 .current-time {
     background-color: #2caf2d;
-    
 }
 .title {
     background: white;
     padding: 10px;
     font-size: 22px;
 }
-.add-essence{
+.canceled {
+    background-color: #ff0000a1 !important;
+}
+.have-two-status{
+    background: linear-gradient(78deg, #00800082, #ff0000a1);
+}
+.created {
+    background-color: #00800082 !important;
+}
+.add-essence {
     margin-left: 10px !important;
 }
 .active {

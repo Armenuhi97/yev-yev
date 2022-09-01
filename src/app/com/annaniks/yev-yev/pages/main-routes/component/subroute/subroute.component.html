@@ -1,10 +1,12 @@
 <div class="title d-flex align-items-center justify-content-between">{{title}}
     <div class="d-flex align-items-center justify-content-between">
         <nz-button-group nzSize="small">
-            <button class="d-flex align-items-center justify-content-center" (click)="openAll()" nz-button nzType="primary">
+            <button class="d-flex align-items-center justify-content-center" (click)="openAll()" nz-button
+                nzType="primary">
                 <i nz-icon nzType="check" nzTheme="outline"></i>
             </button>
-            <button (click)="closeAll()" class="add-essence d-flex align-items-center justify-content-center" nz-button nzType="danger">
+            <button (click)="closeAll()" class="add-essence d-flex align-items-center justify-content-center" nz-button
+                nzType="danger">
                 <i nz-icon nzType="close" nzTheme="outline"></i>
             </button>
         </nz-button-group>
@@ -29,8 +31,11 @@
             </tr>
         </thead>
         <tbody>
-            <tr [id]="setId(data.start,index)"
-                [ngClass]="{'disable':data.isDisabled,'current-time':(currentInterval && currentInterval.start == data.start && !data.isDisabled)}"
+            <tr [id]="setId(data.start,index)" [ngClass]="{'disable':data.isDisabled,
+                'canceled':data.orderStatus ==='canceled' && !isHasTwoStatus,
+                'created':data.orderStatus ==='created' && !isHasTwoStatus,
+                'have-two-status':isHasTwoStatus,
+                'current-time':(currentInterval && currentInterval.start == data.start && !data.isDisabled)}"
                 class="cursor-pointer" *ngFor="let data of subrouteInfo?.openTimes; let ind = index">
 
                 <td style="width:100px" (click)="getInformation(data)"><b class="time">{{data.start}}</b></td>

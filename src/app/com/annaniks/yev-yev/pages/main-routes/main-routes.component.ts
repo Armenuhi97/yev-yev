@@ -18,6 +18,8 @@ import { OrderTypeService } from '../../core/services/order-type';
 import { MainRoutesService } from './main-routes.service';
 
 import { differenceInCalendarDays, setHours } from 'date-fns';
+import { NotificationService } from '../../core/services/notification.service';
+import { Notification } from '../../core/models/notification';
 
 @Component({
     selector: 'app-main-routes',
@@ -26,6 +28,7 @@ import { differenceInCalendarDays, setHours } from 'date-fns';
     providers: [DatePipe]
 })
 export class MainRoutesComponent {
+    private notifications: Notification[] = [];
     public searchControl = new FormControl(null);
     driverSubroutes;
     public modalTitle: string;
@@ -86,22 +89,33 @@ export class MainRoutesComponent {
         private _router: Router,
         private nzMessages: NzMessageService,
         private _orderTypeService: OrderTypeService,
-        private _openTimesService: OpenTimesService) {
+        private _openTimesService: OpenTimesService,
+        private notificationService: NotificationService) {
         // this.openTimes = this._openTimesService.getOpenTimes()
-        this.orderTypes = this._orderTypeService.getOrderTypes()
+        this.orderTypes = this._orderTypeService.getOrderTypes();
     }
 
     ngOnInit() {
         this.combine();
         this._initForm();
         let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
-
+        this.getNotifications();
 
         // this._mainRouteService.getHourlyOrdersByDate()
         // .subscribe((res:any)=>{
 
         // })
 
+    }
+    private getNotifications() {
+        this.notificationService.getNotificationState().pipe(takeUntil(this.unsubscribe$)).subscribe((notifications: Notification[]) => {
+            this.notifications = notifications;
+            if (this.subRouteInfos.length && this.notifications.length) {
+                for (const route of this.subRouteInfos) {
+                    this.setTodayRoutes(route);
+                }
+            }
+        });
     }
     search() {
         let value = this.searchControl.value ? this.searchControl.value.trim() : null
@@ -315,9 +329,12 @@ export class MainRoutesComponent {
         if (date) {
             let day = date.getDay();
             let index = day ? day - 1 : 6
-            let weekDayKey = this.getWeekDays()[index]
-            for (let route of this.subRouteInfos) {
-                this._createTimesArray(route.work_times[weekDayKey + '_start'], route.work_times[weekDayKey + '_end'], route)
+            let weekDayKey = this.getWeekDays()[index];
+            for (const route of this.subRouteInfos) {
+                this._createTimesArray(route.work_times[weekDayKey + '_start'], route.work_times[weekDayKey + '_end'], route);
+                if (this.notifications.length) {
+                    this.setTodayRoutes(route);
+                }
             }
         }
     }
@@ -352,20 +369,54 @@ export class MainRoutesComponent {
             for (let i = startHour; i <= endHour; i++) {
                 let startTime = `${i <= 9 ? `0${i}` : i}:00`;
                 let endTime = `${i <= 9 ? `0${i}` : i}:30`;
-                arr.push({ start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: false, closeId: 0, isDisabled: false, isBlocked: true, blockId: 0 })
+                arr.push({
+                    start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: false, closeId: 0, isDisabled: false, isBlocked: true, blockId: 0,
+                    orderStatus: null, isHasTwoStatus: false
+                })
 
                 if (i !== endHour) {
                     let startTime = `${i <= 9 ? `0${i}` : i}:30`;
                     let endTime = `${i + 1 <= 9 ? `0${i + 1}` : i + 1}:00`;
-                    arr.push({ start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: false, closeId: 0, isDisabled: false, isBlocked: true, blockId: 0 })
+                    arr.push({
+                        start: startTime, end: endTime, time: `${startTime} - ${endTime}`, isActive: false, closeId: 0, isDisabled: false, isBlocked: true, blockId: 0,
+                        orderStatus: null, isHasTwoStatus: false
+                    })
                 }
             }
         }
-        subroute.openTimes = arr
+
+        subroute.openTimes = arr;
+
     }
+    private setTodayRoutes(route) {
+        const selectDate = this._datePipe.transform(this.selectedDate.value, 'YYYY-MM-dd');
+        const today = this._datePipe.transform(new Date(), 'YYYY-MM-dd');
+        if (selectDate === today) {
+
+            for (const notification of this.notifications) {
+                if (notification.order_details.sub_route_details.main_route === route.main_route &&
+                    notification.order_details.sub_route_details.id === route.id) {
+                    route.openTimes = route.openTimes.map((time) => {
+                        const date = this._datePipe.transform(new Date(notification.order_details.date), 'HH:mm');
+                        if (time.start === date) {
+                            let isHasTwoStatus = false
+                            let status = notification.type;
+                            if (time.orderStatus && time.orderStatus !== status) {
+                                status += `, ${status}`;
+                                isHasTwoStatus = true;
+                            }
+                            return Object.assign({}, time, { orderStatus: status, isHasTwoStatus });
+                        }
+                        return time;
+                    });
+                }
+            }
+        }
+    }
+
     finishOrder(data) {
-        if (data.status == 'done') {
-            return
+        if (data.status === 'done') {
+            return;
         }
         this._mainRouteService.finishOrder(data.id).pipe(takeUntil(this.unsubscribe$),
             switchMap(() => {
