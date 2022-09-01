@@ -29,13 +29,12 @@ export class MainService {
   public getUnseenPendingNotificationCount(): Observable<{ count: number }> {
     return this.httpClient.get<{ count: number }>(`notifications/get-unseen-pending-notifications-count/`)
   }
-
   public getUnseenNotifications(type?: string, page?: number): Observable<ServerResponce<Notification[]>> {
     let url: string;
-    if (type == 'pending') {
-      url = `notifications/get-unseen-pending-notifications/`
+    if (type === 'pending') {
+      url = `notifications/get-unseen-pending-notifications/`;
     } else {
-      url = `notifications/get-unseen-notifications-without-pendings/`
+      url = `notifications/get-unseen-notifications-without-pendings/`;
     }
     url += `?limit=10&offset=${page}`
     return this.httpClient.get<ServerResponce<Notification[]>>(url)

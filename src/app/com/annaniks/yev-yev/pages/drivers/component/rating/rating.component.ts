@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ServerResponce } from '../../../../core/models/server-reponce';
+import { AppService } from '../../../../core/services/app.service';
 import { ReviewService } from '../../../review/review.service';
 import { DriverService } from '../../drivers.service';
 
@@ -34,12 +35,13 @@ export class RatingComponent implements OnInit {
     private reviewService: ReviewService,
     private httpClient: HttpClient,
     private router: Router,
-    private driverService: DriverService
+    private driverService: DriverService,
+    private appService: AppService
   ) { }
 
 
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   nzPageIndexChange(page: number, ordered?): void {
     this.pageIndex = page;
@@ -52,7 +54,7 @@ export class RatingComponent implements OnInit {
   }
 
   private getRatingResults(): void {
- 
+
     this.httpClient.get(`order/rating/?driver=${this.editId}&order__sub_route=&client=&ordering=&start_date=&end_date=&limit=${this.limit}&offset=${this.offset}&type=`)
       .subscribe((res: any) => {
         this.userRating = res.results;
@@ -73,7 +75,9 @@ export class RatingComponent implements OnInit {
 
   public goToRating(index: number): void {
     const id = this.userRating[index].client.id;
-    this.router.navigate([`/dashboard/client-info/${id}`]);
+    // this.router.navigate([`/dashboard/client-info/${id}`]);
+    this.appService.openNewTab('/dashboard/client-info', id);
+
   }
 
 }

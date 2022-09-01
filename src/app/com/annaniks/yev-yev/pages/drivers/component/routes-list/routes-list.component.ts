@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { ServerResponce } from "../../../../core/models/server-reponce";
+import { AppService } from "../../../../core/services/app.service";
 import { DriverService } from "../../drivers.service";
 
 
@@ -28,6 +29,7 @@ export class RoutesListComponent implements OnInit {
     constructor(
         private _driverService: DriverService,
         private _datePipe: DatePipe,
+        private appService: AppService,
         private router: Router) { }
 
     ngOnInit(): void { }
@@ -67,7 +69,7 @@ export class RoutesListComponent implements OnInit {
 
 
     public getAppovedOrder(id: number): void {
-        this.router.navigate([`/dashboard/raiting-order/${id}`]);
+        this.appService.openNewTab('/dashboard/raiting-order', id);
     }
 
     ngOnDestroy(): void {

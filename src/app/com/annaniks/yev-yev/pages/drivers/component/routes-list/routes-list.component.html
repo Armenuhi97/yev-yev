@@ -17,9 +17,7 @@
          (click)='getAppovedOrder(data.id)'>
             <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10) }}</td>
             <td>
-                {{transformDate(data.date)}}
-
-              
+                {{transformDate(data.date)}}              
             </td>
             <td>
                 {{data?.sub_route_details?.start_point_city?.name_hy}} - {{data?.sub_route_details?.end_point_city?.name_hy}}

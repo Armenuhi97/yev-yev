@@ -6,6 +6,7 @@ import { takeUntil } from "rxjs/operators";
 import { ServerResponce } from "../../../../core/models/server-reponce";
 import { UsersService } from "../../users.service";
 import { HttpClient } from '@angular/common/http';
+import { AppService } from "../../../../core/services/app.service";
 
 @Component({
     selector: 'app-user-order',
@@ -28,6 +29,7 @@ export class UserOrderComponent implements OnDestroy {
     }
     constructor(private _userService: UsersService,
         private _datePipe: DatePipe, private router: Router,
+        private appService: AppService,
         private _httpClient: HttpClient) { }
 
     public getOrders() {
@@ -66,7 +68,8 @@ export class UserOrderComponent implements OnDestroy {
     getAppovedOrder(index: number) {
         if (this.orders[index].approved_order_details.length) {
             this.index = this.orders[index]?.approved_order_details[0]?.approved_order?.id;
-            this.router.navigate([`/dashboard/raiting-order/${this.index}`]);
+            this.appService.openNewTab('/dashboard/raiting-order', this.index);
+            // this.router.navigate([`/dashboard/raiting-order/${this.index}`]);
         }
     }
 

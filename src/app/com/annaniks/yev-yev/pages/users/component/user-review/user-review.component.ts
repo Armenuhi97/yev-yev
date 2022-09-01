@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppService } from '../../../../core/services/app.service';
 import { ReviewService } from '../../../review/review.service';
 
 
@@ -15,7 +16,7 @@ export class UserReviewComponent implements OnInit {
   @Input('count') count;
   @Input('userId') userId;
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   public pageSize: number = 10;
   public pageIndex: number = 1;
@@ -32,7 +33,8 @@ export class UserReviewComponent implements OnInit {
   constructor(
     private reviewService: ReviewService,
     private _httpClient: HttpClient,
-    private router:Router
+    private router: Router,
+    private appService: AppService
   ) { }
 
   nzPageIndexChange(page: number, ordered?): void {
@@ -68,6 +70,8 @@ export class UserReviewComponent implements OnInit {
 
   public getToDriver(index: number): void {
     const id = this.clientRating[index].driver.id;
-    this.router.navigate([`/dashboard/driver-info/${id}`]);
+    // this.router.navigate([`/dashboard/driver-info/${id}`]);
+    this.appService.openNewTab('/dashboard/driver-info', id);
+
   }
 }

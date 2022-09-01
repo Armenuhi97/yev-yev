@@ -12,18 +12,17 @@ import { LoaderService } from "../../services/loaders.service";
     styleUrls: ['notification.component.scss']
 })
 export class NotificationComponent {
-    unsubscribe$ = new Subject();
-
-    public pageIndex: number = 1;
-    public infiniteScrollDisabled: boolean = false;
+    unsubscribe$ = new Subject<void>();
+    public pageIndex = 1;
+    public infiniteScrollDisabled = false;
     public throttle = 300;
     public scrollDistance = 1;
-    public scrollUpDistance = 2
-    isOpenNotification: boolean = false;
+    public scrollUpDistance = 2;
+    isOpenNotification = false;
     notifications: Notification[] = [];
     @Input('count') count: number;
 
-    public type: string
+    public type: string;
     @Input('type')
     set setType($event: string) {
         this.type = $event
@@ -34,7 +33,7 @@ export class NotificationComponent {
         private _mainService: MainService,
         private _loaderService: LoaderService
     ) {
-        this.role = this._cookieService.get('role')
+        this.role = this._cookieService.get('role');
     }
     closeNotificationItem() {
         this.isOpenNotification = false;
@@ -47,8 +46,8 @@ export class NotificationComponent {
         if (this.isOpenNotification) {
             this.pageIndex = 1;
             this.notifications = [];
-            this._loaderService.setHttpProgressStatus(true)
-            this.getNotifications(true)
+            this._loaderService.setHttpProgressStatus(true);
+            this.getNotifications(true);
         }
     }
 
@@ -62,7 +61,7 @@ export class NotificationComponent {
                         this._loaderService.setHttpProgressStatus(false)
                     }
                 })
-            ).toPromise()
+            ).toPromise();
 
         this.notifications.push(...data.results);
 
@@ -76,11 +75,11 @@ export class NotificationComponent {
         }
         this.getNotifications();
     }
-    setSeenNotification(id: number) {
-        this._seen.emit(id)
+    setSeenNotification(id: number): void {
+        this._seen.emit(id);
     }
 
-    setSeenAllNotification() {
+    setSeenAllNotification(): void {
         this._seen.emit('all');
     }
 
