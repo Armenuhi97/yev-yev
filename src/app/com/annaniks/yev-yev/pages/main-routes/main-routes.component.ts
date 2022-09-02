@@ -392,20 +392,23 @@ export class MainRoutesComponent {
         const selectDate = this._datePipe.transform(this.selectedDate.value, 'YYYY-MM-dd');
         const today = this._datePipe.transform(new Date(), 'YYYY-MM-dd');
         if (selectDate === today) {
-
+            route.openTimes = route.openTimes.map((time) => {
+                return Object.assign({}, time, { orderStatus: null, isHasTwoStatus: false });
+            });
             for (const notification of this.notifications) {
                 if (notification.order_details.sub_route_details.main_route === route.main_route &&
                     notification.order_details.sub_route_details.id === route.id) {
                     route.openTimes = route.openTimes.map((time) => {
                         const date = this._datePipe.transform(new Date(notification.order_details.date), 'HH:mm');
                         if (time.start === date) {
-                            let isHasTwoStatus = false
-                            let status = notification.type;
-                            if (time.orderStatus && time.orderStatus !== status) {
-                                status += `, ${status}`;
+                            let isHasTwoStatus = false;
+                            let status = notification.order_details.status;
+                            if (time.orderStatus && time.orderStatus.indexOf(status) === -1) {
+                                status = time.orderStatus + `, ${status}`;
                                 isHasTwoStatus = true;
                             }
-                            return Object.assign({}, time, { orderStatus: status, isHasTwoStatus });
+                            const changedObject = Object.assign({}, time, { orderStatus: status, isHasTwoStatus });
+                            return changedObject;
                         }
                         return time;
                     });

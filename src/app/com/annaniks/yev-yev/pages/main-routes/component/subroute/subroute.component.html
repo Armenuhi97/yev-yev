@@ -32,9 +32,9 @@
         </thead>
         <tbody>
             <tr [id]="setId(data.start,index)" [ngClass]="{'disable':data.isDisabled,
-                'canceled':data.orderStatus ==='canceled' && !isHasTwoStatus,
-                'created':data.orderStatus ==='created' && !isHasTwoStatus,
-                'have-two-status':isHasTwoStatus,
+                'canceled':data.orderStatus ==='canceled' && !data.isHasTwoStatus,
+                'created':data.orderStatus ==='approved' && !data.isHasTwoStatus,
+                'have-two-status':data.orderStatus && data.isHasTwoStatus,
                 'current-time':(currentInterval && currentInterval.start == data.start && !data.isDisabled)}"
                 class="cursor-pointer" *ngFor="let data of subrouteInfo?.openTimes; let ind = index">
 
