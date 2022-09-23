@@ -23,6 +23,9 @@ export class DriverService {
 
         return this._httpClient.get<ServerResponce<User[]>>(url);
     }
+    public changeHolidayDate(id: number, holiday_date: string): Observable<{}> {
+        return this._httpClient.put<{}>(`userdetails/change-holiday-date/${id}/`, { holiday_date })
+    }
     public getUserById(userId: number) {
         return this._httpClient.get(`userdetails/user/?search=&user_role__code=DR&id=${userId}`);
     }

@@ -1,0 +1,11 @@
+<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" nzTitle="Փոխել արձակուրդի օրը"
+    (nzOnCancel)="handleCancel()" nzWidth="500px" (nzOnOk)="onSave()">
+    <nz-form-item>
+        <nz-form-control>
+            <div>
+                <nz-form-label>Արձակուրդի օր</nz-form-label>
+            </div>
+            <nz-date-picker [formControl]="holidayDate" [nzDisabledDate]="disabledDate"></nz-date-picker>
+        </nz-form-control>
+    </nz-form-item>
+</nz-modal>

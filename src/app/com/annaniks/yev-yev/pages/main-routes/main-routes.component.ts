@@ -814,29 +814,27 @@ export class MainRoutesComponent {
 
         let calculateCount = 0;
         item.forEach((data) => {
-            calculateCount += data.person_count
-        })
-        if (this.drivers)
-
+            calculateCount += data.person_count;
+        });
+        if (this.drivers) {
             if (calculateCount) {
-
-                let arr = this.drivers.filter((val) => {
-                    return (+val.car_capacity >= calculateCount && val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
-                })
-
-
-                let arr1 = arr.filter((el) => { return el.located_city.id !== el.main_city.id });
-                let arr2 = arr.filter((el) => { return el.located_city.id == el.main_city.id });
-                this.currentDriver = [...arr1, ...arr2]
+                const arr = this.drivers.filter((val) => {
+                    return (+val.car_capacity >= calculateCount && val.user.is_active === true
+                        && +val.located_city.id === +this.subRouteInfo.start_point_city.id);
+                });
+                const arr1 = arr.filter((el) => el.located_city.id !== el.main_city.id);
+                const arr2 = arr.filter((el) => el.located_city.id === el.main_city.id);
+                this.currentDriver = [...arr1, ...arr2];
             } else {
-                let arr = this.drivers.filter((val) => {
-                    return (val.user.is_active == true && +val.located_city.id == +this.subRouteInfo.start_point_city.id)
-                })
+                const arr = this.drivers.filter((val) => {
+                    return (val.user.is_active === true && +val.located_city.id === +this.subRouteInfo.start_point_city.id);
+                });
 
-                let arr1 = arr.filter((el) => { return el.located_city.id !== el.main_city.id });
-                let arr2 = arr.filter((el) => { return el.located_city.id == el.main_city.id })
-                this.currentDriver = [...arr1, ...arr2]
+                const arr1 = arr.filter((el) => el.located_city.id !== el.main_city.id);
+                const arr2 = arr.filter((el) => el.located_city.id === el.main_city.id);
+                this.currentDriver = [...arr1, ...arr2];
             }
+        }
 
 
 

@@ -1,9 +1,10 @@
+import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { forkJoin, of, Subject } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CityItem } from '../../core/models/city.model';
 import { Messages } from '../../core/models/mesages';
 import { RouteItem } from '../../core/models/routes.model';
@@ -16,48 +17,69 @@ import { DriverService } from './drivers.service';
 @Component({
     selector: 'app-drivers',
     templateUrl: 'drivers.component.html',
-    styleUrls: ['drivers.component.scss']
+    styleUrls: ['drivers.component.scss'],
+    providers: [DatePipe]
 })
 export class DriversComponent {
     search = new FormControl('');
     locatedCityControl = new FormControl('', Validators.required);
-    public isVisibleCityModal: boolean = false;
-    public activeTab: number = 0;
+    public isVisibleCityModal = false;
+    public activeTab = 0;
     cities: CityItem[] = [];
     salaryTable: User[] = [];
-    pageSize: number = 10;
+    pageSize = 10;
     unsubscribe$ = new Subject();
     total: number;
-    pageIndex: number = 1;
-    isEditing: boolean = false;
-    isVisible: boolean = false;
+    pageIndex = 1;
+    isEditing = false;
+    isVisible = false;
     validateForm: FormGroup;
     editIndex: number = null;
-    editId: number
+    editId: number;
     routes: RouteItem[] = [];
     item: User;
     addedRoutes = [];
     mainRouteFilerControl = new FormControl();
     viberInfo: ViberInfo[] = [];
     userRating: any = [];
-    count: number = 0;
+    count = 0;
     orders: any[] = [];
-    public size: number = 0;
+    public size = 0;
+    isOpenHolidayDateChange = false;
+    holidayDriver: User;
     constructor(
         private _driverService: DriverService,
         private nzMessages: NzMessageService,
         private _mainService: MainService,
         private _appService: AppService,
         private _fb: FormBuilder,
-        private _httpClient: HttpClient) {
+        private datePipe: DatePipe) {
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this._initForm();
         // this.getUsers()
         this._combineObsevable().subscribe();
     }
-
+    onEditHolidayDate(data: User): void {
+        this.holidayDriver = data;
+        this.isOpenHolidayDateChange = true;
+    }
+    closeHolidayModal(evt): void {
+        this.isOpenHolidayDateChange = false;
+        if (evt) {
+            const date = this.datePipe.transform(evt, 'YYYY-MM-dd');
+            this._driverService.changeHolidayDate(this.holidayDriver.id, date).pipe(
+                takeUntil(this.unsubscribe$),
+                finalize(() => {
+                    this.holidayDriver = null;
+                }),
+                switchMap(() => {
+                    return this.getUsers()
+                })
+            ).subscribe();
+        }
+    }
     private _initForm() {
         this.validateForm = this._fb.group({
             first_name: [null, Validators.required],
