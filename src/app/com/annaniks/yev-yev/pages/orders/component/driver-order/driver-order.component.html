@@ -14,11 +14,13 @@
         </tr>
     </tbody>
 </nz-table> -->
-    <div class="d-flex align-item-center flex-wrap card" *ngFor="let item of order?.result">
-        <h4>{{item?.driver?.name}} ({{item?.driver.car_model}} {{item?.driver.car_number}})</h4>
-
-        <div *ngFor="let order of item.array">
-            {{order?.date | date:'HH:mm'}} - {{order?.routeName}} - {{order?.seat_count}} <span *ngIf="order.free_count">, որից անվճար է {{order.free_count}}</span>
-        </div>
-
+<div class="d-flex align-item-center flex-wrap card" *ngFor="let item of driverKeys">
+    <b> {{item | date:'HH:mm'}}</b>
+    <div *ngFor="let order of driverRoutes[item]">
+        <span *ngIf="order?.driver.routes?.length">{{order?.driver.routes[0]?.seat_count}}</span>
+        {{order?.driver?.name}}
+        <span *ngIf="order?.driver.routes?.length > 1">
+            {{order?.driver.routes[1]?.seat_count}}
+        </span>
     </div>
+</div>
