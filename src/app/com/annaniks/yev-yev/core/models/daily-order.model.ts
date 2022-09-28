@@ -6,6 +6,6 @@ export interface DailyUserOrderType {
     sub_route: SubrouteDetails;
 }
 export interface DailyDriverOrderType {
-    result: { driver: any}[];
+    result: { driver: any, array?: any }[];
     sub_routes: SubrouteDetails[];
 }
