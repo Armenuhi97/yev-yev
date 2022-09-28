@@ -10,32 +10,29 @@ import { SubrouteDetails } from '../../../../core/models/orders-by-hours';
     providers: [DatePipe]
 })
 export class DriverOrderComponent {
-    driverKeys = [];
+
     order: DailyDriverOrderType;
-    driverRoutes: { driver: any }[] = [];
     @Input('order')
     set setOrder($event: DailyDriverOrderType) {
         this.order = $event;
         if (this.order && this.order.result) {
-            this.driverRoutes = this.order.result;
-            for (const orderResult of this.order.result) {
-                orderResult.driver['routes'] = [];
-                for (const item of this.order.sub_routes) {
-                    if (orderResult.driver[item.id]?.length) {
-                        orderResult.driver['routes'].push(orderResult.driver[item.id][0]);
+            for (let orderResult of this.order.result) {
+                orderResult['array'] = []
+                for (let item of this.order.sub_routes) {
+                    for (let subroute of orderResult.driver[item.id]) {
+                        // subroute.date=new Date(subroute.date)
+                        subroute['routeName'] = `${item.start_point_city.name_hy} - ${item.end_point_city.name_hy}`;
+                        orderResult.array.push(subroute);
                     }
-                }
-            }
-            this.driverRoutes = this.order.result.sort((a: any, b: any) => {
-                return new Date(a.driver.routes[0].date).getTime() - new Date(b.driver.routes[0].date).getTime();
-            });
-            this.driverRoutes = this.driverRoutes.reduce((r, a) => {
-                r[a.driver.routes[0].date] = r[a.driver.routes[0].date] || [];
-                r[a.driver.routes[0].date].push(a);
-                return r;
-            }, Object.create(null));
-            this.driverKeys = Object.keys(this.driverRoutes);
-        }
 
+                }
+                orderResult.array = orderResult.array.sort((a: any, b: any) =>
+                    new Date(a.date).getTime() - new Date(b.date).getTime()
+                );
+            }
+            this.order.result = this.order.result.sort((a: any, b: any) =>
+                new Date(a.array[0].date).getTime() - new Date(b.array[0].date).getTime()
+            );
+        }
     }
 }

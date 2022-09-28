@@ -28,7 +28,8 @@ export class MainComponent {
         { title: 'star', path: '/dashboard/star' },
         { title: 'Տվյալներ', path: '/dashboard/moderator-settings' },
         { title: 'Կարգավորումներ', path: '/dashboard/settings' },
-        { title: 'address', path: '/dashboard/address' }
+        { title: 'address', path: '/dashboard/address' },
+        { title: 'driver-orders', path: '/dashboard/driver-orders' },
 
     ];
     role: string;

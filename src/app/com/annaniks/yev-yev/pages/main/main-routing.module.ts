@@ -21,7 +21,9 @@ const mainRoutes: Routes = [{
             path: 'moderator-settings', loadChildren: () => import('../moderator-settings/moderator-settings.module')
                 .then(m => m.ModeratorSettingsModule)
         },
-        { path: 'address', loadChildren: () => import('../address/address.module').then(m => m.AddressModule) }
+        { path: 'address', loadChildren: () => import('../address/address.module').then(m => m.AddressModule) },
+
+        { path: 'driver-orders', loadChildren: () => import('../driver-orders/driver-orders.module').then(m => m.DriverOrdersModule) }
 
     ]
 }];
