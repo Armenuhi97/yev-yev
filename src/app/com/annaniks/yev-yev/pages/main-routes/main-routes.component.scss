@@ -104,3 +104,38 @@
 .red{
     background-color:  rgb(255, 77, 79);
 }
+
+.titleTamplate{
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  align-items: center;
+}
+
+.modalBodyContainer{
+  position: relative;
+  overflow: hidden;
+  height: 470px;
+  // padding: 5px;
+}
+
+.formContainer{
+  position: absolute;
+  width: 100%;
+  display: grid;
+  grid-template-rows: 50% 50%;
+  transform: translateX(0%);
+  transition: 1s;
+}
+
+.firstForm{
+  // padding-left: 8px;
+}
+
+.switchOff{
+  transform: translateX(0%);
+}
+
+.switchOn{
+  transform: translateX(-50%);
+}

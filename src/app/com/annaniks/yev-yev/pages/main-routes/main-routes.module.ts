@@ -5,10 +5,11 @@ import { SharedModule } from "../../core/shared/shared.module";
 import { MainRoutesService } from "./main-routes.service";
 import { SubrouteComponent } from "./component/subroute/subroute.component";
 import { ClickOutsideModule } from 'ng-click-outside';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 
 @NgModule({
     declarations: [MainRoutesComponent,SubrouteComponent],
-    imports: [MainRoutesRoutingModule, SharedModule,ClickOutsideModule],
+    imports: [MainRoutesRoutingModule, SharedModule,ClickOutsideModule,NzSwitchModule],
     providers: [MainRoutesService]
 })
 export class MainRoutesModule { }
