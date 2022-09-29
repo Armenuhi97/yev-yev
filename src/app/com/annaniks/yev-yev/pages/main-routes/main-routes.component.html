@@ -383,8 +383,192 @@
                                           </div>
                                         </form>
 
-                                        <form>
-                                          
+                                        <form class="sm-ant" [formGroup]="validateFormTwo">
+                                          <div nz-row [nzGutter]="24">
+                                            <div nz-col [nzSpan]="12">
+                                              <nz-form-label class="inline-labels" nzRequired>Ուղևորների քանակ
+                                              </nz-form-label>
+                                              <nz-form-item>
+                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                                          <input OnlyNumber="true" min="1" type="number"
+                                                          (keypress)="isInteger($event)"
+                                                          *ngIf="!validateForm.get('orderType').value || validateForm.get('orderType').value !== 2"
+                                                          nz-input formControlName="personCountTwo" placeholder="" />
+
+                                                          <nz-select *ngIf="validateForm.get('orderType').value == 2"
+                                                              class="w-100" formControlName="personCount">
+                                                              <nz-option *ngFor="let seatCount of [4,6,7,8]"
+                                                              [nzValue]="seatCount" [nzLabel]="seatCount">
+                                                              </nz-option>
+                                                          </nz-select>
+
+
+                                                      </nz-form-control>
+                                                  </nz-form-item>
+                                                </div>
+                                              <div nz-col [nzSpan]="12">
+                                                  <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար
+                                                  </nz-form-label>
+                                                  <nz-form-item>
+                                                      <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                                        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+                                                              <ng-template #addOnBeforeTemplate>
+                                                                <nz-select [formControl]="phoneNumberPrefix"
+                                                                class="phone-select">
+                                                                <nz-option nzLabel="+374" nzValue="+374">
+                                                                </nz-option>
+                                                              </nz-select>
+                                                            </ng-template>
+                                                            <input maxLength="8" nz-input OnlyNumber
+                                                            formControlName="phone_numberTwo" type="text"
+                                                            placeholder="" />
+                                                          </nz-input-group>
+                                                      </nz-form-control>
+                                                      <span class="error" *ngIf="isShowError">Նշված հեռախոսահամարով ուղևոր
+                                                          չի
+                                                          գտնվել</span>
+                                                  </nz-form-item>
+                                                </div>
+                                          </div>
+                                          <div>Երթի տվյալներ</div>
+                                          <div nz-row [nzGutter]="24">
+                                            <div nz-col [nzSpan]="12">
+                                              <nz-form-label class="inline-labels">Մեկնարկի հասցե</nz-form-label>
+                                              <nz-form-item>
+                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                                  <input nz-input formControlName="startPointAddressTwo"
+                                                  placeholder="" />
+                                                </nz-form-control>
+                                              </nz-form-item>
+                                            </div>
+                                            <div nz-col [nzSpan]="12">
+                                                  <nz-form-label class="inline-labels">Մեկնաբանություն</nz-form-label>
+                                                  <nz-form-item>
+                                                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                                      <input nz-input formControlName="commentTwo" placeholder="" />
+                                                    </nz-form-control>
+                                                  </nz-form-item>
+                                                </div>
+                                              </div>
+                                              <div nz-row [nzGutter]="24">
+
+
+                                                <div nz-col [nzSpan]="12">
+                                                  <nz-form-label class="inline-labels" nzRequired>Պատվերի տեսակ
+                                                  </nz-form-label>
+                                                  <nz-form-item>
+                                                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                                      <nz-select formControlName="orderTypeTwo">
+                                                        <nz-option *ngFor="let order of orderTypes"
+                                                        [nzValue]="order.id" [nzLabel]="order.name_en">
+                                                      </nz-option>
+                                                    </nz-select>
+                                                  </nz-form-control>
+                                                </nz-form-item>
+                                              </div>
+
+                                              <div nz-col [nzSpan]="12">
+                                                <nz-form-label class="inline-labels" nzRequired>Ուղևորի հեռախոսահամար
+                                                </nz-form-label>
+                                                <nz-form-item>
+                                                  <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                                    <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+                                                      <ng-template #addOnBeforeTemplate>
+                                                        <nz-select [formControl]="phoneNumberPrefix"
+                                                        class="phone-select">
+                                                        <nz-option nzLabel="+374" nzValue="+374">
+                                                        </nz-option>
+                                                      </nz-select>
+                                                    </ng-template>
+                                                    <input maxLength="8" nz-input OnlyNumber
+                                                    formControlName="order_phone_numberTwo" type="text"
+                                                    placeholder="" />
+                                                  </nz-input-group>
+                                                </nz-form-control>
+                                              </nz-form-item>
+                                            </div>
+                                          </div>
+                                          <div nz-row [nzGutter]="24">
+                                            <div nz-col [nzSpan]="12">
+                                              <nz-form-label class="inline-labels">Անուն</nz-form-label>
+                                              <nz-form-item>
+                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                                  <input nz-input formControlName="first_nameTwo" placeholder="" />
+                                                </nz-form-control>
+                                              </nz-form-item>
+                                            </div>
+                                            <div nz-col [nzSpan]="12">
+                                              <nz-form-label class="inline-labels">Ազգանուն</nz-form-label>
+                                              <nz-form-item>
+                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                                  <input nz-input formControlName="last_nameTwo" placeholder="" />
+                                                </nz-form-control>
+                                              </nz-form-item>
+                                            </div>
+                                          </div>
+                                          <!-- *ngIf="!isEditing" -->
+
+                                          <!-- <div>Երթի տվյալներ</div> -->
+                                          <div nz-row [nzGutter]="24">
+                                            <div nz-col [nzSpan]="12">
+                                              <nz-form-label class="inline-labels">Մեկնաբանություն</nz-form-label>
+                                              <nz-form-item>
+                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                                  <input nz-input formControlName="userCommentTwo" placeholder="" />
+                                                </nz-form-control>
+                                              </nz-form-item>
+                                            </div>
+                                            <div nz-col [nzSpan]="12">
+                                              <nz-form-label class="inline-labels">Վերջնակետ</nz-form-label>
+                                              <nz-form-item>
+                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                                                  <input nz-input formControlName="endPointAddressTwo"
+                                                  placeholder="" />
+                                                </nz-form-control>
+                                              </nz-form-item>
+                                            </div>
+                                          </div>
+
+
+                                          <div nz-row [nzGutter]="24"
+                                          class="d-flex align-items-center justify-content-between" *ngIf="isEditing">
+                                          <div nz-col [nzSpan]="12">
+
+                                            <nz-date-picker class="w-100" formControlName="date"
+                                            [nzDisabledDate]="disabledDate"></nz-date-picker>
+                                          </div>
+                                          <div nz-col [nzSpan]="12">
+                                            <nz-select class="w-100" formControlName="time Two">
+                                              <nz-option *ngFor="let time of subRouteInfo?.openTimes"
+                                              [nzValue]="time.time" [nzLabel]="setTimeLabel(time)">
+                                            </nz-option>
+                                          </nz-select>
+                                        </div>
+                                      </div>
+                                      <div nz-row [nzGutter]="24"
+                                      class="d-flex align-items-center margin-top-10 justify-content-between">
+                                      <div *ngIf="isEditing && radioValue == 'pending'" nz-col [nzSpan]="8">
+                                        <nz-form-control>
+                                          <label nz-checkbox formControlName="isChangeStatusTwo">Փոխել
+                                            կարգավիճակը</label>
+                                          </nz-form-control>
+                                        </div>
+                                        <div nz-col [nzSpan]="8">
+                                          <nz-form-label class="inline-labels">Անվճար</nz-form-label>
+                                          <nz-form-control>
+                                            <nz-switch formControlName="isFree"></nz-switch>
+                                          </nz-form-control>
+
+                                            </div>
+                                              <div *ngIf="validateForm.get('orderType').value == 2" nz-col [nzSpan]="8">
+                                                <nz-form-label class="inline-labels">Այլ</nz-form-label>
+
+                                                <nz-form-control>
+                                                  <label nz-checkbox formControlName="isExtra"></label>
+                                                </nz-form-control>
+                                              </div>
+
+                                            </div>
                                         </form>
                                       </div>
                                     </div>

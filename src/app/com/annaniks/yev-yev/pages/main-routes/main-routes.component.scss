@@ -115,20 +115,23 @@
 .modalBodyContainer{
   position: relative;
   overflow: hidden;
-  height: 470px;
+  height: 540px;
   // padding: 5px;
 }
 
 .formContainer{
   position: absolute;
-  width: 100%;
+  width: 200%;
   display: grid;
-  grid-template-rows: 50% 50%;
+  grid-template-columns: 49% 49%;
+  column-gap: 2%;
   transform: translateX(0%);
-  transition: 1s;
+  transition: 0.5s;
 }
 
 .firstForm{
+  // width: 100%;
+  // position: relative;
   // padding-left: 8px;
 }
 

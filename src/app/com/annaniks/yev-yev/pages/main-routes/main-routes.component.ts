@@ -50,6 +50,7 @@ export class MainRoutesComponent {
   isVisible = false;
   unsubscribe$ = new Subject();
   validateForm: FormGroup;
+  validateFormTwo:FormGroup;
   phoneNumberPrefix = new FormControl('+374');
   userId: number;
   currentInterval;
@@ -1046,9 +1047,46 @@ export class MainRoutesComponent {
     console.log(this.comeBackSwitch)
     if(this.comeBackSwitch){
       this.formClass = 'switchOn'
+
+
+    this.validateFormTwo = this._fb.group({
+      first_nameTwo: [null],
+      last_nameTwo: [null],
+      phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
+      userCommentTwo: [null],
+      startPointAddressTwo: [null],
+      endPointAddressTwo: [null],
+      order_phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
+      orderTypeTwo: [0, Validators.required],
+      personCount: [null, Validators.required],
+      commentTwo: [null],
+      dateTwo: [null],
+      timeTwo: [null],
+      isChangeStatusTwo: [false],
+      isFreeTwo: [false],
+      isExtraTwo: [false]
+    })
     }
     else{
       this.formClass = 'switchOff'
+//----------------------------------------------------------------------------------------------------------=-=-=--=-===-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+    this.validateFormTwo = this._fb.group({
+      first_nameTwo: [null],
+      last_nameTwo: [null],
+      phone_numberTwo: [null],
+      userCommentTwo: [null],
+      startPointAddressTwo: [null],
+      endPointAddressTwo: [null],
+      order_phone_numberTwo: [null],
+      orderTypeTwo: [null],
+      personCount: [null],
+      commentTwo: [null],
+      dateTwo: [null],
+      timeTwo: [null],
+      isChangeStatusTwo: [false],
+      isFreeTwo: [false],
+      isExtraTwo: [false]
+    })
     }
   }
 
