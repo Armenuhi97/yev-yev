@@ -1,14 +1,20 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/internal/Observable";
+import { CountDto } from "../../core/models/dto/routes.dto.model";
 import { OrderResponse } from "../../core/models/order";
-import { RouteItem } from "../../core/models/routes.model";
+import { Counts, RouteItem } from "../../core/models/routes.model";
 import { ServerResponce } from "../../core/models/server-reponce";
 
 @Injectable()
 export class MainRoutesService {
     _date = '';
     constructor(private _httpClient: HttpClient) { }
+
+    public getCounts(data:CountDto):Observable<Counts[]>{
+      return this._httpClient.post<Counts[]>('order/get-counts/', data)
+    }
+
     public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
         let offset = (page - 1) * 10;
         return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?only_my=True&page=${page}&limit=10&offset=${offset}`)

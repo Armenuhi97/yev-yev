@@ -18,3 +18,10 @@ export interface RouteItem {
     }>
     route_name: string
 }
+
+export interface Counts {
+  potential:number;
+  potential_on_way:number;
+  approved_seat_count:number;
+  pending_seat_count:number
+}
