@@ -217,9 +217,9 @@ export class SubrouteComponent {
 
   public getCount() {
     const date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
-    const details = new CountDto(this.subrouteInfo.id, this.subrouteReturnId, date)
+    const details = new CountDto(this.subrouteInfo.id, this.subrouteReturnId, date, this.subrouteInfo.main_route)
     this._mainRouteService.getCounts(details).pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next:(counts)=>{
+      next: (counts) => {
         this.tableCounts = counts
       }
     })
