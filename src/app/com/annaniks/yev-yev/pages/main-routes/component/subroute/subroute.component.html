@@ -9,7 +9,7 @@
             <th>Ա</th>
             <th>Ս</th>
           </tr>
-          <tr>
+          <tr *ngIf="tableCounts">
             <td>{{tableCounts[0]?.potential}}</td>
             <td>{{tableCounts[0]?.potential_on_way}}</td>
             <td>{{tableCounts[0]?.approved_seat_count}}</td>
