@@ -32,7 +32,7 @@
                 <div nz-col [nzSpan]="12" *ngFor="let item of subRouteInfos;let i=index">
                     <app-subroute (openDriverModal)="showDriverRoutesModal(item)" *ngIf="selectIndex == ind"
                         [selectInfo]="selectInfo" [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)"
-                        [index]="i" [info]="item" (resetItem)="resetItem($event)" [date]="selectedDate.value">
+                        [index]="i" [info]="item" [subrouteReturnId]="i === 0?subRouteInfos[1].id:subRouteInfos[0].id" (resetItem)="resetItem($event)" [date]="selectedDate.value">
                         <!-- (subrout)="getSubroueteInfo($event)" -->
                     </app-subroute>
 

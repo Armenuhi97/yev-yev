@@ -8,9 +8,11 @@ import {
   DashboardOutline,
   DeleteOutline,
   DeleteColumnOutline,
+  CarOutline,
+  CarFill,
 } from '@ant-design/icons-angular/icons';
 
-const icons = [MenuFoldOutline, MenuUnfoldOutline, DashboardOutline, FormOutline,DeleteOutline,DeleteColumnOutline];
+const icons = [MenuFoldOutline, MenuUnfoldOutline, DashboardOutline, FormOutline, DeleteOutline, DeleteColumnOutline, CarOutline, CarFill];
 
 @NgModule({
   imports: [NzIconModule],
