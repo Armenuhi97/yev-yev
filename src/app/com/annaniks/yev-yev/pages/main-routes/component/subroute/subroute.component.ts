@@ -221,6 +221,11 @@ export class SubrouteComponent {
     this._mainRouteService.getCounts(details).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (counts) => {
         this.tableCounts = counts
+        for (let el in this.tableCounts[0]){
+          if(this.tableCounts[0][el] == null){
+            this.tableCounts[0][el] = 0
+          }
+        }
       }
     })
   }
