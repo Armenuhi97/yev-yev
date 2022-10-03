@@ -1,785 +1,1417 @@
 <div class="main-route-tab">
-    <nz-tabset class="main-routes" [nzSelectedIndex]="selectIndex" (nzSelectedIndexChange)="onChangeTab($event)">
-
-        <nz-tab *ngFor="let route of mainRoutes;let ind=index" [nzTitle]="route.route_name">
-            <div class="d-flex font-30 m-bottom-15 align-items-center justify-content-center">
-                {{getDay()}}
-                <div class="cursor-pointer d-flex" (click)="changeDate(-1)"><svg xmlns="http://www.w3.org/2000/svg"
-                        width="26" height="26" fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                            d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z" />
-                    </svg></div>
-                <div (clickOutside)="closeCalendar()">
-
-                    <div class="cursor-pointer position-relative" (click)="openCalendar();$event.stopPropagation()">
-                        {{selectedDate.value |
-                        date:'dd-MM-yyyy'}}
-                        <div class="calendar" *ngIf="isOpenCalendar"
-                            [ngStyle]="{ width: '300px', border: '1px solid #d9d9d9', borderRadius: '4px' }">
-                            <nz-calendar (nzSelectChange)="openCalendar($event)" [formControl]="selectedDate">
-                            </nz-calendar>
-                        </div>
-                    </div>
-                </div>
-                <div class="cursor-pointer d-flex" (click)="changeDate(1)"><svg xmlns="http://www.w3.org/2000/svg"
-                        width="26" height="26" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                            d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z" />
-                    </svg></div>
+  <nz-tabset
+    class="main-routes"
+    [nzSelectedIndex]="selectIndex"
+    (nzSelectedIndexChange)="onChangeTab($event)"
+  >
+    <nz-tab
+      *ngFor="let route of mainRoutes; let ind = index"
+      [nzTitle]="route.route_name"
+    >
+      <div
+        class="d-flex font-30 m-bottom-15 align-items-center justify-content-center"
+      >
+        {{ getDay() }}
+        <div class="cursor-pointer d-flex" (click)="changeDate(-1)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="26"
+            height="26"
+            fill="currentColor"
+            class="bi bi-arrow-left-short"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"
+            />
+          </svg>
+        </div>
+        <div (clickOutside)="closeCalendar()">
+          <div
+            class="cursor-pointer position-relative"
+            (click)="openCalendar(); $event.stopPropagation()"
+          >
+            {{ selectedDate.value | date: "dd-MM-yyyy" }}
+            <div
+              class="calendar"
+              *ngIf="isOpenCalendar"
+              [ngStyle]="{
+                width: '300px',
+                border: '1px solid #d9d9d9',
+                borderRadius: '4px'
+              }"
+            >
+              <nz-calendar
+                (nzSelectChange)="openCalendar($event)"
+                [formControl]="selectedDate"
+              >
+              </nz-calendar>
             </div>
-            <div nz-row [nzGutter]="24">
-                <!-- [class.active-route]="subRouteInfo?.id == item?.id" -->
-                <div nz-col [nzSpan]="12" *ngFor="let item of subRouteInfos;let i=index">
-                    <app-subroute (openDriverModal)="showDriverRoutesModal(item)" *ngIf="selectIndex == ind"
-                        [selectInfo]="selectInfo" [isGetItem]="isGetItem" (getInfo)="getInformation($event,i)"
-                        [index]="i" [info]="item" [subrouteReturnId]="i === 0?subRouteInfos[1].id:subRouteInfos[0].id" (resetItem)="resetItem($event)" [date]="selectedDate.value">
-                        <!-- (subrout)="getSubroueteInfo($event)" -->
-                    </app-subroute>
-
+          </div>
+        </div>
+        <div class="cursor-pointer d-flex" (click)="changeDate(1)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="26"
+            height="26"
+            fill="currentColor"
+            class="bi bi-arrow-right-short"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+          </svg>
+        </div>
+      </div>
+      <div nz-row [nzGutter]="24">
+        <!-- [class.active-route]="subRouteInfo?.id == item?.id" -->
+        <div
+          nz-col
+          [nzSpan]="12"
+          *ngFor="let item of subRouteInfos; let i = index"
+        >
+          <app-subroute
+            (openDriverModal)="showDriverRoutesModal(item)"
+            *ngIf="selectIndex == ind"
+            [selectInfo]="selectInfo"
+            [isGetItem]="isGetItem"
+            (getInfo)="getInformation($event, i)"
+            [index]="i"
+            [info]="item"
+            [subrouteReturnId]="
+              i === 0 ? subRouteInfos[1].id : subRouteInfos[0].id
+            "
+            (resetItem)="resetItem($event)"
+            [date]="selectedDate.value"
+          >
+            <!-- (subrout)="getSubroueteInfo($event)" -->
+          </app-subroute>
+        </div>
+      </div>
+      <nz-modal
+        nzWidth="880px"
+        (nzOnCancel)="handleCancelDoneOrders()"
+        [(nzVisible)]="isShowDriverRoutes"
+      >
+        <div *nzModalContent>
+          <nz-table
+            nzBordered
+            [nzFrontPagination]="false"
+            [nzData]="doneRoutes"
+          >
+            <thead>
+              <tr>
+                <th>N</th>
+                <th>Ամսաթիվ</th>
+                <th>Վարորդ</th>
+                <th>Մոդել</th>
+                <th>Ուղևոր</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of doneRoutes; let ind = index">
+                <td>{{ ind + 1 }}</td>
+                <td>{{ order.last_order_date | date: "dd-MM-yyyy HH:mm" }}</td>
+                <td>{{ order.user.first_name }} {{ order.user.last_name }}</td>
+                <td>{{ order.car_model }} - {{ order.car_capacity }}</td>
+                <td>{{ order.last_order_count }}</td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+        <div *nzModalFooter></div>
+      </nz-modal>
+      <div class="add-order-modal">
+        <nz-modal
+          [nzCancelText]="'Փակել'"
+          [(nzVisible)]="isOpenInfo"
+          [nzTitle]="modalTitle"
+          (nzOnCancel)="closeRouteModal()"
+          nzWidth="1500px"
+        >
+          <div *nzModalContent>
+            <div *ngIf="isOpenInfo" nz-col>
+              <div class="d-flex align-items-center">
+                <nz-radio-group
+                  [(ngModel)]="radioValue"
+                  (ngModelChange)="changeStatus($event)"
+                >
+                  <label nz-radio nzValue="approved,canceled">Ընդունված</label>
+                  <label nz-radio nzValue="pending">Սպասման մեջ</label>
+                </nz-radio-group>
+                <div class="title-container">
+                  <button
+                    [disabled]="timeItem.isDisabled"
+                    class="add-essence"
+                    nz-button
+                    nzType="primary"
+                    (click)="showModal()"
+                  >
+                    Ավելացնել ուղևոր
+                  </button>
                 </div>
-            </div>
-            <nz-modal nzWidth="880px" (nzOnCancel)="handleCancelDoneOrders()" [(nzVisible)]="isShowDriverRoutes">
-                <div *nzModalContent>
-                    <nz-table nzBordered [nzFrontPagination]="false" [nzData]="doneRoutes">
-                        <thead>
-                            <tr>
-                                <th>N</th>
-                                <th>Ամսաթիվ</th>
-                                <th>Վարորդ</th>
-                                <th>Մոդել</th>
-                                <th>Ուղևոր</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let order of doneRoutes;let ind=index">
-                                <td>{{ind+1}}</td>
-                                <td>{{order.last_order_date | date:'dd-MM-yyyy HH:mm'}}</td>
-                                <td>{{order.user.first_name}}
-                                    {{order.user.last_name}}</td>
-                                <td>{{order.car_model}} - {{order.car_capacity}}</td>
-                                <td>{{order.last_order_count}}</td>
-                            </tr>
-                        </tbody>
-                    </nz-table>
+                <div class="d-flex align-items-center">
+                  <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                    <input
+                      type="text"
+                      [formControl]="searchControl"
+                      nz-input
+                      placeholder="Հեռ․"
+                    />
+                  </nz-input-group>
+                  <ng-template #suffixIconButton>
+                    <button
+                      (click)="search()"
+                      nz-button
+                      nzType="primary"
+                      nzSearch
+                    >
+                      <i nz-icon nzType="search"></i>
+                    </button>
+                  </ng-template>
                 </div>
-                <div *nzModalFooter>
+              </div>
 
-                </div>
-            </nz-modal>
-            <div class="add-order-modal">
-                <nz-modal [nzCancelText]="'Փակել'" [(nzVisible)]="isOpenInfo" [nzTitle]="modalTitle"
-                    (nzOnCancel)="closeRouteModal()" nzWidth="1500px">
-                    <div *nzModalContent>
-                        <div *ngIf="isOpenInfo" nz-col>
-                            <div class="d-flex align-items-center">
-                                <nz-radio-group [(ngModel)]="radioValue" (ngModelChange)="changeStatus($event)">
-                                    <label nz-radio nzValue="approved,canceled">Ընդունված</label>
-                                    <label nz-radio nzValue="pending">Սպասման մեջ</label>
-                                </nz-radio-group>
-                                <div class="title-container">
-                                    <button [disabled]="timeItem.isDisabled" class="add-essence" nz-button
-                                        nzType="primary" (click)="showModal()">
-                                        Ավելացնել ուղևոր
-                                    </button>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-                                        <input type="text" [formControl]="searchControl" nz-input placeholder="Հեռ․" />
-                                    </nz-input-group>
-                                    <ng-template #suffixIconButton>
-                                        <button (click)="search()" nz-button nzType="primary" nzSearch><i nz-icon
-                                                nzType="search"></i></button>
-                                    </ng-template>
-                                </div>
-                            </div>
+              <div>
+                <div class="scroll">
+                  <nz-table
+                    nzBordered
+                    [nzFrontPagination]="false"
+                    [nzData]="userInfo"
+                  >
+                    <thead>
+                      <tr>
+                        <th>N</th>
+                        <th>Ուղևոր</th>
+                        <th>Հեռ.</th>
+                        <th>Հասցե</th>
+                        <th>Տիպ</th>
+                        <th>Տեղ</th>
+                        <th>Մեկնաբանություն</th>
+                        <th>Այլ</th>
+                        <th></th>
+                        <th *ngIf="radioValue == 'approved,canceled'"></th>
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        *ngFor="let moderator of userInfo; let ind = index"
+                        [ngClass]="{ red: moderator.status === 'canceled' }"
+                      >
+                        <!-- <div *ngIf = 'moderator?.status==="canceled"' class="red"> -->
 
-                            <div>
+                        <td>{{ ind + 1 }}</td>
+                        <td>
+                          {{ moderator?.client_details?.user?.first_name }}
+                          {{ moderator?.client_details?.user?.last_name }}
+                        </td>
+                        <td>{{ moderator?.phone_number }}</td>
+                        <td>
+                          <span
+                            [class.light]="
+                              checkAddress(moderator) == 'Հասցե չկա'
+                            "
+                          >
+                            {{ checkAddress(moderator) }}</span
+                          >
+                        </td>
 
-                                <div class="scroll">
-                                    <nz-table nzBordered [nzFrontPagination]="false" [nzData]="userInfo">
-                                        <thead>
-                                            <tr>
-                                                <th>N</th>
-                                                <th>Ուղևոր</th>
-                                                <th>Հեռ.</th>
-                                                <th>Հասցե</th>
-                                                <th>Տիպ</th>
-                                                <th>Տեղ</th>
-                                                <th>Մեկնաբանություն</th>
-                                                <th>Այլ</th>
-                                                <th></th>
-                                                <th *ngIf="radioValue == 'approved,canceled'"></th>
-                                                <th></th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr *ngFor="let moderator of userInfo;let ind=index"
-                                                [ngClass]="{red:moderator.status==='canceled'}">
-                                                <!-- <div *ngIf = 'moderator?.status==="canceled"' class="red"> -->
-
-
-                                                <td>{{ind+1}}</td>
-                                                <td>{{moderator?.client_details?.user?.first_name}}
-                                                    {{moderator?.client_details?.user?.last_name}}</td>
-                                                <td>{{moderator?.phone_number}}</td>
-                                                <td>
-                                                    <span [class.light]="checkAddress(moderator) == 'Հասցե չկա'">
-                                                        {{checkAddress(moderator)}}</span>
-                                                <td>{{getOrderType(moderator?.order_type)}}</td>
-                                                <td>{{moderator?.person_count}}</td>
-                                                <td>
-                                                    {{moderator?.comment}}
-                                                    <!-- <label [disabled]="true" nz-checkbox
+                        <td>{{ getOrderType(moderator?.order_type) }}</td>
+                        <td>{{ moderator?.person_count }}</td>
+                        <td>
+                          {{ moderator?.comment }}
+                          <!-- <label [disabled]="true" nz-checkbox
                                                         [(ngModel)]="moderator.is_free"></label> -->
-                                                </td>
+                        </td>
 
+                        <td *ngIf="moderator.status !== 'canceled'">
+                          <label
+                            [disabled]="true"
+                            nz-checkbox
+                            [(ngModel)]="moderator.is_extra_order"
+                          ></label>
+                        </td>
+                        <td
+                          class="action-button edit"
+                          style="width: 10px"
+                          *ngIf="moderator.status !== 'canceled'"
+                        >
+                          <i
+                            (click)="onEditOrder(ind, moderator)"
+                            nz-icon
+                            nzType="edit"
+                          ></i>
+                        </td>
+                        <!-- *ngIf="radioValue == 'approved,canceled'" -->
+                        <td *ngIf="moderator.status !== 'canceled'">
+                          <label
+                            *ngIf="timeItem && !timeItem.isDisabled"
+                            [disabled]="
+                              moderator.is_in_approved_orders ||
+                              moderator?.isDisabled
+                            "
+                            nz-checkbox
+                            [(ngModel)]="moderator.isSelect"
+                            (ngModelChange)="selectCheckbox($event, ind)"
+                          >
+                          </label>
+                        </td>
+                        <td
+                          class="action-button delete"
+                          style="width: 10px"
+                          *ngIf="moderator.status !== 'canceled'"
+                        >
+                          <a
+                            *ngIf="
+                              timeItem &&
+                              !timeItem.isDisabled &&
+                              !moderator.is_in_approved_orders
+                            "
+                            [nzCancelText]="'Ոչ'"
+                            [nzOkText]="'Այո'"
+                            nz-popconfirm
+                            nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
+                            nzPopconfirmPlacement="bottom"
+                            (nzOnConfirm)="onDeleteOrder(ind)"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              fill="currentColor"
+                              class="bi bi-trash"
+                              viewBox="0 0 16 16"
+                            >
+                              <path
+                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
+                              />
+                              <path
+                                fill-rule="evenodd"
+                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                              />
+                            </svg>
+                          </a>
+                        </td>
+                        <td *ngIf="moderator.status !== 'canceled'">
+                          <span *ngIf="data?.date_has_changed" class="error">
+                            Փոփոխված է` {{ formatDate(data?.last_date) }}</span
+                          >
+                        </td>
+                        <!-- </div> -->
+                      </tr>
+                    </tbody>
+                  </nz-table>
+                </div>
 
-                                                <td *ngIf="moderator.status!=='canceled'">
-                                                    <label [disabled]="true" nz-checkbox
-                                                        [(ngModel)]="moderator.is_extra_order"></label>
-                                                </td>
-                                                <td class="action-button edit" style="width:10px"
-                                                    *ngIf="moderator.status!=='canceled'"><i
-                                                        (click)="onEditOrder(ind,moderator)" nz-icon nzType="edit"></i>
-                                                </td>
-                                                <!-- *ngIf="radioValue == 'approved,canceled'" -->
-                                                <td *ngIf="moderator.status!=='canceled'">
-                                                    <label *ngIf="timeItem && !timeItem.isDisabled"
-                                                        [disabled]="moderator.is_in_approved_orders || moderator?.isDisabled"
-                                                        nz-checkbox [(ngModel)]="moderator.isSelect"
-                                                        (ngModelChange)="selectCheckbox($event,ind)">
-                                                    </label>
-                                                </td>
-                                                <td class="action-button delete" style="width:10px"
-                                                    *ngIf="moderator.status!=='canceled'">
-                                                    <a *ngIf="(timeItem && !timeItem.isDisabled) && !moderator.is_in_approved_orders"
-                                                        [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
-                                                        nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
-                                                        nzPopconfirmPlacement="bottom"
-                                                        (nzOnConfirm)="onDeleteOrder(ind)">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                            fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                                                            <path fill-rule="evenodd"
-                                                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                                                        </svg>
-                                                    </a>
-                                                </td>
-                                                <td *ngIf="moderator.status!=='canceled'"><span
-                                                        *ngIf="data?.date_has_changed" class="error"> Փոփոխված է` {{
-                                                        formatDate(data?.last_date)}}</span></td>
-                                                <!-- </div> -->
-                                            </tr>
+                <ng-template #titleOfModalTmp>
+                  <div class="titleTamplate">
+                    <h5>{{ modalTitle }}</h5>
+                    <!-- <ng-container> -->
+                    <nz-switch
+                      [(ngModel)]="comeBackSwitch"
+                      (ngModelChange)="comeBackSwitchClick()"
+                      [nzDisabled]="comeBackIsAble"
+                    ></nz-switch>
+                    <button
+                      nz-button
+                      [nzType]="'primary'"
+                      (click)="comeBackIsAble = !comeBackIsAble"
+                    >
+                      Հետադարձ
+                    </button>
+                    <!-- </ng-container> -->
+                  </div>
+                </ng-template>
 
-                                        </tbody>
-                                    </nz-table>
-                                </div>
+                <nz-modal
+                  [nzCancelText]="'Փակել'"
+                  [nzOkText]="'Հատատել'"
+                  [(nzVisible)]="isVisible"
+                  [nzTitle]="titleOfModalTmp"
+                  (nzOnCancel)="handleCancel()"
+                  nzWidth="870px"
+                  (nzOnOk)="onclientSave()"
+                >
+                  <!-- *ngIf="!isEditing" -->
 
-                                <ng-template #titleOfModalTmp>
-                                  <div class="titleTamplate">
-                                    <h5>{{modalTitle}}</h5>
-                                  <!-- <ng-container> -->
-                                    <nz-switch [(ngModel)]="comeBackSwitch" (ngModelChange)="comeBackSwitchClick()" [nzDisabled]="comeBackIsAble"></nz-switch>
-                                    <button nz-button [nzType]="'primary'" (click)="comeBackIsAble = !comeBackIsAble">Հետադարձ</button>
-                                  <!-- </ng-container> -->
-                                  </div>
-                                </ng-template>
+                  <div class="modalBodyContainer" [ngClass]="bodyClass">
+                    <div class="formContainer" [ngClass]="formClass">
+                      <form
+                        class="sm-ant firstForm"
+                        nz-form
+                        [formGroup]="validateForm"
+                        [nzLayout]="'vertical'"
+                      >
+                        <div nz-row [nzGutter]="24">
+                          <div nz-col [nzSpan]="12">
+                            <nz-form-label class="inline-labels" nzRequired
+                              >Ուղևորների քանակ
+                            </nz-form-label>
+                            <nz-form-item>
+                              <nz-form-control
+                                nzHasFeedback
+                                [nzErrorTip]="userErrorTpl"
+                              >
+                                <input
+                                  OnlyNumber="true"
+                                  min="1"
+                                  type="number"
+                                  (keypress)="isInteger($event)"
+                                  *ngIf="
+                                    !validateForm.get('orderType').value ||
+                                    validateForm.get('orderType').value !== 2
+                                  "
+                                  nz-input
+                                  formControlName="personCount"
+                                  placeholder=""
+                                />
 
-                                <nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible"
-                                    [nzTitle]="titleOfModalTmp" (nzOnCancel)="handleCancel()" nzWidth="870px"
-                                    (nzOnOk)="onclientSave()">
-                                    <!-- *ngIf="!isEditing" -->
-
-                                    <div class="modalBodyContainer">
-                                      <div class="formContainer" [ngClass]="formClass">
-                                      <form class="sm-ant firstForm" nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
-                                        <div nz-row [nzGutter]="24">
-                                          <div nz-col [nzSpan]="12">
-                                            <nz-form-label class="inline-labels" nzRequired>Ուղևորների քանակ
-                                            </nz-form-label>
-                                            <nz-form-item>
-                                              <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                        <input OnlyNumber="true" min="1" type="number"
-                                                        (keypress)="isInteger($event)"
-                                                        *ngIf="!validateForm.get('orderType').value || validateForm.get('orderType').value !== 2"
-                                                        nz-input formControlName="personCount" placeholder="" />
-
-                                                        <nz-select *ngIf="validateForm.get('orderType').value == 2"
-                                                            class="w-100" formControlName="personCount">
-                                                            <nz-option *ngFor="let seatCount of [4,6,7,8]"
-                                                            [nzValue]="seatCount" [nzLabel]="seatCount">
-                                                            </nz-option>
-                                                        </nz-select>
-
-
-                                                    </nz-form-control>
-                                                </nz-form-item>
-                                              </div>
-                                            <div nz-col [nzSpan]="12">
-                                                <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար
-                                                </nz-form-label>
-                                                <nz-form-item>
-                                                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                      <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-                                                            <ng-template #addOnBeforeTemplate>
-                                                              <nz-select [formControl]="phoneNumberPrefix"
-                                                              class="phone-select">
-                                                              <nz-option nzLabel="+374" nzValue="+374">
-                                                              </nz-option>
-                                                            </nz-select>
-                                                          </ng-template>
-                                                          <input maxLength="8" nz-input OnlyNumber
-                                                          formControlName="phone_number" type="text"
-                                                          placeholder="" />
-                                                        </nz-input-group>
-                                                    </nz-form-control>
-                                                    <span class="error" *ngIf="isShowError">Նշված հեռախոսահամարով ուղևոր
-                                                        չի
-                                                        գտնվել</span>
-                                                </nz-form-item>
-                                              </div>
-                                        </div>
-                                        <div>Երթի տվյալներ</div>
-                                        <div nz-row [nzGutter]="24">
-                                          <div nz-col [nzSpan]="12">
-                                            <nz-form-label class="inline-labels">Մեկնարկի հասցե</nz-form-label>
-                                            <nz-form-item>
-                                              <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                <input nz-input formControlName="startPointAddress"
-                                                placeholder="" />
-                                              </nz-form-control>
-                                            </nz-form-item>
-                                          </div>
-                                          <div nz-col [nzSpan]="12">
-                                                <nz-form-label class="inline-labels">Մեկնաբանություն</nz-form-label>
-                                                <nz-form-item>
-                                                  <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                    <input nz-input formControlName="comment" placeholder="" />
-                                                  </nz-form-control>
-                                                </nz-form-item>
-                                              </div>
-                                            </div>
-                                            <div nz-row [nzGutter]="24">
-
-
-                                              <div nz-col [nzSpan]="12">
-                                                <nz-form-label class="inline-labels" nzRequired>Պատվերի տեսակ
-                                                </nz-form-label>
-                                                <nz-form-item>
-                                                  <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                    <nz-select formControlName="orderType">
-                                                      <nz-option *ngFor="let order of orderTypes"
-                                                      [nzValue]="order.id" [nzLabel]="order.name_en">
-                                                    </nz-option>
-                                                  </nz-select>
-                                                </nz-form-control>
-                                              </nz-form-item>
-                                            </div>
-
-                                            <div nz-col [nzSpan]="12">
-                                              <nz-form-label class="inline-labels" nzRequired>Ուղևորի հեռախոսահամար
-                                              </nz-form-label>
-                                              <nz-form-item>
-                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                  <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-                                                    <ng-template #addOnBeforeTemplate>
-                                                      <nz-select [formControl]="phoneNumberPrefix"
-                                                      class="phone-select">
-                                                      <nz-option nzLabel="+374" nzValue="+374">
-                                                      </nz-option>
-                                                    </nz-select>
-                                                  </ng-template>
-                                                  <input maxLength="8" nz-input OnlyNumber
-                                                  formControlName="order_phone_number" type="text"
-                                                  placeholder="" />
-                                                </nz-input-group>
-                                              </nz-form-control>
-                                            </nz-form-item>
-                                          </div>
-                                        </div>
-                                        <div nz-row [nzGutter]="24">
-                                          <div nz-col [nzSpan]="12">
-                                            <nz-form-label class="inline-labels">Անուն</nz-form-label>
-                                            <nz-form-item>
-                                              <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                <input nz-input formControlName="first_name" placeholder="" />
-                                              </nz-form-control>
-                                            </nz-form-item>
-                                          </div>
-                                          <div nz-col [nzSpan]="12">
-                                            <nz-form-label class="inline-labels">Ազգանուն</nz-form-label>
-                                            <nz-form-item>
-                                              <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                <input nz-input formControlName="last_name" placeholder="" />
-                                              </nz-form-control>
-                                            </nz-form-item>
-                                          </div>
-                                        </div>
-                                        <!-- *ngIf="!isEditing" -->
-
-                                        <!-- <div>Երթի տվյալներ</div> -->
-                                        <div nz-row [nzGutter]="24">
-                                          <div nz-col [nzSpan]="12">
-                                            <nz-form-label class="inline-labels">Մեկնաբանություն</nz-form-label>
-                                            <nz-form-item>
-                                              <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                <input nz-input formControlName="userComment" placeholder="" />
-                                              </nz-form-control>
-                                            </nz-form-item>
-                                          </div>
-                                          <div nz-col [nzSpan]="12">
-                                            <nz-form-label class="inline-labels">Վերջնակետ</nz-form-label>
-                                            <nz-form-item>
-                                              <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                <input nz-input formControlName="endPointAddress"
-                                                placeholder="" />
-                                              </nz-form-control>
-                                            </nz-form-item>
-                                          </div>
-                                        </div>
-
-
-                                        <div nz-row [nzGutter]="24"
-                                        class="d-flex align-items-center justify-content-between" *ngIf="isEditing">
-                                        <div nz-col [nzSpan]="12">
-
-                                          <nz-date-picker class="w-100" formControlName="date"
-                                          [nzDisabledDate]="disabledDate"></nz-date-picker>
-                                        </div>
-                                        <div nz-col [nzSpan]="12">
-                                          <nz-select class="w-100" formControlName="time">
-                                            <nz-option *ngFor="let time of subRouteInfo?.openTimes"
-                                            [nzValue]="time.time" [nzLabel]="setTimeLabel(time)">
-                                          </nz-option>
-                                        </nz-select>
-                                      </div>
-                                    </div>
-                                    <div nz-row [nzGutter]="24"
-                                    class="d-flex align-items-center margin-top-10 justify-content-between">
-                                    <div *ngIf="isEditing && radioValue == 'pending'" nz-col [nzSpan]="8">
-                                      <nz-form-control>
-                                        <label nz-checkbox formControlName="isChangeStatus">Փոխել
-                                          կարգավիճակը</label>
-                                        </nz-form-control>
-                                      </div>
-                                      <div nz-col [nzSpan]="8">
-                                        <nz-form-label class="inline-labels">Անվճար</nz-form-label>
-                                        <nz-form-control>
-                                          <nz-switch formControlName="isFree"></nz-switch>
-                                        </nz-form-control>
-
-                                          </div>
-                                            <div *ngIf="validateForm.get('orderType').value == 2" nz-col [nzSpan]="8">
-                                              <nz-form-label class="inline-labels">Այլ</nz-form-label>
-
-                                              <nz-form-control>
-                                                <label nz-checkbox formControlName="isExtra"></label>
-                                              </nz-form-control>
-                                            </div>
-
-                                          </div>
-                                        </form>
-
-                                        <form class="sm-ant" [formGroup]="validateFormTwo">
-                                          <div nz-row [nzGutter]="24">
-                                            <div nz-col [nzSpan]="12">
-                                              <nz-form-label class="inline-labels" nzRequired>Ուղևորների քանակ
-                                              </nz-form-label>
-                                              <nz-form-item>
-                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                          <input OnlyNumber="true" min="1" type="number"
-                                                          (keypress)="isInteger($event)"
-                                                          *ngIf="!validateForm.get('orderType').value || validateForm.get('orderType').value !== 2"
-                                                          nz-input formControlName="personCountTwo" placeholder="" />
-
-                                                          <nz-select *ngIf="validateForm.get('orderType').value == 2"
-                                                              class="w-100" formControlName="personCount">
-                                                              <nz-option *ngFor="let seatCount of [4,6,7,8]"
-                                                              [nzValue]="seatCount" [nzLabel]="seatCount">
-                                                              </nz-option>
-                                                          </nz-select>
-
-
-                                                      </nz-form-control>
-                                                  </nz-form-item>
-                                                </div>
-                                              <div nz-col [nzSpan]="12">
-                                                  <nz-form-label class="inline-labels" nzRequired>Հեռախոսահամար
-                                                  </nz-form-label>
-                                                  <nz-form-item>
-                                                      <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-                                                              <ng-template #addOnBeforeTemplate>
-                                                                <nz-select [formControl]="phoneNumberPrefix"
-                                                                class="phone-select">
-                                                                <nz-option nzLabel="+374" nzValue="+374">
-                                                                </nz-option>
-                                                              </nz-select>
-                                                            </ng-template>
-                                                            <input maxLength="8" nz-input OnlyNumber
-                                                            formControlName="phone_numberTwo" type="text"
-                                                            placeholder="" />
-                                                          </nz-input-group>
-                                                      </nz-form-control>
-                                                      <span class="error" *ngIf="isShowError">Նշված հեռախոսահամարով ուղևոր
-                                                          չի
-                                                          գտնվել</span>
-                                                  </nz-form-item>
-                                                </div>
-                                          </div>
-                                          <div>Երթի տվյալներ</div>
-                                          <div nz-row [nzGutter]="24">
-                                            <div nz-col [nzSpan]="12">
-                                              <nz-form-label class="inline-labels">Մեկնարկի հասցե</nz-form-label>
-                                              <nz-form-item>
-                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                  <input nz-input formControlName="startPointAddressTwo"
-                                                  placeholder="" />
-                                                </nz-form-control>
-                                              </nz-form-item>
-                                            </div>
-                                            <div nz-col [nzSpan]="12">
-                                                  <nz-form-label class="inline-labels">Մեկնաբանություն</nz-form-label>
-                                                  <nz-form-item>
-                                                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                      <input nz-input formControlName="commentTwo" placeholder="" />
-                                                    </nz-form-control>
-                                                  </nz-form-item>
-                                                </div>
-                                              </div>
-                                              <div nz-row [nzGutter]="24">
-
-
-                                                <div nz-col [nzSpan]="12">
-                                                  <nz-form-label class="inline-labels" nzRequired>Պատվերի տեսակ
-                                                  </nz-form-label>
-                                                  <nz-form-item>
-                                                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                      <nz-select formControlName="orderTypeTwo">
-                                                        <nz-option *ngFor="let order of orderTypes"
-                                                        [nzValue]="order.id" [nzLabel]="order.name_en">
-                                                      </nz-option>
-                                                    </nz-select>
-                                                  </nz-form-control>
-                                                </nz-form-item>
-                                              </div>
-
-                                              <div nz-col [nzSpan]="12">
-                                                <nz-form-label class="inline-labels" nzRequired>Ուղևորի հեռախոսահամար
-                                                </nz-form-label>
-                                                <nz-form-item>
-                                                  <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                    <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-                                                      <ng-template #addOnBeforeTemplate>
-                                                        <nz-select [formControl]="phoneNumberPrefix"
-                                                        class="phone-select">
-                                                        <nz-option nzLabel="+374" nzValue="+374">
-                                                        </nz-option>
-                                                      </nz-select>
-                                                    </ng-template>
-                                                    <input maxLength="8" nz-input OnlyNumber
-                                                    formControlName="order_phone_numberTwo" type="text"
-                                                    placeholder="" />
-                                                  </nz-input-group>
-                                                </nz-form-control>
-                                              </nz-form-item>
-                                            </div>
-                                          </div>
-                                          <div nz-row [nzGutter]="24">
-                                            <div nz-col [nzSpan]="12">
-                                              <nz-form-label class="inline-labels">Անուն</nz-form-label>
-                                              <nz-form-item>
-                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                  <input nz-input formControlName="first_nameTwo" placeholder="" />
-                                                </nz-form-control>
-                                              </nz-form-item>
-                                            </div>
-                                            <div nz-col [nzSpan]="12">
-                                              <nz-form-label class="inline-labels">Ազգանուն</nz-form-label>
-                                              <nz-form-item>
-                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                  <input nz-input formControlName="last_nameTwo" placeholder="" />
-                                                </nz-form-control>
-                                              </nz-form-item>
-                                            </div>
-                                          </div>
-                                          <!-- *ngIf="!isEditing" -->
-
-                                          <!-- <div>Երթի տվյալներ</div> -->
-                                          <div nz-row [nzGutter]="24">
-                                            <div nz-col [nzSpan]="12">
-                                              <nz-form-label class="inline-labels">Մեկնաբանություն</nz-form-label>
-                                              <nz-form-item>
-                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                  <input nz-input formControlName="userCommentTwo" placeholder="" />
-                                                </nz-form-control>
-                                              </nz-form-item>
-                                            </div>
-                                            <div nz-col [nzSpan]="12">
-                                              <nz-form-label class="inline-labels">Վերջնակետ</nz-form-label>
-                                              <nz-form-item>
-                                                <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
-                                                  <input nz-input formControlName="endPointAddressTwo"
-                                                  placeholder="" />
-                                                </nz-form-control>
-                                              </nz-form-item>
-                                            </div>
-                                          </div>
-
-
-                                          <div nz-row [nzGutter]="24"
-                                          class="d-flex align-items-center justify-content-between" *ngIf="isEditing">
-                                          <div nz-col [nzSpan]="12">
-
-                                            <nz-date-picker class="w-100" formControlName="date"
-                                            [nzDisabledDate]="disabledDate"></nz-date-picker>
-                                          </div>
-                                          <div nz-col [nzSpan]="12">
-                                            <nz-select class="w-100" formControlName="time Two">
-                                              <nz-option *ngFor="let time of subRouteInfo?.openTimes"
-                                              [nzValue]="time.time" [nzLabel]="setTimeLabel(time)">
-                                            </nz-option>
-                                          </nz-select>
-                                        </div>
-                                      </div>
-                                      <div nz-row [nzGutter]="24"
-                                      class="d-flex align-items-center margin-top-10 justify-content-between">
-                                      <div *ngIf="isEditing && radioValue == 'pending'" nz-col [nzSpan]="8">
-                                        <nz-form-control>
-                                          <label nz-checkbox formControlName="isChangeStatusTwo">Փոխել
-                                            կարգավիճակը</label>
-                                          </nz-form-control>
-                                        </div>
-                                        <div nz-col [nzSpan]="8">
-                                          <nz-form-label class="inline-labels">Անվճար</nz-form-label>
-                                          <nz-form-control>
-                                            <nz-switch formControlName="isFree"></nz-switch>
-                                          </nz-form-control>
-
-                                            </div>
-                                              <div *ngIf="validateForm.get('orderType').value == 2" nz-col [nzSpan]="8">
-                                                <nz-form-label class="inline-labels">Այլ</nz-form-label>
-
-                                                <nz-form-control>
-                                                  <label nz-checkbox formControlName="isExtra"></label>
-                                                </nz-form-control>
-                                              </div>
-
-                                            </div>
-                                        </form>
-                                      </div>
-                                    </div>
-
-                                      </nz-modal>
-                            </div>
-                            <div *ngIf="timeItem && !timeItem.isDisabled" class="margin-10" nz-row [nzGutter]="24">
-                                <div class="d-flex align-items-center" nz-col [nzSpan]="12">
-                                    Ուղևորների քանակը {{userCounts}}
-                                </div>
-                            </div>
-                            <div class="margin-bottom-10" nz-row [nzGutter]="24">
-                                <div nz-col [nzSpan]="12">
-                                    <nz-select class="w-100" nzShowSearch [(ngModel)]="driver">
-                                        <nz-option *ngFor="let dr of currentDriver" [nzValue]="dr.id"
-                                            [nzLabel]="getLabelOfDrivers(dr) ">
-                                        </nz-option>
+                                <nz-select
+                                  *ngIf="
+                                    validateForm.get('orderType').value == 2
+                                  "
+                                  class="w-100"
+                                  formControlName="personCount"
+                                >
+                                  <nz-option
+                                    *ngFor="let seatCount of [4, 6, 7, 8]"
+                                    [nzValue]="seatCount"
+                                    [nzLabel]="seatCount"
+                                  >
+                                  </nz-option>
+                                </nz-select>
+                              </nz-form-control>
+                            </nz-form-item>
+                          </div>
+                          <div nz-col [nzSpan]="12">
+                            <nz-form-label class="inline-labels" nzRequired
+                              >Հեռախոսահամար
+                            </nz-form-label>
+                            <nz-form-item>
+                              <nz-form-control
+                                nzHasFeedback
+                                [nzErrorTip]="userErrorTpl"
+                              >
+                                <nz-input-group
+                                  [nzAddOnBefore]="addOnBeforeTemplate"
+                                >
+                                  <ng-template #addOnBeforeTemplate>
+                                    <nz-select
+                                      [formControl]="phoneNumberPrefix"
+                                      class="phone-select"
+                                    >
+                                      <nz-option nzLabel="+374" nzValue="+374">
+                                      </nz-option>
                                     </nz-select>
-                                </div>
-                                <div nz-col [nzSpan]="12">
-                                    <button [disabled]="timeItem.isDisabled" nz-button nzType="text" nz-button
-                                        nzType="primary" (click)="addOrderByDriver()">Ավելացնել</button>
-                                </div>
-                            </div>
-
-                            <div class="scroll">
-                                <nz-table nzBordered [nzFrontPagination]="false" [nzData]="approvedOrders">
-                                    <thead>
-                                        <tr>
-                                            <th>N</th>
-                                            <th>Վարորդ</th>
-                                            <th>Մեքենայի մոդելը</th>
-                                            <th>Տեղ․</th>
-                                            <th>
-                                            </th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr [ngClass]="{'color-red':isCanceledByClient(data)}"
-                                            *ngFor="let data of approvedOrders; let index = index">
-                                            <td>{{index+1}}</td>
-                                            <td>{{data.driver_details.user.first_name}}
-                                                {{data.driver_details.user.last_name}}
-                                                {{data.driver_details.phone_number}}
-                                                <i *ngIf="data.status !== 'done'" (click)="changeDriverName(data)"
-                                                    nz-icon nzType="edit"></i>
-                                            </td>
-                                            <td> {{data.driver_details.car_model}}
-                                                {{data.driver_details.car_number}}
-                                            </td>
-                                            <td>{{data.driver_details.car_capacity}}/{{data.seat_count}}</td>
-
-                                            <td class="cursor-pointer" (click)='getApprovedId(index)'>
-                                                <i nz-icon nzType="eye" nzTheme="outline"></i>
-                                            </td>
-                                            <td class="action-button edit" style="width:10px">
-                                                <svg *ngIf="timeItem && !timeItem.isDisabled && data.status !== 'done'"
-                                                    (click)="addSelectedOrder(index)" xmlns="http://www.w3.org/2000/svg"
-                                                    width="16" height="16" fill="green" class="bi bi-plus-circle-fill"
-                                                    viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
-                                                </svg>
-                                            </td>
-                                            <td class="action-button edit" style="width:10px"><i
-                                                    (click)="onEditOrderMembers(index,data.status)" nz-icon
-                                                    nzType="edit"></i>
-                                            </td>
-                                            <td class="action-button delete" style="width:10px">
-                                                <a *ngIf="data.status !== 'done'" [class.disabled]="timeItem.isDisabled"
-                                                    [nzCancelText]="'Ոչ'" [nzOkText]="'Այո'" nz-popconfirm
-                                                    (nzOnConfirm)="onDeleteApprovedOrder(index)"
-                                                    nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
-                                                    nzPopconfirmPlacement="bottom" class="d-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                        fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                                                        <path fill-rule="evenodd"
-                                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                                                    </svg>
-                                                </a>
-                                            </td>
-                                            <td>
-
-                                                <div class="d-flex align-items-center flex-wrap">
-                                                    <svg style="margin: 0 5px; color: #0088cc;"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        *ngIf="data.status !== 'done' && !timeItem.isDisabled"
-                                                        (click)="send(data)" width="25" height="25" fill="currentColor"
-                                                        class="bi bi-telegram" viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z" />
-                                                    </svg>
-
-                                                    <span *ngIf="data.viber_message_sended">Ուղարկված է </span>
-
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <button *ngIf="data.status == 'done'" nz-button nzType="primary">
-                                                    Ավարտված</button>
-                                                <a *ngIf="data.status !== 'done'" [nzCancelText]="'Ոչ'"
-                                                    [nzOkText]="'Այո'" nz-popconfirm (nzOnConfirm)="finishOrder(data)"
-                                                    nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ավարտել"
-                                                    nzPopconfirmPlacement="bottom" class="d-flex">
-                                                    <button nz-button nzType="primary">{{data.status
-                                                        ==
-                                                        'done'?'Ավարտված':'Ավարտել'}}</button>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </nz-table>
-
-                                <nz-modal nzWidth="500px" [nzTitle]="'Փոփոխել'" [nzCancelText]="'Փակել'"
-                                    (nzOnCancel)="handleCancelDriver()" [nzOkText]="'Հատատել'" (nzOnOk)="onSaveDriver()"
-                                    [(nzVisible)]="isVisibleDriverModal">
-                                    <nz-select class="w-100" nzShowSearch [formControl]="driverControl">
-                                        <nz-option *ngFor="let dr of modalDrivers" [nzValue]="dr.id"
-                                            [nzLabel]="getLabelOfDrivers(dr) ">
-                                        </nz-option>
-                                    </nz-select>
-                                </nz-modal>
-
-                                <nz-modal nzWidth="1100px" (nzOnCancel)="handleCancel()"
-                                    [(nzVisible)]="isVisibleOrderInfo">
-                                    <div *nzModalContent>
-                                        <nz-table nzBordered [nzFrontPagination]="false" [nzData]="orderMembers">
-                                            <thead>
-                                                <tr>
-                                                    <th>N</th>
-                                                    <th>Ուղևոր</th>
-                                                    <th>Հեռ.</th>
-                                                    <th>Հասցե</th>
-                                                    <th>Տիպ</th>
-                                                    <th>Տեղ.</th>
-                                                    <th></th>
-                                                    <th>Ջնջել</th>
-                                                    <th>Մերժում</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr [class.cancel-item]="moderator.order.canceled_by_client"
-                                                    *ngFor="let moderator of orderMembers;let ind=index">
-                                                    <td>{{ind+1}}</td>
-                                                    <td>{{moderator?.order?.client_details?.user?.first_name}}
-                                                        {{moderator?.order?.client_details?.user?.last_name}}</td>
-                                                    <td>{{moderator?.order?.phone_number}}</td>
-                                                    <td><span [class.light]="checkAddress2(moderator) == 'Հասցե չկա'">
-                                                            {{checkAddress2(moderator)}}</span></td>
-                                                    <td>{{getOrderType(moderator?.order?.order_type)}}</td>
-                                                    <td>{{moderator?.order?.person_count}}</td>
-                                                    <td> <label
-                                                            [disabled]="moderator.order.canceled_by_client || orderStatus =='done'"
-                                                            nz-checkbox [(ngModel)]="moderator.isSelect"></label>
-                                                    </td>
-                                                    <td class="delete action-button">
-                                                        <a *ngIf="orderStatus !== 'done'" [nzCancelText]="'Ոչ'"
-                                                            [nzOkText]="'Այո'" nz-popconfirm
-                                                            nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
-                                                            nzPopconfirmPlacement="bottom"
-                                                            (nzOnConfirm)="removeAndCancelOrder(moderator,ind)">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                                height="16" fill="currentColor" class="bi bi-trash"
-                                                                viewBox="0 0 16 16">
-                                                                <path
-                                                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                                                                <path fill-rule="evenodd"
-                                                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                                                            </svg>
-                                                        </a>
-                                                    </td>
-                                                    <td>
-                                                        <div *ngIf="!timeItem.isDisabled"
-                                                            class="cancel-btns d-flex align-items-center flex-wrap">
-                                                            <button (click)="approveCancelation(moderator.order.id,ind)"
-                                                                *ngIf="moderator.order.canceled_by_client" nz-button
-                                                                nz-button nzType="primary"
-                                                                class="color-green">Հաստատել</button>
-                                                            <button (click)="cancelCancelation(moderator)"
-                                                                *ngIf="moderator.order.canceled_by_client" nz-button
-                                                                nz-button nzType="primary" nzDanger>Չեղարկել</button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </nz-table>
-                                    </div>
-                                    <div *nzModalFooter>
-                                        <button nz-button nzType="default" (click)="handleCancel()">Փակել</button>
-                                        <button *ngIf="!timeItem.isDisabled && orderStatus !== 'done'" nz-button
-                                            nzType="primary" (click)="onOrderSave()">Հաստատել</button>
-                                    </div>
-                                </nz-modal>
-
-                            </div>
+                                  </ng-template>
+                                  <input
+                                    maxLength="8"
+                                    nz-input
+                                    OnlyNumber
+                                    formControlName="phone_number"
+                                    type="text"
+                                    placeholder=""
+                                  />
+                                </nz-input-group>
+                              </nz-form-control>
+                              <span class="error" *ngIf="isShowError"
+                                >Նշված հեռախոսահամարով ուղևոր չի գտնվել</span
+                              >
+                            </nz-form-item>
+                          </div>
                         </div>
-                    </div>
-                    <div *nzModalFooter>
+                        <div>Երթի տվյալներ</div>
+                        <div nz-row [nzGutter]="24">
+                          <div nz-col [nzSpan]="12">
+                            <nz-form-label class="inline-labels"
+                              >Մեկնարկի հասցե</nz-form-label
+                            >
+                            <nz-form-item>
+                              <nz-form-control
+                                nzHasFeedback
+                                [nzErrorTip]="userErrorTpl"
+                              >
+                                <input
+                                  nz-input
+                                  formControlName="startPointAddress"
+                                  placeholder=""
+                                />
+                              </nz-form-control>
+                            </nz-form-item>
+                          </div>
+                          <div nz-col [nzSpan]="12">
+                            <nz-form-label class="inline-labels"
+                              >Մեկնաբանություն</nz-form-label
+                            >
+                            <nz-form-item>
+                              <nz-form-control
+                                nzHasFeedback
+                                [nzErrorTip]="userErrorTpl"
+                              >
+                                <input
+                                  nz-input
+                                  formControlName="comment"
+                                  placeholder=""
+                                />
+                              </nz-form-control>
+                            </nz-form-item>
+                          </div>
+                        </div>
+                        <div nz-row [nzGutter]="24">
+                          <div nz-col [nzSpan]="12">
+                            <nz-form-label class="inline-labels" nzRequired
+                              >Պատվերի տեսակ
+                            </nz-form-label>
+                            <nz-form-item>
+                              <nz-form-control
+                                nzHasFeedback
+                                [nzErrorTip]="userErrorTpl"
+                              >
+                                <nz-select formControlName="orderType">
+                                  <nz-option
+                                    *ngFor="let order of orderTypes"
+                                    [nzValue]="order.id"
+                                    [nzLabel]="order.name_en"
+                                  >
+                                  </nz-option>
+                                </nz-select>
+                              </nz-form-control>
+                            </nz-form-item>
+                          </div>
 
+                          <div nz-col [nzSpan]="12">
+                            <nz-form-label class="inline-labels" nzRequired
+                              >Ուղևորի հեռախոսահամար
+                            </nz-form-label>
+                            <nz-form-item>
+                              <nz-form-control
+                                nzHasFeedback
+                                [nzErrorTip]="userErrorTpl"
+                              >
+                                <nz-input-group
+                                  [nzAddOnBefore]="addOnBeforeTemplate"
+                                >
+                                  <ng-template #addOnBeforeTemplate>
+                                    <nz-select
+                                      [formControl]="phoneNumberPrefix"
+                                      class="phone-select"
+                                    >
+                                      <nz-option nzLabel="+374" nzValue="+374">
+                                      </nz-option>
+                                    </nz-select>
+                                  </ng-template>
+                                  <input
+                                    maxLength="8"
+                                    nz-input
+                                    OnlyNumber
+                                    formControlName="order_phone_number"
+                                    type="text"
+                                    placeholder=""
+                                  />
+                                </nz-input-group>
+                              </nz-form-control>
+                            </nz-form-item>
+                          </div>
+                        </div>
+                        <div nz-row [nzGutter]="24">
+                          <div nz-col [nzSpan]="12">
+                            <nz-form-label class="inline-labels"
+                              >Անուն</nz-form-label
+                            >
+                            <nz-form-item>
+                              <nz-form-control
+                                nzHasFeedback
+                                [nzErrorTip]="userErrorTpl"
+                              >
+                                <input
+                                  nz-input
+                                  formControlName="first_name"
+                                  placeholder=""
+                                />
+                              </nz-form-control>
+                            </nz-form-item>
+                          </div>
+                          <div nz-col [nzSpan]="12">
+                            <nz-form-label class="inline-labels"
+                              >Ազգանուն</nz-form-label
+                            >
+                            <nz-form-item>
+                              <nz-form-control
+                                nzHasFeedback
+                                [nzErrorTip]="userErrorTpl"
+                              >
+                                <input
+                                  nz-input
+                                  formControlName="last_name"
+                                  placeholder=""
+                                />
+                              </nz-form-control>
+                            </nz-form-item>
+                          </div>
+                        </div>
+                        <!-- *ngIf="!isEditing" -->
+
+                        <!-- <div>Երթի տվյալներ</div> -->
+                        <div nz-row [nzGutter]="24">
+                          <div nz-col [nzSpan]="12">
+                            <nz-form-label class="inline-labels"
+                              >Մեկնաբանություն</nz-form-label
+                            >
+                            <nz-form-item>
+                              <nz-form-control
+                                nzHasFeedback
+                                [nzErrorTip]="userErrorTpl"
+                              >
+                                <input
+                                  nz-input
+                                  formControlName="userComment"
+                                  placeholder=""
+                                />
+                              </nz-form-control>
+                            </nz-form-item>
+                          </div>
+                          <div nz-col [nzSpan]="12">
+                            <nz-form-label class="inline-labels"
+                              >Վերջնակետ</nz-form-label
+                            >
+                            <nz-form-item>
+                              <nz-form-control
+                                nzHasFeedback
+                                [nzErrorTip]="userErrorTpl"
+                              >
+                                <input
+                                  nz-input
+                                  formControlName="endPointAddress"
+                                  placeholder=""
+                                />
+                              </nz-form-control>
+                            </nz-form-item>
+                          </div>
+                        </div>
+
+                        <div
+                          nz-row
+                          [nzGutter]="24"
+                          class="d-flex align-items-center justify-content-between"
+                          *ngIf="isEditing"
+                        >
+                          <div nz-col [nzSpan]="12">
+                            <nz-date-picker
+                              class="w-100"
+                              formControlName="date"
+                              [nzDisabledDate]="disabledDate"
+                            ></nz-date-picker>
+                          </div>
+                          <div nz-col [nzSpan]="12">
+                            <nz-select class="w-100" formControlName="time">
+                              <nz-option
+                                *ngFor="let time of subRouteInfo?.openTimes"
+                                [nzValue]="time.time"
+                                [nzLabel]="setTimeLabel(time)"
+                              >
+                              </nz-option>
+                            </nz-select>
+                          </div>
+                        </div>
+                        <div
+                          nz-row
+                          [nzGutter]="24"
+                          class="d-flex align-items-center margin-top-10 justify-content-between"
+                        >
+                          <div
+                            *ngIf="isEditing && radioValue == 'pending'"
+                            nz-col
+                            [nzSpan]="8"
+                          >
+                            <nz-form-control>
+                              <label
+                                nz-checkbox
+                                formControlName="isChangeStatus"
+                                >Փոխել կարգավիճակը</label
+                              >
+                            </nz-form-control>
+                          </div>
+                          <div nz-col [nzSpan]="8">
+                            <nz-form-label class="inline-labels"
+                              >Անվճար</nz-form-label
+                            >
+                            <nz-form-control>
+                              <nz-switch formControlName="isFree"></nz-switch>
+                            </nz-form-control>
+                          </div>
+                          <div
+                            *ngIf="validateForm.get('orderType').value == 2"
+                            nz-col
+                            [nzSpan]="8"
+                          >
+                            <nz-form-label class="inline-labels"
+                              >Այլ</nz-form-label
+                            >
+
+                            <nz-form-control>
+                              <label
+                                nz-checkbox
+                                formControlName="isExtra"
+                              ></label>
+                            </nz-form-control>
+                          </div>
+                        </div>
+                      </form>
+
+                      <form
+                        class="sm-ant secondForm"
+                        [formGroup]="validateFormTwo"
+                      >
+                        <!-- <div nz-row [nzGutter]="24"> -->
+                        <div nz-col [nzSpan]="12">
+                          <nz-form-label class="inline-labels" nzRequired
+                            >Ուղևորների քանակ
+                          </nz-form-label>
+                          <nz-form-item>
+                            <nz-form-control
+                              nzHasFeedback
+                              [nzErrorTip]="userErrorTpl"
+                            >
+                              <input
+                                OnlyNumber="true"
+                                min="1"
+                                type="number"
+                                (keypress)="isInteger($event)"
+                                *ngIf="
+                                  !validateForm.get('orderType').value ||
+                                  validateForm.get('orderType').value !== 2
+                                "
+                                nz-input
+                                formControlName="personCountTwo"
+                                placeholder=""
+
+                                class="secondFormInputSize"
+                              />
+
+                              <nz-select
+                                *ngIf="validateForm.get('orderType').value == 2"
+                                class="w-100"
+                                formControlName="personCount"
+                                class="secondFormInputSize"
+                              >
+                                <nz-option
+                                  *ngFor="let seatCount of [4, 6, 7, 8]"
+                                  [nzValue]="seatCount"
+                                  [nzLabel]="seatCount"
+                                >
+                                </nz-option>
+                              </nz-select>
+                            </nz-form-control>
+                          </nz-form-item>
+                        </div>
+                        <div nz-col [nzSpan]="12">
+                          <nz-form-label class="inline-labels" nzRequired
+                            >Հեռախոսահամար
+                          </nz-form-label>
+                          <nz-form-item>
+                            <nz-form-control
+                              nzHasFeedback
+                              [nzErrorTip]="userErrorTpl"
+                            >
+                              <nz-input-group
+                                [nzAddOnBefore]="addOnBeforeTemplate"
+                              >
+                                <ng-template #addOnBeforeTemplate>
+                                  <nz-select
+                                    [formControl]="phoneNumberPrefix"
+                                    class="phone-select secondFormInputSize"
+                                  >
+                                    <nz-option nzLabel="+374" nzValue="+374">
+                                    </nz-option>
+                                  </nz-select>
+                                </ng-template>
+                                <input
+                                  maxLength="8"
+                                  nz-input
+                                  OnlyNumber
+                                  formControlName="phone_numberTwo"
+                                  type="text"
+                                  placeholder=""
+                                  class="secondFormPhoneInputSize"
+                                />
+                              </nz-input-group>
+                            </nz-form-control>
+                            <span class="error" *ngIf="isShowError"
+                              >Նշված հեռախոսահամարով ուղևոր չի գտնվել</span
+                            >
+                          </nz-form-item>
+                        </div>
+                        <!-- </div> -->
+                        <!-- <div>Երթի տվյալներ</div> -->
+                        <!-- <div nz-row [nzGutter]="24"> -->
+                        <div nz-col [nzSpan]="12">
+                          <nz-form-label class="inline-labels"
+                            >Մեկնարկի հասցե</nz-form-label
+                          >
+                          <nz-form-item>
+                            <nz-form-control
+                              nzHasFeedback
+                              [nzErrorTip]="userErrorTpl"
+                            >
+                              <input
+                                nz-input
+                                formControlName="startPointAddressTwo"
+                                placeholder=""
+                                class="secondFormInputSize"
+                              />
+                            </nz-form-control>
+                          </nz-form-item>
+                        </div>
+                        <div nz-col [nzSpan]="12">
+                          <nz-form-label class="inline-labels"
+                            >Մեկնաբանություն</nz-form-label
+                          >
+                          <nz-form-item>
+                            <nz-form-control
+                              nzHasFeedback
+                              [nzErrorTip]="userErrorTpl"
+                            >
+                              <input
+                                nz-input
+                                formControlName="commentTwo"
+                                placeholder=""
+                                class="secondFormInputSize"
+                              />
+                            </nz-form-control>
+                          </nz-form-item>
+                        </div>
+                        <!-- </div> -->
+                        <!-- <div nz-row [nzGutter]="24"> -->
+                        <div nz-col [nzSpan]="12">
+                          <nz-form-label class="inline-labels" nzRequired
+                            >Պատվերի տեսակ
+                          </nz-form-label>
+                          <nz-form-item>
+                            <nz-form-control
+                              nzHasFeedback
+                              [nzErrorTip]="userErrorTpl"
+                            >
+                              <nz-select formControlName="orderTypeTwo"
+                              class="secondFormInputSize">
+                                <nz-option
+                                  *ngFor="let order of orderTypes"
+                                  [nzValue]="order.id"
+                                  [nzLabel]="order.name_en"
+                                >
+                                </nz-option>
+                              </nz-select>
+                            </nz-form-control>
+                          </nz-form-item>
+                        </div>
+
+                        <div nz-col [nzSpan]="12">
+                          <nz-form-label class="inline-labels" nzRequired
+                            >Ուղևորի հեռախոսահամար
+                          </nz-form-label>
+                          <nz-form-item>
+                            <nz-form-control
+                              nzHasFeedback
+                              [nzErrorTip]="userErrorTpl"
+                            >
+                              <nz-input-group
+                                [nzAddOnBefore]="addOnBeforeTemplate"
+                              >
+                                <ng-template #addOnBeforeTemplate>
+                                  <nz-select
+                                    [formControl]="phoneNumberPrefix"
+                                    class="phone-select"
+                                  >
+                                    <nz-option nzLabel="+374" nzValue="+374">
+                                    </nz-option>
+                                  </nz-select>
+                                </ng-template>
+                                <input
+                                  maxLength="8"
+                                  nz-input
+                                  OnlyNumber
+                                  formControlName="order_phone_numberTwo"
+                                  type="text"
+                                  placeholder=""
+                                  class="secondFormPhoneInputSize"
+                                />
+                              </nz-input-group>
+                            </nz-form-control>
+                          </nz-form-item>
+                        </div>
+                        <!-- </div> -->
+                        <!-- <div nz-row [nzGutter]="24"> -->
+                        <div nz-col [nzSpan]="12">
+                          <nz-form-label class="inline-labels"
+                            >Անուն</nz-form-label
+                          >
+                          <nz-form-item>
+                            <nz-form-control
+                              nzHasFeedback
+                              [nzErrorTip]="userErrorTpl"
+                            >
+                              <input
+                                nz-input
+                                formControlName="first_nameTwo"
+                                placeholder=""
+                                class="secondFormInputSize"
+                              />
+                            </nz-form-control>
+                          </nz-form-item>
+                        </div>
+                        <div nz-col [nzSpan]="12">
+                          <nz-form-label class="inline-labels"
+                            >Ազգանուն</nz-form-label
+                          >
+                          <nz-form-item>
+                            <nz-form-control
+                              nzHasFeedback
+                              [nzErrorTip]="userErrorTpl"
+                            >
+                              <input
+                                nz-input
+                                formControlName="last_nameTwo"
+                                placeholder=""
+                                class="secondFormInputSize"
+                              />
+                            </nz-form-control>
+                          </nz-form-item>
+                        </div>
+                        <!-- </div> -->
+                        <!-- *ngIf="!isEditing" -->
+
+                        <!-- <div>Երթի տվյալներ</div> -->
+                        <!-- <div nz-row [nzGutter]="24"> -->
+                        <div nz-col [nzSpan]="12">
+                          <nz-form-label class="inline-labels"
+                            >Մեկնաբանություն</nz-form-label
+                          >
+                          <nz-form-item>
+                            <nz-form-control
+                              nzHasFeedback
+                              [nzErrorTip]="userErrorTpl"
+                            >
+                              <input
+                                nz-input
+                                formControlName="userCommentTwo"
+                                placeholder=""
+                                class="secondFormInputSize"
+                              />
+                            </nz-form-control>
+                          </nz-form-item>
+                        </div>
+                        <div nz-col [nzSpan]="12">
+                          <nz-form-label class="inline-labels"
+                            >Վերջնակետ</nz-form-label
+                          >
+                          <nz-form-item>
+                            <nz-form-control
+                              nzHasFeedback
+                              [nzErrorTip]="userErrorTpl"
+                            >
+                              <input
+                                nz-input
+                                formControlName="endPointAddressTwo"
+                                placeholder=""
+                                class="secondFormInputSize"
+                              />
+                            </nz-form-control>
+                          </nz-form-item>
+                        </div>
+                        <!-- </div> -->
+
+                        <!-- <div
+                          nz-row
+                          [nzGutter]="24"
+                          class="d-flex align-items-center justify-content-between"
+                          *ngIf="isEditing"
+                        > -->
+                        <!-- <div nz-col [nzSpan]="6">
+                          <nz-form-label class="inline-labels"
+                            >Ամսաթիվ</nz-form-label
+                          >
+                          <nz-form-item>
+                            <nz-form-control>
+                              <nz-date-picker
+                                nzPlaceHolder="Ընտրեք ամսաթիվ"
+                                formControlName="dateTwo"
+                                class="secondFormInputSize"
+                              ></nz-date-picker>
+                            </nz-form-control>
+                          </nz-form-item>
+                        </div>
+
+                        <div nz-col [nzSpan]="6">
+                          <nz-form-label class="inline-labels"
+                            >Մեկնարկի ժամը</nz-form-label
+                          >
+                          <nz-select
+                            nzAllowClear
+                            nzPlaceHolder="Select OS"
+                            [nzCustomTemplate]="defaultTemplate"
+                            class="secondFormInputSize"
+                          >
+                            <nz-option
+                              nzLabel="Windows"
+                              nzValue="windows"
+                            ></nz-option>
+                            <nz-option
+                              nzLabel="Apple"
+                              nzValue="apple"
+                            ></nz-option>
+                            <nz-option
+                              nzLabel="Android"
+                              nzValue="android"
+                            ></nz-option>
+                          </nz-select>
+                        </div> -->
+                        <!-- </div> -->
+
+                        <div
+                          nz-row
+                          [nzGutter]="24"
+                          class="d-flex align-items-center justify-content-between"
+                          *ngIf="comeBackSwitch"
+                        >
+                          <div nz-col [nzSpan]="12">
+                            <nz-date-picker
+                              class="w-100"
+                              formControlName="dateTwo"
+                              [nzDisabledDate]="disabledDate"
+                            ></nz-date-picker>
+                          </div>
+                          <div nz-col [nzSpan]="12">
+                            <nz-select class="w-100" formControlName="timeTwo">
+                              <nz-option
+                                *ngFor="let time of subRouteInfo?.openTimes"
+                                [nzValue]="time.time"
+                                [nzLabel]="setTimeLabel(time)"
+                              >
+                              </nz-option>
+                            </nz-select>
+                          </div>
+                        </div>
+                        <div
+                          nz-row
+                          [nzGutter]="24"
+                          class="d-flex align-items-center margin-top-10 justify-content-between"
+                        >
+                          <div
+                            *ngIf="comeBackSwitch && radioValue == 'pending'"
+                            nz-col
+                            [nzSpan]="8"
+                          >
+                            <nz-form-control>
+                              <label
+                                nz-checkbox
+                                formControlName="isChangeStatusTwo"
+                                >Փոխել կարգավիճակը</label
+                              >
+                            </nz-form-control>
+                          </div>
+                          <div nz-col [nzSpan]="8">
+                            <nz-form-label class="inline-labels"
+                              >Անվճար</nz-form-label
+                            >
+                            <nz-form-control>
+                              <nz-switch
+                                formControlName="isFreeTwo"
+                              ></nz-switch>
+                            </nz-form-control>
+                          </div>
+                          <div
+                            *ngIf="validateForm.get('orderType').value == 2"
+                            nz-col
+                            [nzSpan]="8"
+                          >
+                            <nz-form-label class="inline-labels"
+                              >Այլ</nz-form-label
+                            >
+
+                            <nz-form-control>
+                              <label
+                                nz-checkbox
+                                formControlName="isExtraTwo"
+                              ></label>
+                            </nz-form-control>
+                          </div>
+                        </div>
+                      </form>
                     </div>
+                  </div>
                 </nz-modal>
+              </div>
+              <div
+                *ngIf="timeItem && !timeItem.isDisabled"
+                class="margin-10"
+                nz-row
+                [nzGutter]="24"
+              >
+                <div class="d-flex align-items-center" nz-col [nzSpan]="12">
+                  Ուղևորների քանակը {{ userCounts }}
+                </div>
+              </div>
+              <div class="margin-bottom-10" nz-row [nzGutter]="24">
+                <div nz-col [nzSpan]="12">
+                  <nz-select class="w-100" nzShowSearch [(ngModel)]="driver">
+                    <nz-option
+                      *ngFor="let dr of currentDriver"
+                      [nzValue]="dr.id"
+                      [nzLabel]="getLabelOfDrivers(dr)"
+                    >
+                    </nz-option>
+                  </nz-select>
+                </div>
+                <div nz-col [nzSpan]="12">
+                  <button
+                    [disabled]="timeItem.isDisabled"
+                    nz-button
+                    nzType="text"
+                    nz-button
+                    nzType="primary"
+                    (click)="addOrderByDriver()"
+                  >
+                    Ավելացնել
+                  </button>
+                </div>
+              </div>
+
+              <div class="scroll">
+                <nz-table
+                  nzBordered
+                  [nzFrontPagination]="false"
+                  [nzData]="approvedOrders"
+                >
+                  <thead>
+                    <tr>
+                      <th>N</th>
+                      <th>Վարորդ</th>
+                      <th>Մեքենայի մոդելը</th>
+                      <th>Տեղ․</th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      [ngClass]="{ 'color-red': isCanceledByClient(data) }"
+                      *ngFor="let data of approvedOrders; let index = index"
+                    >
+                      <td>{{ index + 1 }}</td>
+                      <td>
+                        {{ data.driver_details.user.first_name }}
+                        {{ data.driver_details.user.last_name }}
+                        {{ data.driver_details.phone_number }}
+                        <i
+                          *ngIf="data.status !== 'done'"
+                          (click)="changeDriverName(data)"
+                          nz-icon
+                          nzType="edit"
+                        ></i>
+                      </td>
+                      <td>
+                        {{ data.driver_details.car_model }}
+                        {{ data.driver_details.car_number }}
+                      </td>
+                      <td>
+                        {{ data.driver_details.car_capacity }}/{{
+                          data.seat_count
+                        }}
+                      </td>
+
+                      <td class="cursor-pointer" (click)="getApprovedId(index)">
+                        <i nz-icon nzType="eye" nzTheme="outline"></i>
+                      </td>
+                      <td class="action-button edit" style="width: 10px">
+                        <svg
+                          *ngIf="
+                            timeItem &&
+                            !timeItem.isDisabled &&
+                            data.status !== 'done'
+                          "
+                          (click)="addSelectedOrder(index)"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="green"
+                          class="bi bi-plus-circle-fill"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"
+                          />
+                        </svg>
+                      </td>
+                      <td class="action-button edit" style="width: 10px">
+                        <i
+                          (click)="onEditOrderMembers(index, data.status)"
+                          nz-icon
+                          nzType="edit"
+                        ></i>
+                      </td>
+                      <td class="action-button delete" style="width: 10px">
+                        <a
+                          *ngIf="data.status !== 'done'"
+                          [class.disabled]="timeItem.isDisabled"
+                          [nzCancelText]="'Ոչ'"
+                          [nzOkText]="'Այո'"
+                          nz-popconfirm
+                          (nzOnConfirm)="onDeleteApprovedOrder(index)"
+                          nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
+                          nzPopconfirmPlacement="bottom"
+                          class="d-flex"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            class="bi bi-trash"
+                            viewBox="0 0 16 16"
+                          >
+                            <path
+                              d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
+                            />
+                            <path
+                              fill-rule="evenodd"
+                              d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                            />
+                          </svg>
+                        </a>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center flex-wrap">
+                          <svg
+                            style="margin: 0 5px; color: #0088cc"
+                            xmlns="http://www.w3.org/2000/svg"
+                            *ngIf="
+                              data.status !== 'done' && !timeItem.isDisabled
+                            "
+                            (click)="send(data)"
+                            width="25"
+                            height="25"
+                            fill="currentColor"
+                            class="bi bi-telegram"
+                            viewBox="0 0 16 16"
+                          >
+                            <path
+                              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z"
+                            />
+                          </svg>
+
+                          <span *ngIf="data.viber_message_sended"
+                            >Ուղարկված է
+                          </span>
+                        </div>
+                      </td>
+                      <td>
+                        <button
+                          *ngIf="data.status == 'done'"
+                          nz-button
+                          nzType="primary"
+                        >
+                          Ավարտված
+                        </button>
+                        <a
+                          *ngIf="data.status !== 'done'"
+                          [nzCancelText]="'Ոչ'"
+                          [nzOkText]="'Այո'"
+                          nz-popconfirm
+                          (nzOnConfirm)="finishOrder(data)"
+                          nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ավարտել"
+                          nzPopconfirmPlacement="bottom"
+                          class="d-flex"
+                        >
+                          <button nz-button nzType="primary">
+                            {{ data.status == "done" ? "Ավարտված" : "Ավարտել" }}
+                          </button>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </nz-table>
+
+                <nz-modal
+                  nzWidth="500px"
+                  [nzTitle]="'Փոփոխել'"
+                  [nzCancelText]="'Փակել'"
+                  (nzOnCancel)="handleCancelDriver()"
+                  [nzOkText]="'Հատատել'"
+                  (nzOnOk)="onSaveDriver()"
+                  [(nzVisible)]="isVisibleDriverModal"
+                >
+                  <nz-select
+                    class="w-100"
+                    nzShowSearch
+                    [formControl]="driverControl"
+                  >
+                    <nz-option
+                      *ngFor="let dr of modalDrivers"
+                      [nzValue]="dr.id"
+                      [nzLabel]="getLabelOfDrivers(dr)"
+                    >
+                    </nz-option>
+                  </nz-select>
+                </nz-modal>
+
+                <nz-modal
+                  nzWidth="1100px"
+                  (nzOnCancel)="handleCancel()"
+                  [(nzVisible)]="isVisibleOrderInfo"
+                >
+                  <div *nzModalContent>
+                    <nz-table
+                      nzBordered
+                      [nzFrontPagination]="false"
+                      [nzData]="orderMembers"
+                    >
+                      <thead>
+                        <tr>
+                          <th>N</th>
+                          <th>Ուղևոր</th>
+                          <th>Հեռ.</th>
+                          <th>Հասցե</th>
+                          <th>Տիպ</th>
+                          <th>Տեղ.</th>
+                          <th></th>
+                          <th>Ջնջել</th>
+                          <th>Մերժում</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          [class.cancel-item]="
+                            moderator.order.canceled_by_client
+                          "
+                          *ngFor="
+                            let moderator of orderMembers;
+                            let ind = index
+                          "
+                        >
+                          <td>{{ ind + 1 }}</td>
+                          <td>
+                            {{
+                              moderator?.order?.client_details?.user?.first_name
+                            }}
+                            {{
+                              moderator?.order?.client_details?.user?.last_name
+                            }}
+                          </td>
+                          <td>{{ moderator?.order?.phone_number }}</td>
+                          <td>
+                            <span
+                              [class.light]="
+                                checkAddress2(moderator) == 'Հասցե չկա'
+                              "
+                            >
+                              {{ checkAddress2(moderator) }}</span
+                            >
+                          </td>
+                          <td>
+                            {{ getOrderType(moderator?.order?.order_type) }}
+                          </td>
+                          <td>{{ moderator?.order?.person_count }}</td>
+                          <td>
+                            <label
+                              [disabled]="
+                                moderator.order.canceled_by_client ||
+                                orderStatus == 'done'
+                              "
+                              nz-checkbox
+                              [(ngModel)]="moderator.isSelect"
+                            ></label>
+                          </td>
+                          <td class="delete action-button">
+                            <a
+                              *ngIf="orderStatus !== 'done'"
+                              [nzCancelText]="'Ոչ'"
+                              [nzOkText]="'Այո'"
+                              nz-popconfirm
+                              nzPopconfirmTitle="Դուք իսկապե՞ս ուզում եք ջնջել"
+                              nzPopconfirmPlacement="bottom"
+                              (nzOnConfirm)="
+                                removeAndCancelOrder(moderator, ind)
+                              "
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                fill="currentColor"
+                                class="bi bi-trash"
+                                viewBox="0 0 16 16"
+                              >
+                                <path
+                                  d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
+                                />
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                                />
+                              </svg>
+                            </a>
+                          </td>
+                          <td>
+                            <div
+                              *ngIf="!timeItem.isDisabled"
+                              class="cancel-btns d-flex align-items-center flex-wrap"
+                            >
+                              <button
+                                (click)="
+                                  approveCancelation(moderator.order.id, ind)
+                                "
+                                *ngIf="moderator.order.canceled_by_client"
+                                nz-button
+                                nz-button
+                                nzType="primary"
+                                class="color-green"
+                              >
+                                Հաստատել
+                              </button>
+                              <button
+                                (click)="cancelCancelation(moderator)"
+                                *ngIf="moderator.order.canceled_by_client"
+                                nz-button
+                                nz-button
+                                nzType="primary"
+                                nzDanger
+                              >
+                                Չեղարկել
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </nz-table>
+                  </div>
+                  <div *nzModalFooter>
+                    <button nz-button nzType="default" (click)="handleCancel()">
+                      Փակել
+                    </button>
+                    <button
+                      *ngIf="!timeItem.isDisabled && orderStatus !== 'done'"
+                      nz-button
+                      nzType="primary"
+                      (click)="onOrderSave()"
+                    >
+                      Հաստատել
+                    </button>
+                  </div>
+                </nz-modal>
+              </div>
             </div>
-
-        </nz-tab>
-
-    </nz-tabset>
+          </div>
+          <div *nzModalFooter></div>
+        </nz-modal>
+      </div>
+    </nz-tab>
+  </nz-tabset>
 </div>

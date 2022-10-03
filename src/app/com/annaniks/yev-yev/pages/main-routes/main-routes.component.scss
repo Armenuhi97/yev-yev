@@ -115,7 +115,7 @@
 .modalBodyContainer{
   position: relative;
   overflow: hidden;
-  height: 540px;
+  min-height: 540px;
   // padding: 5px;
 }
 
@@ -129,16 +129,44 @@
   transition: 0.5s;
 }
 
-.firstForm{
+// .firstForm{
   // width: 100%;
   // position: relative;
   // padding-left: 8px;
+// }
+
+.secondForm{
+  display: grid;
+  grid-template-columns: 50% 50%;
+  justify-content: center;
+
+  div{
+    width: 100%;
+  }
+
+}
+.secondFormInputSize{
+  width: 380px;
+}
+
+.secondFormPhoneInputSize{
+  width: 306px;
 }
 
 .switchOff{
   transform: translateX(0%);
 }
 
+.switchOffBody{
+  height: 540px;
+}
+
 .switchOn{
   transform: translateX(-50%);
+  // overflow-y: scroll;
+  margin-bottom: 200px;
 }
+
+// .switchOnBody{
+//   height: 580px;
+// }

@@ -50,7 +50,7 @@ export class MainRoutesComponent {
   isVisible = false;
   unsubscribe$ = new Subject();
   validateForm: FormGroup;
-  validateFormTwo:FormGroup;
+  validateFormTwo: FormGroup;
   phoneNumberPrefix = new FormControl('+374');
   userId: number;
   currentInterval;
@@ -82,6 +82,7 @@ export class MainRoutesComponent {
   driverControl = new FormControl('', Validators.required);
   public comeBackSwitch: boolean = false
   public formClass = 'switchOff'
+  public bodyClass = 'switchOffBody'
   // public comeBackSwitch = new Subject()
   constructor(
     private _mainRoutesService: MainRoutesService,
@@ -97,6 +98,7 @@ export class MainRoutesComponent {
     private notificationService: NotificationService) {
     // this.openTimes = this._openTimesService.getOpenTimes()
     this.orderTypes = this._orderTypeService.getOrderTypes();
+    this._secondFormInit()
   }
 
   ngOnInit() {
@@ -1043,22 +1045,17 @@ export class MainRoutesComponent {
     this.router.navigate([`/dashboard/raiting-order/${this.index}`]);
   }
 
-  public comeBackSwitchClick() {
-    console.log(this.comeBackSwitch)
-    if(this.comeBackSwitch){
-      this.formClass = 'switchOn'
-
-
+  private _secondFormInit() {
     this.validateFormTwo = this._fb.group({
       first_nameTwo: [null],
       last_nameTwo: [null],
-      phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
       userCommentTwo: [null],
+      phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
       startPointAddressTwo: [null],
       endPointAddressTwo: [null],
       order_phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
       orderTypeTwo: [0, Validators.required],
-      personCount: [null, Validators.required],
+      personCountTwo: [null, Validators.required],
       commentTwo: [null],
       dateTwo: [null],
       timeTwo: [null],
@@ -1066,28 +1063,154 @@ export class MainRoutesComponent {
       isFreeTwo: [false],
       isExtraTwo: [false]
     })
+  }
+
+  public comeBackSwitchClick() {
+    if (this.comeBackSwitch) {
+      this.formClass = 'switchOn'
+      this.bodyClass = 'switchOnBody'
+      this._setSecondForm()
+
+      // console.log(this.validateFormTwo)
+
+      // if (this.validateFormTwo == null) {
+
+      // }
+      // this._setValues(this.validateFormTwo, this.validateForm)
+      // this.validateForm = null
+      // console.log(this.validateFormTwo)
+
     }
-    else{
+    else {
       this.formClass = 'switchOff'
-//----------------------------------------------------------------------------------------------------------=-=-=--=-===-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-
-    this.validateFormTwo = this._fb.group({
-      first_nameTwo: [null],
-      last_nameTwo: [null],
-      phone_numberTwo: [null],
-      userCommentTwo: [null],
-      startPointAddressTwo: [null],
-      endPointAddressTwo: [null],
-      order_phone_numberTwo: [null],
-      orderTypeTwo: [null],
-      personCount: [null],
-      commentTwo: [null],
-      dateTwo: [null],
-      timeTwo: [null],
-      isChangeStatusTwo: [false],
-      isFreeTwo: [false],
-      isExtraTwo: [false]
-    })
+      this.bodyClass = 'switchOffBody'
+      this._setFirstForm()
+      // this._initForm()
+      // this._setValues(this.validateForm, this.validateFormTwo)
+      // console.log(this.validateForm)
+      // this.validateFormTwo = null
+      // console.log(this.validateFormTwo)
     }
+
+    // console.log('validateFormTwo', this.validateFormTwo?.value)
+    // console.log('validateForm', this.validateForm?.value)
+
+
+
+    //     // console.log(this.comeBackSwitch)
+    //     if(this.comeBackSwitch){
+    //       this.formClass = 'switchOn'
+    //       this.bodyClass = 'switchOnBody'
+
+    //     this.validateFormTwo = this._fb.group({
+    //       first_nameTwo: [null],
+    //       last_nameTwo: [null],
+    //       phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
+    //       userCommentTwo: [null],
+    //       startPointAddressTwo: [null],
+    //       // endPointAddressTwo: [null],
+    //       order_phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
+    //       orderTypeTwo: [0, Validators.required],
+    //       personCount: [null, Validators.required],
+    //       commentTwo: [null],
+    //       dateTwo: [null],
+    //       timeTwo: [null],
+    //       isChangeStatusTwo: [false],
+    //       isFreeTwo: [false],
+    //       isExtraTwo: [false]
+    //     })
+    //     }
+    //     else{
+    //       this.formClass = 'switchOff'
+    //       this.bodyClass = 'switchOffBody'
+    // //----------------------------------------------------------------------------------------------------------=-=-=--=-===-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+    //     // this.validateFormTwo = this._fb.group({
+    //     //   first_nameTwo: [null],
+    //     //   last_nameTwo: [null],
+    //     //   phone_numberTwo: [null],
+    //     //   userCommentTwo: [null],
+    //     //   startPointAddressTwo: [null],
+    //     //   // endPointAddressTwo: [null],
+    //     //   order_phone_numberTwo: [null],
+    //     //   orderTypeTwo: [null],
+    //     //   personCount: [null],
+    //     //   commentTwo: [null],
+    //     //   dateTwo: [null],
+    //     //   timeTwo: [null],
+    //     //   isChangeStatusTwo: [false],
+    //     //   isFreeTwo: [false],
+    //     //   isExtraTwo: [false]
+    //     // })
+    //     }
+    //     this._setValues(this.comeBackSwitch)
+  }
+
+  // private _setValues(newForm: FormGroup, changerForm: FormGroup) {
+
+  //   const formValue = changerForm.value
+  //   // console.log(formValue);
+  //   newForm.patchValue({
+  //     first_name: formValue.first_name,
+  //     last_name: formValue.last_name,
+  //     phone_number: formValue.phone_number,
+  //     userComment: formValue.userComment,
+  //     startPointAddress: formValue.startPointAddress,
+  //     endPointAddress: formValue.endPointAddress,
+  //     order_phone_number: formValue.order_phone_number,
+  //     orderType: formValue.orderType,
+  //     personCount: formValue.personCount,
+  //     comment: formValue.comment,
+  //     date: formValue.date,
+  //     time: formValue.time,
+  //     isChangeStatus: formValue.isChangeStatus,
+  //     isFree: formValue.isFree,
+  //     isExtra: formValue.isExtra
+  //   })
+  // }
+
+  private _setFirstForm() {
+    const formValue = this.validateFormTwo.value
+    this.validateForm.setValue({
+      first_name: formValue.first_nameTwo,
+      last_name: formValue.last_nameTwo,
+      phone_number: formValue.phone_numberTwo,
+      userComment: formValue.userCommentTwo,
+      startPointAddress: formValue.startPointAddressTwo,
+      endPointAddress: formValue.endPointAddressTwo,
+      order_phone_number: formValue.order_phone_numberTwo,
+      orderType: formValue.orderTypeTwo,
+      personCount: formValue.personCountTwo,
+      comment: formValue.commentTwo,
+      date: formValue.dateTwo,
+      time: formValue.timeTwo,
+      isChangeStatus: formValue.isChangeStatusTwo,
+      isFree: formValue.isFreeTwo,
+      isExtra: formValue.isExtraTwo
+    })
+    console.log('validateForm', this.validateForm.value);
+
+  }
+
+  private _setSecondForm() {
+    const formValue = this.validateFormTwo.value
+    this.validateForm.setValue({
+      // first_nameTwo: formValue.first_name,
+      last_nameTwo: formValue.last_name,
+      phone_numberTwo: formValue.phone_number,
+      userCommentTwo: formValue.userComment,
+      startPointAddressTwo: formValue.startPointAddress,
+      endPointAddressTwo: formValue.endPointAddress,
+      order_phone_numberTwo: formValue.order_phone_number,
+      orderTypeTwo: formValue.orderType,
+      personCountTwo: formValue.personCount,
+      commentTwo: formValue.comment,
+      dateTwo: formValue.date,
+      timeTwo: formValue.time,
+      isChangeStatusTwo: formValue.isChangeStatus,
+      isFreeTwo: formValue.isFree,
+      isExtraTwo: formValue.isExtra
+    })
+    console.log('validateFormTwo', this.validateFormTwo.value);
   }
 
   ngOnDestroy() {
