@@ -129,12 +129,6 @@
   transition: 0.5s;
 }
 
-// .firstForm{
-  // width: 100%;
-  // position: relative;
-  // padding-left: 8px;
-// }
-
 .secondForm{
   display: grid;
   grid-template-columns: 50% 50%;
@@ -163,10 +157,9 @@
 
 .switchOn{
   transform: translateX(-50%);
-  // overflow-y: scroll;
   margin-bottom: 200px;
 }
 
-// .switchOnBody{
-//   height: 580px;
-// }
+.ant-col{
+  max-width: 95%;
+}

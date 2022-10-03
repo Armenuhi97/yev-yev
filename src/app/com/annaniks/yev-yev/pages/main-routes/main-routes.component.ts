@@ -1069,108 +1069,20 @@ export class MainRoutesComponent {
     if (this.comeBackSwitch) {
       this.formClass = 'switchOn'
       this.bodyClass = 'switchOnBody'
+      console.log('test');
+
       this._setSecondForm()
-
-      // console.log(this.validateFormTwo)
-
-      // if (this.validateFormTwo == null) {
-
-      // }
-      // this._setValues(this.validateFormTwo, this.validateForm)
-      // this.validateForm = null
-      // console.log(this.validateFormTwo)
-
     }
     else {
       this.formClass = 'switchOff'
       this.bodyClass = 'switchOffBody'
       this._setFirstForm()
-      // this._initForm()
-      // this._setValues(this.validateForm, this.validateFormTwo)
-      // console.log(this.validateForm)
-      // this.validateFormTwo = null
-      // console.log(this.validateFormTwo)
     }
-
-    // console.log('validateFormTwo', this.validateFormTwo?.value)
-    // console.log('validateForm', this.validateForm?.value)
-
-
-
-    //     // console.log(this.comeBackSwitch)
-    //     if(this.comeBackSwitch){
-    //       this.formClass = 'switchOn'
-    //       this.bodyClass = 'switchOnBody'
-
-    //     this.validateFormTwo = this._fb.group({
-    //       first_nameTwo: [null],
-    //       last_nameTwo: [null],
-    //       phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
-    //       userCommentTwo: [null],
-    //       startPointAddressTwo: [null],
-    //       // endPointAddressTwo: [null],
-    //       order_phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
-    //       orderTypeTwo: [0, Validators.required],
-    //       personCount: [null, Validators.required],
-    //       commentTwo: [null],
-    //       dateTwo: [null],
-    //       timeTwo: [null],
-    //       isChangeStatusTwo: [false],
-    //       isFreeTwo: [false],
-    //       isExtraTwo: [false]
-    //     })
-    //     }
-    //     else{
-    //       this.formClass = 'switchOff'
-    //       this.bodyClass = 'switchOffBody'
-    // //----------------------------------------------------------------------------------------------------------=-=-=--=-===-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-
-    //     // this.validateFormTwo = this._fb.group({
-    //     //   first_nameTwo: [null],
-    //     //   last_nameTwo: [null],
-    //     //   phone_numberTwo: [null],
-    //     //   userCommentTwo: [null],
-    //     //   startPointAddressTwo: [null],
-    //     //   // endPointAddressTwo: [null],
-    //     //   order_phone_numberTwo: [null],
-    //     //   orderTypeTwo: [null],
-    //     //   personCount: [null],
-    //     //   commentTwo: [null],
-    //     //   dateTwo: [null],
-    //     //   timeTwo: [null],
-    //     //   isChangeStatusTwo: [false],
-    //     //   isFreeTwo: [false],
-    //     //   isExtraTwo: [false]
-    //     // })
-    //     }
-    //     this._setValues(this.comeBackSwitch)
   }
 
-  // private _setValues(newForm: FormGroup, changerForm: FormGroup) {
-
-  //   const formValue = changerForm.value
-  //   // console.log(formValue);
-  //   newForm.patchValue({
-  //     first_name: formValue.first_name,
-  //     last_name: formValue.last_name,
-  //     phone_number: formValue.phone_number,
-  //     userComment: formValue.userComment,
-  //     startPointAddress: formValue.startPointAddress,
-  //     endPointAddress: formValue.endPointAddress,
-  //     order_phone_number: formValue.order_phone_number,
-  //     orderType: formValue.orderType,
-  //     personCount: formValue.personCount,
-  //     comment: formValue.comment,
-  //     date: formValue.date,
-  //     time: formValue.time,
-  //     isChangeStatus: formValue.isChangeStatus,
-  //     isFree: formValue.isFree,
-  //     isExtra: formValue.isExtra
-  //   })
-  // }
-
   private _setFirstForm() {
-    const formValue = this.validateFormTwo.value
-    this.validateForm.setValue({
+    const formValue = this.validateFormTwo.value;
+    this.validateForm.patchValue({
       first_name: formValue.first_nameTwo,
       last_name: formValue.last_nameTwo,
       phone_number: formValue.phone_numberTwo,
@@ -1187,14 +1099,13 @@ export class MainRoutesComponent {
       isFree: formValue.isFreeTwo,
       isExtra: formValue.isExtraTwo
     })
-    console.log('validateForm', this.validateForm.value);
-
+    console.log('validateFormTwo',this.validateFormTwo.value);
   }
 
   private _setSecondForm() {
-    const formValue = this.validateFormTwo.value
-    this.validateForm.setValue({
-      // first_nameTwo: formValue.first_name,
+    const formValue = this.validateForm.value
+    this.validateFormTwo.patchValue({
+      first_nameTwo: formValue.first_name,
       last_nameTwo: formValue.last_name,
       phone_numberTwo: formValue.phone_number,
       userCommentTwo: formValue.userComment,
@@ -1210,7 +1121,7 @@ export class MainRoutesComponent {
       isFreeTwo: formValue.isFree,
       isExtraTwo: formValue.isExtra
     })
-    console.log('validateFormTwo', this.validateFormTwo.value);
+    console.log('validateFormTwo',this.validateForm.value);
   }
 
   ngOnDestroy() {

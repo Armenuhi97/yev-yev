@@ -313,11 +313,13 @@
                     <h5>{{ modalTitle }}</h5>
                     <!-- <ng-container> -->
                     <nz-switch
+                      *ngIf="!isEditing"
                       [(ngModel)]="comeBackSwitch"
                       (ngModelChange)="comeBackSwitchClick()"
                       [nzDisabled]="comeBackIsAble"
                     ></nz-switch>
                     <button
+                      *ngIf="!isEditing"
                       nz-button
                       [nzType]="'primary'"
                       (click)="comeBackIsAble = !comeBackIsAble"
@@ -342,7 +344,7 @@
                   <div class="modalBodyContainer" [ngClass]="bodyClass">
                     <div class="formContainer" [ngClass]="formClass">
                       <form
-                        class="sm-ant firstForm"
+                        class="sm-ant"
                         nz-form
                         [formGroup]="validateForm"
                         [nzLayout]="'vertical'"
@@ -689,7 +691,6 @@
                                 nz-input
                                 formControlName="personCountTwo"
                                 placeholder=""
-
                                 class="secondFormInputSize"
                               />
 
@@ -796,8 +797,10 @@
                               nzHasFeedback
                               [nzErrorTip]="userErrorTpl"
                             >
-                              <nz-select formControlName="orderTypeTwo"
-                              class="secondFormInputSize">
+                              <nz-select
+                                formControlName="orderTypeTwo"
+                                class="secondFormInputSize"
+                              >
                                 <nz-option
                                   *ngFor="let order of orderTypes"
                                   [nzValue]="order.id"
