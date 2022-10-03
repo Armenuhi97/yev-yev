@@ -33,7 +33,7 @@ export class SubrouteComponent {
   public subrouteInfo: SubrouteDetails;
   selectedTime;
   public driver;
-  public tableCounts!: Counts[]
+  public tableCounts!: Counts
   isVisible: boolean = false;
   unsubscribe$ = new Subject();
   validateForm: FormGroup;
@@ -220,7 +220,7 @@ export class SubrouteComponent {
     const details = new CountDto(this.subrouteInfo.id, this.subrouteReturnId, date, this.subrouteInfo.main_route)
     this._mainRouteService.getCounts(details).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (counts) => {
-        this.tableCounts = counts
+        this.tableCounts = counts[0]
       }
     })
   }
