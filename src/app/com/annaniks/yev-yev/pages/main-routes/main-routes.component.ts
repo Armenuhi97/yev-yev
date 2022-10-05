@@ -110,6 +110,8 @@ export class MainRoutesComponent {
     let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
     this.getNotifications();
 
+    console.log('rote' ,this.mainRoutes)
+
     // this._mainRouteService.getHourlyOrdersByDate()
     // .subscribe((res:any)=>{
 
@@ -313,6 +315,7 @@ export class MainRoutesComponent {
   getAllRoutes() {
     return this._mainRoutesService.getAllRoutes(1).pipe(map((data: ServerResponce<RouteItem[]>) => {
       this.mainRoutes = data.results
+      console.log('rote' ,this.mainRoutes)
     }))
   }
   public getWeekDays() {
@@ -331,6 +334,7 @@ export class MainRoutesComponent {
           });
         }
         this.subRouteInfos = data.results;
+        console.log(this.subRouteInfos)
         this.getWorkTimes();
         this.isGetItem = true;
       }));
@@ -1131,31 +1135,35 @@ export class MainRoutesComponent {
   }
 
   public comeBackSwitchClick() {
+    let subroute
     if (this.comeBackSwitch) {
       this.formClass = 'switchOn'
       this.bodyClass = 'switchOnBody'
-      console.log('test');
+      subroute = this.subRouteInfos[1]
 
-      this._setSecondForm()
+      this._setSecondForm(subroute)
     }
     else {
       this.formClass = 'switchOff'
       this.bodyClass = 'switchOffBody'
-      this._setFirstForm()
+      subroute = this.subRouteInfos[0]
+      this._setFirstForm(subroute)
     }
     this.checkSubrouteAddress(this.comeBackSwitch);
 
   }
 
-  private _setFirstForm() {
+  private _setFirstForm(subRoute:any) {
     const formValue = this.validateFormTwo.value;
+    let startAddress = subRoute.start_point_is_static ? subRoute.start_point_address_hy : ''
+    let endAddress = subRoute.end_point_is_static ? subRoute.end_point_address_hy : ''
     this.validateForm.patchValue({
       first_name: formValue.first_nameTwo,
       last_name: formValue.last_nameTwo,
       phone_number: formValue.phone_numberTwo,
       userComment: formValue.userCommentTwo,
-      startPointAddress: formValue.startPointAddressTwo,
-      endPointAddress: formValue.endPointAddressTwo,
+      startPointAddress: startAddress,
+      endPointAddress: endAddress,
       order_phone_number: formValue.order_phone_numberTwo,
       orderType: formValue.orderTypeTwo,
       personCount: formValue.personCountTwo,
@@ -1169,15 +1177,17 @@ export class MainRoutesComponent {
     console.log('validateFormTwo', this.validateFormTwo.value);
   }
 
-  private _setSecondForm() {
+  private _setSecondForm(subRoute:any) {
     const formValue = this.validateForm.value
+    let startAddress = subRoute.start_point_is_static ? subRoute.start_point_address_hy : ''
+    let endAddress = subRoute.end_point_is_static ? subRoute.end_point_address_hy : ''
     this.validateFormTwo.patchValue({
       first_nameTwo: formValue.first_name,
       last_nameTwo: formValue.last_name,
       phone_numberTwo: formValue.phone_number,
       userCommentTwo: formValue.userComment,
-      startPointAddressTwo: formValue.startPointAddress,
-      endPointAddressTwo: formValue.endPointAddress,
+      startPointAddressTwo: startAddress,
+      endPointAddressTwo: endAddress,
       order_phone_numberTwo: formValue.order_phone_number,
       orderTypeTwo: formValue.orderType,
       personCountTwo: formValue.personCount,
