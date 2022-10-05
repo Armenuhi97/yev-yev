@@ -45,7 +45,8 @@ export class AddPassangerDto {
       this.last_name = formValue.last_name
       this.user_comment = formValue.userComment
       this.is_free = formValue.isFree
-      this.is_extra_order = formValue.isExtra
+      // this.is_extra_order = formValue.isExtra
+      this.is_extra_order = formValue.isExtra ? formValue.isExtra : false
       this.phone_number = '+374' + formValue.phone_number
       this.comment = formValue.comment
       this.person_count = formValue.personCount
@@ -60,7 +61,7 @@ export class AddPassangerDto {
       this.last_name = formValue.last_nameTwo
       this.user_comment = formValue.userCommentTwo
       this.is_free = formValue.isFreeTwo
-      this.is_extra_order = formValue.isExtraTwo
+      this.is_extra_order = formValue.isExtraTwo ? formValue.isExtra : false
       this.phone_number = '+374' + formValue.phone_numberTwo
       this.comment = formValue.commentTwo
       this.person_count = formValue.personCountTwo

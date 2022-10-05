@@ -20,6 +20,8 @@ import { MainRoutesService } from './main-routes.service';
 import { differenceInCalendarDays, setHours } from 'date-fns';
 import { NotificationService } from '../../core/services/notification.service';
 import { Notification } from '../../core/models/notification';
+import { AddPassangerDto } from '../../../../../com/annaniks/yev-yev/core/models/dto/routes.dto.model'
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-main-routes',
@@ -28,6 +30,7 @@ import { Notification } from '../../core/models/notification';
   providers: [DatePipe]
 })
 export class MainRoutesComponent {
+  activeIndex: number;
   private notifications: Notification[] = [];
   public searchControl = new FormControl(null);
   driverSubroutes;
@@ -238,6 +241,8 @@ export class MainRoutesComponent {
       userComment: [null],
       startPointAddress: [null],
       endPointAddress: [null],
+      startPointAddressTwo: [null],
+      endPointAddressTwo: [null],
       order_phone_number: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
       orderType: [0, Validators.required],
       personCount: [null, Validators.required],
@@ -491,21 +496,62 @@ export class MainRoutesComponent {
     let current = `${date} ${currenTime}`;
     return current
   }
-  public showModal(): void {
+  checkSubrouteAddress(bool: boolean) {
+    let startKey: string;
+    let endKey: string;
+    let subrouteInfo;
+    if (!bool) {
+      startKey = 'startPointAddress';
+      endKey = 'endPointAddress';
+      subrouteInfo = this.subRouteInfos[this.activeIndex];
+    } else {
+      startKey = 'startPointAddressTwo';
+      endKey = 'endPointAddressTwo';
+      // startKey = 'startPointAddress';
+      // endKey = 'endPointAddress';
+      const index = this.activeIndex === 0 ? 1 : 0;
+      subrouteInfo = this.subRouteInfos[index];
+    }
+    // = bool ? this.subRouteInfos[1] :
+    // if (bool) {
+    console.log(subrouteInfo);
+
+    if (subrouteInfo.start_point_is_static) {
+      // console.log(subrouteInfo.start_point_is_static, subrouteInfo.start_point_address_hy, startKey);
+
+      this.validateForm.get(startKey).setValue(subrouteInfo.start_point_address_hy);
+      this.validateForm.get(startKey).disable();
+
+
+    }
+    if (subrouteInfo.end_point_is_static) {
+      this.validateForm.get(endKey).setValue(subrouteInfo.end_point_address_hy);
+      this.validateForm.get(endKey).disable()
+    }
+    console.log(this.validateForm);
+  console.log(this.validateForm.get(startKey).value)
+
+  }
+  public showModal(bool: boolean = false): void {
+
     this.isVisible = true;
     this.validateForm.get('orderType').setValue(0);
     // this.validateForm.get('personCount').setValue(1);
-    if (this.subRouteInfo.start_point_is_static) {
-      this.validateForm.get('startPointAddress').setValue(this.subRouteInfo.start_point_address_hy);
-      this.validateForm.get('startPointAddress').disable()
+    this.checkSubrouteAddress(bool);
+    // }
+    // else if (bool !== false) {
+    //   if (this.subRouteInfo.end_point_is_static) {
+    //     this.validateForm.get('startPointAddress').setValue(this.subRouteInfo.start_point_address_hy);
+    //     this.validateForm.get('startPointAddress').disable()
+    //   }
+    //   if (this.subRouteInfo.start_point_is_static) {
+    //     this.validateForm.get('endPointAddress').setValue(this.subRouteInfo.end_point_address_hy);
+    //     this.validateForm.get('endPointAddress').disable()
+    //   }
 
-    }
-    if (this.subRouteInfo.end_point_is_static) {
-      this.validateForm.get('endPointAddress').setValue(this.subRouteInfo.end_point_address_hy);
-      this.validateForm.get('endPointAddress').disable()
-
-    }
+    // }
   }
+
   public checkAddress(moderator) {
     if (moderator.order && moderator.order.is_extra_order) {
       return `${moderator.order.start_address} -> ${moderator.order.end_address}`
@@ -641,34 +687,52 @@ export class MainRoutesComponent {
       this.sendEditRequest(this.userInfo[this.editIndex].id, editResponse);
 
     } else {
+      this.comeBackSwitchClick()
       if (this.validateForm.invalid) {
         this.nzMessages.error(Messages.fail);
         return;
       }
       let date = this._formatDate(this.selectedTime)
 
-      let sendObject: OrderResponse = {
-        "first_name": this._appService.checkPropertyValue(this.validateForm.get('first_name'), 'value', ""),
-        "last_name": this._appService.checkPropertyValue(this.validateForm.get('last_name'), 'value', ""),
-        "user_comment": this.validateForm.get('userComment').value,
-        "is_free": this.checkIsNull(this.validateForm.get('isFree').value),
-        "is_extra_order": this.checkIsNull(this.validateForm.get('isExtra').value),
-        "phone_number": '+374' + this.validateForm.get('phone_number').value,
-        "comment": this.validateForm.get('comment').value,
-        "sub_route": this.subRouteInfo.id,
-        "date": date,
-        "person_count": this.validateForm.get('personCount').value,
-        "start_address": this.validateForm.get('startPointAddress').value,
-        "start_langitude": '',
-        "start_latitude": '',
-        "end_address": this.validateForm.get('endPointAddress').value,
-        "end_langitude": '',
-        "end_latitude": '',
-        "user": this.userId ? this.userId : null,
-        "order_phone_number": this.validateForm.get('order_phone_number').value ? '+374' + this.validateForm.get('order_phone_number').value : null,
-        "order_type": this.validateForm.get('orderType').value,
-        "status": this.radioValue
+      let formValue
+      let isFirst = true
+      if (this.comeBackSwitch) {
+        isFirst = false
+        formValue = this.validateFormTwo.getRawValue()
       }
+      else {
+        isFirst = true
+        formValue = this.validateForm.getRawValue()
+      }
+
+      let userId = this.userId ? this.userId : null
+      console.log(formValue);
+
+      const sendObject = new AddPassangerDto(isFirst, formValue, this.subRouteInfo.id, date, userId)
+      console.log(sendObject);
+
+      // let sendObject: OrderResponse = {
+      // "first_name": this._appService.checkPropertyValue(this.validateForm.get('first_name'), 'value', ""),
+      //   "last_name": this._appService.checkPropertyValue(this.validateForm.get('last_name'), 'value', ""),
+      //   "user_comment": this.validateForm.get('userComment').value,
+      //   "is_free": this.checkIsNull(this.validateForm.get('isFree').value),
+      //   "is_extra_order": this.checkIsNull(this.validateForm.get('isExtra').value),
+      //   "phone_number": '+374' + this.validateForm.get('phone_number').value,
+      //   "comment": this.validateForm.get('comment').value,
+      //   "sub_route": this.subRouteInfo.id,
+      //   "date": date,
+      //   "person_count": this.validateForm.get('personCount').value,
+      //   "start_address": this.validateForm.get('startPointAddress').value,
+      //   "start_langitude": '',
+      //   "start_latitude": '',
+      // "end_address": this.validateForm.get('endPointAddress').value,
+      //   "end_langitude": '',
+      //   "end_latitude": '',
+      //   "user": this.userId ? this.userId : null,
+      //   "order_phone_number": this.validateForm.get('order_phone_number').value ? '+374' + this.validateForm.get('order_phone_number').value : null,
+      //   "order_type": this.validateForm.get('orderType').value,
+      //   "status": this.radioValue
+      // }
       this.sendRequest(sendObject);
     }
   }
@@ -980,6 +1044,7 @@ export class MainRoutesComponent {
       this.timeItem = $event.timeItem
       this.selectedTime = $event.time;
       this.subRouteInfo = this.subRouteInfos[index];
+      this.activeIndex = index;
       this.subroutDate = $event.date;
       let time = this.subRouteInfo.start_point_is_static ? this.timeItem.start : this.selectedTime;
       this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this._datePipe.transform(this.selectedDate.value, 'dd-MM-yyyy')} ${this.getDay()} ${time}`
@@ -1078,6 +1143,8 @@ export class MainRoutesComponent {
       this.bodyClass = 'switchOffBody'
       this._setFirstForm()
     }
+    this.checkSubrouteAddress(this.comeBackSwitch);
+
   }
 
   private _setFirstForm() {
@@ -1099,7 +1166,7 @@ export class MainRoutesComponent {
       isFree: formValue.isFreeTwo,
       isExtra: formValue.isExtraTwo
     })
-    console.log('validateFormTwo',this.validateFormTwo.value);
+    console.log('validateFormTwo', this.validateFormTwo.value);
   }
 
   private _setSecondForm() {
@@ -1121,7 +1188,7 @@ export class MainRoutesComponent {
       isFreeTwo: formValue.isFree,
       isExtraTwo: formValue.isExtra
     })
-    console.log('validateFormTwo',this.validateForm.value);
+    console.log('validateFormTwo', this.validateForm.value);
   }
 
   ngOnDestroy() {
