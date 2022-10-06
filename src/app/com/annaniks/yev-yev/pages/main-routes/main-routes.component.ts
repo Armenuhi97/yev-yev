@@ -110,7 +110,7 @@ export class MainRoutesComponent {
     let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
     this.getNotifications();
 
-    console.log('rote' ,this.mainRoutes)
+    console.log('rote', this.mainRoutes)
 
     // this._mainRouteService.getHourlyOrdersByDate()
     // .subscribe((res:any)=>{
@@ -315,7 +315,7 @@ export class MainRoutesComponent {
   getAllRoutes() {
     return this._mainRoutesService.getAllRoutes(1).pipe(map((data: ServerResponce<RouteItem[]>) => {
       this.mainRoutes = data.results
-      console.log('rote' ,this.mainRoutes)
+      console.log('rote', this.mainRoutes)
     }))
   }
   public getWeekDays() {
@@ -533,7 +533,7 @@ export class MainRoutesComponent {
       this.validateForm.get(endKey).disable()
     }
     console.log(this.validateForm);
-  console.log(this.validateForm.get(startKey).value)
+    console.log(this.validateForm.get(startKey).value)
 
   }
   public showModal(bool: boolean = false): void {
@@ -1135,25 +1135,26 @@ export class MainRoutesComponent {
   }
 
   public comeBackSwitchClick() {
+    // const index = this.activeIndex
+    let subroutWay = this.activeIndex === 0 ? [1,0] : [0,1]
     let subroute
     if (this.comeBackSwitch) {
       this.formClass = 'switchOn'
       this.bodyClass = 'switchOnBody'
-      subroute = this.subRouteInfos[1]
-
+      subroute = this.subRouteInfos[subroutWay[0]]
       this._setSecondForm(subroute)
     }
     else {
       this.formClass = 'switchOff'
       this.bodyClass = 'switchOffBody'
-      subroute = this.subRouteInfos[0]
+      subroute = this.subRouteInfos[subroutWay[1]]
       this._setFirstForm(subroute)
     }
     this.checkSubrouteAddress(this.comeBackSwitch);
 
   }
 
-  private _setFirstForm(subRoute:any) {
+  private _setFirstForm(subRoute: any) {
     const formValue = this.validateFormTwo.value;
     let startAddress = subRoute.start_point_is_static ? subRoute.start_point_address_hy : ''
     let endAddress = subRoute.end_point_is_static ? subRoute.end_point_address_hy : ''
@@ -1174,10 +1175,13 @@ export class MainRoutesComponent {
       isFree: formValue.isFreeTwo,
       isExtra: formValue.isExtraTwo
     })
+
+    this.setDisableEnableAddress('startPointAddress', 'endPointAddress', subRoute, 'validateForm')
+
     console.log('validateFormTwo', this.validateFormTwo.value);
   }
 
-  private _setSecondForm(subRoute:any) {
+  private _setSecondForm(subRoute: any) {
     const formValue = this.validateForm.value
     let startAddress = subRoute.start_point_is_static ? subRoute.start_point_address_hy : ''
     let endAddress = subRoute.end_point_is_static ? subRoute.end_point_address_hy : ''
@@ -1198,9 +1202,22 @@ export class MainRoutesComponent {
       isFreeTwo: formValue.isFree,
       isExtraTwo: formValue.isExtra
     })
+    this.setDisableEnableAddress('startPointAddressTwo', 'endPointAddressTwo', subRoute, 'validateFormTwo')
     console.log('validateFormTwo', this.validateForm.value);
   }
+  private setDisableEnableAddress(startControl: string, endControl: string, subRoute, formGroupName: string): void {
+    if (subRoute.start_point_is_static) {
+      this[formGroupName].get(startControl).disable();
+    } else {
+      this[formGroupName].get(startControl).enable()
+    }
+    if (subRoute.end_point_is_static) {
+      this[formGroupName].get(endControl).disable()
 
+    } else {
+      this[formGroupName].get(endControl).enable()
+    }
+  }
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
