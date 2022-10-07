@@ -86,7 +86,7 @@ export class MainRoutesComponent {
   public comeBackSwitch: boolean = false
   public formClass = 'switchOff'
   public bodyClass = 'switchOffBody'
-  // public comeBackSwitch = new Subject()
+  public comeBackIsAble:boolean = false
   constructor(
     private _mainRoutesService: MainRoutesService,
     private router: Router, private _datePipe: DatePipe,
@@ -587,7 +587,10 @@ export class MainRoutesComponent {
     this.editOrderIndex = null;
     this.isVisibleOrderInfo = false;
     this.orderMembers = []
-
+    this.comeBackSwitch = false
+    this.validateFormTwo.reset();
+    this.validateFormTwo.enable();
+    this.comeBackIsAble = false
   }
   onOrderSave() {
     if (this.timeItem && !this.timeItem.isDisabled) {
