@@ -82,6 +82,7 @@ export class MainRoutesComponent {
   totalDoneRoutes = 0;
   doneRoutesPageIndex = 1;
   index = 0;
+  getOtherRouteOrdersCount:boolean
   driverControl = new FormControl('', Validators.required);
   public comeBackSwitch: boolean = false
   public formClass = 'switchOff'
@@ -749,10 +750,7 @@ export class MainRoutesComponent {
           return;
         }
         formValue = this.validateFormTwo.getRawValue()
-        console.log(formValue)
         const sendObject = new AddPassangerDto(false, formValue, this.subRouteInfo.id, date, userId)
-        console.log(sendObject);
-
         this.sendRequest(sendObject);
         let backSubrout = this.subRouteInfos.find((el) => {
           return el.id !== this.subRouteInfo.id
@@ -760,9 +758,7 @@ export class MainRoutesComponent {
 
         const dateSecondForm = this._formatDate(this.validateFormTwo.get('timeTwo')?.value,this.validateFormTwo.get('dateTwo')?.value);
         const sendObjectTwo = new AddPassangerDto(false, formValue, backSubrout.id, dateSecondForm, userId)
-        this.sendRequest(sendObjectTwo);
-        console.log(sendObjectTwo);
-
+        this.sendRequest(sendObjectTwo,backSubrout);
       }
       else {
         if (this.validateForm.invalid) {
@@ -776,14 +772,16 @@ export class MainRoutesComponent {
     }
 
   }
-  sendRequest(sendObject) {
+  sendRequest(sendObject,backSubrout?:boolean) {
     this._mainRouteService.addOrder(sendObject)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((res: any) => {
         this.nzMessages.success(Messages.success);
         this.closeModal();
         this.getInfo(this.selectedTime).subscribe();
-        this.validateFormTwo.reset()
+        if(!!backSubrout){
+          this.subRouteInfo=backSubrout;
+        }
       },
         () => {
           this.nzMessages.error(Messages.fail)
@@ -851,6 +849,8 @@ export class MainRoutesComponent {
     this.isVisible = false;
     this.validateForm.reset();
     this.validateForm.enable();
+    this.validateFormTwo.reset();
+    this.validateFormTwo.enable();
     this.userId = null;
     this.isShowError = false;
     this.isEditing = false;

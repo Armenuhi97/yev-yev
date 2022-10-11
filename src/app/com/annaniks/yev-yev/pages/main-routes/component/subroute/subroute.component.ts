@@ -121,6 +121,12 @@ export class SubrouteComponent {
       this.getHourlyOrdersByDate().pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
   }
+  @Input('getOtherRouteOrdersCount')
+  set setOrdersCount($event) {
+    if ($event) {
+      this.onClickRefresh();
+    }
+  }
   private _date;
   @Input('date')
   set setDate($event) {
