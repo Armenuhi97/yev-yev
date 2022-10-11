@@ -52,8 +52,8 @@ export class MainRoutesComponent {
   public driver: User;
   isVisible = false;
   unsubscribe$ = new Subject();
-  validateForm: FormGroup;
-  validateFormTwo: FormGroup;
+  validateForm: FormGroup | null;
+  validateFormTwo: FormGroup | null;
   phoneNumberPrefix = new FormControl('+374');
   userId: number;
   currentInterval;
@@ -86,7 +86,7 @@ export class MainRoutesComponent {
   public comeBackSwitch: boolean = false
   public formClass = 'switchOff'
   public bodyClass = 'switchOffBody'
-  public comeBackIsAble:boolean = false
+  public comeBackIsAble: boolean = false
   constructor(
     private _mainRoutesService: MainRoutesService,
     private router: Router, private _datePipe: DatePipe,
@@ -109,9 +109,6 @@ export class MainRoutesComponent {
     this._initForm();
     let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
     this.getNotifications();
-
-    console.log('rote', this.mainRoutes)
-
     // this._mainRouteService.getHourlyOrdersByDate()
     // .subscribe((res:any)=>{
 
@@ -305,6 +302,43 @@ export class MainRoutesComponent {
           return of()
         }
       })).subscribe()
+    this.validateFormTwo.get('phone_numberTwo').valueChanges.pipe(takeUntil(this.unsubscribe$),
+      switchMap((value) => {
+        if (value && !this.isEditing) {
+          if (value.toString().length == 8) {
+            this.validateForm.patchValue({
+              order_phone_number: value
+            })
+            return this._mainRouteService.getUserByPhonenumber('+374' + value).pipe(map(((data: ServerResponce<User[]>) => {
+              let result = data.results
+              if (result && result.length) {
+                this.isShowError = false
+                let item = result[0];
+                this.userId = item.id
+                this.validateFormTwo.patchValue({
+                  first_nameTwo: item.user.first_name,
+                  last_nameTwo: item.user.last_name,
+                  userCommentTwo: item.comment
+
+                })
+                this.validateFormTwo.get('first_nameTwo').disable()
+                this.validateForm.get('last_nameTwo').disable()
+              } else {
+                this.userId = null
+                this.validateForm.get('first_nameTwo').reset()
+                this.validateForm.get('last_nameTwo').reset()
+                this.validateForm.get('first_nameTwo').enable()
+                this.validateForm.get('last_nameTwo').enable()
+                this.isShowError = true
+              }
+            })))
+          } else {
+            return of(false)
+          }
+        } else {
+          return of()
+        }
+      })).subscribe()
   }
   combine() {
     const combine = forkJoin(
@@ -315,7 +349,6 @@ export class MainRoutesComponent {
   getAllRoutes() {
     return this._mainRoutesService.getAllRoutes(1).pipe(map((data: ServerResponce<RouteItem[]>) => {
       this.mainRoutes = data.results
-      console.log('rote', this.mainRoutes)
     }))
   }
   public getWeekDays() {
@@ -334,7 +367,6 @@ export class MainRoutesComponent {
           });
         }
         this.subRouteInfos = data.results;
-        console.log(this.subRouteInfos)
         this.getWorkTimes();
         this.isGetItem = true;
       }));
@@ -518,10 +550,8 @@ export class MainRoutesComponent {
     }
     // = bool ? this.subRouteInfos[1] :
     // if (bool) {
-    console.log(subrouteInfo);
 
     if (subrouteInfo.start_point_is_static) {
-      // console.log(subrouteInfo.start_point_is_static, subrouteInfo.start_point_address_hy, startKey);
 
       this.validateForm.get(startKey).setValue(subrouteInfo.start_point_address_hy);
       this.validateForm.get(startKey).disable();
@@ -532,9 +562,6 @@ export class MainRoutesComponent {
       this.validateForm.get(endKey).setValue(subrouteInfo.end_point_address_hy);
       this.validateForm.get(endKey).disable()
     }
-    console.log(this.validateForm);
-    console.log(this.validateForm.get(startKey).value)
-
   }
   public showModal(bool: boolean = false): void {
 
@@ -588,9 +615,9 @@ export class MainRoutesComponent {
     this.isVisibleOrderInfo = false;
     this.orderMembers = []
     this.comeBackSwitch = false
-    this.validateFormTwo.reset();
-    this.validateFormTwo.enable();
     this.comeBackIsAble = false
+    this._setNull(this.validateForm)
+    this._setNull(this.validateFormTwo)
   }
   onOrderSave() {
     if (this.timeItem && !this.timeItem.isDisabled) {
@@ -694,29 +721,35 @@ export class MainRoutesComponent {
       this.sendEditRequest(this.userInfo[this.editIndex].id, editResponse);
 
     } else {
-      this.comeBackSwitchClick()
-      if (this.validateForm.invalid) {
-        this.nzMessages.error(Messages.fail);
-        return;
-      }
+      // this.comeBackSwitchClick()
+      // if (this.validateForm.invalid) {
+      //   this.nzMessages.error(Messages.fail);
+      //   return;
+      // }
       let date = this._formatDate(this.selectedTime)
 
       let formValue
       let isFirst = true
+      let userId = this.userId ? this.userId : null
       if (this.comeBackSwitch) {
+        if (this.validateFormTwo.invalid) {
+          this.nzMessages.error(Messages.fail);
+          return;
+        }
         isFirst = false
         formValue = this.validateFormTwo.getRawValue()
+        const sendObjectTwo = new AddPassangerDto(isFirst, this.validateForm, this.subRouteInfo.id, date, userId)
+        this.sendRequest(sendObjectTwo);
       }
       else {
+        if (this.validateForm.invalid) {
+          this.nzMessages.error(Messages.fail);
+          return;
+        }
         isFirst = true
         formValue = this.validateForm.getRawValue()
       }
-
-      let userId = this.userId ? this.userId : null
-      console.log(formValue);
-
       const sendObject = new AddPassangerDto(isFirst, formValue, this.subRouteInfo.id, date, userId)
-      console.log(sendObject);
 
       // let sendObject: OrderResponse = {
       // "first_name": this._appService.checkPropertyValue(this.validateForm.get('first_name'), 'value', ""),
@@ -742,6 +775,9 @@ export class MainRoutesComponent {
       // }
       this.sendRequest(sendObject);
     }
+
+    this._setNull(this.validateForm)
+    this._setNull(this.validateFormTwo)
   }
   sendRequest(sendObject) {
     this._mainRouteService.addOrder(sendObject)
@@ -826,7 +862,6 @@ export class MainRoutesComponent {
     this.editOrderIndex = null;
     this.isVisibleOrderInfo = false;
     this.orderMembers = []
-
   }
   public formatDate(date: string) {
     if (date) {
@@ -1139,7 +1174,7 @@ export class MainRoutesComponent {
 
   public comeBackSwitchClick() {
     // const index = this.activeIndex
-    let subroutWay = this.activeIndex === 0 ? [1,0] : [0,1]
+    let subroutWay = this.activeIndex === 0 ? [1, 0] : [0, 1]
     let subroute
     if (this.comeBackSwitch) {
       this.formClass = 'switchOn'
@@ -1181,7 +1216,6 @@ export class MainRoutesComponent {
 
     this.setDisableEnableAddress('startPointAddress', 'endPointAddress', subRoute, 'validateForm')
 
-    console.log('validateFormTwo', this.validateFormTwo.value);
   }
 
   private _setSecondForm(subRoute: any) {
@@ -1206,8 +1240,14 @@ export class MainRoutesComponent {
       isExtraTwo: formValue.isExtra
     })
     this.setDisableEnableAddress('startPointAddressTwo', 'endPointAddressTwo', subRoute, 'validateFormTwo')
-    console.log('validateFormTwo', this.validateForm.value);
   }
+
+  private _setNull(form: FormGroup) {
+    for (let el in form.controls) {
+      form.controls[el].setValue('')
+    }
+  }
+
   private setDisableEnableAddress(startControl: string, endControl: string, subRoute, formGroupName: string): void {
     if (subRoute.start_point_is_static) {
       this[formGroupName].get(startControl).disable();
