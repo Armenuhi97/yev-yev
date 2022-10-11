@@ -101,7 +101,6 @@ export class MainRoutesComponent {
     private notificationService: NotificationService) {
     // this.openTimes = this._openTimesService.getOpenTimes()
     this.orderTypes = this._orderTypeService.getOrderTypes();
-    this._secondFormInit()
   }
 
   ngOnInit() {
@@ -253,6 +252,24 @@ export class MainRoutesComponent {
       isExtra: [false]
     })
 
+    this.validateFormTwo = this._fb.group({
+      first_nameTwo: [null],
+      last_nameTwo: [null],
+      userCommentTwo: [null],
+      phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
+      startPointAddressTwo: [null],
+      endPointAddressTwo: [null],
+      order_phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
+      orderTypeTwo: [0, Validators.required],
+      personCountTwo: [null, Validators.required],
+      commentTwo: [null],
+      dateTwo: [null],
+      timeTwo: [null],
+      isChangeStatusTwo: [false],
+      isFreeTwo: [false],
+      isExtraTwo: [false]
+    })
+
     this.validateForm.get('orderType').valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((value) => {
 
       if (value == 1) {
@@ -282,7 +299,6 @@ export class MainRoutesComponent {
                   first_name: item.user.first_name,
                   last_name: item.user.last_name,
                   userComment: item.comment
-
                 })
                 this.validateForm.get('first_name').disable()
                 this.validateForm.get('last_name').disable()
@@ -319,16 +335,15 @@ export class MainRoutesComponent {
                   first_nameTwo: item.user.first_name,
                   last_nameTwo: item.user.last_name,
                   userCommentTwo: item.comment
-
                 })
-                this.validateFormTwo.get('first_nameTwo').disable()
-                this.validateForm.get('last_nameTwo').disable()
+                this.validateFormTwo.get('first_nameTwo').disable(),
+                  this.validateFormTwo.get('last_nameTwo').disable()
               } else {
                 this.userId = null
-                this.validateForm.get('first_nameTwo').reset()
-                this.validateForm.get('last_nameTwo').reset()
-                this.validateForm.get('first_nameTwo').enable()
-                this.validateForm.get('last_nameTwo').enable()
+                this.validateFormTwo.get('first_nameTwo').reset()
+                this.validateFormTwo.get('last_nameTwo').reset()
+                this.validateFormTwo.get('first_nameTwo').enable()
+                this.validateFormTwo.get('last_nameTwo').enable()
                 this.isShowError = true
               }
             })))
@@ -605,6 +620,8 @@ export class MainRoutesComponent {
     this.isVisible = false;
     this.validateForm.reset();
     this.validateForm.enable();
+    this.validateFormTwo.reset();
+    this.validateFormTwo.enable();
     this.userId = null
     this.isShowError = false;
     this.isEditing = false;
@@ -616,8 +633,8 @@ export class MainRoutesComponent {
     this.orderMembers = []
     this.comeBackSwitch = false
     this.comeBackIsAble = false
-    this._setNull(this.validateForm)
-    this._setNull(this.validateFormTwo)
+    // this._setNull(this.validateForm)
+    // this._setNull(this.validateFormTwo)
   }
   onOrderSave() {
     if (this.timeItem && !this.timeItem.isDisabled) {
@@ -721,11 +738,6 @@ export class MainRoutesComponent {
       this.sendEditRequest(this.userInfo[this.editIndex].id, editResponse);
 
     } else {
-      // this.comeBackSwitchClick()
-      // if (this.validateForm.invalid) {
-      //   this.nzMessages.error(Messages.fail);
-      //   return;
-      // }
       let date = this._formatDate(this.selectedTime)
 
       let formValue
@@ -736,48 +748,33 @@ export class MainRoutesComponent {
           this.nzMessages.error(Messages.fail);
           return;
         }
-        isFirst = false
         formValue = this.validateFormTwo.getRawValue()
-        const sendObjectTwo = new AddPassangerDto(isFirst, this.validateForm, this.subRouteInfo.id, date, userId)
+        console.log(formValue)
+        const sendObject = new AddPassangerDto(false, formValue, this.subRouteInfo.id, date, userId)
+        console.log(sendObject);
+
+        this.sendRequest(sendObject);
+        let backSubrout = this.subRouteInfos.find((el) => {
+          return el.id !== this.subRouteInfo.id
+        })
+
+        const dateSecondForm = this._formatDate(this.validateFormTwo.get('timeTwo')?.value,this.validateFormTwo.get('dateTwo')?.value);
+        const sendObjectTwo = new AddPassangerDto(false, formValue, backSubrout.id, dateSecondForm, userId)
         this.sendRequest(sendObjectTwo);
+        console.log(sendObjectTwo);
+
       }
       else {
         if (this.validateForm.invalid) {
           this.nzMessages.error(Messages.fail);
           return;
         }
-        isFirst = true
         formValue = this.validateForm.getRawValue()
+        const sendObject = new AddPassangerDto(true, formValue, this.subRouteInfo.id, date, userId)
+        this.sendRequest(sendObject);
       }
-      const sendObject = new AddPassangerDto(isFirst, formValue, this.subRouteInfo.id, date, userId)
-
-      // let sendObject: OrderResponse = {
-      // "first_name": this._appService.checkPropertyValue(this.validateForm.get('first_name'), 'value', ""),
-      //   "last_name": this._appService.checkPropertyValue(this.validateForm.get('last_name'), 'value', ""),
-      //   "user_comment": this.validateForm.get('userComment').value,
-      //   "is_free": this.checkIsNull(this.validateForm.get('isFree').value),
-      //   "is_extra_order": this.checkIsNull(this.validateForm.get('isExtra').value),
-      //   "phone_number": '+374' + this.validateForm.get('phone_number').value,
-      //   "comment": this.validateForm.get('comment').value,
-      //   "sub_route": this.subRouteInfo.id,
-      //   "date": date,
-      //   "person_count": this.validateForm.get('personCount').value,
-      //   "start_address": this.validateForm.get('startPointAddress').value,
-      //   "start_langitude": '',
-      //   "start_latitude": '',
-      // "end_address": this.validateForm.get('endPointAddress').value,
-      //   "end_langitude": '',
-      //   "end_latitude": '',
-      //   "user": this.userId ? this.userId : null,
-      //   "order_phone_number": this.validateForm.get('order_phone_number').value ? '+374' + this.validateForm.get('order_phone_number').value : null,
-      //   "order_type": this.validateForm.get('orderType').value,
-      //   "status": this.radioValue
-      // }
-      this.sendRequest(sendObject);
     }
 
-    this._setNull(this.validateForm)
-    this._setNull(this.validateFormTwo)
   }
   sendRequest(sendObject) {
     this._mainRouteService.addOrder(sendObject)
@@ -786,6 +783,7 @@ export class MainRoutesComponent {
         this.nzMessages.success(Messages.success);
         this.closeModal();
         this.getInfo(this.selectedTime).subscribe();
+        this.validateFormTwo.reset()
       },
         () => {
           this.nzMessages.error(Messages.fail)
@@ -981,6 +979,10 @@ export class MainRoutesComponent {
       isExtra: info.is_extra_order
     })
 
+    // this.validateFormTwo.patchValue({
+    //   personCountTwo:info.person_count
+    // })
+
     this.userId = info.user;
     if (moderator.is_in_approved_orders || this.timeItem.isDisabled
     ) {
@@ -1152,26 +1154,6 @@ export class MainRoutesComponent {
     this.router.navigate([`/dashboard/raiting-order/${this.index}`]);
   }
 
-  private _secondFormInit() {
-    this.validateFormTwo = this._fb.group({
-      first_nameTwo: [null],
-      last_nameTwo: [null],
-      userCommentTwo: [null],
-      phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
-      startPointAddressTwo: [null],
-      endPointAddressTwo: [null],
-      order_phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
-      orderTypeTwo: [0, Validators.required],
-      personCountTwo: [null, Validators.required],
-      commentTwo: [null],
-      dateTwo: [null],
-      timeTwo: [null],
-      isChangeStatusTwo: [false],
-      isFreeTwo: [false],
-      isExtraTwo: [false]
-    })
-  }
-
   public comeBackSwitchClick() {
     // const index = this.activeIndex
     let subroutWay = this.activeIndex === 0 ? [1, 0] : [0, 1]
@@ -1242,11 +1224,11 @@ export class MainRoutesComponent {
     this.setDisableEnableAddress('startPointAddressTwo', 'endPointAddressTwo', subRoute, 'validateFormTwo')
   }
 
-  private _setNull(form: FormGroup) {
-    for (let el in form.controls) {
-      form.controls[el].setValue('')
-    }
-  }
+  // private _setNull(form: FormGroup) {
+  //   for (let el in form.controls) {
+  //     form.controls[el].setValue('')
+  //   }
+  // }
 
   private setDisableEnableAddress(startControl: string, endControl: string, subRoute, formGroupName: string): void {
     if (subRoute.start_point_is_static) {

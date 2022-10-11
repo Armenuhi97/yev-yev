@@ -57,6 +57,8 @@ export class AddPassangerDto {
       this.time = null
     }
     else{
+      console.log(formValue);
+
       this.first_name = formValue.first_nameTwo
       this.last_name = formValue.last_nameTwo
       this.user_comment = formValue.userCommentTwo
