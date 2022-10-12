@@ -322,8 +322,8 @@
                       *ngIf="!isEditing"
                       nz-button
                       [nzType]="'primary'"
-                      (click)="comeBackIsAble = !comeBackIsAble"
-                    >
+                      (click)="onClickComeBackIsAble()"
+                      >
                       Հետադարձ
                     </button>
                     <!-- </ng-container> -->
@@ -665,6 +665,7 @@
                         </div>
                       </form>
 
+                      <!-- second form \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ -->
                       <form
                         class="sm-ant secondForm"
                         [formGroup]="validateFormTwo"
@@ -974,21 +975,21 @@
                         </div> -->
                         <!-- </div> -->
 
-                        <div
+                        <!-- <div
                           nz-row
                           [nzGutter]="24"
                           class="d-flex align-items-center justify-content-between"
                           *ngIf="comeBackSwitch"
-                        >
-                          <div nz-col [nzSpan]="12">
+                        > -->
+                          <div class="w-auto" nz-col [nzSpan]="12">
                             <nz-date-picker
-                              class="w-100"
+                              class="w-auto"
                               formControlName="dateTwo"
                               [nzDisabledDate]="disabledDate"
                             ></nz-date-picker>
                           </div>
-                          <div nz-col [nzSpan]="12">
-                            <nz-select class="w-100" formControlName="timeTwo">
+                          <div class="w-auto" nz-col [nzSpan]="12">
+                            <nz-select class="w-auto" formControlName="timeTwo">
                               <nz-option
                                 *ngFor="let time of subRouteInfo?.openTimes"
                                 [nzValue]="time.time"
@@ -997,7 +998,7 @@
                               </nz-option>
                             </nz-select>
                           </div>
-                        </div>
+                        <!-- </div> -->
                         <div
                           nz-row
                           [nzGutter]="24"

@@ -87,7 +87,7 @@ export class MainRoutesComponent {
   public comeBackSwitch: boolean = false
   public formClass = 'switchOff'
   public bodyClass = 'switchOffBody'
-  public comeBackIsAble: boolean = false
+  public comeBackIsAble: boolean = true
   constructor(
     private _mainRoutesService: MainRoutesService,
     private router: Router, private _datePipe: DatePipe,
@@ -633,7 +633,7 @@ export class MainRoutesComponent {
     this.isVisibleOrderInfo = false;
     this.orderMembers = []
     this.comeBackSwitch = false
-    this.comeBackIsAble = false
+    this.comeBackIsAble = true
     // this._setNull(this.validateForm)
     // this._setNull(this.validateFormTwo)
   }
@@ -742,7 +742,6 @@ export class MainRoutesComponent {
       let date = this._formatDate(this.selectedTime)
 
       let formValue
-      let isFirst = true
       let userId = this.userId ? this.userId : null
       if (this.comeBackSwitch) {
         if (this.validateFormTwo.invalid) {
@@ -779,6 +778,8 @@ export class MainRoutesComponent {
         this.nzMessages.success(Messages.success);
         this.closeModal();
         this.getInfo(this.selectedTime).subscribe();
+        this.comeBackIsAble = true
+        this.comeBackSwitch = false
         if(!!backSubrout){
           this.subRouteInfo=backSubrout;
         }
@@ -1152,6 +1153,12 @@ export class MainRoutesComponent {
   getApprovedId(index: number) {
     this.index = this.approvedOrders[index].id;
     this.router.navigate([`/dashboard/raiting-order/${this.index}`]);
+  }
+
+  public onClickComeBackIsAble(){
+    this.comeBackIsAble = !this.comeBackIsAble
+    console.log(this.comeBackIsAble);
+
   }
 
   public comeBackSwitchClick() {
