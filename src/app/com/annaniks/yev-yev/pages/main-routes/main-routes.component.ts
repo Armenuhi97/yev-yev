@@ -87,7 +87,9 @@ export class MainRoutesComponent {
   public comeBackSwitch: boolean = false
   public formClass = 'switchOff'
   public bodyClass = 'switchOffBody'
+  public modalBodyContainer = 'modalBodyContainerOff'
   public comeBackIsAble: boolean = true
+  public comeBackIsAbleButton:string = 'switchButtonOff'
   constructor(
     private _mainRoutesService: MainRoutesService,
     private router: Router, private _datePipe: DatePipe,
@@ -634,6 +636,9 @@ export class MainRoutesComponent {
     this.orderMembers = []
     this.comeBackSwitch = false
     this.comeBackIsAble = true
+    this.formClass = 'switchOff'
+    this.bodyClass = 'switchOffBody'
+    this.modalBodyContainer = 'modalBodyContainerOff'
     // this._setNull(this.validateForm)
     // this._setNull(this.validateFormTwo)
   }
@@ -1157,23 +1162,23 @@ export class MainRoutesComponent {
 
   public onClickComeBackIsAble(){
     this.comeBackIsAble = !this.comeBackIsAble
-    console.log(this.comeBackIsAble);
-
+    this.comeBackIsAbleButton = this.comeBackIsAble? 'switchButtonOff' : 'switchButtonOn'
   }
 
   public comeBackSwitchClick() {
-    // const index = this.activeIndex
     let subroutWay = this.activeIndex === 0 ? [1, 0] : [0, 1]
     let subroute
     if (this.comeBackSwitch) {
       this.formClass = 'switchOn'
       this.bodyClass = 'switchOnBody'
+      this.modalBodyContainer = 'modalBodyContainerOn'
       subroute = this.subRouteInfos[subroutWay[0]]
       this._setSecondForm(subroute)
     }
     else {
       this.formClass = 'switchOff'
       this.bodyClass = 'switchOffBody'
+      this.modalBodyContainer = 'modalBodyContainerOff'
       subroute = this.subRouteInfos[subroutWay[1]]
       this._setFirstForm(subroute)
     }
@@ -1230,12 +1235,6 @@ export class MainRoutesComponent {
     })
     this.setDisableEnableAddress('startPointAddressTwo', 'endPointAddressTwo', subRoute, 'validateFormTwo')
   }
-
-  // private _setNull(form: FormGroup) {
-  //   for (let el in form.controls) {
-  //     form.controls[el].setValue('')
-  //   }
-  // }
 
   private setDisableEnableAddress(startControl: string, endControl: string, subRoute, formGroupName: string): void {
     if (subRoute.start_point_is_static) {

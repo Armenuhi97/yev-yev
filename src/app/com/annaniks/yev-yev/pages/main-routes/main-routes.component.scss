@@ -112,11 +112,16 @@
   align-items: center;
 }
 
-.modalBodyContainer{
+.modalBodyContainerOff{
   position: relative;
   overflow: hidden;
-  min-height: 540px;
-  // padding: 5px;
+  min-height: 520px;
+}
+
+.modalBodyContainerOn{
+  position: relative;
+  overflow: hidden;
+  min-height: 570px;
 }
 
 .formContainer{
@@ -162,6 +167,14 @@
 .switchOn{
   transform: translateX(-50%);
   margin-bottom: 200px;
+}
+
+.switchButtonOn{
+  background-color: #1890ff;
+}
+
+.switchButtonOff{
+  background-color: #188fff77;
 }
 
 .ant-col{
