@@ -925,7 +925,7 @@
                         </div>
 
                         <div class="w-auto" nz-col [nzSpan]="12">
-                          <nz-form-label>Հետդարձի ամսաթիվ</nz-form-label>
+                          <nz-form-label><span style="color: red">*</span>Հետդարձի ամսաթիվ</nz-form-label>
                           <nz-date-picker
                             class="w-auto"
                             formControlName="dateTwo"
@@ -933,7 +933,7 @@
                           ></nz-date-picker>
                         </div>
                         <div class="w-auto" nz-col [nzSpan]="12">
-                          <nz-form-label>Հետդարձի ժամանակ</nz-form-label>
+                          <nz-form-label><span style="color: red">*</span>Հետդարձի ժամանակ</nz-form-label>
                           <nz-select class="w-auto" formControlName="timeTwo">
                             <nz-option
                               *ngFor="let time of subRouteInfo?.openTimes"

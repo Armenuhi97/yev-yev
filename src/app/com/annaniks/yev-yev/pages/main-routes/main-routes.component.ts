@@ -266,8 +266,8 @@ export class MainRoutesComponent {
       orderTypeTwo: [0, Validators.required],
       personCountTwo: [null, Validators.required],
       commentTwo: [null],
-      dateTwo: [null],
-      timeTwo: [null],
+      dateTwo: [null,[Validators.required]],
+      timeTwo: [null,[Validators.required]],
       isChangeStatusTwo: [false],
       isFreeTwo: [false],
       isExtraTwo: [false]
@@ -1167,12 +1167,14 @@ export class MainRoutesComponent {
 
   public comeBackSwitchClick() {
     let subroutWay = this.activeIndex === 0 ? [1, 0] : [0, 1]
+    // console.log(subroutWay)
     let subroute
     if (this.comeBackSwitch) {
       this.formClass = 'switchOn'
       this.bodyClass = 'switchOnBody'
       this.modalBodyContainer = 'modalBodyContainerOn'
       subroute = this.subRouteInfos[subroutWay[0]]
+      // console.log(subroute);
       this._setSecondForm(subroute)
     }
     else {
@@ -1180,6 +1182,7 @@ export class MainRoutesComponent {
       this.bodyClass = 'switchOffBody'
       this.modalBodyContainer = 'modalBodyContainerOff'
       subroute = this.subRouteInfos[subroutWay[1]]
+      // console.log(subroute);
       this._setFirstForm(subroute)
     }
     this.checkSubrouteAddress(this.comeBackSwitch);
