@@ -52,13 +52,6 @@ export class MainRoutesService {
         return this._httpClient.get(`route/blocked-hour/?sub_route=${subRouteId}&date=${date}&offset=0&limit=1000`)
     }
 
-    public getBlockedHoursSecond(subrouteId: number, date: string) {
-      console.log(subrouteId, date);
-
-        return this._httpClient.get(`route/blocked-hour/?date=${date}&sub_route=${subrouteId}&offset=0&limit=1000
-        `)
-    }
-
 
     public blockHour(subrouteId: number, date) {
         return this._httpClient.post(`route/blocked-hour/`, {

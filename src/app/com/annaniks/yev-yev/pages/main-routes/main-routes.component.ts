@@ -6,7 +6,6 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { Messages } from '../../core/models/mesages';
-import { OrderResponse } from '../../core/models/order';
 import { OrderType } from '../../core/models/order-type';
 import { OrdersByHours } from '../../core/models/orders-by-hours';
 import { RouteItem } from '../../core/models/routes.model';
@@ -17,16 +16,25 @@ import { OpenTimesService } from '../../core/services/open-times.service';
 import { OrderTypeService } from '../../core/services/order-type';
 import { MainRoutesService } from './main-routes.service';
 
-import { differenceInCalendarDays, setHours } from 'date-fns';
+import { differenceInCalendarDays } from 'date-fns';
 import { NotificationService } from '../../core/services/notification.service';
 import { Notification } from '../../core/models/notification';
 import { AddPassangerDto } from '../../../../../com/annaniks/yev-yev/core/models/dto/routes.dto.model'
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { createForm } from './helpers/create-form';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-main-routes',
   templateUrl: 'main-routes.component.html',
   styleUrls: ['main-routes.component.scss'],
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({ transform: 'translateX(+100%)' }),
+        animate('300ms ease-in', style({ transform: 'translateX(0%)' }))
+      ]),
+    ]),
+  ],
   providers: [DatePipe]
 })
 export class MainRoutesComponent {
@@ -44,6 +52,7 @@ export class MainRoutesComponent {
   currentDriver = [];
   isVisibleOrderInfo = false;
   isOrderEditing = false;
+  backSubrouteInfo;
   orderMembers = [];
   editOrderIndex: number;
   approvedOrders = [];
@@ -53,7 +62,6 @@ export class MainRoutesComponent {
   isVisible = false;
   unsubscribe$ = new Subject();
   validateForm: FormGroup | null;
-  validateFormTwo: FormGroup | null;
   phoneNumberPrefix = new FormControl('+374');
   userId: number;
   currentInterval;
@@ -75,6 +83,7 @@ export class MainRoutesComponent {
   private _param
   private _lastMainRouteId: number;
   orderTypes: OrderType[] = [];
+  keyName = 'Two';
   // openTimes = []
   isGetFunction = true;
   isGet = true;
@@ -82,14 +91,10 @@ export class MainRoutesComponent {
   totalDoneRoutes = 0;
   doneRoutesPageIndex = 1;
   index = 0;
-  getOtherRouteOrdersCount:boolean
+  getOtherRouteOrdersCount: boolean;
   driverControl = new FormControl('', Validators.required);
-  public comeBackSwitch: boolean = false
-  public formClass = 'switchOff'
-  public bodyClass = 'switchOffBody'
-  public modalBodyContainer = 'modalBodyContainerOff'
-  public comeBackIsAble: boolean = true
-  public comeBackIsAbleButton:string = 'switchButtonOff'
+  public comeBackSwitch: boolean = false;
+  public comeBackIsAble = false;
   constructor(
     private _mainRoutesService: MainRoutesService,
     private router: Router, private _datePipe: DatePipe,
@@ -162,13 +167,7 @@ export class MainRoutesComponent {
       // );
     })
   }
-  isInteger(event) {
-    if (this.validateForm.get('orderType').value == 0) {
-      if (!this.validateForm.get('personCount').value && event.keyCode == 48) {
-        return false
-      }
-    }
-  }
+
   private _checkQueryParams() {
     return this._activatedRoute.queryParams.pipe(takeUntil(this.unsubscribe$), switchMap((param) => {
       if (this.isGet) {
@@ -228,135 +227,20 @@ export class MainRoutesComponent {
       })
   }
   public isCanceledByClient(data) {
-    let item = data.approved_order_orders.filter((el) => { return el.order.canceled_by_client == true })
+    const item = data.approved_order_orders.filter((el) => el.order.canceled_by_client == true)
     return (item && item.length) ? true : false
   }
   getOrderType(type: number): string {
-    return this._appService.checkPropertyValue(this._appService.checkPropertyValue(this.orderTypes.filter((val) => { return +val.id == +type }), 0), 'name_en')
+    return this._appService.checkPropertyValue(this._appService.checkPropertyValue(
+      this.orderTypes.filter((val) => +val.id === +type), 0), 'name_en');
   }
-  private _initForm() {
+
+  private _initForm(): void {
     this.validateForm = this._fb.group({
-      first_name: [null],
-      last_name: [null],
-      phone_number: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
-      userComment: [null],
-      startPointAddress: [null],
-      endPointAddress: [null],
-      startPointAddressTwo: [null],
-      endPointAddressTwo: [null],
-      order_phone_number: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
-      orderType: [0, Validators.required],
-      personCount: [null, Validators.required],
-      comment: [null],
-      date: [null],
-      time: [null],
-      isChangeStatus: [false],
-      isFree: [false],
-      isExtra: [false]
-    })
+      firstForm: createForm(this._fb),
+      secondForm: createForm(this._fb, this.keyName)
+    });
 
-    this.validateFormTwo = this._fb.group({
-      first_nameTwo: [null],
-      last_nameTwo: [null],
-      userCommentTwo: [null],
-      phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
-      startPointAddressTwo: [null],
-      endPointAddressTwo: [null],
-      order_phone_numberTwo: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
-      orderTypeTwo: [0, Validators.required],
-      personCountTwo: [null, Validators.required],
-      commentTwo: [null],
-      dateTwo: [null,[Validators.required]],
-      timeTwo: [null,[Validators.required]],
-      isChangeStatusTwo: [false],
-      isFreeTwo: [false],
-      isExtraTwo: [false]
-    })
-
-    this.validateForm.get('orderType').valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((value) => {
-
-      if (value == 1) {
-        this.validateForm.get('personCount').setValue(0);
-        this.validateForm.get('personCount').disable()
-      } else {
-        this.validateForm.get('personCount').enable();
-        if (value == 2 && ((this.validateForm.get('personCount').value < 4 || this.validateForm.get('personCount').value > 8) || !this.validateForm.get('personCount').value)) {
-          this.validateForm.get('personCount').reset();
-        }
-      }
-    })
-    this.validateForm.get('phone_number').valueChanges.pipe(takeUntil(this.unsubscribe$),
-      switchMap((value) => {
-        if (value && !this.isEditing) {
-          if (value.toString().length == 8) {
-            this.validateForm.patchValue({
-              order_phone_number: value
-            })
-            return this._mainRouteService.getUserByPhonenumber('+374' + value).pipe(map(((data: ServerResponce<User[]>) => {
-              let result = data.results
-              if (result && result.length) {
-                this.isShowError = false
-                let item = result[0];
-                this.userId = item.id
-                this.validateForm.patchValue({
-                  first_name: item.user.first_name,
-                  last_name: item.user.last_name,
-                  userComment: item.comment
-                })
-                this.validateForm.get('first_name').disable()
-                this.validateForm.get('last_name').disable()
-              } else {
-                this.userId = null
-                this.validateForm.get('first_name').reset()
-                this.validateForm.get('last_name').reset()
-                this.validateForm.get('first_name').enable()
-                this.validateForm.get('last_name').enable()
-                this.isShowError = true
-              }
-            })))
-          } else {
-            return of(false)
-          }
-        } else {
-          return of()
-        }
-      })).subscribe()
-    this.validateFormTwo.get('phone_numberTwo').valueChanges.pipe(takeUntil(this.unsubscribe$),
-      switchMap((value) => {
-        if (value && !this.isEditing) {
-          if (value.toString().length == 8) {
-            this.validateForm.patchValue({
-              order_phone_number: value
-            })
-            return this._mainRouteService.getUserByPhonenumber('+374' + value).pipe(map(((data: ServerResponce<User[]>) => {
-              let result = data.results
-              if (result && result.length) {
-                this.isShowError = false
-                let item = result[0];
-                this.userId = item.id
-                this.validateFormTwo.patchValue({
-                  first_nameTwo: item.user.first_name,
-                  last_nameTwo: item.user.last_name,
-                  userCommentTwo: item.comment
-                })
-                this.validateFormTwo.get('first_nameTwo').disable(),
-                  this.validateFormTwo.get('last_nameTwo').disable()
-              } else {
-                this.userId = null
-                this.validateFormTwo.get('first_nameTwo').reset()
-                this.validateFormTwo.get('last_nameTwo').reset()
-                this.validateFormTwo.get('first_nameTwo').enable()
-                this.validateFormTwo.get('last_nameTwo').enable()
-                this.isShowError = true
-              }
-            })))
-          } else {
-            return of(false)
-          }
-        } else {
-          return of()
-        }
-      })).subscribe()
   }
   combine() {
     const combine = forkJoin(
@@ -378,10 +262,10 @@ export class MainRoutesComponent {
         if (subrouteId && time) {
           data.results = data.results.map((data) => {
             let selectTime;
-            if (+data.id == +subrouteId) {
+            if (+data.id === +subrouteId) {
               selectTime = time;
             }
-            return Object.assign(data, { selectTime: selectTime });
+            return Object.assign(data, { selectTime });
           });
         }
         this.subRouteInfos = data.results;
@@ -550,55 +434,39 @@ export class MainRoutesComponent {
     let current = `${date} ${currenTime}`;
     return current
   }
-  checkSubrouteAddress(bool: boolean) {
-    let startKey: string;
-    let endKey: string;
-    let subrouteInfo;
-    if (!bool) {
-      startKey = 'startPointAddress';
-      endKey = 'endPointAddress';
-      subrouteInfo = this.subRouteInfos[this.activeIndex];
-    } else {
-      startKey = 'startPointAddressTwo';
-      endKey = 'endPointAddressTwo';
-      // startKey = 'startPointAddress';
-      // endKey = 'endPointAddress';
-      const index = this.activeIndex === 0 ? 1 : 0;
-      subrouteInfo = this.subRouteInfos[index];
-    }
-    // = bool ? this.subRouteInfos[1] :
-    // if (bool) {
+  // checkSubrouteAddress(bool: boolean) {
+  //   let startKey: string;
+  //   let endKey: string;
+  //   let subrouteInfo;
+  //   let group: string;
+  //   if (!bool) {
+  //     group = 'firstForm';
+  //     startKey = 'startPointAddress';
+  //     endKey = 'endPointAddress';
+  //     subrouteInfo = this.subRouteInfos[this.activeIndex];
+  //   } else {
+  //     group = 'secondForm';
+  //     startKey = 'startPointAddressTwo';
+  //     endKey = 'endPointAddressTwo';
+  //     const index = this.activeIndex === 0 ? 1 : 0;
+  //     subrouteInfo = this.subRouteInfos[index];
+  //   }
+  //   if (subrouteInfo.start_point_is_static) {
+  //     this.validateForm.get(group).get(startKey).setValue(subrouteInfo.start_point_address_hy);
+  //     this.validateForm.get(group).get(startKey).disable();
+  //   }
+  //   if (subrouteInfo.end_point_is_static) {
+  //     this.validateForm.get(group).get(endKey).setValue(subrouteInfo.end_point_address_hy);
+  //     this.validateForm.get(group).get(endKey).disable();
+  //   }
 
-    if (subrouteInfo.start_point_is_static) {
-
-      this.validateForm.get(startKey).setValue(subrouteInfo.start_point_address_hy);
-      this.validateForm.get(startKey).disable();
-
-
-    }
-    if (subrouteInfo.end_point_is_static) {
-      this.validateForm.get(endKey).setValue(subrouteInfo.end_point_address_hy);
-      this.validateForm.get(endKey).disable()
-    }
-  }
+  // }
   public showModal(bool: boolean = false): void {
 
     this.isVisible = true;
-    this.validateForm.get('orderType').setValue(0);
-    // this.validateForm.get('personCount').setValue(1);
-    this.checkSubrouteAddress(bool);
-    // }
-    // else if (bool !== false) {
-    //   if (this.subRouteInfo.end_point_is_static) {
-    //     this.validateForm.get('startPointAddress').setValue(this.subRouteInfo.start_point_address_hy);
-    //     this.validateForm.get('startPointAddress').disable()
-    //   }
-    //   if (this.subRouteInfo.start_point_is_static) {
-    //     this.validateForm.get('endPointAddress').setValue(this.subRouteInfo.end_point_address_hy);
-    //     this.validateForm.get('endPointAddress').disable()
-    //   }
+    this.validateForm.get('firstForm').get('orderType').setValue(0);
 
-    // }
+    // this.checkSubrouteAddress(bool);
   }
 
   public checkAddress(moderator) {
@@ -623,9 +491,7 @@ export class MainRoutesComponent {
     this.isVisible = false;
     this.validateForm.reset();
     this.validateForm.enable();
-    this.validateFormTwo.reset();
-    this.validateFormTwo.enable();
-    this.userId = null
+
     this.isShowError = false;
     this.isEditing = false;
     this.editIndex = null;
@@ -633,12 +499,10 @@ export class MainRoutesComponent {
     this.orderStatus = ''
     this.editOrderIndex = null;
     this.isVisibleOrderInfo = false;
-    this.orderMembers = []
-    this.comeBackSwitch = false
-    this.comeBackIsAble = true
-    this.formClass = 'switchOff'
-    this.bodyClass = 'switchOffBody'
-    this.modalBodyContainer = 'modalBodyContainerOff'
+    this.orderMembers = [];
+    this.comeBackSwitch = false;
+    this.comeBackIsAble = false;
+
     // this._setNull(this.validateForm)
     // this._setNull(this.validateFormTwo)
   }
@@ -717,82 +581,109 @@ export class MainRoutesComponent {
   }
 
   public checkIsNull(value) {
-    return value ? value : false
+    return value ? value : false;
   }
   public onclientSave() {
     if (this.isEditing) {
-      let date = this._formatDate(this.validateForm.get('time').value, this.validateForm.get('date').value)
-      let editResponse = {
-        comment: this.validateForm.get('comment').value,
+      const formValue = this.validateForm.get('firstForm').value;
+      const date = this._formatDate(formValue.time, formValue.date);
+      const editResponse = {
+        comment: formValue.comment,
         sub_route: this.subRouteInfo.id,
-        date: date,
-        person_count: this.validateForm.get('personCount').value,
-        start_address: this.validateForm.get('startPointAddress').value,
+        date,
+        person_count: formValue.personCount,
+        start_address: formValue.startPointAddress,
         start_langitude: '',
         start_latitude: '',
-        end_address: this.validateForm.get('endPointAddress').value,
+        end_address: formValue.endPointAddress,
         end_langitude: '',
         end_latitude: '',
-        is_free: this.checkIsNull(this.validateForm.get('isFree').value),
-        is_extra_order: this.checkIsNull(this.validateForm.get('isExtra').value),
-        user: this.userId ? this.userId : null,
-        order_phone_number: this.validateForm.get('order_phone_number').value ? '+374' + this.validateForm.get('order_phone_number').value : null,
-        order_type: this.validateForm.get('orderType').value,
+        is_free: this.checkIsNull(formValue.isFree),
+        is_extra_order: this.checkIsNull(formValue.isExtra),
+        user: formValue.userId ? formValue.userId : null,
+        order_phone_number: formValue.order_phone_number ? '+374' + formValue.order_phone_number : null,
+        order_type: formValue.orderType,
         is_admin: true,
-        change_status: this._appService.checkPropertyValue(this.validateForm.get('isChangeStatus'), 'value', false)
-      }
+        change_status: formValue.isChangeStatus ? formValue.isChangeStatus : false
+        // this._appService.checkPropertyValue(this.validateForm.get('isChangeStatus'), 'value', false)
+      };
       this.sendEditRequest(this.userInfo[this.editIndex].id, editResponse);
 
     } else {
-      let date = this._formatDate(this.selectedTime)
+      if (this.validateForm.get('firstForm').invalid) {
+        this.nzMessages.error(Messages.fail);
+        return;
+      }
+      const date = this._formatDate(this.selectedTime);
+      const firstFormValue = (this.validateForm.get('firstForm') as FormGroup).controls;
 
-      let formValue
-      let userId = this.userId ? this.userId : null
-      if (this.comeBackSwitch) {
-        if (this.validateFormTwo.invalid) {
+      const sendObject = new AddPassangerDto('', firstFormValue, this.subRouteInfo.id, date);
+
+      const requests = [this.sendRequest(sendObject)];
+      if (this.comeBackIsAble) {
+        if (this.validateForm.get('secondForm').invalid) {
           this.nzMessages.error(Messages.fail);
           return;
         }
-        formValue = this.validateFormTwo.getRawValue()
-        const sendObject = new AddPassangerDto(false, formValue, this.subRouteInfo.id, date, userId)
-        this.sendRequest(sendObject);
-        let backSubrout = this.subRouteInfos.find((el) => {
-          return el.id !== this.subRouteInfo.id
-        })
+        const secondFormValue = (this.validateForm.get('secondForm') as FormGroup).controls;
 
-        const dateSecondForm = this._formatDate(this.validateFormTwo.get('timeTwo')?.value,this.validateFormTwo.get('dateTwo')?.value);
-        const sendObjectTwo = new AddPassangerDto(false, formValue, backSubrout.id, dateSecondForm, userId)
-        this.sendRequest(sendObjectTwo,backSubrout);
+        const returnDate = this._formatDate(secondFormValue['time' + this.keyName].value, secondFormValue['date' + this.keyName].value);
+
+        const backSubroute = this.subRouteInfos.find((el) => {
+          return el.id !== this.subRouteInfo.id;
+        });
+        const sendObjectTwo = new AddPassangerDto(this.keyName, secondFormValue, backSubroute.id, returnDate);
+        requests.push(this.sendRequest(sendObjectTwo));
       }
-      else {
-        if (this.validateForm.invalid) {
+
+      forkJoin(requests).pipe(
+        takeUntil(this.unsubscribe$)
+      ).subscribe({
+        next: () => {
+          this.nzMessages.success(Messages.success);
+          this.closeModal();
+          this.getInfo(this.selectedTime).subscribe();
+          this.comeBackIsAble = false;
+          this.comeBackSwitch = false;
+        },
+        error: () => {
           this.nzMessages.error(Messages.fail);
-          return;
         }
-        formValue = this.validateForm.getRawValue()
-        const sendObject = new AddPassangerDto(true, formValue, this.subRouteInfo.id, date, userId)
-        this.sendRequest(sendObject);
-      }
+      });
+      // let date = this._formatDate(this.selectedTime)
+
+      // let formValue
+      // // let userId = this.userId ? this.userId : null;
+      // if (this.comeBackSwitch) {
+      //   // if (this.validateFormTwo.invalid) {
+      //   //   this.nzMessages.error(Messages.fail);
+      //   //   return;
+      //   // }
+      //   formValue = this.validateFormTwo.getRawValue()
+      //   const sendObject = new AddPassangerDto(false, formValue, this.subRouteInfo.id, date, userId)
+      //   this.sendRequest(sendObject);
+      //   let backSubrout = this.subRouteInfos.find((el) => {
+      //     return el.id !== this.subRouteInfo.id
+      //   })
+
+      //   const dateSecondForm = this._formatDate(this.validateFormTwo.get('timeTwo')?.value, this.validateFormTwo.get('dateTwo')?.value);
+      //   const sendObjectTwo = new AddPassangerDto(false, formValue, backSubrout.id, dateSecondForm, userId)
+      //   this.sendRequest(sendObjectTwo, backSubrout);
+      // }
+      // else {
+      //   if (this.validateForm.invalid) {
+      //     this.nzMessages.error(Messages.fail);
+      //     return;
+      //   }
+      //   formValue = this.validateForm.getRawValue()
+      //   const sendObject = new AddPassangerDto(true, formValue, this.subRouteInfo.id, date, userId)
+      //   this.sendRequest(sendObject);
+      // }
     }
 
   }
-  sendRequest(sendObject,backSubrout?:boolean) {
-    this._mainRouteService.addOrder(sendObject)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((res: any) => {
-        this.nzMessages.success(Messages.success);
-        this.closeModal();
-        this.getInfo(this.selectedTime).subscribe();
-        this.comeBackIsAble = true
-        this.comeBackSwitch = false
-        if(!!backSubrout){
-          this.subRouteInfo=backSubrout;
-        }
-      },
-        () => {
-          this.nzMessages.error(Messages.fail)
-        })
-
+  sendRequest(sendObject, backSubrout?: boolean) {
+    return this._mainRouteService.addOrder(sendObject)
   }
 
   subroutDate!: string;
@@ -838,7 +729,7 @@ export class MainRoutesComponent {
     this._mainRouteService.changeOrder(id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
       this.nzMessages.success(Messages.success)
       this.closeModal();
-      if (this.radioValue == 'pending' && this.validateForm.get('isChangeStatus').value) {
+      if (this.radioValue == 'pending' && this.validateForm.get('firstForm').get('isChangeStatus').value) {
         this._mainRouteService.changeOrderStatus(id).subscribe(() => {
           this.getInfo(this.selectedTime).subscribe()
         })
@@ -855,9 +746,6 @@ export class MainRoutesComponent {
     this.isVisible = false;
     this.validateForm.reset();
     this.validateForm.enable();
-    this.validateFormTwo.reset();
-    this.validateFormTwo.enable();
-    this.userId = null;
     this.isShowError = false;
     this.isEditing = false;
     this.editIndex = null;
@@ -951,24 +839,21 @@ export class MainRoutesComponent {
         this.currentDriver = [...arr1, ...arr2];
       }
     }
-
-
-
-    return calculateCount
+    return calculateCount;
   }
   public onEditOrder(index, moderator) {
 
     this.showModal()
     this.isEditing = true;
     this.editIndex = index;
-    let info = this.userInfo[this.editIndex]
+    let info = this.userInfo[this.editIndex];
 
-    this.validateForm.get('first_name').disable()
-    this.validateForm.get('last_name').disable();
-    this.validateForm.get('userComment').disable();
-    this.validateForm.get('phone_number').disable();
+    this.validateForm.get('firstForm').get('first_name').disable();
+    this.validateForm.get('firstForm').get('last_name').disable();
+    this.validateForm.get('firstForm').get('userComment').disable();
+    this.validateForm.get('firstForm').get('phone_number').disable();
 
-    this.validateForm.patchValue({
+    this.validateForm.get('firstForm').patchValue({
       startPointAddress: info.start_address,
       endPointAddress: info.end_address,
       order_phone_number: info.phone_number ? info.phone_number.substr(4) : '',
@@ -982,17 +867,12 @@ export class MainRoutesComponent {
       date: this.selectedDate.value,
       time: this.selectedTime,
       isFree: info.is_free,
-      isExtra: info.is_extra_order
-    })
-
-    // this.validateFormTwo.patchValue({
-    //   personCountTwo:info.person_count
-    // })
-
-    this.userId = info.user;
+      isExtra: info.is_extra_order,
+      userId: info.user
+    });
     if (moderator.is_in_approved_orders || this.timeItem.isDisabled
     ) {
-      this.validateForm.disable()
+      this.validateForm.get('firstForm').disable();
     }
   }
   selectCheckbox($event, index) {
@@ -1048,9 +928,9 @@ export class MainRoutesComponent {
     // })
     let arr1 = arr.filter((el) => { return el.located_city.id !== el.main_city.id });
     let arr2 = arr.filter((el) => { return el.located_city.id == el.main_city.id })
-    this.modalDrivers = [...arr1, ...arr2]
+    this.modalDrivers = [...arr1, ...arr2];
 
-    this.driverControl.setValue(data.driver)
+    this.driverControl.setValue(data.driver);
   }
   handleCancelDriver() {
     this.isVisibleDriverModal = false;
@@ -1094,14 +974,13 @@ export class MainRoutesComponent {
       this.timeItem = $event.timeItem
       this.selectedTime = $event.time;
       this.subRouteInfo = this.subRouteInfos[index];
+      this.backSubrouteInfo = this.subRouteInfos[index === 0 ? 1 : 0];
       this.activeIndex = index;
       this.subroutDate = $event.date;
       let time = this.subRouteInfo.start_point_is_static ? this.timeItem.start : this.selectedTime;
       this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this._datePipe.transform(this.selectedDate.value, 'dd-MM-yyyy')} ${this.getDay()} ${time}`
       this.radioValue = 'approved,canceled';
       let isUnChange = $event.isUnChange ? false : true;
-
-
       this.getInfo($event.time, this.radioValue, isUnChange)
         .pipe(takeUntil(this.unsubscribe$)).subscribe()
     } else {
@@ -1160,98 +1039,69 @@ export class MainRoutesComponent {
     this.router.navigate([`/dashboard/raiting-order/${this.index}`]);
   }
 
-  public onClickComeBackIsAble(){
-    this.comeBackIsAble = !this.comeBackIsAble
-    this.comeBackIsAbleButton = this.comeBackIsAble? 'switchButtonOff' : 'switchButtonOn'
+  public onClickComeBackIsAble() {
+    this.comeBackIsAble = !this.comeBackIsAble;
   }
+  changeComeBack(evt: boolean): void {
+    if (!evt) {
+      this.comeBackIsAble = evt;
+      this.comeBackSwitch = false;
+    }
 
+  }
   public comeBackSwitchClick() {
-    let subroutWay = this.activeIndex === 0 ? [1, 0] : [0, 1]
+    let subroutWay = this.activeIndex === 0 ? [1, 0] : [0, 1];
     // console.log(subroutWay)
-    let subroute
+    let subroute;
     if (this.comeBackSwitch) {
-      this.formClass = 'switchOn'
-      this.bodyClass = 'switchOnBody'
-      this.modalBodyContainer = 'modalBodyContainerOn'
-      subroute = this.subRouteInfos[subroutWay[0]]
+      subroute = this.subRouteInfos[subroutWay[0]];
+      this.setPhoneNumberValue();
       // console.log(subroute);
-      this._setSecondForm(subroute)
+      // this._setSecondForm(subroute)
     }
     else {
-      this.formClass = 'switchOff'
-      this.bodyClass = 'switchOffBody'
-      this.modalBodyContainer = 'modalBodyContainerOff'
-      subroute = this.subRouteInfos[subroutWay[1]]
+      subroute = this.subRouteInfos[subroutWay[1]];
       // console.log(subroute);
-      this._setFirstForm(subroute)
+      // this._setFirstForm(subroute)
     }
-    this.checkSubrouteAddress(this.comeBackSwitch);
+    // this.checkSubrouteAddress(this.comeBackSwitch);
 
   }
 
-  private _setFirstForm(subRoute: any) {
-    const formValue = this.validateFormTwo.value;
-    let startAddress = subRoute.start_point_is_static ? subRoute.start_point_address_hy : ''
-    let endAddress = subRoute.end_point_is_static ? subRoute.end_point_address_hy : ''
-    this.validateForm.patchValue({
-      first_name: formValue.first_nameTwo,
-      last_name: formValue.last_nameTwo,
-      phone_number: formValue.phone_numberTwo,
-      userComment: formValue.userCommentTwo,
-      startPointAddress: startAddress,
-      endPointAddress: endAddress,
-      order_phone_number: formValue.order_phone_numberTwo,
-      orderType: formValue.orderTypeTwo,
-      personCount: formValue.personCountTwo,
-      comment: formValue.commentTwo,
-      date: formValue.dateTwo,
-      time: formValue.timeTwo,
-      isChangeStatus: formValue.isChangeStatusTwo,
-      isFree: formValue.isFreeTwo,
-      isExtra: formValue.isExtraTwo
-    })
 
-    this.setDisableEnableAddress('startPointAddress', 'endPointAddress', subRoute, 'validateForm')
+  private setPhoneNumberValue() {
+    const formValue = (this.validateForm.get('firstForm') as FormGroup).getRawValue();
+    if (!this.validateForm.get('secondForm').get('phone_number' + this.keyName).value
+      && !this.validateForm.get('secondForm').get('order_phone_number' + this.keyName).value
+    ) {
+      this.validateForm.get('secondForm').patchValue({
+        ['first_name' + this.keyName]: formValue.first_name,
+        ['last_name' + this.keyName]: formValue.last_name,
+        ['phone_number' + this.keyName]: formValue.phone_number,
+        ['order_phone_number' + this.keyName]: formValue.order_phone_number,
+        ['userId' + this.keyName]: formValue.userId
+      });
 
-  }
-
-  private _setSecondForm(subRoute: any) {
-    const formValue = this.validateForm.value
-    let startAddress = subRoute.start_point_is_static ? subRoute.start_point_address_hy : ''
-    let endAddress = subRoute.end_point_is_static ? subRoute.end_point_address_hy : ''
-    this.validateFormTwo.patchValue({
-      first_nameTwo: formValue.first_name,
-      last_nameTwo: formValue.last_name,
-      phone_numberTwo: formValue.phone_number,
-      userCommentTwo: formValue.userComment,
-      startPointAddressTwo: startAddress,
-      endPointAddressTwo: endAddress,
-      order_phone_numberTwo: formValue.order_phone_number,
-      orderTypeTwo: formValue.orderType,
-      personCountTwo: formValue.personCount,
-      commentTwo: formValue.comment,
-      dateTwo: formValue.date,
-      timeTwo: formValue.time,
-      isChangeStatusTwo: formValue.isChangeStatus,
-      isFreeTwo: formValue.isFree,
-      isExtraTwo: formValue.isExtra
-    })
-    this.setDisableEnableAddress('startPointAddressTwo', 'endPointAddressTwo', subRoute, 'validateFormTwo')
-  }
-
-  private setDisableEnableAddress(startControl: string, endControl: string, subRoute, formGroupName: string): void {
-    if (subRoute.start_point_is_static) {
-      this[formGroupName].get(startControl).disable();
-    } else {
-      this[formGroupName].get(startControl).enable()
-    }
-    if (subRoute.end_point_is_static) {
-      this[formGroupName].get(endControl).disable()
-
-    } else {
-      this[formGroupName].get(endControl).enable()
+      if (formValue.first_name && formValue.last_name) {
+        this.validateForm.get('secondForm').get('first_name' + this.keyName).disable();
+        this.validateForm.get('secondForm').get('last_name' + this.keyName).disable();
+      }
     }
   }
+
+  // private setDisableEnableAddress(startControl: string, endControl: string, subRoute, formGroupName: string): void {
+  //   if (subRoute.start_point_is_static) {
+  //     this[formGroupName].get(startControl).disable();
+  //   } else {
+  //     this[formGroupName].get(startControl).enable()
+  //   }
+  //   if (subRoute.end_point_is_static) {
+  //     this[formGroupName].get(endControl).disable()
+
+  //   } else {
+  //     this[formGroupName].get(endControl).enable()
+  //   }
+  // }
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();

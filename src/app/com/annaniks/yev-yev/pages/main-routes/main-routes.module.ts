@@ -6,10 +6,11 @@ import { MainRoutesService } from "./main-routes.service";
 import { SubrouteComponent } from "./component/subroute/subroute.component";
 import { ClickOutsideModule } from 'ng-click-outside';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { AddClientFormComponent } from './component/add-client-form/add-client-form.component';
 
 @NgModule({
-    declarations: [MainRoutesComponent,SubrouteComponent],
-    imports: [MainRoutesRoutingModule, SharedModule,ClickOutsideModule,NzSwitchModule],
+    declarations: [MainRoutesComponent, SubrouteComponent, AddClientFormComponent],
+    imports: [MainRoutesRoutingModule, SharedModule, ClickOutsideModule, NzSwitchModule],
     providers: [MainRoutesService]
 })
 export class MainRoutesModule { }

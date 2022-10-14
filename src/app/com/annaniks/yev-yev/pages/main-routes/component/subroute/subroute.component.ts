@@ -15,7 +15,6 @@ import { Notification } from "../../../../core/models/notification";
 import { NotificationService } from "../../../../core/services/notification.service";
 import { CountDto } from "../../../../core/models/dto/routes.dto.model";
 import { Counts } from "../../../../core/models/routes.model";
-import { th } from "date-fns/locale";
 
 @Component({
   selector: 'app-subroute',
@@ -45,9 +44,9 @@ export class SubrouteComponent {
   isShowError: boolean = false;
   @HostListener('window:resize', ['$event'])
   private _onResize(): void {
-    this.windowHeight = (window.innerHeight - 289)
-
+    this.windowHeight = (window.innerHeight - 289 - 30);
   }
+
   orderTypes: OrderType[] = [
     {
       id: 0,
