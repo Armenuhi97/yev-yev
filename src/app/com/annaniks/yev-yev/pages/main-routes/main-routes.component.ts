@@ -113,7 +113,6 @@ export class MainRoutesComponent {
   }
 
   ngOnInit() {
-    this.errorMessage = '';
     this.combine();
     this._initForm();
     let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
@@ -491,18 +490,19 @@ export class MainRoutesComponent {
     this.isVisibleOrderInfo = true;
   }
   handleCancel(): void {
-    this.isVisible = false;
-    this.validateForm.reset();
-    this.validateForm.enable();
-
-    this.isShowError = false;
-    this.isEditing = false;
-    this.editIndex = null;
-    this.isOrderEditing = false;
-    this.orderStatus = ''
-    this.editOrderIndex = null;
-    this.isVisibleOrderInfo = false;
-    this.orderMembers = [];
+    // this.isVisible = false;
+    // this.validateForm.reset();
+    // this.validateForm.enable();
+    // this.errorMessage = '';
+    // this.isShowError = false;
+    // this.isEditing = false;
+    // this.editIndex = null;
+    // this.isOrderEditing = false;
+    // this.orderStatus = ''
+    // this.editOrderIndex = null;
+    // this.isVisibleOrderInfo = false;
+    // this.orderMembers = [];
+    this.closeModal();
     this.comeBackSwitch = false;
     this.comeBackIsAble = false;
 
@@ -763,7 +763,7 @@ export class MainRoutesComponent {
     this.isEditing = false;
     this.editIndex = null;
     this.isOrderEditing = false;
-    this.orderStatus = ''
+    this.orderStatus = '';
     this.editOrderIndex = null;
     this.isVisibleOrderInfo = false;
     this.orderMembers = [];
@@ -950,7 +950,7 @@ export class MainRoutesComponent {
     this.isVisibleDriverModal = false;
     this.modalDrivers = [];
     this.driverControl.reset();
-    this.selectOrderId = null
+    this.selectOrderId = null;
   }
 
   onSaveDriver() {
