@@ -123,7 +123,10 @@
   overflow: hidden;
   min-height: 570px;
 }
-
+.error-message{
+    color: red;
+    font-size: 15px;
+}
 .formContainer{
   position: relative;
   width: 200%;

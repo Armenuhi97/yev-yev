@@ -38,6 +38,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
   providers: [DatePipe]
 })
 export class MainRoutesComponent {
+  errorMessage: string;
   activeIndex: number;
   private notifications: Notification[] = [];
   public searchControl = new FormControl(null);
@@ -112,6 +113,7 @@ export class MainRoutesComponent {
   }
 
   ngOnInit() {
+    this.errorMessage = '';
     this.combine();
     this._initForm();
     let date = this._datePipe.transform(this.selectedDate.value, 'yyyy-MM-dd');
@@ -461,10 +463,11 @@ export class MainRoutesComponent {
   //   }
 
   // }
-  public showModal(bool: boolean = false): void {
+  public showModal(): void {
 
     this.isVisible = true;
     this.validateForm.get('firstForm').get('orderType').setValue(0);
+    this.validateForm.get('secondForm').get('orderType' + this.keyName).setValue(0);
 
     // this.checkSubrouteAddress(bool);
   }
@@ -584,6 +587,7 @@ export class MainRoutesComponent {
     return value ? value : false;
   }
   public onclientSave() {
+    this.errorMessage = ''
     let backSubroute;
     if (this.isEditing) {
       const formValue = this.validateForm.get('firstForm').value;
@@ -612,6 +616,7 @@ export class MainRoutesComponent {
 
     } else {
       if (this.validateForm.get('firstForm').invalid) {
+        this.errorMessage = Messages.failValidation;
         this.nzMessages.error(Messages.failValidation);
         return;
       }
@@ -623,7 +628,9 @@ export class MainRoutesComponent {
       const requests = [this.sendRequest(sendObject)];
       if (this.comeBackIsAble) {
         if (this.validateForm.get('secondForm').invalid) {
-          this.nzMessages.error(Messages.failValidation);
+          this.errorMessage = 'Հետադարձի ' + Messages.failValidation;
+
+          this.nzMessages.error('Հետադարձի ' + Messages.failValidation);
           return;
         }
         const secondFormValue = (this.validateForm.get('secondForm') as FormGroup).controls;
@@ -759,7 +766,8 @@ export class MainRoutesComponent {
     this.orderStatus = ''
     this.editOrderIndex = null;
     this.isVisibleOrderInfo = false;
-    this.orderMembers = []
+    this.orderMembers = [];
+    this.errorMessage = '';
   }
   public formatDate(date: string) {
     if (date) {
@@ -1052,6 +1060,7 @@ export class MainRoutesComponent {
     if (!evt) {
       this.comeBackIsAble = evt;
       this.comeBackSwitch = false;
+      this.errorMessage = '';
     }
 
   }

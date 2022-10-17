@@ -413,35 +413,23 @@
   </nz-tabset>
 </div>
 <ng-template #secondFormModal>
-  <h5>{{backSubrouteInfo.start_point_city.name_hy}} - {{backSubrouteInfo.end_point_city.name_hy}}
+  <h5 class="mb-0">{{backSubrouteInfo.start_point_city.name_hy}} - {{backSubrouteInfo.end_point_city.name_hy}}
     {{validateForm.get("secondForm").get("date"+keyName).value | date:"dd-MM-yyyy"}}
     {{validateForm.get("secondForm").get("date"+keyName).value | weekDay }}
 
     {{validateForm.get("secondForm").get("time"+keyName).value }}</h5>
 </ng-template>
 <ng-template #titleOfModalTmp>
-  <div class="titleTamplate">
-    <!--  -->
-
-    <h5 *ngIf="!comeBackSwitch else secondFormModal">{{ modalTitle }}</h5>
-    <!-- <ng-container> -->
+  <div class="titleTamplate mb-2">
+    <h5 class="mb-0" *ngIf="!comeBackSwitch else secondFormModal">{{ modalTitle }}</h5>
     <div class="d-flex align-items-center" *ngIf="!isEditing">
       <nz-switch [(ngModel)]="comeBackSwitch" (ngModelChange)="comeBackSwitchClick()" [nzDisabled]="!comeBackIsAble">
       </nz-switch>
       <label class="mx-2" (ngModelChange)="changeComeBack($event)" nz-checkbox
         [(ngModel)]="comeBackIsAble">Հետադարձ</label>
     </div>
-    <!-- <button
-      *ngIf="!isEditing"
-      nz-button
-      [nzType]="'primary'"
-      (click)="onClickComeBackIsAble()"
-      [ngClass]="comeBackIsAbleButton"
-    >
-      Հետադարձ
-    </button> -->
-    <!-- </ng-container> -->
   </div>
+  <span class="error-message">{{errorMessage}}</span>
 </ng-template>
 
 <nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" [nzTitle]="titleOfModalTmp"

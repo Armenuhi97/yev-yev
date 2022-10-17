@@ -123,6 +123,7 @@ export class AddClientFormComponent implements OnInit, OnDestroy {
   }
   private checkOrderType(): void {
     this.validateForm.get('orderType' + this.keyName).valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((value) => {
+
       if (value === 1) {
         this.validateForm.get('personCount' + this.keyName).setValue(0);
         this.validateForm.get('personCount' + this.keyName).disable();
