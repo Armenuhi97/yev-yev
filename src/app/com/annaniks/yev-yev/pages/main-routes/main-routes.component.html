@@ -414,8 +414,10 @@
 </div>
 <ng-template #secondFormModal>
   <h5>{{backSubrouteInfo.start_point_city.name_hy}} - {{backSubrouteInfo.end_point_city.name_hy}}
-    {{validateForm.get("secondForm").get("time"+keyName).value | date:"dd-MM-yyyy"}}
-    {{validateForm.get("secondForm").get("time"+keyName).value | date:"HH:mm"}}</h5>
+    {{validateForm.get("secondForm").get("date"+keyName).value | date:"dd-MM-yyyy"}}
+    {{validateForm.get("secondForm").get("date"+keyName).value | weekDay }}
+
+    {{validateForm.get("secondForm").get("time"+keyName).value }}</h5>
 </ng-template>
 <ng-template #titleOfModalTmp>
   <div class="titleTamplate">

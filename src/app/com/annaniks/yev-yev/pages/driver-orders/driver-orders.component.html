@@ -29,8 +29,9 @@
     </div>
 </form>
 
-<div class="d-flex align-item-center flex-wrap card" *ngFor="let item of driverKeys">
+<div class="d-flex align-items-center flex-wrap " *ngFor="let item of driverKeys">
     <b> {{item | date:'HH:mm'}}</b>
+    <div class="card">
     <div *ngFor="let data of driverRoutes[item]">
         <span *ngIf="data?.orders?.length">{{data?.orders[0]?.seat_count}}</span>
         {{data?.name}}
@@ -38,4 +39,5 @@
             {{data?.orders[1]?.seat_count}}
         </span>
     </div>
+</div>
 </div>

@@ -12,6 +12,7 @@
             <th>Սկզբնակետ</th>
             <th>Վերջնակետ</th>
             <th>Ամսաթիվ</th>
+            <th>Արժեք</th>
             <th></th>
         </tr>
     </thead>
@@ -30,11 +31,13 @@
                 {{data?.connected_order_details?.end_address}}
             </td>
             <td>{{data?.connected_order_details?.date | date:'yyyy-MM-dd HH:mm'}}</td>
-
+            <td>
+                {{data.price}}
+            </td>
             <td (click)="onEditExtraOrders(ind)" class="action-button edit" style="width:10px"><i nz-icon
                     nzType="edit"></i>
             </td>
-
+       
         </tr>
     </tbody>
 </nz-table>

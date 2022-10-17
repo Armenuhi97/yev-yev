@@ -420,8 +420,8 @@ export class MainRoutesComponent {
   changeStatus($event) {
     this.getInfo(this.selectedTime, $event, false).subscribe();
   }
-  public getApprovedOrders() {
-    return this._mainRouteService.getAllAprovedOrders(this.subRouteInfo.id, this._formatDate(this.selectedTime)).pipe(
+  public getApprovedOrders(subRouteInfo = this.subRouteInfo.id, time = this.selectedTime) {
+    return this._mainRouteService.getAllAprovedOrders(subRouteInfo, this._formatDate(time)).pipe(
       map((orders: ServerResponce<any>) => {
         this.approvedOrders = orders.results;
       })
@@ -584,6 +584,7 @@ export class MainRoutesComponent {
     return value ? value : false;
   }
   public onclientSave() {
+    let backSubroute;
     if (this.isEditing) {
       const formValue = this.validateForm.get('firstForm').value;
       const date = this._formatDate(formValue.time, formValue.date);
@@ -611,7 +612,7 @@ export class MainRoutesComponent {
 
     } else {
       if (this.validateForm.get('firstForm').invalid) {
-        this.nzMessages.error(Messages.fail);
+        this.nzMessages.error(Messages.failValidation);
         return;
       }
       const date = this._formatDate(this.selectedTime);
@@ -622,14 +623,14 @@ export class MainRoutesComponent {
       const requests = [this.sendRequest(sendObject)];
       if (this.comeBackIsAble) {
         if (this.validateForm.get('secondForm').invalid) {
-          this.nzMessages.error(Messages.fail);
+          this.nzMessages.error(Messages.failValidation);
           return;
         }
         const secondFormValue = (this.validateForm.get('secondForm') as FormGroup).controls;
 
         const returnDate = this._formatDate(secondFormValue['time' + this.keyName].value, secondFormValue['date' + this.keyName].value);
 
-        const backSubroute = this.subRouteInfos.find((el) => {
+        backSubroute = this.subRouteInfos.find((el) => {
           return el.id !== this.subRouteInfo.id;
         });
         const sendObjectTwo = new AddPassangerDto(this.keyName, secondFormValue, backSubroute.id, returnDate);
@@ -641,10 +642,19 @@ export class MainRoutesComponent {
       ).subscribe({
         next: () => {
           this.nzMessages.success(Messages.success);
-          this.closeModal();
           this.getInfo(this.selectedTime).subscribe();
+          if (this.comeBackIsAble && !!backSubroute) {
+            const time = this.validateForm.get('secondForm').get('time' + this.keyName).value;
+            const formatSelectedDate = this._datePipe.transform(new Date(this.selectedDate.value), 'YYYY-MM-dd');
+            const formatReturnedDate = this._datePipe.transform(this.validateForm.get('secondForm').get('date' + this.keyName).value, 'YYYY-MM-dd');
+            if (formatSelectedDate === formatReturnedDate) {
+              this.getInfo(time, this.radioValue, true, backSubroute.id).subscribe();
+            }
+          }
+          this.closeModal();
           this.comeBackIsAble = false;
           this.comeBackSwitch = false;
+
         },
         error: () => {
           this.nzMessages.error(Messages.fail);
@@ -692,30 +702,26 @@ export class MainRoutesComponent {
 
   // }
 
-  getInfo(time, status = this.radioValue, isChange = true) {
-
+  getInfo(time, status = this.radioValue, isChange = true, subRouteInfoId = this.subRouteInfo.id) {
     if (time) {
       this.isOpenInfo = true;
-      let current = this._formatDate(time);
-
-
-
-      return this._mainRouteService.getOrdersByHour(this.subRouteInfo.id, current, status)
+      const current = this._formatDate(time);
+      return this._mainRouteService.getOrdersByHour(subRouteInfoId, current, status)
         .pipe(takeUntil(this.unsubscribe$),
           switchMap((data: OrdersByHours[]) => {
             data = data.map((val) => {
-              let isSelect = val.is_in_approved_orders ? true : false
-              return Object.assign({}, val, { is_in_approved_orders: val.is_in_approved_orders, isSelect: isSelect, isDisabled: false })
+              const isSelect = val.is_in_approved_orders ? true : false;
+              return Object.assign({}, val, { is_in_approved_orders: val.is_in_approved_orders, isSelect, isDisabled: false });
             });
             this.fullUserInfo = data;
             this.userInfo = data;
             if (isChange) {
               this.isGetItem = true;
             }
-            return this.getApprovedOrders()
-          }))
+            return this.getApprovedOrders(subRouteInfoId, time);
+          }));
     } else {
-      return of()
+      return of();
     }
   }
 
@@ -1022,15 +1028,15 @@ export class MainRoutesComponent {
   }
   getDay(): string {
     if (this.selectedDate && this.selectedDate.value) {
-      let dayIndex = this.selectedDate.value.getDay()
+      const dayIndex = this.selectedDate.value.getDay();
       switch (dayIndex) {
-        case (0): { return 'Կիրակի' }
-        case (1): { return 'Երկուշաբթի' }
-        case (2): { return 'Երեքշաբթի' }
-        case (3): { return 'Չորեքշաբթի' }
-        case (4): { return 'Հինգշաբթի' }
-        case (5): { return 'Ուրբաթ' }
-        case (6): { return 'Շաբաթ' }
+        case (0): { return 'Կիրակի'; }
+        case (1): { return 'Երկուշաբթի'; }
+        case (2): { return 'Երեքշաբթի'; }
+        case (3): { return 'Չորեքշաբթի'; }
+        case (4): { return 'Հինգշաբթի'; }
+        case (5): { return 'Ուրբաթ'; }
+        case (6): { return 'Շաբաթ'; }
       }
     }
   }
@@ -1051,25 +1057,18 @@ export class MainRoutesComponent {
   }
   public comeBackSwitchClick() {
     let subroutWay = this.activeIndex === 0 ? [1, 0] : [0, 1];
-    // console.log(subroutWay)
     let subroute;
     if (this.comeBackSwitch) {
       subroute = this.subRouteInfos[subroutWay[0]];
       this.setPhoneNumberValue();
-      // console.log(subroute);
-      // this._setSecondForm(subroute)
     }
     else {
       subroute = this.subRouteInfos[subroutWay[1]];
-      // console.log(subroute);
-      // this._setFirstForm(subroute)
     }
-    // this.checkSubrouteAddress(this.comeBackSwitch);
-
   }
 
 
-  private setPhoneNumberValue() {
+  private setPhoneNumberValue(): void {
     const formValue = (this.validateForm.get('firstForm') as FormGroup).getRawValue();
     if (!this.validateForm.get('secondForm').get('phone_number' + this.keyName).value
       && !this.validateForm.get('secondForm').get('order_phone_number' + this.keyName).value

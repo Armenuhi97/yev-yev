@@ -46,6 +46,7 @@ export class AddClientFormComponent implements OnInit, OnDestroy {
     this.setInitialValueFormDate();
     this.checkSubrouteAddress();
   }
+
   setInitialValueFormDate(): void {
 
     if (this.date && this.isReturn && !this.validateForm.get('date' + this.keyName).value) {
@@ -56,6 +57,7 @@ export class AddClientFormComponent implements OnInit, OnDestroy {
     if (this.isReturn) {
       this.getOpenTimes().pipe(takeUntil(this.unsubscribe$)).subscribe();
     }
+
   }
   disabledDate = (current: Date): boolean =>
     // Can not select days before today and today
@@ -85,6 +87,7 @@ export class AddClientFormComponent implements OnInit, OnDestroy {
   private getOpenTimes(): Observable<void> {
     const date = this.datePipe.transform(this.validateForm.get('date' + this.keyName).value, 'YYYY-MM-dd');
     return this.mainRoutesService.getBlockedHours(this.subRouteInfo.id, date).pipe(map((data: ServerResponce<any>) => {
+
       const day = this.validateForm.get('date' + this.keyName).value.getDay();
       const index = day ? day - 1 : 6;
       const weekDayKey = this.getWeekDays()[index];
@@ -220,7 +223,11 @@ export class AddClientFormComponent implements OnInit, OnDestroy {
       }
     }
     this.openTimes = arr;
-    if (this.openTimes.length) {
+    let isExist = false;
+    if (this.validateForm.get('time' + this.keyName).value) {
+      isExist = this.openTimes.some((el) => el.time === this.validateForm.get('time' + this.keyName).value);
+    }
+    if (this.openTimes.length && (!this.validateForm.get('time' + this.keyName).value || !isExist)) {
       this.validateForm.get('time' + this.keyName).setValue(this.openTimes[0].time);
     }
   }

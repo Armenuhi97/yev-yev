@@ -179,8 +179,7 @@ export class SubrouteComponent {
     if (this.subrouteInfo && this.subrouteInfo.start_point_city) {
       this.title = `${this.subrouteInfo.start_point_city.name_hy} - ${this.subrouteInfo?.end_point_city.name_hy}`
     }
-    this.getCount()
-    // console.log(this.tableCounts);
+    this.getCount();
 
   }
 
