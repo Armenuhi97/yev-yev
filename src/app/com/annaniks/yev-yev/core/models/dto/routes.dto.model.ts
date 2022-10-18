@@ -40,8 +40,8 @@ export class AddPassangerDto {
     // this.user = user;
     this.date = date;
     // if (isFirst) {
-    this.first_name = formValue['first_name' + keyName].value;
-    this.last_name = formValue['last_name' + keyName].value;
+    this.first_name = formValue['first_name' + keyName].value ? formValue['first_name' + keyName].value : '';
+    this.last_name = formValue['last_name' + keyName].value ? formValue['last_name' + keyName].value : '';
     this.user_comment = formValue['userComment' + keyName].value;
     this.is_free = formValue['isFree' + keyName].value;
     this.is_extra_order = formValue['isExtra' + keyName].value ? formValue['isExtra' + keyName].value : false;
