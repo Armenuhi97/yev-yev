@@ -53,6 +53,8 @@ export class MainRoutesComponent {
   userInfo: OrdersByHours[] = [];
   fullUserInfo: OrdersByHours[] = [];
   currentDriver: AvailableDriverModel[] = [];
+  fullCurrentDriver: AvailableDriverModel[] = [];
+
   isVisibleOrderInfo = false;
   isOrderEditing = false;
   backSubrouteInfo;
@@ -807,25 +809,27 @@ export class MainRoutesComponent {
     item.forEach((data) => {
       calculateCount += data.person_count;
     });
-    // if (this.drivers) {
-    // if (calculateCount) {
-    // const arr = this.drivers.filter((val) => {
-    //   return (+val.car_capacity >= calculateCount && val.user.is_active === true
-    //     && +val.located_city.id === +this.subRouteInfo.start_point_city.id);
-    // });
-    // const arr1 = arr.filter((el) => el.located_city.id !== el.main_city.id);
-    // const arr2 = arr.filter((el) => el.located_city.id === el.main_city.id);
-    // this.currentDriver = [...arr1, ...arr2];
-    // } else {
-    // const arr = this.drivers.filter((val) => {
-    //   return (val.user.is_active === true && +val.located_city.id === +this.subRouteInfo.start_point_city.id);
-    // });
+    if (this.drivers) {
+      if (calculateCount) {
+        this.currentDriver = this.fullCurrentDriver.filter((val) => {
+          return (+val.car_capacity >= calculateCount
+            // && val.user.is_active === true
+            // && +val.located_city.id === +this.subRouteInfo.start_point_city.id
+          );
+        });
+        // const arr1 = arr.filter((el) => el.located_city.id !== el.main_city.id);
+        // const arr2 = arr.filter((el) => el.located_city.id === el.main_city.id);
+        // this.currentDriver = [...arr1, ...arr2];
+      } else {
+        // const arr = this.drivers.filter((val) => {
+        //   return (val.user.is_active === true && +val.located_city.id === +this.subRouteInfo.start_point_city.id);
+        // });
 
-    // const arr1 = arr.filter((el) => el.located_city.id !== el.main_city.id);
-    // const arr2 = arr.filter((el) => el.located_city.id === el.main_city.id);
-    // this.currentDriver = [...arr1, ...arr2];
-    // }
-    // }
+        // const arr1 = arr.filter((el) => el.located_city.id !== el.main_city.id);
+        // const arr2 = arr.filter((el) => el.located_city.id === el.main_city.id);
+        this.currentDriver = this.fullCurrentDriver;
+      }
+    }
     return calculateCount;
   }
   public onEditOrder(index, moderator) {
@@ -966,6 +970,7 @@ export class MainRoutesComponent {
     return this._mainRoutesService.getAvailableDrivers(sendObject).pipe(
       map((data: AvailableDriverModel[]) => {
         this.currentDriver = data;
+        this.fullCurrentDriver = data;
       })
     );
   }
