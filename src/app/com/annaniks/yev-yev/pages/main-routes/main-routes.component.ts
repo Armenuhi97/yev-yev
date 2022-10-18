@@ -612,7 +612,7 @@ export class MainRoutesComponent {
         is_admin: true,
         change_status: formValue.isChangeStatus ? formValue.isChangeStatus : false
         // this._appService.checkPropertyValue(this.validateForm.get('isChangeStatus'), 'value', false)
-      };
+      };      
       this.sendEditRequest(this.userInfo[this.editIndex].id, editResponse);
 
     } else {

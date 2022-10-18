@@ -159,7 +159,7 @@
     <div nz-row [nzGutter]="24" class="d-flex align-items-center margin-top-10 justify-content-between">
         <div *ngIf="isEditing && radioValue == 'pending'" nz-col [nzSpan]="8">
             <nz-form-control>
-                <label nz-checkbox [formControlName]="isChangeStatus">Փոխել կարգավիճակը</label>
+                <label nz-checkbox formControlName="isChangeStatus">Փոխել կարգավիճակը</label>
             </nz-form-control>
         </div>
         <div nz-col [nzSpan]="8">
