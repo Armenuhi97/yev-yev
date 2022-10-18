@@ -96,6 +96,7 @@ export class MainRoutesComponent {
   driverControl = new FormControl('', Validators.required);
   public comeBackSwitch: boolean = false;
   public comeBackIsAble = false;
+  isUpdateBack: string;
   constructor(
     private _mainRoutesService: MainRoutesService,
     private router: Router, private _datePipe: DatePipe,
@@ -421,8 +422,8 @@ export class MainRoutesComponent {
   changeStatus($event) {
     this.getInfo(this.selectedTime, $event, false).subscribe();
   }
-  public getApprovedOrders(subRouteInfo = this.subRouteInfo.id, time = this.selectedTime) {
-    return this._mainRouteService.getAllAprovedOrders(subRouteInfo, this._formatDate(time)).pipe(
+  public getApprovedOrders() {
+    return this._mainRouteService.getAllAprovedOrders(this.subRouteInfo.id, this._formatDate(this.selectedTime)).pipe(
       map((orders: ServerResponce<any>) => {
         this.approvedOrders = orders.results;
       })
@@ -617,7 +618,7 @@ export class MainRoutesComponent {
     } else {
       if (this.validateForm.get('firstForm').invalid) {
         this.errorMessage = Messages.failValidation;
-        this.nzMessages.error(Messages.failValidation);
+        // this.nzMessages.error(Messages.failValidation);
         return;
       }
       const date = this._formatDate(this.selectedTime);
@@ -630,7 +631,7 @@ export class MainRoutesComponent {
         if (this.validateForm.get('secondForm').invalid) {
           this.errorMessage = 'Հետադարձի ' + Messages.failValidation;
 
-          this.nzMessages.error('Հետադարձի ' + Messages.failValidation);
+          // this.nzMessages.error('Հետադարձի ' + Messages.failValidation);
           return;
         }
         const secondFormValue = (this.validateForm.get('secondForm') as FormGroup).controls;
@@ -655,7 +656,7 @@ export class MainRoutesComponent {
             const formatSelectedDate = this._datePipe.transform(new Date(this.selectedDate.value), 'YYYY-MM-dd');
             const formatReturnedDate = this._datePipe.transform(this.validateForm.get('secondForm').get('date' + this.keyName).value, 'YYYY-MM-dd');
             if (formatSelectedDate === formatReturnedDate) {
-              this.getInfo(time, this.radioValue, true, backSubroute.id).subscribe();
+              this.isUpdateBack = time;
             }
           }
           this.closeModal();
@@ -667,6 +668,7 @@ export class MainRoutesComponent {
           this.nzMessages.error(Messages.fail);
         }
       });
+
       // let date = this._formatDate(this.selectedTime)
 
       // let formValue
@@ -709,11 +711,11 @@ export class MainRoutesComponent {
 
   // }
 
-  getInfo(time, status = this.radioValue, isChange = true, subRouteInfoId = this.subRouteInfo.id) {
+  getInfo(time, status = this.radioValue, isChange = true) {
     if (time) {
       this.isOpenInfo = true;
       const current = this._formatDate(time);
-      return this._mainRouteService.getOrdersByHour(subRouteInfoId, current, status)
+      return this._mainRouteService.getOrdersByHour(this.subRouteInfo.id, current, status)
         .pipe(takeUntil(this.unsubscribe$),
           switchMap((data: OrdersByHours[]) => {
             data = data.map((val) => {
@@ -725,7 +727,7 @@ export class MainRoutesComponent {
             if (isChange) {
               this.isGetItem = true;
             }
-            return this.getApprovedOrders(subRouteInfoId, time);
+            return this.getApprovedOrders();
           }));
     } else {
       return of();
@@ -733,7 +735,10 @@ export class MainRoutesComponent {
   }
 
   resetItem($event) {
-    this.isGetItem = $event
+    this.isGetItem = $event;
+  }
+  resetItem2($event) {
+    this.isUpdateBack = $event;
   }
   formatItem(value) {
     return new Observable(value)
