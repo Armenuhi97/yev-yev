@@ -15,7 +15,6 @@ import { Notification } from "../../../../core/models/notification";
 import { NotificationService } from "../../../../core/services/notification.service";
 import { CountDto } from "../../../../core/models/dto/routes.dto.model";
 import { Counts } from "../../../../core/models/routes.model";
-import { th } from "date-fns/locale";
 
 @Component({
   selector: 'app-subroute',
@@ -45,9 +44,9 @@ export class SubrouteComponent {
   isShowError: boolean = false;
   @HostListener('window:resize', ['$event'])
   private _onResize(): void {
-    this.windowHeight = (window.innerHeight - 289)
-
+    this.windowHeight = (window.innerHeight - 289 - 30);
   }
+
   orderTypes: OrderType[] = [
     {
       id: 0,
@@ -68,6 +67,9 @@ export class SubrouteComponent {
   @Output('openDriverModal') _openDriverModal = new EventEmitter<void>();
   @Output('getInfo') private _info = new EventEmitter();
   @Output('resetItem') private _reset = new EventEmitter();
+  @Output('resetItem2') private _reset2 = new EventEmitter();
+
+
   @Output('subrout') subrout = new EventEmitter();
   @Input() subrouteReturnId: number;
   index: number;
@@ -115,10 +117,19 @@ export class SubrouteComponent {
   isGetOrderCounts: boolean;
   @Input('isGetItem')
   set isGetItem($event) {
+
     this.isGetOrderCounts = $event;
     this.isGetOrderCounts = true;
-    if ($event && this.selectedTime) {
-      this.getHourlyOrdersByDate().pipe(takeUntil(this.unsubscribe$)).subscribe()
+    this.actionInChange($event, this.selectedTime);
+  }
+  @Input('isUpdateBack')
+  set setIsUpdateItem($event) {
+    this.actionInChange(true, $event, true);
+  }
+  @Input('getOtherRouteOrdersCount')
+  set setOrdersCount($event) {
+    if ($event) {
+      this.onClickRefresh();
     }
   }
   private _date;
@@ -174,13 +185,16 @@ export class SubrouteComponent {
     if (this.subrouteInfo && this.subrouteInfo.start_point_city) {
       this.title = `${this.subrouteInfo.start_point_city.name_hy} - ${this.subrouteInfo?.end_point_city.name_hy}`
     }
-    this.getCount()
-    // console.log(this.tableCounts);
+    this.getCount();
 
   }
+  private actionInChange($event, time, isBackRoute?) {
+    if ($event && time) {
+      this.getHourlyOrdersByDate(isBackRoute).pipe(takeUntil(this.unsubscribe$)).subscribe()
+    }
+  }
 
-
-  getHourlyOrdersByDate(): Observable<any> {
+  getHourlyOrdersByDate(isBackRoute?: boolean): Observable<any> {
 
     let date = this._datePipe.transform(this._date, 'yyyy-MM-dd');
     return this._mainRouteService.getHourlyOrdersByDate(this.subrouteInfo.id, date)
@@ -211,7 +225,11 @@ export class SubrouteComponent {
 
           }
         }
-        this._reset.emit(false);
+        if (isBackRoute) {
+          this._reset2.emit(null);
+        } else {
+          this._reset.emit(false);
+        }
       }));
   }
 

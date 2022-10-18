@@ -104,3 +104,72 @@
 .red{
     background-color:  rgb(255, 77, 79);
 }
+
+.titleTamplate{
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  align-items: center;
+}
+
+.modalBodyContainerOff{
+  position: relative;
+  overflow: hidden;
+  min-height: 500px;
+}
+
+.modalBodyContainerOn{
+  position: relative;
+  overflow: hidden;
+  min-height: 570px;
+}
+.error-message{
+    color: red;
+    font-size: 15px;
+}
+.formContainer{
+  position: relative;
+  width: 200%;
+  display: grid;
+  grid-template-columns: 49% 49%;
+  column-gap: 2%;
+  transform: translateX(0%);
+  transition: 1s;
+}
+
+.w-auto{
+  width: 97% !important;
+}
+
+
+.secondFormInputSize{
+  width: 380px;
+}
+
+.secondFormPhoneInputSize{
+  width: 306px;
+}
+
+.switchOff{
+  transform: translateX(0%);
+}
+
+.switchOffBody{
+  height: 540px;
+}
+
+.switchOn{
+  transform: translateX(-50%);
+}
+
+.switchButtonOn{
+  background-color: #1890ff;
+}
+
+.switchButtonOff{
+  background-color: #188fff77;
+}
+
+.ant-col{
+  max-width: 95%;
+}

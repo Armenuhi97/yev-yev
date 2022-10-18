@@ -49,18 +49,21 @@ export class MainRoutesService {
     }
 
     public getBlockedHours(subRouteId: number, date: string) {
-
         return this._httpClient.get(`route/blocked-hour/?sub_route=${subRouteId}&date=${date}&offset=0&limit=1000`)
     }
+
+
     public blockHour(subrouteId: number, date) {
         return this._httpClient.post(`route/blocked-hour/`, {
             "sub_route": subrouteId,
             "time": date
         })
     }
+
     public openBlockedHours(id: number) {
         return this._httpClient.delete(`route/blocked-hour/${id}/`)
     }
+
     public finishOrder(id: number) {
         return this._httpClient.get(`order/finish-approved-order/${id}/`)
     }
