@@ -22,6 +22,8 @@ import { Notification } from '../../core/models/notification';
 import { AddPassangerDto } from '../../../../../com/annaniks/yev-yev/core/models/dto/routes.dto.model'
 import { createForm } from './helpers/create-form';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { AvailableDriversDto } from './dto/driver.dto';
+import { AvailableDriverModel } from './models/available-driver';
 
 @Component({
   selector: 'app-main-routes',
@@ -50,7 +52,7 @@ export class MainRoutesComponent {
   isGetItem = false;
   userInfo: OrdersByHours[] = [];
   fullUserInfo: OrdersByHours[] = [];
-  currentDriver = [];
+  currentDriver: AvailableDriverModel[] = [];
   isVisibleOrderInfo = false;
   isOrderEditing = false;
   backSubrouteInfo;
@@ -668,36 +670,6 @@ export class MainRoutesComponent {
           this.nzMessages.error(Messages.fail);
         }
       });
-
-      // let date = this._formatDate(this.selectedTime)
-
-      // let formValue
-      // // let userId = this.userId ? this.userId : null;
-      // if (this.comeBackSwitch) {
-      //   // if (this.validateFormTwo.invalid) {
-      //   //   this.nzMessages.error(Messages.fail);
-      //   //   return;
-      //   // }
-      //   formValue = this.validateFormTwo.getRawValue()
-      //   const sendObject = new AddPassangerDto(false, formValue, this.subRouteInfo.id, date, userId)
-      //   this.sendRequest(sendObject);
-      //   let backSubrout = this.subRouteInfos.find((el) => {
-      //     return el.id !== this.subRouteInfo.id
-      //   })
-
-      //   const dateSecondForm = this._formatDate(this.validateFormTwo.get('timeTwo')?.value, this.validateFormTwo.get('dateTwo')?.value);
-      //   const sendObjectTwo = new AddPassangerDto(false, formValue, backSubrout.id, dateSecondForm, userId)
-      //   this.sendRequest(sendObjectTwo, backSubrout);
-      // }
-      // else {
-      //   if (this.validateForm.invalid) {
-      //     this.nzMessages.error(Messages.fail);
-      //     return;
-      //   }
-      //   formValue = this.validateForm.getRawValue()
-      //   const sendObject = new AddPassangerDto(true, formValue, this.subRouteInfo.id, date, userId)
-      //   this.sendRequest(sendObject);
-      // }
     }
 
   }
@@ -706,10 +678,6 @@ export class MainRoutesComponent {
   }
 
   subroutDate!: string;
-  // getSubroueteInfo(event: string) {
-  //     this.subroutDate = event;
-
-  // }
 
   getInfo(time, status = this.radioValue, isChange = true) {
     if (time) {
@@ -734,30 +702,30 @@ export class MainRoutesComponent {
     }
   }
 
-  resetItem($event) {
+  resetItem($event): void {
     this.isGetItem = $event;
   }
-  resetItem2($event) {
+  resetItem2($event): void {
     this.isUpdateBack = $event;
   }
   formatItem(value) {
-    return new Observable(value)
+    return new Observable(value);
   }
   sendEditRequest(id, sendObject) {
     this._mainRouteService.changeOrder(id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
-      this.nzMessages.success(Messages.success)
+      this.nzMessages.success(Messages.success);
       this.closeModal();
-      if (this.radioValue == 'pending' && this.validateForm.get('firstForm').get('isChangeStatus').value) {
+      if (this.radioValue === 'pending' && this.validateForm.get('firstForm').get('isChangeStatus').value) {
         this._mainRouteService.changeOrderStatus(id).subscribe(() => {
-          this.getInfo(this.selectedTime).subscribe()
+          this.getInfo(this.selectedTime).subscribe();
         })
       } else {
-        this.getInfo(this.selectedTime).subscribe()
+        this.getInfo(this.selectedTime).subscribe();
       }
     },
       () => {
-        this.nzMessages.error(Messages.fail)
-      })
+        this.nzMessages.error(Messages.fail);
+      });
 
   }
   closeModal(): void {
@@ -787,22 +755,22 @@ export class MainRoutesComponent {
       return { id: data.id }
     });
     let selectedOrders = this.approvedOrders[index].approved_order_orders.map((val) => {
-      return { id: val.order.id }
+      return { id: val.order.id };
     })
     let mergeArray = [...orderIds, ...selectedOrders];
     if (orderIds && orderIds.length) {
-      let sendObject = {
-        "sub_route": this.subRouteInfo.id,
-        "date": this._formatDate(this.selectedTime),
-        "driver": this.approvedOrders[index].driver,
-        "order": mergeArray
+      const sendObject = {
+        sub_route: this.subRouteInfo.id,
+        date: this._formatDate(this.selectedTime),
+        driver: this.approvedOrders[index].driver,
+        order: mergeArray
       }
       this._mainRouteService.editApprovedOrder(this.approvedOrders[index].id, sendObject).pipe(takeUntil(this.unsubscribe$),
         map(() => {
           this.getInfo(this.selectedTime).subscribe();
           this.nzMessages.success(Messages.success)
 
-        })).subscribe()
+        })).subscribe();
     }
   }
   onDeleteOrder(index: number): void {
@@ -839,25 +807,25 @@ export class MainRoutesComponent {
     item.forEach((data) => {
       calculateCount += data.person_count;
     });
-    if (this.drivers) {
-      if (calculateCount) {
-        const arr = this.drivers.filter((val) => {
-          return (+val.car_capacity >= calculateCount && val.user.is_active === true
-            && +val.located_city.id === +this.subRouteInfo.start_point_city.id);
-        });
-        const arr1 = arr.filter((el) => el.located_city.id !== el.main_city.id);
-        const arr2 = arr.filter((el) => el.located_city.id === el.main_city.id);
-        this.currentDriver = [...arr1, ...arr2];
-      } else {
-        const arr = this.drivers.filter((val) => {
-          return (val.user.is_active === true && +val.located_city.id === +this.subRouteInfo.start_point_city.id);
-        });
+    // if (this.drivers) {
+    // if (calculateCount) {
+    // const arr = this.drivers.filter((val) => {
+    //   return (+val.car_capacity >= calculateCount && val.user.is_active === true
+    //     && +val.located_city.id === +this.subRouteInfo.start_point_city.id);
+    // });
+    // const arr1 = arr.filter((el) => el.located_city.id !== el.main_city.id);
+    // const arr2 = arr.filter((el) => el.located_city.id === el.main_city.id);
+    // this.currentDriver = [...arr1, ...arr2];
+    // } else {
+    // const arr = this.drivers.filter((val) => {
+    //   return (val.user.is_active === true && +val.located_city.id === +this.subRouteInfo.start_point_city.id);
+    // });
 
-        const arr1 = arr.filter((el) => el.located_city.id !== el.main_city.id);
-        const arr2 = arr.filter((el) => el.located_city.id === el.main_city.id);
-        this.currentDriver = [...arr1, ...arr2];
-      }
-    }
+    // const arr1 = arr.filter((el) => el.located_city.id !== el.main_city.id);
+    // const arr2 = arr.filter((el) => el.located_city.id === el.main_city.id);
+    // this.currentDriver = [...arr1, ...arr2];
+    // }
+    // }
     return calculateCount;
   }
   public onEditOrder(index, moderator) {
@@ -982,15 +950,28 @@ export class MainRoutesComponent {
   }
   removeAndCancelOrder(moderator, ind: number) {
     // this.orderMembers.splice(ind, 1)
-    this._mainRouteService.removeAndCancelOrder(moderator.order.approved_order_details[0].approved_order.id, moderator.order.id).pipe(takeUntil(this.unsubscribe$),
-      switchMap(() => {
-        this.orderMembers.splice(ind, 1)
-        return this.getInfo(this.selectedTime)
-      })).subscribe()
+    this._mainRouteService.removeAndCancelOrder(moderator.order.approved_order_details[0].approved_order.id,
+      moderator.order.id).pipe(takeUntil(this.unsubscribe$),
+        switchMap(() => {
+          this.orderMembers.splice(ind, 1);
+          return this.getInfo(this.selectedTime);
+        })).subscribe();
+  }
+  private getAvailableDrivers(): Observable<void> {
+    const sendObject: AvailableDriversDto = {
+      sub_route_id: this.subRouteInfo.id,
+      main_route_id: this.currentId,
+      date: this._datePipe.transform(this.selectedDate.value, 'YYYY-MM-dd')
+    };
+    return this._mainRoutesService.getAvailableDrivers(sendObject).pipe(
+      map((data: AvailableDriverModel[]) => {
+        this.currentDriver = data;
+      })
+    );
   }
   getInformation($event, index: number) {
     if ($event) {
-      this.timeItem = $event.timeItem
+      this.timeItem = $event.timeItem;
       this.selectedTime = $event.time;
       this.subRouteInfo = this.subRouteInfos[index];
       this.backSubrouteInfo = this.subRouteInfos[index === 0 ? 1 : 0];
@@ -1000,7 +981,10 @@ export class MainRoutesComponent {
       this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this._datePipe.transform(this.selectedDate.value, 'dd-MM-yyyy')} ${this.getDay()} ${time}`
       this.radioValue = 'approved,canceled';
       let isUnChange = $event.isUnChange ? false : true;
-      this.getInfo($event.time, this.radioValue, isUnChange)
+      forkJoin([
+        this.getInfo($event.time, this.radioValue, isUnChange),
+        this.getAvailableDrivers()
+      ])
         .pipe(takeUntil(this.unsubscribe$)).subscribe()
     } else {
       this.modalTitle = ''

@@ -130,30 +130,48 @@
 
     <div nz-row [nzGutter]="24" class="d-flex align-items-center justify-content-between" *ngIf="isEditing">
         <div nz-col [nzSpan]="12">
-            <nz-date-picker class="w-100" [formControlName]="'date'+keyName" [nzDisabledDate]="disabledDate">
-            </nz-date-picker>
+            <nz-form-label nzRequired>Ամսաթիվ</nz-form-label>
+            <nz-form-item>
+                <nz-form-control>
+                    <nz-date-picker class="w-100" [formControlName]="'date'+keyName" [nzDisabledDate]="disabledDate">
+                    </nz-date-picker>
+                </nz-form-control>
+            </nz-form-item>
         </div>
         <div nz-col [nzSpan]="12">
-            <nz-select class="w-100" [formControlName]="'time'+keyName">
-                <nz-option *ngFor="let time of subRouteInfo?.openTimes" [nzValue]="time.time"
-                    [nzLabel]="setTimeLabel(time)">
-                </nz-option>
-            </nz-select>
+            <nz-form-label nzRequired>Ժամանակ</nz-form-label>
+            <nz-form-item>
+                <nz-form-control>
+                    <nz-select class="w-100" [formControlName]="'time'+keyName">
+                        <nz-option *ngFor="let time of subRouteInfo?.openTimes" [nzValue]="time.time"
+                            [nzLabel]="setTimeLabel(time)">
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
         </div>
     </div>
     <div nz-row [nzGutter]="24" *ngIf="isReturn">
         <div class="w-auto" nz-col [nzSpan]="12">
             <nz-form-label nzRequired>Հետադարձի ամսաթիվ</nz-form-label>
-            <nz-date-picker nzPlaceholder="Ընտրել ամսաթիվ" class="w-100"  [formControlName]="'date'+keyName"  [nzDisabledDate]="disabledDate">
-            </nz-date-picker>
+            <nz-form-item>
+                <nz-form-control>
+                    <nz-date-picker nzPlaceholder="Ընտրել ամսաթիվ" class="w-100" [formControlName]="'date'+keyName"
+                        [nzDisabledDate]="disabledDate">
+                    </nz-date-picker>
+                </nz-form-control>
+            </nz-form-item>
         </div>
         <div class="w-auto" nz-col [nzSpan]="12">
             <nz-form-label nzRequired>Հետադարձի ժամանակ</nz-form-label>
-            <nz-select class="w-100" [formControlName]="'time'+keyName">
-                <nz-option *ngFor="let time of openTimes" [nzValue]="time.time"
-                    [nzLabel]="setTimeLabel(time)">
-                </nz-option>
-            </nz-select>
+            <nz-form-item>
+                <nz-form-control>
+                    <nz-select class="w-100" [formControlName]="'time'+keyName">
+                        <nz-option *ngFor="let time of openTimes" [nzValue]="time.time" [nzLabel]="setTimeLabel(time)">
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
         </div>
     </div>
     <div nz-row [nzGutter]="24" class="d-flex align-items-center margin-top-10 justify-content-between">
@@ -168,7 +186,7 @@
                 <nz-switch [formControlName]="'isFree'+keyName"></nz-switch>
             </nz-form-control>
         </div>
-    
+
         <div *ngIf="validateForm.get('orderType'+keyName).value == 2" nz-col [nzSpan]="8">
             <nz-form-label class="inline-labels">Այլ</nz-form-label>
 

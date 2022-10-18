@@ -9,9 +9,11 @@
     left: -100px;
 }
 
-
 :host:ng-deep {
-    .ant-table tfoot>tr>td, .ant-table tfoot>tr>th, .ant-table-tbody>tr>td, .ant-table-thead>tr>th{
+    .ant-table tfoot > tr > td,
+    .ant-table tfoot > tr > th,
+    .ant-table-tbody > tr > td,
+    .ant-table-thead > tr > th {
         padding: 2px !important;
     }
     .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content {
@@ -101,75 +103,87 @@
     }
 }
 
-.red{
-    background-color:  rgb(255, 77, 79);
+.red {
+    background-color: rgb(255, 77, 79);
 }
 
-.titleTamplate{
-  display: flex;
-  flex-direction: row;
-  column-gap: 10px;
-  align-items: center;
+.titleTamplate {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    align-items: center;
 }
 
-.modalBodyContainerOff{
-  position: relative;
-  overflow: hidden;
-  min-height: 500px;
+.modalBodyContainerOff {
+    position: relative;
+    overflow: hidden;
+    min-height: 500px;
 }
 
-.modalBodyContainerOn{
-  position: relative;
-  overflow: hidden;
-  min-height: 570px;
+.modalBodyContainerOn {
+    position: relative;
+    overflow: hidden;
+    min-height: 570px;
 }
-.error-message{
+.error-message {
     color: red;
     font-size: 15px;
 }
-.formContainer{
-  position: relative;
-  width: 200%;
-  display: grid;
-  grid-template-columns: 49% 49%;
-  column-gap: 2%;
-  transform: translateX(0%);
-  transition: 1s;
+.formContainer {
+    position: relative;
+    width: 200%;
+    display: grid;
+    grid-template-columns: 49% 49%;
+    column-gap: 2%;
+    transform: translateX(0%);
+    transition: 1s;
 }
 
-.w-auto{
-  width: 97% !important;
+.w-auto {
+    width: 97% !important;
 }
 
-
-.secondFormInputSize{
-  width: 380px;
+.secondFormInputSize {
+    width: 380px;
 }
 
-.secondFormPhoneInputSize{
-  width: 306px;
+.secondFormPhoneInputSize {
+    width: 306px;
 }
 
-.switchOff{
-  transform: translateX(0%);
+.switchOff {
+    transform: translateX(0%);
 }
 
-.switchOffBody{
-  height: 540px;
+.switchOffBody {
+    height: 540px;
 }
 
-.switchOn{
-  transform: translateX(-50%);
+.switchOn {
+    transform: translateX(-50%);
 }
 
-.switchButtonOn{
-  background-color: #1890ff;
+.switchButtonOn {
+    background-color: #1890ff;
 }
 
-.switchButtonOff{
-  background-color: #188fff77;
+.switchButtonOff {
+    background-color: #188fff77;
 }
 
 // .ant-col{
 //   max-width: 95%;
 // }
+
+.white {
+    padding: 6px 4px;
+    background-color: white !important;
+}
+.red {
+    padding: 6px 4px;
+    background-color: rgb(253, 114, 114) !important;
+}
+.yellow {
+    padding: 6px 4px;
+    background-color: rgb(255, 255, 144) !important;
+}

@@ -195,8 +195,11 @@
               </div>
               <div class="margin-bottom-10" nz-row [nzGutter]="24">
                 <div nz-col [nzSpan]="12">
-                  <nz-select class="w-100" nzShowSearch [(ngModel)]="driver">
-                    <nz-option *ngFor="let dr of currentDriver" [nzValue]="dr.id" [nzLabel]="getLabelOfDrivers(dr)">
+                  <nz-select [nzDropdownStyle]="{'backgroundColor':'#f5f5f5'}" class="w-100" nzShowSearch
+                    [(ngModel)]="driver">
+                    <nz-option *ngFor="let dr of currentDriver" [nzValue]="dr.driver_id" nzCustomContent
+                      [nzLabel]="dr.label">
+                      <div [class]="dr.color">{{dr.label}}</div>
                     </nz-option>
                   </nz-select>
                 </div>
@@ -207,6 +210,12 @@
                   </button>
                 </div>
               </div>
+              <!-- 
+              <ng-template #driverLabel let-dr>
+                <ng-container>
+                  <span [class]="dr.color">{{dr.label}}</span>
+                </ng-container>
+              </ng-template> -->
 
               <div class="scroll">
                 <nz-table nzBordered [nzFrontPagination]="false" [nzData]="approvedOrders">

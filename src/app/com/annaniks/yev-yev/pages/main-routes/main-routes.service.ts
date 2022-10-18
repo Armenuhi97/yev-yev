@@ -1,18 +1,22 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/internal/Observable";
+import { map } from "rxjs/operators";
 import { CountDto } from "../../core/models/dto/routes.dto.model";
 import { OrderResponse } from "../../core/models/order";
 import { Counts, RouteItem } from "../../core/models/routes.model";
 import { ServerResponce } from "../../core/models/server-reponce";
+import { AvailableDriversDto } from "./dto/driver.dto";
+import { AvailableDriverModel } from "./models/available-driver";
+import { availabeDriverNormalizer } from "./normalizers/available-driver.normalize";
 
 @Injectable()
 export class MainRoutesService {
     _date = '';
     constructor(private _httpClient: HttpClient) { }
 
-    public getCounts(data:CountDto):Observable<Counts[]>{
-      return this._httpClient.post<Counts[]>('order/get-counts/', data)
+    public getCounts(data: CountDto): Observable<Counts[]> {
+        return this._httpClient.post<Counts[]>('order/get-counts/', data)
     }
 
     public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
@@ -149,5 +153,16 @@ export class MainRoutesService {
     public removeAllCloseHour(date: string, id: number): Observable<void> {
         return this._httpClient.get<void>(`/route/closed-hour/close-by-subroute/?date=${date}&subroute_id=${id}&to_remove=true`)
 
+    }
+    public getAvailableDrivers(body: AvailableDriversDto): Observable<AvailableDriverModel[]> {
+        return this._httpClient.post<AvailableDriverModel[]>(`userdetails/get-driver-available-list/`, body).pipe(
+            map((data) => {
+                data.sort((a, b) => new Date(b.last_order_date).getTime() - new Date(a.last_order_date).getTime());
+                data = data.map((dr) => {
+                    return availabeDriverNormalizer(dr);
+                });
+                return data;
+            })
+        );
     }
 }
