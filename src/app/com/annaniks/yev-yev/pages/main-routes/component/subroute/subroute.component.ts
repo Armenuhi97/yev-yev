@@ -44,7 +44,11 @@ export class SubrouteComponent {
   isShowError: boolean = false;
   @HostListener('window:resize', ['$event'])
   private _onResize(): void {
-    this.windowHeight = (window.innerHeight - 289 - 30);
+    if (window.innerWidth <= 1121) {
+      this.windowHeight = (this.getWidth() - 37);
+    } else {
+      this.windowHeight = this.getWidth();
+    }
   }
 
   orderTypes: OrderType[] = [
@@ -187,6 +191,9 @@ export class SubrouteComponent {
     }
     this.getCount();
 
+  }
+  getWidth(): number {
+    return window.innerHeight - 260.41 - 43;
   }
   private actionInChange($event, time, isBackRoute?) {
     if ($event && time) {

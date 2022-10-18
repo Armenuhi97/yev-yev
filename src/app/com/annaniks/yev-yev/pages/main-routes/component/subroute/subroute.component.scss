@@ -51,10 +51,15 @@
     padding: 10px;
     font-size: 22px;
 }
+@media screen and(max-width:1000px) {
+    .title {
+        font-size: 18px !important;
+    }
+}
 .canceled {
     background-color: #ff0000a1 !important;
 }
-.have-two-status{
+.have-two-status {
     background: linear-gradient(78deg, #00800082, #ff0000a1) !important;
 }
 .created {
@@ -94,49 +99,49 @@
     overflow: auto;
 }
 
-.heading{
-  width: 60%;
+.heading {
+    width: 60%;
 }
 
-.table__container{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.table__container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
-.icon__btn{
-  width: 24px;
-  height: 24px;
-  margin: 0;
-  padding: 0;
+.icon__btn {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    padding: 0;
 }
 
-.car__icon{
-  width: 14px;
-  height: 17px;
-  margin: 0;
-  padding: 0;
+.car__icon {
+    width: 14px;
+    height: 17px;
+    margin: 0;
+    padding: 0;
 }
 
 .counts__table {
-  border: 1px solid #c0c0c0;
-  height: min-content;
+    border: 1px solid #c0c0c0;
+    height: min-content;
 
-  tr{
-    th{
-      border: 1px solid #c0c0c0;
-      font-size: 14px;
-      background-color: white;
-      width: 35px;
-      text-align: center;
-    }
+    tr {
+        th {
+            border: 1px solid #c0c0c0;
+            font-size: 14px;
+            background-color: white;
+            width: 35px;
+            text-align: center;
+        }
 
-    td{
-      border: 1px solid #c0c0c0;
-      font-size: 14px;
-      background-color: white;
-      width: 35px;
-      text-align: center;
+        td {
+            border: 1px solid #c0c0c0;
+            font-size: 14px;
+            background-color: white;
+            width: 35px;
+            text-align: center;
+        }
     }
-  }
 }

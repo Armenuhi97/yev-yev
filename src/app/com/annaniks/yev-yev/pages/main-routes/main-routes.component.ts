@@ -32,8 +32,8 @@ import { animate, style, transition, trigger } from '@angular/animations';
       transition(':enter', [
         style({ transform: 'translateX(+100%)' }),
         animate('300ms ease-in', style({ transform: 'translateX(0%)' }))
-      ]),
-    ]),
+      ])
+    ])
   ],
   providers: [DatePipe]
 })
@@ -612,7 +612,7 @@ export class MainRoutesComponent {
         is_admin: true,
         change_status: formValue.isChangeStatus ? formValue.isChangeStatus : false
         // this._appService.checkPropertyValue(this.validateForm.get('isChangeStatus'), 'value', false)
-      };      
+      };
       this.sendEditRequest(this.userInfo[this.editIndex].id, editResponse);
 
     } else {
