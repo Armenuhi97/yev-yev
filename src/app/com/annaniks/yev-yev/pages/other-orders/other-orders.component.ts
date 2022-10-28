@@ -62,6 +62,7 @@ export class OtherOrdersComponent {
         combine.pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     changeStatus($event) {
+        this.pageIndex = 1;
         this.getExtraOrders().pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     getSubrouteList() {
@@ -89,7 +90,7 @@ export class OtherOrdersComponent {
         let personCount = this.validateForm.get('personCount').value;
         if (personCount) {
             // ?
-           // let driver = this.validateForm.get('driver').value
+            // let driver = this.validateForm.get('driver').value
 
             this.filteredDrivers = this.allDrivers.filter((val) => {
                 return (+val.car_capacity >= personCount);
@@ -148,8 +149,8 @@ export class OtherOrdersComponent {
                     startPointAddress: this.editItem.connected_order_details.start_address,
                     endPointAddress: this.editItem.connected_order_details.end_address,
                     order_phone_number: phoneNumber ? phoneNumber.slice(4) : null,
-                  // ?
-                  //  driver: this.editItem.connected_order_details.client_details.id,
+                    // ?
+                    //  driver: this.editItem.connected_order_details.client_details.id,
 
                     comment: this.editItem.connected_order_details.comment,
                     date: date,
@@ -164,9 +165,9 @@ export class OtherOrdersComponent {
                 startPointAddress: this.editItem.connected_order_details.start_address,
                 endPointAddress: this.editItem.connected_order_details.end_address,
                 order_phone_number: phoneNumber ? phoneNumber.slice(4) : null,
-               // ?
-              //  driver: this.editItem.connected_order_details.client_details.id,
-               
+                // ?
+                //  driver: this.editItem.connected_order_details.client_details.id,
+
                 comment: this.editItem.connected_order_details.comment,
                 date: date,
                 time: this.compareTwoDates(date),
@@ -195,9 +196,9 @@ export class OtherOrdersComponent {
             order_phone_number: [null],
             personCount: [null, Validators.required],
             subroute: [null, Validators.required],
-           // ?
-           // driver: [null, Validators.required],
-           
+            // ?
+            // driver: [null, Validators.required],
+
             comment: [null],
             date: [null],
             time: [null]
@@ -246,7 +247,7 @@ export class OtherOrdersComponent {
                     "date": dateTime,
                     "extra_order_id": this.editItem.id,
                     // ?
-                   // "driver_id": this.validateForm.get('driver').value,
+                    // "driver_id": this.validateForm.get('driver').value,
 
                     "sub_route_id": this.validateForm.get('subroute').value ? this.validateForm.get('subroute').value.id : null,
                     "comment": this.validateForm.get('comment').value,
