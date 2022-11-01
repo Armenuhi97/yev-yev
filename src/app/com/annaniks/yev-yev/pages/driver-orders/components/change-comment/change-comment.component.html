@@ -1,0 +1,15 @@
+<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" nzTitle="Փոխել մեկնաբանությունը"
+    (nzOnCancel)="handleCancel()" nzWidth="500px" (nzOnOk)="onSave()">
+    <nz-form-label class="inline-labels" nzRequired>Մեկնաբանություն</nz-form-label>
+    <nz-form-item>
+        <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+           
+            <input nz-input [formControl]="commentControl" placeholder="" />
+        </nz-form-control>
+    </nz-form-item>
+</nz-modal>
+<ng-template #userErrorTpl let-control>
+    <ng-container *ngIf="commentControl.hasError('required')">
+        Սա պարտադիր դաշտ է
+    </ng-container>
+</ng-template>

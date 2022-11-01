@@ -15,11 +15,16 @@ import { OrdersService } from '../../core/services/orders.service';
   styleUrls: ['./driver-orders.component.scss']
 })
 export class DriverOrdersComponent implements OnInit, OnDestroy {
+  activeIndex: number;
+  activeDate: string;
+  activeMainIndex: number;
   unsubscribe$ = new Subject();
   filterForm: FormGroup;
   mainRoutes: RouteItem[] = [];
   driverRoutes: any[] = [];
   driverKeys = [];
+  isVisible = false;
+  activeOrder;
   constructor(
     private fb: FormBuilder,
     private mainService: MainService,
@@ -93,9 +98,26 @@ export class DriverOrdersComponent implements OnInit, OnDestroy {
       return r;
     }, Object.create(null));
     this.driverKeys = Object.keys(this.driverRoutes);
-
   }
 
+  changeComment(order, date, activeMainIndex: number, index: number): void {
+    this.activeOrder = order;
+    this.isVisible = true;
+    this.activeIndex = index;
+    this.activeDate = date;
+    this.activeMainIndex = activeMainIndex;
+  }
+  closeModal($event): void {
+    this.isVisible = false;
+    if ($event) {
+      this.driverRoutes[this.activeDate][this.activeMainIndex].orders[this.activeIndex].comment_note = $event;
+    }
+    this.activeMainIndex = null;
+    this.activeOrder = null;
+    this.activeIndex = null;
+    this.activeDate = null;
+
+  }
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
