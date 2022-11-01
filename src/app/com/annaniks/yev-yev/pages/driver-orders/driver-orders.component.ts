@@ -109,7 +109,7 @@ export class DriverOrdersComponent implements OnInit, OnDestroy {
   }
   closeModal($event): void {
     this.isVisible = false;
-    if ($event) {
+    if ($event !== false) {
       this.driverRoutes[this.activeDate][this.activeMainIndex].orders[this.activeIndex].comment_note = $event;
     }
     this.activeMainIndex = null;

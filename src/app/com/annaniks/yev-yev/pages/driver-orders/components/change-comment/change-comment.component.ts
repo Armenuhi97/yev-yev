@@ -14,7 +14,7 @@ export class ChangeCommentComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isVisible = false;
   @Input() order;
   @Output() close = new EventEmitter<boolean | string>(false);
-  commentControl = new FormControl(null, Validators.required);
+  commentControl = new FormControl(null);
   constructor(private driverOrdersService: DriverOrdersService) { }
 
   ngOnChanges(): void {
@@ -27,11 +27,6 @@ export class ChangeCommentComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onSave(): void {
-    this.commentControl.markAsDirty();
-    this.commentControl.updateValueAndValidity();
-    if (this.commentControl.invalid) {
-      return;
-    }
     const value = this.commentControl.value;
     this.driverOrdersService.changeOrderComment(this.order.id, value).pipe(takeUntil(this.insubscribe$)).subscribe(() => {
       this.closeModal(value);

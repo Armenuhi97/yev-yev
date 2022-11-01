@@ -32,13 +32,15 @@
 <div class="d-flex align-items-center flex-wrap " *ngFor="let item of driverKeys">
     <b> {{item | date:'HH:mm'}}</b>
     <div class="card">
-        <div class="d-flex align-items-center" *ngFor="let data of driverRoutes[item];let i=index">
+        <div class="d-flex align-items-center mt-1" *ngFor="let data of driverRoutes[item];let i=index">
             <span class="mr-1" *ngIf="data?.orders?.length">{{data?.orders[0]?.seat_count}} </span>
             {{data?.name}}
             <span class="ml-1" *ngIf="data?.orders?.length > 1">
                 {{data?.orders[1]?.seat_count}}
             </span>
-            <span class="ml-2 mr-1"><i>{{data?.orders[0]?.comment_note}} </i></span>
+            <div [class.comment-item]="data?.orders[0]?.comment_note" class="ml-2 mr-1 ">
+                <span><i>{{data?.orders[0]?.comment_note}} </i></span>
+            </div>
             <i class="cursor-pointer" (click)="changeComment(data?.orders[0],item,i,0)" nz-icon nzType="edit"></i>
         </div>
     </div>
