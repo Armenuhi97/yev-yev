@@ -1,20 +1,21 @@
 export interface OrdersByHours {
-    canceled_by_client: boolean
-    canceled_by_moderator: boolean
-    address: string
-    is_free: boolean
-    is_extra_order:boolean,
-    isSelect?: boolean
-    isDisabled?: boolean
-    is_in_approved_orders: boolean
-    end_address: null
-    end_langitude: string
-    end_latitude: string
-    phone_number: string
-    start_address: string
-    start_langitude: string
-    start_latitude: string
-    order_phone_number: string
+    canceled_by_client: boolean;
+    canceled_by_moderator: boolean;
+    address: string;
+    is_free: boolean;
+    is_extra_order: boolean;
+    isSelect?: boolean;
+    cancelled_at: string;
+    isDisabled?: boolean;
+    is_in_approved_orders: boolean;
+    end_address: string | null;
+    end_langitude: string;
+    end_latitude: string;
+    phone_number: string;
+    start_address: string;
+    start_langitude: string;
+    start_latitude: string;
+    order_phone_number: string;
     client_details: {
         car_capacity: string
         car_color: string
@@ -72,7 +73,7 @@ export interface SubrouteDetails {
     start_point_is_static: boolean,
     work_start_time: string
     work_end_time: string
-    openTimes:Array<any>
+    openTimes: Array<any>
 
 
 }

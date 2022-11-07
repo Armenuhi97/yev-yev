@@ -690,7 +690,10 @@ export class MainRoutesComponent {
           switchMap((data: OrdersByHours[]) => {
             data = data.map((val) => {
               const isSelect = val.is_in_approved_orders ? true : false;
-              return Object.assign({}, val, { is_in_approved_orders: val.is_in_approved_orders, isSelect, isDisabled: false });
+              return Object.assign({}, val, {
+                cancelled_at: val.cancelled_at ? new Date(val.cancelled_at) : null,
+                is_in_approved_orders: val.is_in_approved_orders, isSelect, isDisabled: false
+              });
             });
             this.fullUserInfo = data;
             this.userInfo = data;
