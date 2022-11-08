@@ -125,7 +125,9 @@
                         <td>
                           {{ moderator?.client_details?.user?.first_name }}
                           {{ moderator?.client_details?.user?.last_name }}<br />
-                          <span *ngIf="moderator?.cancelled_at "> {{moderator?.cancelled_at | date:'YYYY-MM-dd HH:mm'}}</span>
+                          <span
+                            *ngIf="moderator?.cancelled_at && (moderator.canceled_by_client || moderator.canceled_by_moderator)">
+                            {{moderator?.cancelled_at | date:'dd-MM-YYYY HH:mm'}}</span>
                         </td>
                         <td>{{ moderator?.phone_number }}</td>
                         <td>
