@@ -1001,7 +1001,7 @@ export class MainRoutesComponent {
   setTimeLabel(time): string {
     return this.subRouteInfo.start_point_is_static ? time.start : time.time
   }
-  openCalendar($event?) {
+  openCalendar($event?): void {
     this.isOpenCalendar = true;
     if ($event) {
       this.radioValue = 'approved,canceled';
@@ -1012,7 +1012,8 @@ export class MainRoutesComponent {
       this.subRouteInfos = this.subRouteInfos.map((el) => {
         return Object.assign({}, el, { selectTime: null })
       })
-      this.getWorkTimes()
+      this.getWorkTimes();
+      this.closeCalendar();
     }
   }
 

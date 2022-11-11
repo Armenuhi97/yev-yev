@@ -11,8 +11,9 @@
           </svg>
         </div>
         <div (clickOutside)="closeCalendar()">
-          <div class="cursor-pointer position-relative" (click)="openCalendar(); $event.stopPropagation()">
-            {{ selectedDate.value | date: "dd-MM-yyyy" }}
+          <div class="cursor-pointer position-relative">
+            <div (click)="openCalendar(); $event.stopPropagation()"> {{ selectedDate.value | date: "dd-MM-yyyy" }}
+            </div>
             <div class="calendar" *ngIf="isOpenCalendar" [ngStyle]="{
                 width: '300px',
                 border: '1px solid #d9d9d9',
