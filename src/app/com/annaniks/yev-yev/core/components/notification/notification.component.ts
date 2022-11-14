@@ -52,6 +52,7 @@ export class NotificationComponent {
     }
 
     async getNotifications(isHide?: boolean) {
+        console.log(this.type);
 
         this.infiniteScrollDisabled = true;
         const data = await this._mainService.getUnseenNotifications(this.type, (this.pageIndex - 1) * 10)
@@ -62,6 +63,7 @@ export class NotificationComponent {
                     }
                 })
             ).toPromise();
+        console.log(data);
 
         this.notifications.push(...data.results);
 

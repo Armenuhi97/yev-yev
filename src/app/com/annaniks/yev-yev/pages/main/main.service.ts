@@ -36,18 +36,20 @@ export class MainService {
     } else {
       url = `notifications/get-unseen-notifications-without-pendings/`;
     }
-    url += `?limit=10&offset=${page}`
-    return this.httpClient.get<ServerResponce<Notification[]>>(url)
+    url += `?limit=10&offset=${page}`;
+    return this.httpClient.get<ServerResponce<Notification[]>>(url);
   }
   public getUnseenPendingNotifications(): Observable<Notification[]> {
-    return this.httpClient.get<Notification[]>(`notifications/get-unseen-pending-notifications/`)
+    return this.httpClient.get<Notification[]>(`notifications/get-unseen-pending-notifications/`);
   }
-  public setSeenNotification(id: number) {
-    return this.httpClient.get(`notifications/set-seen/${id}/`)
+  public setSeenNotification(id: number): Observable<string> {
+    return this.httpClient.get<string>(`notifications/set-seen/${id}/`);
   }
-  public setSeenAllNotification() {
-    return this.httpClient.get(`notifications/set-all-seen/`)
-
+  public setSeenAllNotification(): Observable<string> {
+    return this.httpClient.get<string>(`notifications/set-all-seen/`);
+  }
+  public setSeenExtraNotification(id: number): Observable<string> {
+    return this.httpClient.get<string>(`order/change-extra-order-seen/${id}/`);
   }
   public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
     let offset = (page - 1) * 10;

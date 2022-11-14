@@ -14,10 +14,11 @@
             <ng-container *ngIf="notifications.length > 0">
                 <button class="remove-btn" nz-button *ngIf="!type && role == 'ADM'" [nzSize]="small"
                     (click)="setSeenAllNotification()" nzType="primary">Մաքրել</button>            
-                <div [ngClass]="{'created':item.order_details.status == 'approved','canceled':item.order_details.status == 'canceled','pending':item.order_details.status == 'pending'}"
+                <div [ngClass]="{'created':item?.order_details?.status == 'approved','canceled':item?.order_details?.status == 'canceled',
+                'pending':item?.order_details?.status == 'pending'}"
                     (click)="setSeenNotification(item.id)" class="d-flex items" routerLink="/dashboard/main-routes"
                     [queryParams]="sendQueryParams(item)" *ngFor="let item of notifications">
-                    <div class="item">{{item.order_details.date | date:'dd.MM.yyyy HH:mm'}}</div>
+                    <div class="item">{{item?.order_details.date | date:'dd.MM.yyyy HH:mm'}}</div>
                     <div class="item">({{item?.order_details?.person_count}})</div>
                     <div class="item">{{item?.order_details?.client_details?.phone_number}}</div>
                 </div>
