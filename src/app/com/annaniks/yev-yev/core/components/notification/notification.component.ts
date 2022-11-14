@@ -3,7 +3,7 @@ import { CookieService } from "ngx-cookie-service";
 import { Subject } from "rxjs";
 import { finalize, takeUntil } from "rxjs/operators";
 import { MainService } from "../../../pages/main/main.service";
-import { Notification } from "../../models/notification";
+import { Notification, PendingNotification } from "../../models/notification";
 import { LoaderService } from "../../services/loaders.service";
 
 @Component({
@@ -52,8 +52,6 @@ export class NotificationComponent {
     }
 
     async getNotifications(isHide?: boolean) {
-        console.log(this.type);
-
         this.infiniteScrollDisabled = true;
         const data = await this._mainService.getUnseenNotifications(this.type, (this.pageIndex - 1) * 10)
             .pipe(takeUntil(this.unsubscribe$),
@@ -63,9 +61,19 @@ export class NotificationComponent {
                     }
                 })
             ).toPromise();
-        console.log(data);
-
-        this.notifications.push(...data.results);
+        const result = data.results;
+        if (this.type === 'pending') {
+            result.extra_orders = result.extra_orders.map((res) => {
+                return {
+                    ...res,
+                    order_details: res.connected_order_details
+                };
+            });
+            const combineArray = [...result.extra_orders, ...result.orders];
+            this.notifications.push(...combineArray);
+        } else {
+            this.notifications.push(...result);
+        }
 
         this.pageIndex++;
         this.infiniteScrollDisabled = false;
@@ -77,22 +85,28 @@ export class NotificationComponent {
         }
         this.getNotifications();
     }
-    setSeenNotification(id: number): void {
-        this._seen.emit(id);
+    setSeenNotification(item): void {
+        const isExtra = this.checkIsExtra(item);
+        this._seen.emit({ id: item.id, isExtra });
     }
-
+    private checkIsExtra(item): boolean {
+        return item?.order_details?.is_extra_order ? true : false;
+    }
     setSeenAllNotification(): void {
-        this._seen.emit('all');
+        this._seen.emit({ id: 'all' });
     }
 
     sendQueryParams(notification: Notification) {
-        let params = {
+        if (this.checkIsExtra(notification)) {
+            return {};
+        }
+        const params = {
             date: notification.order_details.date,
             subRoute: notification.order_details.sub_route,
-            mainRoute: notification.order_details.sub_route_details.main_route,
+            mainRoute: notification.order_details?.sub_route_details?.main_route,
             status: notification.order_details.status
-        }
-        return params
+        };
+        return params;
     }
     ngOnDestroy(): void {
         this.unsubscribe$.next();

@@ -135,20 +135,29 @@ export class MainComponent {
         }
         return params
     }
-    setSeenNotification(id: number | string) {
-        if (id == 'all') {
+    setSeenNotification(evt: { id: string | number, isExtra: boolean }) {
+        if (evt.id === 'all') {
             this._mainService.setSeenAllNotification().pipe(takeUntil(this.unsubscribe$),
                 switchMap(() => {
                     return forkJoin(this._getUnseenNotificationCount(),
                         this._getPendingNotificationCount())
                 })).subscribe()
         } else {
-            this._mainService.setSeenNotification(+id).pipe(takeUntil(this.unsubscribe$),
-                switchMap(() => {
-                    return forkJoin(
-                        this._getUnseenNotificationCount(),
-                        this._getPendingNotificationCount())
-                })).subscribe()
+            if (!evt.isExtra) {
+                this._mainService.setSeenNotification(+evt.id).pipe(takeUntil(this.unsubscribe$),
+                    switchMap(() => {
+                        return forkJoin(
+                            this._getUnseenNotificationCount(),
+                            this._getPendingNotificationCount());
+                    })).subscribe();
+            } else {
+                this._mainService.setSeenExtraNotification(+evt.id).pipe(takeUntil(this.unsubscribe$),
+                    switchMap(() => {
+                        return forkJoin(
+                            this._getUnseenNotificationCount(),
+                            this._getPendingNotificationCount());
+                    })).subscribe();
+            }
         }
     }
     ngOnDestroy(): void {

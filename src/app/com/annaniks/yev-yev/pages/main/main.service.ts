@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Notification } from "../../core/models/notification";
+import { Notification, PendingNotification } from "../../core/models/notification";
 import { ServerResponce } from '../../core/models/server-reponce';
 import { RouteItem } from '../../core/models/routes.model';
 import { CookieService } from 'ngx-cookie-service';
@@ -29,7 +29,8 @@ export class MainService {
   public getUnseenPendingNotificationCount(): Observable<{ count: number }> {
     return this.httpClient.get<{ count: number }>(`notifications/get-unseen-pending-notifications-count/`)
   }
-  public getUnseenNotifications(type?: string, page?: number): Observable<ServerResponce<Notification[]>> {
+  // Notification[] | PendingNotification
+  public getUnseenNotifications(type?: string, page?: number): Observable<ServerResponce<any>> {
     let url: string;
     if (type === 'pending') {
       url = `notifications/get-unseen-pending-notifications/`;
@@ -37,7 +38,7 @@ export class MainService {
       url = `notifications/get-unseen-notifications-without-pendings/`;
     }
     url += `?limit=10&offset=${page}`;
-    return this.httpClient.get<ServerResponce<Notification[]>>(url);
+    return this.httpClient.get<ServerResponce<any>>(url);
   }
   public getUnseenPendingNotifications(): Observable<Notification[]> {
     return this.httpClient.get<Notification[]>(`notifications/get-unseen-pending-notifications/`);

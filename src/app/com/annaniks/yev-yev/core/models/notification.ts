@@ -1,6 +1,7 @@
 import { SubrouteDetails } from "./orders-by-hours";
 
 export interface Notification {
+
     created_at: string;
     id: number;
     is_seen: boolean;
@@ -28,4 +29,8 @@ export interface Notification {
     main_route_name: string;
     type: string;
     user: number;
+}
+export interface PendingNotification {
+    extra_orders: any[];
+    orders: Notification[];
 }

@@ -41,12 +41,13 @@ export class OtherOrderDetailComponent implements OnInit, OnDestroy {
     private _datePipe: DatePipe,
     private activatedRoute: ActivatedRoute) {
     this.openTimes = this._openTimesService.getOpenTimes();
-    this.getParamsId();
     this._initForm();
+    this.getParamsId();
+
   }
 
   ngOnInit(): void {
-    this.getSubrouteList();
+    // this.getSubrouteList();
   }
 
   getDrivers(mainRoute) {
@@ -63,12 +64,12 @@ export class OtherOrderDetailComponent implements OnInit, OnDestroy {
     )
   }
   getSubrouteList() {
-    this._otherOrdersService.getSubRouteList().pipe(
+    return this._otherOrdersService.getSubRouteList().pipe(
       takeUntil(this.unsubscribe$),
       switchMap((data: ServerResponce<any>) => {
         this.subRoutes = data.results;
         return this.getOtherOrderById();
-      })).subscribe();
+      }))
   }
 
   private getOtherOrderById() {
@@ -126,7 +127,15 @@ export class OtherOrderDetailComponent implements OnInit, OnDestroy {
     return;
   }
   private getParamsId(): void {
-    this.id = this.activatedRoute.snapshot.params.id;
+    this.activatedRoute.params.pipe(takeUntil(this.unsubscribe$),
+      switchMap((params) => {
+        if (!!params.id) {
+          this.id = params.id;
+          return this.getSubrouteList();
+        } else {
+          return of();
+        }
+      })).subscribe();
   }
   onCancelOrder(): void {
     this._otherOrdersService.cancelExtraOrder(this.id).pipe(takeUntil(this.unsubscribe$),
