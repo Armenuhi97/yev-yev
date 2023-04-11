@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { forkJoin, Observable, of, Subject, throwError } from 'rxjs';
-import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { Messages } from '../../core/models/mesages';
 import { OrderType } from '../../core/models/order-type';
 import { OrdersByHours } from '../../core/models/orders-by-hours';
@@ -591,9 +591,14 @@ export class MainRoutesComponent {
   public checkIsNull(value) {
     return value ? value : false;
   }
+  isClick = false;
   public onclientSave() {
+    if (this.isClick) {
+      return;
+    }
     this.errorMessage = ''
     let backSubroute;
+    this.isClick = true;
     if (this.isEditing) {
       const formValue = this.validateForm.get('firstForm').value;
       const date = this._formatDate(formValue.time, formValue.date);
@@ -623,6 +628,7 @@ export class MainRoutesComponent {
       if (this.validateForm.get('firstForm').invalid) {
         this.errorMessage = Messages.failValidation;
         // this.nzMessages.error(Messages.failValidation);
+        this.isClick = false;
         return;
       }
       const date = this._formatDate(this.selectedTime);
@@ -634,7 +640,7 @@ export class MainRoutesComponent {
       if (this.comeBackIsAble) {
         if (this.validateForm.get('secondForm').invalid) {
           this.errorMessage = 'Հետադարձի ' + Messages.failValidation;
-
+          this.isClick = false;
           // this.nzMessages.error('Հետադարձի ' + Messages.failValidation);
           return;
         }
@@ -650,7 +656,8 @@ export class MainRoutesComponent {
       }
 
       forkJoin(requests).pipe(
-        takeUntil(this.unsubscribe$)
+        takeUntil(this.unsubscribe$),
+        finalize(() => this.isClick = false)
       ).subscribe({
         next: () => {
           this.nzMessages.success(Messages.success);
@@ -717,7 +724,9 @@ export class MainRoutesComponent {
     return new Observable(value);
   }
   sendEditRequest(id, sendObject) {
-    this._mainRouteService.changeOrder(id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+    this._mainRouteService.changeOrder(id, sendObject).pipe(takeUntil(this.unsubscribe$),
+      finalize(() => this.isClick = false)
+    ).subscribe(() => {
       this.nzMessages.success(Messages.success);
       this.closeModal();
       if (this.radioValue === 'pending' && this.validateForm.get('firstForm').get('isChangeStatus').value) {
