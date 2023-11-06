@@ -15,6 +15,7 @@ import { Notification } from "../../../../core/models/notification";
 import { NotificationService } from "../../../../core/services/notification.service";
 import { CountDto } from "../../../../core/models/dto/routes.dto.model";
 import { Counts } from "../../../../core/models/routes.model";
+import { Messages } from "../../../../core/models/mesages";
 
 @Component({
   selector: 'app-subroute',
@@ -318,12 +319,20 @@ export class SubrouteComponent {
   }
   openOrCloseHour($event, data) {
     if (data.closeId) {
-      this._mainRouteService.openHours(data.closeId).pipe(takeUntil(this.unsubscribe$)).subscribe(() => { data.closeId = null })
+      this._mainRouteService.openHours(data.closeId).pipe(takeUntil(this.unsubscribe$)).subscribe(() => { data.closeId = null },
+        (err) => {
+          data.isActive = !$event;
+          this.nzMessages.error(err?.error?.message || Messages.fail);
+        })
     } else {
       let current = this._formatDate(data.time)
       this._mainRouteService.closeHours(this.subrouteInfo.id, current).pipe(takeUntil(this.unsubscribe$)).subscribe((val: { id: number }) => {
         data.closeId = val.id
-      })
+      },
+        (err) => {
+          data.isActive = !$event;
+          this.nzMessages.error(err?.error?.message || Messages.fail);
+        })
     }
   }
   blockOrUnBlockHour($event, data) {
