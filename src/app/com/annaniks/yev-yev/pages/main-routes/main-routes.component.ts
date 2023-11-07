@@ -407,6 +407,8 @@ export class MainRoutesComponent {
     } else {
       this.isGetFunction = true;
     }
+    this.selectedDate.setValue(this.lastDate);
+    
   }
   combineObservable(subrouteId?: number, time?: string) {
     const combine = forkJoin(
