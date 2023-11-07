@@ -22,7 +22,7 @@
             <td>
                 {{data?.sub_route_details?.start_point_city?.name_hy}} - {{data?.sub_route_details?.end_point_city?.name_hy}}
             </td>
-            <td>{{data?.seat_count}}</td>
+            <td>{{data?.seat_count}} <span *ngIf="data?.approved_order_orders?.length && data?.approved_order_orders?.length === 1 && data?.approved_order_orders[0]?.order?.order_type === 2">Անհատական</span></td>
         </tr>
     </tbody>
 </nz-table>
