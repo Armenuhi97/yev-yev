@@ -24,6 +24,7 @@ import { createForm } from './helpers/create-form';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { AvailableDriversDto } from './dto/driver.dto';
 import { AvailableDriverModel } from './models/available-driver';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-main-routes',
@@ -40,6 +41,7 @@ import { AvailableDriverModel } from './models/available-driver';
   providers: [DatePipe]
 })
 export class MainRoutesComponent {
+  lastDate = new Date();
   errorMessage: string;
   activeIndex: number;
   private notifications: Notification[] = [];
@@ -188,7 +190,8 @@ export class MainRoutesComponent {
             this.selectIndex = index;
           }
 
-          this.selectedDate.setValue(new Date(param.date))
+          this.selectedDate.setValue(new Date(param.date));
+          this.lastDate = new Date(param.date);
           this.currentId = +param.mainRoute;
           this.isGetFunction = false;
           let time = this._datePipe.transform(param.date, 'HH:mm');
@@ -1013,6 +1016,12 @@ export class MainRoutesComponent {
   openCalendar($event?): void {
     this.isOpenCalendar = true;
     if ($event) {
+      const date = moment($event).format('YYYY-MM-DD');
+      const controlValue = moment(this.lastDate).format('YYYY-MM-DD');
+      if (date === controlValue) {
+        return;
+      }
+      this.lastDate = this.selectedDate.value;
       this.radioValue = 'approved,canceled';
       this.userInfo = [];
       this.fullUserInfo = []
@@ -1034,6 +1043,7 @@ export class MainRoutesComponent {
     let date = new Date(this.selectedDate.value)
     date.setDate(date.getDate() + type);
     this.selectedDate.setValue(new Date(date));
+    this.lastDate = new Date(date);
     this.isGetItem = true;
     this.radioValue = 'approved,canceled';
     this.subRouteInfos = this.subRouteInfos.map((el) => {

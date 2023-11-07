@@ -8,11 +8,11 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ApiInterceptor } from './com/annaniks/yev-yev/core/interseptors/api.interseptors';
 import { registerLocaleData } from '@angular/common';
-import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
-import en from '@angular/common/locales/en';
+import { en_US, hy_AM, NZ_I18N } from 'ng-zorro-antd/i18n';
+import hy from '@angular/common/locales/hy';
 import { LoaderInterceptor } from './com/annaniks/yev-yev/core/interseptors/loader.interceptor';
 
-registerLocaleData(en);
+registerLocaleData(hy);
 
 @NgModule({
   declarations: [
@@ -40,7 +40,7 @@ registerLocaleData(en);
       useClass: ApiInterceptor,
       multi: true
     },
-    { provide: NZ_I18N, useValue: en_US },
+    { provide: NZ_I18N, useValue: hy_AM },
   ],
   bootstrap: [AppComponent]
 })

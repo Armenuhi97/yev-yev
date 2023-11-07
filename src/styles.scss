@@ -13,6 +13,23 @@
         margin-right: 5px;
     }
 }
+.no-border-picker {
+    .ant-picker {
+        border: none !important;
+        background: none;
+        padding: 0;
+        cursor: pointer;
+    }
+    .ant-picker-focused{
+        box-shadow: none !important;
+    }
+    .ant-picker-input>input{
+        font-size: 25px;
+        width: 127px;
+        cursor: pointer;
+
+    }
+}
 .cursor-pointer {
     cursor: pointer;
 }
