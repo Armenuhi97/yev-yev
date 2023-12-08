@@ -25,6 +25,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { AvailableDriversDto } from './dto/driver.dto';
 import { AvailableDriverModel } from './models/available-driver';
 import * as moment from 'moment';
+import { ChangeStatusDto } from './dto/change-status.dto';
 
 @Component({
   selector: 'app-main-routes',
@@ -41,6 +42,7 @@ import * as moment from 'moment';
   providers: [DatePipe]
 })
 export class MainRoutesComponent {
+  subroutDate!: string;
   lastDate = new Date();
   errorMessage: string;
   activeIndex: number;
@@ -408,7 +410,7 @@ export class MainRoutesComponent {
       this.isGetFunction = true;
     }
     this.selectedDate.setValue(this.lastDate);
-    
+
   }
   combineObservable(subrouteId?: number, time?: string) {
     const combine = forkJoin(
@@ -690,8 +692,11 @@ export class MainRoutesComponent {
   sendRequest(sendObject, backSubrout?: boolean) {
     return this._mainRouteService.addOrder(sendObject)
   }
-
-  subroutDate!: string;
+  onSubmitOrder(moderator) {
+    const date = this._formatDate(this.selectedTime, this.selectedDate.value);
+    const changeStatusDto = new ChangeStatusDto(moderator, this.subRouteInfo.id, date);
+    this.sendEditRequest(moderator.id, changeStatusDto, false);
+  }
 
   getInfo(time, status = this.radioValue, isChange = true) {
     if (time) {
@@ -728,13 +733,14 @@ export class MainRoutesComponent {
   formatItem(value) {
     return new Observable(value);
   }
-  sendEditRequest(id, sendObject) {
+  sendEditRequest(id, sendObject, isChangeFromModal = true) {
     this._mainRouteService.changeOrder(id, sendObject).pipe(takeUntil(this.unsubscribe$),
       finalize(() => this.isClick = false)
     ).subscribe(() => {
       this.nzMessages.success(Messages.success);
-      this.closeModal();
-      if (this.radioValue === 'pending' && this.validateForm.get('firstForm').get('isChangeStatus').value) {
+      if (isChangeFromModal)
+        this.closeModal();
+      if (isChangeFromModal && this.radioValue === 'pending' && this.validateForm.get('firstForm').get('isChangeStatus').value) {
         this._mainRouteService.changeOrderStatus(id).subscribe(() => {
           this.getInfo(this.selectedTime).subscribe();
         })
