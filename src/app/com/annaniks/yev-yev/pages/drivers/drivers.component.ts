@@ -140,8 +140,8 @@ export class DriversComponent {
         }
     }
 
-    public getOrders() {
-        this._driverService.getOrders(this.editId, this.pageIndex)
+    public getOrders() {        
+        this._driverService.getOrders(this.editId, 1)
             .pipe(takeUntil(this.unsubscribe$)).subscribe((data: ServerResponce<any[]>) => {
                 this.size = data.count;
                 this.orders = data.results;
