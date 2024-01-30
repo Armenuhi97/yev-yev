@@ -9,6 +9,8 @@ import { ServerResponce } from "../../core/models/server-reponce";
 import { AvailableDriversDto } from "./dto/driver.dto";
 import { AvailableDriverModel } from "./models/available-driver";
 import { availabeDriverNormalizer } from "./normalizers/available-driver.normalize";
+import { OrdersByHours } from "../../core/models/orders-by-hours";
+import * as moment from "moment";
 
 @Injectable()
 export class MainRoutesService {
@@ -82,12 +84,21 @@ export class MainRoutesService {
         });
     }
 
-    public getOrdersByHour(subrouteid: number, date: string, status: string) {
-        return this._httpClient.post('order/get-orders-by-hour/', {
+    public getOrdersByHour(subrouteid: number, date: string, status: string): Observable<OrdersByHours[]> {
+        return this._httpClient.post<OrdersByHours[]>('order/get-orders-by-hour/', {
             "sub_route_id": subrouteid,
             "date": date,
             status: status
-        })
+        }).pipe(map((data: OrdersByHours[]) => {
+            data = data.map((el) => {
+                return {
+                    ...el,
+                    created_at: moment(new Date(el.created_at)).format('DD-MM-YYYY HH:mm'),
+                    cancelled_at: el.cancelled_at ? moment(new Date(el.cancelled_at)).format('DD-MM-YYYY HH:mm') : null
+                }
+            })
+            return data;
+        }))
     }
     public getUserByPhonenumber(phoneNumber) {
         return this._httpClient.get(`userdetails/user/?search=${phoneNumber}`)

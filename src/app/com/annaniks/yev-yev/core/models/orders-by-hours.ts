@@ -16,6 +16,7 @@ export interface OrdersByHours {
     start_langitude: string;
     start_latitude: string;
     order_phone_number: string;
+    created_at: string;
     client_details: {
         car_capacity: string
         car_color: string
@@ -36,7 +37,7 @@ export interface OrdersByHours {
         user_role: { id: number, title: string, code: string }
     }
     comment: string
-    date: string
+    date: string;
     id: number
     langitude: null
     latitude: null

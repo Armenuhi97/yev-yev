@@ -140,10 +140,10 @@
                             </svg>
                             <br /> </span>
                           <span *ngIf="moderator?.created_at">
-                            {{moderator.created_at | date:'dd-MM-YYYY HH:mm'}} <br /></span>
+                            {{moderator.created_at}} <br /></span>
                           <span
                             *ngIf="moderator?.cancelled_at && (moderator.canceled_by_client || moderator.canceled_by_moderator)">
-                            {{moderator?.cancelled_at | date:'dd-MM-YYYY HH:mm'}}</span>
+                            {{moderator?.cancelled_at}}</span>
 
 
                         </td>

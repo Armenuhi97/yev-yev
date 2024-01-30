@@ -708,7 +708,7 @@ export class MainRoutesComponent {
             data = data.map((val) => {
               const isSelect = val.is_in_approved_orders ? true : false;
               return Object.assign({}, val, {
-                cancelled_at: val.cancelled_at ? new Date(val.cancelled_at) : null,
+                // cancelled_at: val.cancelled_at ? new Date(val.cancelled_at) : null,
                 is_in_approved_orders: val.is_in_approved_orders, isSelect, isDisabled: false
               });
             });
