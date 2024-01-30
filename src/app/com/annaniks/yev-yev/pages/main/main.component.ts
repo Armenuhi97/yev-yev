@@ -2,7 +2,7 @@ import { DatePipe } from "@angular/common";
 import { Component, ElementRef, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
-import { forkJoin, Subject } from "rxjs";
+import { forkJoin, interval, Subject, Subscription } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { Notification } from "../../core/models/notification";
 import { NotificationService } from "../../core/services/notification.service";
@@ -39,7 +39,8 @@ export class MainComponent {
     pendingCount: number;
     notificationCount: number;
     isOpenPendingNotification = false;
-    pendiningNotification: Notification[] = []
+    pendiningNotification: Notification[] = [];
+    subscription: Subscription;
     constructor(
         private _router: Router,
         private _datePipe: DatePipe,
@@ -49,11 +50,10 @@ export class MainComponent {
         this.role = this._cookieService.get('role');
     }
     ngOnInit() {
-        this._getCounts();
-
-        setInterval(() => {
-            this._getCounts();
-        }, 10000);
+        this._getCounts().pipe(takeUntil(this.unsubscribe$)).subscribe();
+        this.subscription = interval(10000).pipe(switchMap(() => {
+            return this._getCounts();
+        })).subscribe();
     }
     public logOut() {
         this._cookieService.delete('role');
@@ -62,12 +62,12 @@ export class MainComponent {
         this._router.navigate(['/auth']);
     }
     private _getCounts() {
-        const combine = forkJoin(
+        return forkJoin([
             this._getExtrarderCount(),
             this._getUnseenNotificationCount(),
             this._getPendingNotificationCount()
-        );
-        combine.pipe(takeUntil(this.unsubscribe$)).subscribe()
+        ]);
+        // combine.pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     private _getUnseenNotificationCount() {
         return this._mainService.getUnseenNotificationCount().pipe(
@@ -161,6 +161,9 @@ export class MainComponent {
         }
     }
     ngOnDestroy(): void {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
