@@ -1,12 +1,12 @@
 import { NgModule } from "@angular/core";
 import { SharedModule } from "../../core/shared/shared.module";
-import { OtherRoutesTimes,RoutesComponent,CityComponent,PhoneComponent } from "./components";
+import { OtherRoutesTimes, RoutesComponent, CityComponent, PhoneComponent, RatesComponent } from "./components";
 import { SettingsService } from "./setting.service";
 import { SettingsRoutingModule } from "./settings-routing.module";
 import { SettingsComponent } from "./settings.component";
 
 @NgModule({
-    declarations: [SettingsComponent,RoutesComponent,CityComponent,PhoneComponent,OtherRoutesTimes],
+    declarations: [SettingsComponent, RoutesComponent, CityComponent, PhoneComponent, RatesComponent, OtherRoutesTimes],
     imports: [SettingsRoutingModule, SharedModule],
     providers: [SettingsService]
 })

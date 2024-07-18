@@ -20,6 +20,8 @@ export class SettingsComponent {
     phoneTable: RouteItem[] = []
     cityTable: CityItem[] = []
     cityTotal: number;
+    ratesTable: any[];
+    ratesTotal: number;
     workingTimes;
     otherRoutesTime:OtherRoutesTime[]=[]
     constructor(private _settingsService: SettingsService) { }
@@ -57,6 +59,12 @@ export class SettingsComponent {
         return this._settingsService.getAllCities(1).pipe(map((data: ServerResponce<CityItem[]>) => {
             this.cityTotal = data.count;
             this.cityTable = data.results;
+        }))
+    }
+    public getAllRates() {
+        return this._settingsService.getAllRates(1).pipe(map((data: ServerResponce<any[]>)=>{
+            this.ratesTotal = data.count
+            this.ratesTable = data.results
         }))
     }
     ngOnDestroy(): void {

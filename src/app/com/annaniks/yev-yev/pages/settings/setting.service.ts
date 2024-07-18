@@ -48,6 +48,11 @@ export class SettingsService {
         let offset = (page - 1) * 10;
         return this._httpClient.get<ServerResponce<CityItem[]>>(`utils/city/?page=${page}&limit=10&offset=${offset}`)
     }
+
+    public getAllRates(body: any): Observable<ServerResponce<any[]>>{
+        return this._httpClient.get<ServerResponce<any[]>>(``)
+    }
+
     public addCity(body: CityItem) {
         return this._httpClient.post(`utils/city/`, body)
     }
