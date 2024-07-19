@@ -4,9 +4,10 @@ import { OtherRoutesTimes, RoutesComponent, CityComponent, PhoneComponent, Rates
 import { SettingsService } from "./setting.service";
 import { SettingsRoutingModule } from "./settings-routing.module";
 import { SettingsComponent } from "./settings.component";
+import { DailyPriceComponent } from "./components/daily-price/daily-price.component";
 
 @NgModule({
-    declarations: [SettingsComponent, RoutesComponent, CityComponent, PhoneComponent, RatesComponent, OtherRoutesTimes],
+    declarations: [SettingsComponent, RoutesComponent, CityComponent, PhoneComponent, RatesComponent, OtherRoutesTimes, DailyPriceComponent],
     imports: [SettingsRoutingModule, SharedModule],
     providers: [SettingsService]
 })

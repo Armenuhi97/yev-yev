@@ -1,30 +1,28 @@
-<div class="title-container">
-    <h1>Սակագներ</h1>
+<div class="table-content">
+    <h1>Երթ ըստ շաբաթվա օրերի</h1>
 </div>
 
 <nz-table nzBordered [nzTotal]="total">
     <thead>
         <tr>
             <th>N</th>
-            <th>Նստատեղերի քանակ</th>
+            <th>Շաբաթվա օր</th>
+            <th>Ժամ</th>
             <th>Գին</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let data of dataRes; let ind = index">
-            <!-- <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10)  }}</td> -->
-            <td>{{data.id}}</td>
-            <td>{{data.sitCount}}</td>
+        <tr *ngFor="let data of dataDaysRes; let ind = index">
+            <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10)  }}</td>
+            <!-- <td>{{data.id}}</td> -->
+            <td>{{data.day}}</td>
+            <td>{{data.time}}</td>
             <td>{{data.price}}</td>
             <td (click)="onEditRates(ind)" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i></td>
         </tr>
     </tbody>
 </nz-table>
-
-
-
-
 
 <nz-modal
   [nzCancelText]="'Փակել'"
@@ -33,28 +31,27 @@
   nzTitle="Հեռախոսահամար"
   nzWidth="870px"
   (nzOnCancel)="handleCancel()"
+  (nzOnOk)="onPriseSave()"
   >
-  <!-- (nzOnOk)="onPhoneSave()" -->
   <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
     <div nz-row [nzGutter]="24">
-      <div nz-col [nzSpan]="12">
-        <nz-form-label class="inline-labels" nzRequired>Գինը</nz-form-label>
+      <div nz-col [nzSpan]="12" *ngFor="let data of dataDaysRes; let ind = index">
+        <nz-form-label class="inline-labels" nzRequired>{{data.day}}</nz-form-label>
         <nz-form-item>
+            <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+              <input nz-input formControlName="time"  value="{{data.time}}" />
+            </nz-form-control>
             <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
                 <input nz-input formControlName="price" placeholder="" />
             </nz-form-control>
-        </nz-form-item>
+          </nz-form-item>
       </div>
+      <!-- <div nz-col [nzSpan]="12">
+        <nz-form-label class="inline-labels" nzRequired>Գինը</nz-form-label>
+      </div> -->
     </div>
   </form>
 </nz-modal>
-
-
-
-
-
-
-
 
 <ng-template #userErrorTpl let-control>
     <ng-container *ngIf="control.hasError('required')">
