@@ -5,6 +5,9 @@ import { CityItem } from "../../core/models/city.model";
 import { RouteItem } from "../../core/models/routes.model";
 import { ServerResponce } from "../../core/models/server-reponce";
 import { OtherRoutesTime } from "../../core/models/ther-routes-time";
+import { ISeatsPrice, ISeatsPriseFormatted, SeatsName } from "../../core/models/seats-price";
+import { map } from "rxjs/operators";
+import { seatsPriceListNormalizer } from "./normalizers/seats-price-list.normalize";
 
 @Injectable()
 export class SettingsService {
@@ -84,10 +87,21 @@ export class SettingsService {
     public getOtherRoutesTimeList() {
         return this._httpClient.get('utils/general-settings/')
     }
-    public editOtherRoutesTimeList(id: number, body:OtherRoutesTime) {
+    public editOtherRoutesTimeList(id: number, body: OtherRoutesTime) {
         return this._httpClient.put(`utils/general-settings/${id}/`, body)
     }
-    public addOtherRoutesTimeList(body:OtherRoutesTime){
-        return this._httpClient.post(`utils/general-settings/`,body)
+    public addOtherRoutesTimeList(body: OtherRoutesTime) {
+        return this._httpClient.post(`utils/general-settings/`, body)
+    }
+    public getSeatsPrice(): Observable<ISeatsPriseFormatted[]> {
+        return this._httpClient.get<ServerResponce<ISeatsPrice[]>>('utils/seats-price/').pipe(
+            map((data) => {
+                const result = data.results?.length ? data.results[0] : {} as ISeatsPrice;
+                return seatsPriceListNormalizer(result);
+            })
+        );
+    }
+    public updateSeatsPrice(id: number, body) {
+        return this._httpClient.put(`utils/seats-price/${id}/`, body);
     }
 }

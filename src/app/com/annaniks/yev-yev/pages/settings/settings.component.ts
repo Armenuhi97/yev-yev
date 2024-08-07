@@ -6,6 +6,7 @@ import { RouteItem } from "../../core/models/routes.model";
 import { ServerResponce } from "../../core/models/server-reponce";
 import { OtherRoutesTime } from "../../core/models/ther-routes-time";
 import { SettingsService } from "./setting.service";
+import { ISeatsPriseFormatted } from "../../core/models/seats-price";
 
 @Component({
     selector: 'app-settings',
@@ -21,36 +22,42 @@ export class SettingsComponent {
     cityTable: CityItem[] = []
     cityTotal: number;
     workingTimes;
-    otherRoutesTime:OtherRoutesTime[]=[]
+    otherRoutesTime: OtherRoutesTime[] = [];
+    seatsPriceList: ISeatsPriseFormatted[] = [];
     constructor(private _settingsService: SettingsService) { }
 
     ngOnInit() {
         this.combineObservable()
     }
     combineObservable() {
-        forkJoin(
+        forkJoin([
             this.getAllRoutes(),
             this.getAllcities(),
             this.getAllPhones(),
-            this.getOtherRoutesTimes()
-        ).pipe(takeUntil(this.unsubscribe$)).subscribe()
+            this.getOtherRoutesTimes(),
+            this.getSeatsPriceList()
+        ]).pipe(takeUntil(this.unsubscribe$)).subscribe()
     }
     getOtherRoutesTimes() {
         return this._settingsService.getOtherRoutesTimeList().pipe(map((data: ServerResponce<OtherRoutesTime[]>) => {
-            
-            this.otherRoutesTime = data.results;            
+            this.otherRoutesTime = data.results;
         }))
     }
     getAllRoutes() {
         return this._settingsService.getAllRoutes(1).pipe(map((data: ServerResponce<RouteItem[]>) => {
             this.routeTotal = data.count;
-            this.routeTable = data.results;            
+            this.routeTable = data.results;
         }))
+    }
+    private getSeatsPriceList() {
+        return this._settingsService.getSeatsPrice().pipe(map((data) => {
+            this.seatsPriceList = data;
+        }));
     }
     getAllPhones() {
         return this._settingsService.getAllphone(1).pipe(map((data: ServerResponce<any[]>) => {
             this.phoneTotal = data.count;
-            this.phoneTable = data.results;            
+            this.phoneTable = data.results;
         }))
     }
     public getAllcities() {
@@ -62,5 +69,5 @@ export class SettingsComponent {
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
-    } 
+    }
 }
