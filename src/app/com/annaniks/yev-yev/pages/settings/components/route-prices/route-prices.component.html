@@ -1,0 +1,172 @@
+<div class="title-container">
+    <h1>Ուղղությունների ժամեր</h1>
+</div>
+<nz-table nzBordered [nzTotal]="total" [nzPageSize]="pageSize" (nzPageIndexChange)="nzPageIndexChange($event)"
+    [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="subRoutes">
+    <thead>
+        <tr>
+            <th>N</th>
+            <th>Անվանում</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of subRoutes; let ind = index">
+            <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10) }}</td>
+            <td>{{data?.start_point_city?.name_hy}}-{{data?.end_point_city?.name_hy}}</td>
+            <td (click)="onEditPriceAndTimes(ind)" class="action-button edit" style="width:10px"><i nz-icon
+                    nzType="edit"></i>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+<nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" nzTitle="Այլ ուղղության ժամեր"
+    (nzOnCancel)="closeModal()" nzWidth="500px" (nzOnOk)="onSave()">
+    <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
+        <p> Երկուշաբթի</p>
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
+                <nz-form-item>
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="monday_time"
+                        nzFormat="HH:mm">
+                    </nz-time-picker>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Գինը</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="monday_price" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+
+        <p> Երեքշաբթի</p>
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
+                <nz-form-item>
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="tuesday_time"
+                        nzFormat="HH:mm">
+                    </nz-time-picker>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Գինը</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="tuesday_price" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <p> Չորեքշաբթի</p>
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
+                <nz-form-item>
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="wednesday_time"
+                        nzFormat="HH:mm">
+                    </nz-time-picker>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Գինը</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="wednesday_price" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <p> Հինգշաբթի</p>
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
+                <nz-form-item>
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="thursday_time"
+                        nzFormat="HH:mm">
+                    </nz-time-picker>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Գինը</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="thursday_price" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <p> Ուրբաթ</p>
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
+                <nz-form-item>
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="friday_time"
+                        nzFormat="HH:mm">
+                    </nz-time-picker>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Գինը</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="friday_price" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <p> Շաբաթ</p>
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
+                <nz-form-item>
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="saturday_time"
+                        nzFormat="HH:mm">
+                    </nz-time-picker>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Գինը</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="saturday_price" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <p> Կիրակի</p>
+        <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
+                <nz-form-item>
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="sunday_time"
+                        nzFormat="HH:mm">
+                    </nz-time-picker>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="12">
+                <nz-form-label class="inline-labels" nzRequired>Գինը</nz-form-label>
+                <nz-form-item>
+                    <nz-form-control nzHasFeedback [nzErrorTip]="userErrorTpl">
+                        <input nz-input formControlName="sunday_price" placeholder="" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <nz-form-control>
+            <label nz-checkbox formControlName="is_active">Ակտիվ</label>
+        </nz-form-control>
+
+    </form>
+</nz-modal>
+
+<ng-template #userErrorTpl let-control>
+    <div *ngIf="control.hasError('required')">
+        Սա պարտադիր դաշտ է
+    </div>
+</ng-template>

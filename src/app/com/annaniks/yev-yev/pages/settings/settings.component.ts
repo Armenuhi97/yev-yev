@@ -1,12 +1,14 @@
 import { Component } from "@angular/core";
 import { forkJoin, Subject } from "rxjs";
-import { map, takeUntil } from "rxjs/operators";
+import { map, switchMap, takeUntil } from "rxjs/operators";
 import { CityItem } from "../../core/models/city.model";
 import { RouteItem } from "../../core/models/routes.model";
 import { ServerResponce } from "../../core/models/server-reponce";
 import { OtherRoutesTime } from "../../core/models/ther-routes-time";
 import { SettingsService } from "./setting.service";
 import { ISeatsPriseFormatted } from "../../core/models/seats-price";
+import { SubrouteDetails } from "../../core/models/orders-by-hours";
+import { IRoutePrice } from "../../core/models/route-price";
 
 @Component({
     selector: 'app-settings',
@@ -24,6 +26,7 @@ export class SettingsComponent {
     workingTimes;
     otherRoutesTime: OtherRoutesTime[] = [];
     seatsPriceList: ISeatsPriseFormatted[] = [];
+    subRoutes: (SubrouteDetails | IRoutePrice)[] = [];
     constructor(private _settingsService: SettingsService) { }
 
     ngOnInit() {
@@ -35,14 +38,15 @@ export class SettingsComponent {
             this.getAllcities(),
             this.getAllPhones(),
             this.getOtherRoutesTimes(),
-            this.getSeatsPriceList()
-        ]).pipe(takeUntil(this.unsubscribe$)).subscribe()
+            this.getSeatsPriceList(),
+        ]).pipe(takeUntil(this.unsubscribe$)).subscribe();
     }
     getOtherRoutesTimes() {
         return this._settingsService.getOtherRoutesTimeList().pipe(map((data: ServerResponce<OtherRoutesTime[]>) => {
             this.otherRoutesTime = data.results;
         }))
     }
+
     getAllRoutes() {
         return this._settingsService.getAllRoutes(1).pipe(map((data: ServerResponce<RouteItem[]>) => {
             this.routeTotal = data.count;

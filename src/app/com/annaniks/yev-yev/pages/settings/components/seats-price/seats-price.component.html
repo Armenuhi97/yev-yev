@@ -24,7 +24,7 @@
 
 
 <nz-modal [nzCancelText]="'Փակել'" [nzOkText]="'Հատատել'" [(nzVisible)]="isVisible" nzTitle="Այլ ուղղության ժամեր"
-    (nzOnCancel)="handleCancel()" nzWidth="500px" (nzOnOk)="onTimesSave()">
+    (nzOnCancel)="handleCancel()" nzWidth="500px" (nzOnOk)="onSave()">
     <form nz-form [formGroup]="validateForm" [nzLayout]="'vertical'">
         <nz-form-label class="inline-labels" nzRequired>{{seatsPriceList[this.editIndex]?.name}} (Գինը)</nz-form-label>
         <nz-form-item>

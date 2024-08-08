@@ -7,7 +7,8 @@ import { ServerResponce } from "../../core/models/server-reponce";
 import { OtherRoutesTime } from "../../core/models/ther-routes-time";
 import { ISeatsPrice, ISeatsPriseFormatted, SeatsName } from "../../core/models/seats-price";
 import { map } from "rxjs/operators";
-import { seatsPriceListNormalizer } from "./normalizers/seats-price-list.normalize";
+import { seatsPriceListNormalizer } from "./normalizers/seats-price.normalize";
+import { IRoutePrice } from "../../core/models/route-price";
 
 @Injectable()
 export class SettingsService {
@@ -22,8 +23,9 @@ export class SettingsService {
     public getRouteById(id: number): Observable<RouteItem> {
         return this._httpClient.get<RouteItem>(`route/main-route/${id}/`)
     }
-    public getRouteSubList(mainId: number) {
-        return this._httpClient.get(`route/sub-route/?main_route=${mainId}`)
+    public getRouteSubList(mainId?: number, page: number = 1) {
+        const offset = (page - 1) * 10;
+        return this._httpClient.get(`route/sub-route/?main_route=${mainId || ''}&page=${page}&limit=10&offet=${offset}`)
     }
     public editSubRoute(subRouteId: number, body) {
         return this._httpClient.put(`route/sub-route/${subRouteId}/`, body)
@@ -103,5 +105,11 @@ export class SettingsService {
     }
     public updateSeatsPrice(id: number, body) {
         return this._httpClient.put(`utils/seats-price/${id}/`, body);
+    }
+    public getRoutePrices(subRouteId: number) {
+        return this._httpClient.get<ServerResponce<IRoutePrice[]>>(`route/prices/?sub_route=${subRouteId}`)
+    }
+    public updateRoutePrices(id: number, body: IRoutePrice) {
+        return this._httpClient.put(`route/prices/${id}/`, body)
     }
 }

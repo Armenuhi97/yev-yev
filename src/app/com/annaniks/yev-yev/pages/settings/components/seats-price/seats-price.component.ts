@@ -53,9 +53,9 @@ export class SeatsPriceComponent {
         this.editIndex = null
     }
 
-    public onTimesSave() {
+    public onSave() {
         if (this.validateForm.invalid) {
-            this.nzMessages.error(Messages.fail);
+            this.nzMessages.error(Messages.failValidation);
             return;
         }
         const { id, key } = this.seatsPriceList[this.editIndex];
