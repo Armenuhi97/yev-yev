@@ -12,9 +12,9 @@
     </thead>
     <tbody>
         <tr *ngFor="let data of subRoutes; let ind = index">
-            <td style="width:10px">{{ (ind + 1)+((pageIndex-1)*10) }}</td>
+            <td style="width:30px">{{ (ind + 1)+((pageIndex-1)*30) }}</td>
             <td>{{data?.start_point_city?.name_hy}}-{{data?.end_point_city?.name_hy}}</td>
-            <td (click)="onEditPriceAndTimes(ind)" class="action-button edit" style="width:10px"><i nz-icon
+            <td (click)="onEditPriceAndTimes(ind)" class="action-button edit" style="width:30px"><i nz-icon
                     nzType="edit"></i>
             </td>
         </tr>
@@ -29,7 +29,7 @@
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
                 <nz-form-item>
-                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="monday_time"
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'30'" formControlName="monday_time"
                         nzFormat="HH:mm">
                     </nz-time-picker>
                 </nz-form-item>
@@ -49,7 +49,7 @@
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
                 <nz-form-item>
-                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="tuesday_time"
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'30'" formControlName="tuesday_time"
                         nzFormat="HH:mm">
                     </nz-time-picker>
                 </nz-form-item>
@@ -68,7 +68,7 @@
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
                 <nz-form-item>
-                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="wednesday_time"
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'30'" formControlName="wednesday_time"
                         nzFormat="HH:mm">
                     </nz-time-picker>
                 </nz-form-item>
@@ -87,7 +87,7 @@
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
                 <nz-form-item>
-                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="thursday_time"
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'30'" formControlName="thursday_time"
                         nzFormat="HH:mm">
                     </nz-time-picker>
                 </nz-form-item>
@@ -106,7 +106,7 @@
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
                 <nz-form-item>
-                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="friday_time"
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'30'" formControlName="friday_time"
                         nzFormat="HH:mm">
                     </nz-time-picker>
                 </nz-form-item>
@@ -125,7 +125,7 @@
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
                 <nz-form-item>
-                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="saturday_time"
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'30'" formControlName="saturday_time"
                         nzFormat="HH:mm">
                     </nz-time-picker>
                 </nz-form-item>
@@ -144,7 +144,7 @@
             <div nz-col [nzSpan]="12">
                 <nz-form-label class="inline-labels" nzRequired>Ժամ</nz-form-label>
                 <nz-form-item>
-                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'10'" formControlName="sunday_time"
+                    <nz-time-picker nzPlaceHolder="" [nzMinuteStep]="'30'" formControlName="sunday_time"
                         nzFormat="HH:mm">
                     </nz-time-picker>
                 </nz-form-item>
