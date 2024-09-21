@@ -21,7 +21,7 @@ export class ModeratorSettingsComponent {
         private nzMessages: NzMessageService,
     ) {
         this.myEntity = JSON.parse(localStorage.getItem('user'));
-        this.userName.setValue(this.myEntity.username)
+        this.userName.setValue(this.myEntity?.username)
     }
 
     ngOnInit() {
