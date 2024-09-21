@@ -48,6 +48,10 @@ export class AuthComponent implements OnInit, OnDestroy {
                 }
                 return throwError(error);
             })).subscribe((data: any) => {
+                if (data?.user?.user_role?.code !== "ADM") {
+                    this.errorMessage = 'Դուք պետք է ադմին լինեք մուտք գործելու համար';
+                    return;
+                }
                 this._cookieService.set('access', data.token);
                 this._cookieService.set('role', data.role_code);
                 localStorage.setItem('user', JSON.stringify(data.user.user));
