@@ -37,7 +37,7 @@ export class MainService {
     } else {
       url = `notifications/get-unseen-notifications-without-pendings/`;
     }
-    url += `?limit=10&offset=${page}`;
+    url += `?page=${page}`;
     return this.httpClient.get<ServerResponce<any>>(url);
   }
   public getUnseenPendingNotifications(): Observable<Notification[]> {

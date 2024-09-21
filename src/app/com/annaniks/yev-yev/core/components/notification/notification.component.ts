@@ -53,7 +53,7 @@ export class NotificationComponent {
 
     async getNotifications(isHide?: boolean) {
         this.infiniteScrollDisabled = true;
-        const data = await this._mainService.getUnseenNotifications(this.type, (this.pageIndex - 1) * 10)
+        const data = await this._mainService.getUnseenNotifications(this.type, this.pageIndex)
             .pipe(takeUntil(this.unsubscribe$),
                 finalize(() => {
                     if (isHide) {
