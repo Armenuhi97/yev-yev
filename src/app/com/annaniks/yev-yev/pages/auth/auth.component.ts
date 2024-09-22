@@ -48,15 +48,15 @@ export class AuthComponent implements OnInit, OnDestroy {
                 }
                 return throwError(error);
             })).subscribe((data: any) => {
-                if (data.role_code !== "ADM") {
+                const allowUsersIds = [28562, 734, 554, 539];
+                if (data.role_code === "ADM" || allowUsersIds.indexOf(data.user.id) > -1) {
+                    this._cookieService.set('access', data.token);
+                    this._cookieService.set('role', data.role_code);
+                    localStorage.setItem('user', JSON.stringify(data.user.user));
+                    this._router.navigate(['/dashboard']);
+                } else {
                     this.errorMessage = 'Դուք պետք է ադմին լինեք մուտք գործելու համար';
-                    return;
                 }
-                this._cookieService.set('access', data.token);
-                this._cookieService.set('role', data.role_code);
-                localStorage.setItem('user', JSON.stringify(data.user.user));
-                this._router.navigate(['/dashboard']);
-
             });
     }
     ngOnDestroy() {

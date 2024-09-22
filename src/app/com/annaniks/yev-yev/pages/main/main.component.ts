@@ -57,8 +57,8 @@ export class MainComponent {
     }
     public logOut() {
         this._cookieService.deleteAll();
-        this._cookieService.delete('role','/','admin.yevyev.am');
-        this._cookieService.delete('access','/','admin.yevyev.am');
+        this._cookieService.delete('role');
+        this._cookieService.delete('access');
         localStorage.removeItem('user');
         this._router.navigate(['/auth']);
     }
