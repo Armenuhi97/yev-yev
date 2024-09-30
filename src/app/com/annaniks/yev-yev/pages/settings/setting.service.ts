@@ -107,9 +107,21 @@ export class SettingsService {
         return this._httpClient.put(`utils/seats-price/${id}/`, body);
     }
     public getRoutePrices(subRouteId: number) {
-        return this._httpClient.get<ServerResponce<IRoutePrice[]>>(`route/prices/?sub_route=${subRouteId}`)
+        return this._httpClient.get<IRoutePrice[]>(`route/get-prices/?sub_route=${subRouteId}`).pipe(
+            map((data) => {
+                data = data.reduce(function (r, a) {
+                    r[a.day] = r[a.day] || [];
+                    r[a.day].push(a);
+                    return r;
+                }, Object.create(null));
+                return data;
+            })
+        )
     }
-    public updateRoutePrices(id: number, body: IRoutePrice) {
-        return this._httpClient.put(`route/prices/${id}/`, body)
+    public updateRoutePrices(body: IRoutePrice) {
+        return this._httpClient.post(`route/prices/`, { prices: [body] })
+    }
+    public deletePrice(id: number) {
+        return this._httpClient.delete(`route/prices/${id}/`);
     }
 }

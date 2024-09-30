@@ -1,7 +1,7 @@
-import { Component, Input } from "@angular/core";
+import { Component, ElementRef, HostListener, Input } from "@angular/core";
 import { SubrouteDetails } from "../../../../core/models/orders-by-hours";
 import { Subject } from "rxjs";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
 import { SettingsService } from "../../setting.service";
 import { Messages } from "../../../../core/models/mesages";
@@ -10,6 +10,8 @@ import { ServerResponce } from "../../../../core/models/server-reponce";
 import { IRoutePrice } from "../../../../core/models/route-price";
 import { RouteParamsDto } from "../../dto/route-prices.dto";
 import { DatePipe } from "@angular/common";
+import { WEEK_DAYS } from "../../../../core/utilities/week-days";
+
 
 @Component({
     selector: 'app-route-prices',
@@ -17,6 +19,7 @@ import { DatePipe } from "@angular/common";
     styleUrls: ['./route-prices.component.scss']
 })
 export class RoutePricesComponent {
+    daysOfWeek = WEEK_DAYS;
     pageIndex = 1;
     pageSize = 10;
     total: number;
@@ -28,6 +31,11 @@ export class RoutePricesComponent {
     editIndex: number;
     activeSubRoute: number;
     activeRoutePriceId: number;
+    @HostListener('document:keydown.enter', ['$event'])
+    handleEnterKey(event: KeyboardEvent): void {
+        event.preventDefault();
+    }
+
     constructor(private _settingsService: SettingsService,
         private datePipe: DatePipe,
         private nzMessages: NzMessageService,
@@ -44,30 +52,51 @@ export class RoutePricesComponent {
             this.subRoutes = data.results;
         })).subscribe();
     }
+    getTimesAndPrices(dayIndex: number): FormArray {
+        return (this.validateForm.get('days') as FormArray).at(dayIndex).get('timesAndPrices') as FormArray;
+    }
+    addTimePrice(dayIndex: number): void {
+        const timesAndPricesArray = this.getTimesAndPrices(dayIndex);
+        timesAndPricesArray.push(
+            this._fb.group({
+                time: [null, Validators.required],
+                price: [null, [Validators.required]],
+                id: [null]
+            })
+        );
+    }
+    preventEnter(evt) {
+        evt.preventDefault();
+    }
+
+    removeTimePrice(dayIndex: number, timePriceIndex: number): void {
+        const timesAndPricesArray = this.getTimesAndPrices(dayIndex);
+        const id = timesAndPricesArray.value[timePriceIndex]?.id;
+        timesAndPricesArray.removeAt(timePriceIndex);
+        if (id)
+            this._settingsService.deletePrice(id).pipe(takeUntil(this.unsubscribe$)).subscribe();
+    }
     nzPageIndexChange(page: number) {
         this.pageIndex = page;
         this.getAllSubRoutes();
     }
     private _initForm() {
         this.validateForm = this._fb.group({
-            sunday_price: [null, Validators.required],
-            sunday_time: [null, Validators.required],
-            monday_price: [null, Validators.required],
-            monday_time: [null, Validators.required],
-            tuesday_price: [null, Validators.required],
-            tuesday_time: [null, Validators.required],
-            wednesday_price: [null, Validators.required],
-            wednesday_time: [null, Validators.required],
-            thursday_price: [null, Validators.required],
-            thursday_time: [null, Validators.required],
-            friday_price: [null, Validators.required],
-            friday_time: [null, Validators.required],
-            saturday_price: [null, Validators.required],
-            saturday_time: [null, Validators.required],
-            is_active: [false]
+            days: this._fb.array([])
+        });
+        this.initDays();
+    }
+    private initDays() {
+        const days = this.validateForm.get('days') as FormArray;
+        WEEK_DAYS.forEach(({ value, name }) => {
+            days.push(
+                this._fb.group({
+                    day: [value, Validators.required],
+                    name: [name],
+                    timesAndPrices: this._fb.array([])
+                }))
         })
     }
-
     onEditPriceAndTimes(index: number) {
         this.isEditing = true;
         this.editIndex = index;
@@ -79,33 +108,34 @@ export class RoutePricesComponent {
         this._settingsService.getRoutePrices(this.activeSubRoute).pipe(
             takeUntil(this.unsubscribe$),
             tap((data) => {
-                const routePrices = data.results?.[0] || null;
-                this.activeRoutePriceId = routePrices?.id;
+                const routePrices = data || null;
+                // this.activeRoutePriceId = routePrices?.id;
                 this.setFormValue(routePrices);
             })
         ).subscribe();
     }
-    private setFormValue(routePrices: IRoutePrice) {
+    saveTimePrice(dayIndex: number, timePriceIndex: number) {
+        const dayForm = this.getTimesAndPrices(dayIndex).controls[timePriceIndex];
+        if (dayForm.invalid) {
+            return;
+        }
+        const routePriceDto = new RouteParamsDto(dayForm.value, dayIndex, this.activeSubRoute, this.datePipe);
+
+        this._settingsService.updateRoutePrices(routePriceDto).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+            dayForm.get('id').setValue('1000')
+        })
+    }
+    private setFormValue(routePrices) {
         if (!routePrices) {
             return;
         }
-        this.validateForm.patchValue({
-            sunday_price: routePrices.sunday_price,
-            sunday_time: this.getHourAndTime(routePrices.sunday_time),
-            monday_price: routePrices.monday_price,
-            monday_time: this.getHourAndTime(routePrices.monday_time),
-            tuesday_price: routePrices.tuesday_price,
-            tuesday_time: this.getHourAndTime(routePrices.tuesday_time),
-            wednesday_price: routePrices.wednesday_price,
-            wednesday_time: this.getHourAndTime(routePrices.wednesday_time),
-            thursday_price: routePrices.thursday_price,
-            thursday_time: this.getHourAndTime(routePrices.thursday_time),
-            friday_price: routePrices.friday_price,
-            friday_time: this.getHourAndTime(routePrices.friday_time),
-            saturday_price: routePrices.saturday_price,
-            saturday_time: this.getHourAndTime(routePrices.saturday_time),
-            is_active: routePrices.is_active
-        });
+        Object.keys(routePrices).forEach((key) => {
+            const weekDay = this.getTimesAndPrices(+key);
+            const value = routePrices[key];
+            value.forEach(({ price, time, id }) => {
+                weekDay.push(this._fb.group({ time: this.getHourAndTime(time), price, id }));
+            })
+        })
     }
     private getHourAndTime(time: string) {
         if (time) {
@@ -120,26 +150,9 @@ export class RoutePricesComponent {
 
     public showModal(): void {
         this.isVisible = true;
+        this._initForm();
     }
 
-    public onSave() {
-        console.log(this.validateForm);
-        
-        if (this.validateForm.invalid) {
-            this.nzMessages.error(Messages.failValidation);
-            return;
-        }
-        const formValue = this.validateForm.value;
-        const routePriceDto = new RouteParamsDto(formValue, this.activeSubRoute, this.datePipe);
-        this._settingsService.updateRoutePrices(this.activeRoutePriceId, routePriceDto)
-            .pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
-                this.nzMessages.success(Messages.success)
-                this.closeModal()
-            },
-                () => {
-                    this.nzMessages.error(Messages.fail)
-                })
-    }
 
     closeModal(): void {
         this.isVisible = false;
