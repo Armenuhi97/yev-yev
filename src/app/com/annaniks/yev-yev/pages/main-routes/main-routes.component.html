@@ -155,7 +155,9 @@
                             {{ checkAddress(moderator) }}</span>
                         </td>
 
-                        <td>{{ getOrderType(moderator?.order_type) }}</td>
+                        <td>{{ getOrderType(moderator?.order_type) }}<br />
+                          <p *ngIf="moderator?.price !==1500">{{moderator?.price}}</p>
+                        </td>
                         <td>{{ moderator?.person_count }}</td>
                         <td>
                           {{ moderator?.comment }}
@@ -468,6 +470,8 @@
         [(ngModel)]="comeBackIsAble">Հետադարձ</label>
     </div>
   </div>
+  <b *ngIf="selectedPrice" style="font-size:20px;"> {{selectedPrice}} դր․</b>
+
   <span class="error-message">{{errorMessage}}</span>
 </ng-template>
 

@@ -18,6 +18,6 @@ import { SettingsComponent } from "./settings.component";
     imports: [SettingsRoutingModule, SharedModule
 
     ],
-    providers: [SettingsService]
+    providers: []
 })
 export class SettingsModule { }

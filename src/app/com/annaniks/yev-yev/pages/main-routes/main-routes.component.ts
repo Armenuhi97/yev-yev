@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { forkJoin, Observable, of, Subject, throwError } from 'rxjs';
-import { catchError, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Messages } from '../../core/models/mesages';
 import { OrderType } from '../../core/models/order-type';
 import { OrdersByHours } from '../../core/models/orders-by-hours';
@@ -26,6 +26,7 @@ import { AvailableDriversDto } from './dto/driver.dto';
 import { AvailableDriverModel } from './models/available-driver';
 import * as moment from 'moment';
 import { ChangeStatusDto } from './dto/change-status.dto';
+import { SettingsService } from '../settings/setting.service';
 
 @Component({
   selector: 'app-main-routes',
@@ -105,6 +106,8 @@ export class MainRoutesComponent {
   public comeBackSwitch: boolean = false;
   public comeBackIsAble = false;
   isUpdateBack: string;
+  selectedPrice: number = null;
+
   constructor(
     private _mainRoutesService: MainRoutesService,
     private router: Router, private _datePipe: DatePipe,
@@ -116,6 +119,7 @@ export class MainRoutesComponent {
     private nzMessages: NzMessageService,
     private _orderTypeService: OrderTypeService,
     private _openTimesService: OpenTimesService,
+    private settingsService: SettingsService,
     private notificationService: NotificationService) {
     // this.openTimes = this._openTimesService.getOpenTimes()
     this.orderTypes = this._orderTypeService.getOrderTypes();
@@ -443,9 +447,12 @@ export class MainRoutesComponent {
   private _formatDate(time, selectDate = this.selectedDate.value) {
 
     let date = this._datePipe.transform(selectDate, 'yyyy-MM-dd');
-    let currenTime = time.slice(0, time.indexOf(' '))
+    let currenTime = this.getTime(time);
     let current = `${date} ${currenTime}`;
     return current
+  }
+  private getTime(time) {
+    return time.slice(0, time.indexOf(' '))
   }
   // checkSubrouteAddress(bool: boolean) {
   //   let startKey: string;
@@ -641,7 +648,7 @@ export class MainRoutesComponent {
       const date = this._formatDate(this.selectedTime);
       const firstFormValue = (this.validateForm.get('firstForm') as FormGroup).controls;
 
-      const sendObject = new AddPassangerDto('', firstFormValue, this.subRouteInfo.id, date);
+      const sendObject = new AddPassangerDto('', firstFormValue, this.subRouteInfo.id, date, this.selectedPrice);
 
       const requests = [this.sendRequest(sendObject)];
       if (this.comeBackIsAble) {
@@ -658,7 +665,7 @@ export class MainRoutesComponent {
         backSubroute = this.subRouteInfos.find((el) => {
           return el.id !== this.subRouteInfo.id;
         });
-        const sendObjectTwo = new AddPassangerDto(this.keyName, secondFormValue, backSubroute.id, returnDate);
+        const sendObjectTwo = new AddPassangerDto(this.keyName, secondFormValue, backSubroute.id, returnDate, this.selectedPrice);
         requests.push(this.sendRequest(sendObjectTwo));
       }
 
@@ -697,7 +704,14 @@ export class MainRoutesComponent {
     const changeStatusDto = new ChangeStatusDto(moderator, this.subRouteInfo.id, date);
     this.sendEditRequest(moderator.id, changeStatusDto, false);
   }
-
+  getPricesByRoute(startTime, dayIndex) {
+    return this.settingsService.getRoutePrices(this.subRouteInfo.id).pipe(tap((data) => {
+      if (dayIndex in data) {
+        const value = data[dayIndex];
+        this.selectedPrice = value.find((el) => el.time === startTime)?.price;
+      }
+    }))
+  }
   getInfo(time, status = this.radioValue, isChange = true) {
     if (time) {
       this.isOpenInfo = true;
@@ -1009,9 +1023,13 @@ export class MainRoutesComponent {
       this.modalTitle = `${this.subRouteInfo.start_point_city.name_hy} - ${this.subRouteInfo.end_point_city.name_hy} ${this._datePipe.transform(this.selectedDate.value, 'dd-MM-yyyy')} ${this.getDay()} ${time}`
       this.radioValue = 'approved,canceled';
       let isUnChange = $event.isUnChange ? false : true;
+      // const selectedTime=this.getTime()
+      const startTime = this.timeItem.start;
+      const dayIndex = this.selectedDate.value.getDay();
       forkJoin([
         this.getInfo($event.time, this.radioValue, isUnChange),
-        this.getAvailableDrivers()
+        this.getAvailableDrivers(),
+        this.getPricesByRoute(startTime, dayIndex)
       ])
         .pipe(takeUntil(this.unsubscribe$)).subscribe()
     } else {

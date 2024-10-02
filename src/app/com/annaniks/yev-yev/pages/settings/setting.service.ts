@@ -10,7 +10,9 @@ import { map } from "rxjs/operators";
 import { seatsPriceListNormalizer } from "./normalizers/seats-price.normalize";
 import { IRoutePrice } from "../../core/models/route-price";
 
-@Injectable()
+@Injectable({
+    providedIn:'root'
+})
 export class SettingsService {
     constructor(private _httpClient: HttpClient) { }
     public getAllRoutes(page: number): Observable<ServerResponce<RouteItem[]>> {
@@ -106,7 +108,7 @@ export class SettingsService {
     public updateSeatsPrice(id: number, body) {
         return this._httpClient.put(`utils/seats-price/${id}/`, body);
     }
-    public getRoutePrices(subRouteId: number) {
+    public getRoutePrices(subRouteId: number):Observable<any> {
         return this._httpClient.get<IRoutePrice[]>(`route/get-prices/?sub_route=${subRouteId}`).pipe(
             map((data) => {
                 data = data.reduce(function (r, a) {

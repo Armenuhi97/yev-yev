@@ -34,8 +34,8 @@ export class AddPassangerDto {
   public order_type;
   public time: string | null;
   public status;
-
-  constructor(keyName: string, formValue, subRouteId: number, date) {
+  public price: number;
+  constructor(keyName: string, formValue, subRouteId: number, date, price: number) {
     this.sub_route = subRouteId;
     // this.user = user;
     this.date = date;
@@ -55,6 +55,9 @@ export class AddPassangerDto {
     this.order_type = formValue['orderType' + keyName].value;
     this.time = formValue['time' + keyName].value ? formValue['time' + keyName].value : null;
     this.user = formValue['userId' + keyName].value;
+    if (price) {
+      this.price = price;
+    }
     // }
     // else {
     //   this.first_name = formValue.first_nameTwo;
