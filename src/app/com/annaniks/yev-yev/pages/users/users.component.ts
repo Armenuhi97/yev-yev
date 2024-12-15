@@ -16,6 +16,7 @@ import { UsersService } from "./users.service";
     styleUrls: ['users.component.scss']
 })
 export class UsersComponent {
+    blockStatus = 'all';
     sortItems = [];
     orders = [];
     userId: number;
@@ -58,12 +59,17 @@ export class UsersComponent {
             comment: [null]
         })
     }
+    onChangeBlockStatus(evt) {
+        this.pageIndex = 1;
+        this.getUsers()
+            .pipe(takeUntil(this.unsubscribe$)).subscribe();
 
+    }
     public subscribeToSearch() {
         return this.search.valueChanges.pipe(takeUntil(this.unsubscribe$),
             switchMap((value) => {
                 if (!value) {
-                    return this.getUsers(this.search.value)
+                    return this.getUsers()
                 } else {
                     return of()
                 }
@@ -74,7 +80,7 @@ export class UsersComponent {
         // this.search.valueChanges.pipe(takeUntil(this.unsubscribe$),
         // switchMap((value) => {
 
-        this.getUsers(this.search.value)
+        this.getUsers()
             .pipe(takeUntil(this.unsubscribe$)).subscribe();
         // })).subscribe()
 
@@ -83,10 +89,10 @@ export class UsersComponent {
         this._userService.editUser(id, { is_active: $event })
             .pipe(takeUntil(this.unsubscribe$)).subscribe();
     }
-    public getUsers(search?) {
+    public getUsers() {
         let ordering = this.sortItems && this.sortItems.length ? this.sortItems.join(',') : '';
-
-        return this._userService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, search, ordering).pipe(
+        const blockStatus = this.blockStatus === 'all' ? 0 : 1;
+        return this._userService.getUsers(this.pageIndex, (this.pageIndex - 1) * 10, this.search.value, ordering, blockStatus).pipe(
             map((data: ServerResponce<Client[]>) => {
                 this.total = data.count;
                 this.clientTable = data.results;
@@ -138,7 +144,7 @@ export class UsersComponent {
         this.pageIndex = page;
         if (this.search.value !== undefined) {
             this.count = this.length;
-            this.getUsers(this.search.value)
+            this.getUsers()
                 .pipe(takeUntil(this.unsubscribe$)).subscribe();
         } else {
 

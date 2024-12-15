@@ -4,13 +4,17 @@
     </div>
     <div class="d-flex align-items-center">
         <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-            <input type="text" [formControl]="search"
-            (keyup.enter)="searchUser()" nz-input placeholder="Հեռ․" />
+            <input type="text" [formControl]="search" (keyup.enter)="searchUser()" nz-input placeholder="Հեռ․" />
         </nz-input-group>
         <ng-template #suffixIconButton>
-            <button (click)="searchUser()" nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
+            <button class="d-flex align-items-center justify-content-center" (click)="searchUser()" nz-button
+                nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
         </ng-template>
     </div>
+    <nz-radio-group [(ngModel)]="blockStatus" (ngModelChange)="onChangeBlockStatus($event)">
+        <label nz-radio nzValue="all">Բոլորը</label>
+        <label nz-radio nzValue="blocked">Բլոկավորվածներ</label>
+    </nz-radio-group>
     <div class="d-flex align-items-center">
         <button class="add-essence" nz-button nzType="primary" (click)="showModal()">
             Ավելացնել ուղևոր
@@ -18,8 +22,8 @@
     </div>
 </div>
 
-<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)"  [nzTotal]="total"
-    [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="clientTable">
+<nz-table nzBordered (nzPageIndexChange)="nzPageIndexChange($event)" [nzTotal]="total" [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex" [nzFrontPagination]="false" #userTable [nzData]="clientTable">
     <thead>
         <tr>
             <th style="width:10px">N</th>
@@ -102,7 +106,7 @@
             <app-user-order [userId]="userId" [orders]="orders" [total]='size'></app-user-order>
         </nz-tab>
         <nz-tab [nzTitle]="'Գնահատումներ'">
-           <app-user-review [clientRating]='clientRating' [count]='count' [userId]='userId'></app-user-review>
+            <app-user-review [clientRating]='clientRating' [count]='count' [userId]='userId'></app-user-review>
         </nz-tab>
     </nz-tabset>
 </nz-modal>
