@@ -12,6 +12,7 @@
             <th>Վերջնակետ</th>
             <th>Ամսաթիվ</th>
             <th>Արժեք</th>
+            <th>Ուղևորների քանակը</th>
             <th></th>
         </tr>
     </thead>
@@ -33,6 +34,7 @@
             <td>
                 {{data.price}}
             </td>
+            <td>{{data.person_count}}</td>
             <td [routerLink]="data.id" class="action-button edit" style="width:10px"><i nz-icon nzType="edit"></i> </td>
         </tr>
     </tbody>
