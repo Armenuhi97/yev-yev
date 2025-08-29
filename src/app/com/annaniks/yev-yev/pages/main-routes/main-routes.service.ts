@@ -25,8 +25,9 @@ export class MainRoutesService {
         let offset = (page - 1) * 10;
         return this._httpClient.get<ServerResponce<RouteItem[]>>(`route/main-route/?only_my=True&page=${page}&limit=10&offset=${offset}`)
     }
-    public getDrivers(mainRouteId: number) {
-        return this._httpClient.get(`userdetails/user/?search=&driving_routes__main_route=${mainRouteId}&user_role__code=DR&limit=10000&small=true`)
+    public getDrivers(mainRouteId: number, skipLoading: boolean = false) {
+        const headers = skipLoading ? { 'X-Skip-Loading': 'true' } : {};
+        return this._httpClient.get(`userdetails/user/?search=&driving_routes__main_route=${mainRouteId}&user_role__code=DR&limit=10000&small=true`, { headers })
     }
     public getRoutesById(id: number): Observable<RouteItem> {
         return this._httpClient.get<RouteItem>(`route/main-route/${id}/`)

@@ -17,7 +17,7 @@ export class LoaderInterceptor implements HttpInterceptor {
     ];
   }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (this.isValidRequestForInterceptor(req.url)) {
+    if (this.isValidRequestForInterceptor(req.url, req)) {
       if (this.count === 0) {
         setTimeout(() => {
           this.loaderService.setHttpProgressStatus(true);
@@ -39,7 +39,12 @@ export class LoaderInterceptor implements HttpInterceptor {
     return next.handle(req);
   }
 
-  private isValidRequestForInterceptor(requestUrl: string): boolean {
+  private isValidRequestForInterceptor(requestUrl: string, request: HttpRequest<any>): boolean {
+    // Check if request has skip loading header
+    if (request.headers.has('X-Skip-Loading')) {
+      return false;
+    }
+
     // const positionIndicator = environment.API_URL;
     // const position = requestUrl.indexOf(positionIndicator);
 

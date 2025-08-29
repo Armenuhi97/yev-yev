@@ -424,7 +424,7 @@ export class MainRoutesComponent {
     return combine
   }
   getDrivers() {
-    return this._mainRoutesService.getDrivers(this.currentId).pipe(
+    return this._mainRoutesService.getDrivers(this.currentId, true).pipe(
       map((data: ServerResponce<User[]>) => {
         this.drivers = data.results;
       },
