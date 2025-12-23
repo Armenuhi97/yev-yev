@@ -56,7 +56,8 @@ export class UsersComponent {
             first_name: [null, Validators.required],
             last_name: [null, Validators.required],
             phone_number: [null, Validators.required],
-            comment: [null]
+            comment: [null],
+            email: [null, Validators.email]
         })
     }
     onChangeBlockStatus(evt) {
@@ -118,7 +119,8 @@ export class UsersComponent {
                         first_name: item.user.first_name,
                         last_name: item.user.last_name,
                         phone_number: item.phone_number,
-                        comment: item.comment
+                        comment: item.comment,
+                        email: item.user.email
                     })
                 }
             })
@@ -164,6 +166,7 @@ export class UsersComponent {
             "phone_number": this.validateForm.get('phone_number').value,
             "image": '',
             "comment": this.validateForm.get('comment').value ? this.validateForm.get('comment').value : '',
+            "email": this.validateForm.get('email').value ? this.validateForm.get('email').value : ''
         }
         this.sendRequest(sendObject);
     }
@@ -175,8 +178,8 @@ export class UsersComponent {
                 this.pageIndex = 1;
                 this.getUsers().pipe(takeUntil(this.unsubscribe$)).subscribe()
             },
-                () => {
-                    this.nzMessages.error(Messages.fail)
+                (e) => {
+                    this.nzMessages.error(e?.error?.message || Messages.fail)
                 })
         } else {
             this._userService.editUser(this.clientTable[this.editIndex].id, sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe((data: any) => {
@@ -185,8 +188,8 @@ export class UsersComponent {
                 this.nzMessages.success(Messages.success);
                 this.closeModal();
             },
-                () => {
-                    this.nzMessages.error(Messages.fail);
+                (e) => {
+                    this.nzMessages.error(e?.error?.message || Messages.fail);
                 })
         }
     }
